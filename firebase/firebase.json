@@ -1,0 +1,10 @@
+{
+  "apphosting": {
+    "rootDir": ".."
+  },
+  "emulators": {
+    "apphosting": {
+      "port": 5005
+    }
+  }
+}

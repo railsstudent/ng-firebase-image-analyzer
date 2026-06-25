@@ -1,0 +1,23 @@
+{
+  "name": "firebase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "firebase:emulate": "firebase emulators:start --project default",
+    "config:fetch": "node scripts/get-remote-config.js",
+    "lint": "eslint *.js",
+    "format": "prettier --write .",
+    "dev": "npm run --prefix .. start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "eslint": "^10.5.0",
+    "firebase-tools": "^15.22.2",
+    "prettier": "^3.8.4"
+  }
+}
