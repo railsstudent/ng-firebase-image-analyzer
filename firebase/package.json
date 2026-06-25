@@ -9,7 +9,8 @@
     "config:fetch": "node scripts/get-remote-config.js",
     "lint": "eslint *.js",
     "format": "prettier --write .",
-    "dev": "npm run --prefix .. start"
+    "dev": "npm run --prefix .. start",
+    "config:generate": "node scripts/generate-config.js"
   },
   "keywords": [],
   "author": "",
