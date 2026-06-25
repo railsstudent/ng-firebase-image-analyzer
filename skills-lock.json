@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "skills": {
+    "angular-developer": {
+      "source": "angular/skills",
+      "sourceType": "github",
+      "skillPath": "angular-developer/SKILL.md",
+      "computedHash": "e6400c4e948ba8c9d002509e9a482862c189f96938e01655f56a1e9a4533cb19"
+    },
+    "firebase-ai-logic-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-ai-logic-basics/SKILL.md",
+      "computedHash": "aba2d689236a21ac7989286b88ecb3399d616b90f2dd8946e675466e57802c35"
+    },
+    "firebase-app-hosting-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-app-hosting-basics/SKILL.md",
+      "computedHash": "562f27d560ff640a1e18ec4f5dd4ae70bd98447433c077be19292793ae095572"
+    },
+    "firebase-auth-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-auth-basics/SKILL.md",
+      "computedHash": "f4850f578bacdda96cacaa57b5e1121ec047e99bf7d389033042b1975af91040"
+    },
+    "firebase-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-basics/SKILL.md",
+      "computedHash": "8210ee53231b8299df100561d4ef776d39a293fd54403008bd738c65a856d54f"
+    },
+    "firebase-firestore": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-firestore/SKILL.md",
+      "computedHash": "be5ed12b7402b1f36364e20d4f9ccd2caac90302e23427395a02570db9f1434a"
+    },
+    "firebase-hosting-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-hosting-basics/SKILL.md",
+      "computedHash": "fd0fede590512379a3103b74a7c1e612e38e6948b08e763a75962cd8c7f5b8e2"
+    },
+    "firebase-remote-config-basics": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-remote-config-basics/SKILL.md",
+      "computedHash": "d5e9090dec35e050be958b72b672e39bd931014ebb311bac3a46f542fc04e10d"
+    },
+    "firebase-security-rules-auditor": {
+      "source": "firebase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/firebase-security-rules-auditor/SKILL.md",
+      "computedHash": "7d05c33d2e00c1d26cbd99ae174272fdd962e63b67c801e2fc050cc63e681723"
+    },
+    "grill-with-docs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
+      "computedHash": "e7ef25bbee50cda2eb7b3a8ef541db0a0396dad7d369f7d14fb610671dd1864b"
+    }
+  }
+}
