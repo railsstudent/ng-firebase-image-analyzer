@@ -19,6 +19,27 @@ export class AiService {
   #ai = inject(FIREBASE_AI);
   #configService = inject(ConfigService);
 
+  async generateContent(params: GenerateContentParams): Promise<GenerateContentResponse> {
+    const { model, request } = this.preprocessParams(params);
+
+    const result = await model.generateContent(request);
+    this.validateResponse(result.response);
+    return result.response;
+  }
+
+  async generateContentStream(params: GenerateContentParams): Promise<GenerateContentStreamResult> {
+    const { model, request } = this.preprocessParams(params);
+
+    const result = await model.generateContentStream(request);
+    const originalResponsePromise = result.response;
+    result.response = originalResponsePromise.then((response) => {
+      this.validateResponse(response);
+      return response;
+    });
+
+    return result;
+  }
+
   private validateInputs(contents: unknown): void {
     if (contents === null || contents === undefined) {
       throw new Error('Input contents cannot be null or undefined.');
@@ -73,34 +94,12 @@ export class AiService {
     }
   }
 
-  async generateContent(params: GenerateContentParams): Promise<GenerateContentResponse> {
+  private preprocessParams(params: GenerateContentParams) {
     this.validateInputs(params.contents);
-
     const modelParams = this.constructModelParams(params);
     const model = getGenerativeModel(this.#ai, modelParams);
     const request = this.constructRequest(params);
-
-    const result = await model.generateContent(request);
-    this.validateResponse(result.response);
-    return result.response;
-  }
-
-  async generateContentStream(params: GenerateContentParams): Promise<GenerateContentStreamResult> {
-    this.validateInputs(params.contents);
-
-    const modelParams = this.constructModelParams(params);
-    const model = getGenerativeModel(this.#ai, modelParams);
-
-    const request = this.constructRequest(params);
-    const result = await model.generateContentStream(request);
-
-    const originalResponsePromise = result.response;
-    result.response = originalResponsePromise.then((response) => {
-      this.validateResponse(response);
-      return response;
-    });
-
-    return result;
+    return { model, request };
   }
 
   private constructModelParams(params: GenerateContentParams): HybridParams {
