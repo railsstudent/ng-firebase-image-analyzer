@@ -9,7 +9,6 @@
     "config:fetch": "node scripts/get-firebase-remote-config.js",
     "lint": "eslint *.js",
     "format": "prettier --write .",
-    "dev": "npm run --prefix .. start",
     "config:generate": "node scripts/generate-firebase-config.js"
   },
   "keywords": [],

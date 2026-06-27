@@ -4,7 +4,12 @@
   },
   "emulators": {
     "apphosting": {
-      "port": 5005
+      "port": 5005,
+      "rootDirectory": "..",
+      "startCommand": "npm run start"
+    },
+    "ui": {
+      "enabled": true
     }
   }
 }
