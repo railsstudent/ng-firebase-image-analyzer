@@ -1,4 +1,4 @@
-import { FIREBASE_AI } from '@/features/ai/constants/ai.constants';
+import { FIREBASE_AI } from '@/features/ai/constants/ai.const';
 import { ConfigService } from '@/features/ai/services/config.service';
 import { EnvironmentProviders, inject, makeEnvironmentProviders } from '@angular/core';
 import { getAI, VertexAIBackend } from 'firebase/ai';

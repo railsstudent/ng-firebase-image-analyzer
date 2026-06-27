@@ -1,5 +1,5 @@
-import { fileToGenerativePart } from '@/core/utilities/base64.utils';
-import { validateImageInput, validatePrompt } from '@/core/utilities/image.utils';
+import { fileToGenerativePart } from '@/core/utils/base64.util';
+import { validateImageInput, validatePrompt } from '@/core/utils/image.util';
 import { AiService } from '@/features/ai/services/ai.service';
 import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-analysis.schema';
 import {
@@ -46,10 +46,13 @@ export class ImageAnalysisService {
 
     try {
       const analysis = JSON.parse(jsonText) as ImageAnalysisResponse;
+      const usageGroup = this.#aiService.processUsage(response);
       return {
         analysis,
         source: response.inferenceSource,
         thoughtSummary: response.thoughtSummary(),
+        tokenSummary: usageGroup?.tokenSummary,
+        tokenModalityBreakdown: usageGroup?.tokenBreakdown,
       };
     } catch (error) {
       throw new Error(`Failed to parse AI response as JSON: ${(error as Error).message}`, { cause: error });

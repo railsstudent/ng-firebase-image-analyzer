@@ -10,13 +10,41 @@
     @let fromCloudOrDevice = result?.source;
     @let analysis = result?.analysis;
     @let thoughtSummary = result?.thoughtSummary || '';
+    @let tokenSummary = result?.tokenSummary;
+    @let tokenBreakdown = result?.tokenModalityBreakdown;
 
     <p>Performance: {{ duration() }}</p>
     @if (fromCloudOrDevice) {
       <p>Source: {{ fromCloudOrDevice }}</p>
+      <hr />
     }
     @if (thoughtSummary) {
       <p>Thought Summary: {{ thoughtSummary }}</p>
+      <hr />
+    }
+    @if (tokenSummary) {
+      <p>Prompt Token Count: {{ tokenSummary.promptTokenCount }}</p>
+      <p>Output Token Count: {{ tokenSummary.outputTokenCount }}</p>
+      <p>Cached Token Count: {{ tokenSummary.cachedContentTokenCount }}</p>
+      <p>Thought Token Count: {{ tokenSummary.thoughtsTokenCount }}</p>
+      <p>Total Token Count: {{ tokenSummary.totalTokenCount }}</p>
+      <hr />
+    }
+    @if (tokenBreakdown) {
+      <p>Prompt Token Details:</p>
+      @for (item of tokenBreakdown.promptTokensDetails; track item.modality) {
+        <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+      }
+      <p>Output Token Details:</p>
+      @for (item of tokenBreakdown.outputTokensDetails; track item.modality) {
+        <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+      }
+
+      <p>Cached Token Details:</p>
+      @for (item of tokenBreakdown.cacheTokensDetails; track item.modality) {
+        <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+      }
+      <hr />
     }
     @if (analysis) {
       @for (t of analysis.alternativeTexts; track t; let i = $index) {

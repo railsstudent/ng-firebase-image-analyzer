@@ -1,3 +1,4 @@
+import { TokenModalityBreakdown, TokenSummary } from '@/features/ai/types/token-usage.type';
 import { InferenceSource } from 'firebase/ai';
 import { ColorAdjustment } from './color-adjustment.type';
 import { Recommendation } from './recommendation.type';
@@ -14,4 +15,6 @@ export interface ImageAnalysisWithMetadata {
   analysis: ImageAnalysisResponse;
   source?: InferenceSource;
   thoughtSummary?: string;
+  tokenSummary?: TokenSummary;
+  tokenModalityBreakdown?: TokenModalityBreakdown;
 }

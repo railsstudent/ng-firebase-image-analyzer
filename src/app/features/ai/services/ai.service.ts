@@ -1,4 +1,4 @@
-import { FIREBASE_AI } from '@/features/ai/constants/ai.constants';
+import { FIREBASE_AI } from '@/features/ai/constants/ai.const';
 import { ConfigService } from '@/features/ai/services/config.service';
 import { inject, Service } from '@angular/core';
 import {
@@ -7,14 +7,14 @@ import {
   GenerateContentStreamResult,
   GenerativeModel,
   getGenerativeModel,
-  HarmBlockThreshold,
-  HarmCategory,
   HybridParams,
   InferenceMode,
   ThinkingLevel,
 } from 'firebase/ai';
 import { getValue } from 'firebase/remote-config';
+import { SAFETY_SETTINGS } from '../constants/safety-settings.const';
 import { GenerateContentParams } from '../types/ai.types';
+import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '../types/token-usage.type';
 
 @Service()
 export class AiService {
@@ -44,6 +44,32 @@ export class AiService {
     });
 
     return result;
+  }
+
+  processUsage(response: EnhancedGenerateContentResponse): TokenUsage | undefined {
+    if (response.usageMetadata) {
+      const usageMetadata = response.usageMetadata;
+      const tokenSummary: TokenSummary = {
+        totalTokenCount: usageMetadata.totalTokenCount,
+        promptTokenCount: usageMetadata.promptTokenCount,
+        thoughtsTokenCount: usageMetadata.thoughtsTokenCount || 0,
+        cachedContentTokenCount: usageMetadata.cachedContentTokenCount || 0,
+        outputTokenCount: usageMetadata.candidatesTokenCount,
+      };
+
+      const tokenBreakdown: TokenModalityBreakdown = {
+        promptTokensDetails: usageMetadata.promptTokensDetails || [],
+        outputTokensDetails: usageMetadata.candidatesTokensDetails || [],
+        cacheTokensDetails: usageMetadata.cacheTokensDetails || [],
+      };
+
+      return {
+        tokenSummary,
+        tokenBreakdown,
+      };
+    }
+
+    return undefined;
   }
 
   private downloadDeviceModel(model: GenerativeModel) {
@@ -119,7 +145,7 @@ export class AiService {
     return { model, request };
   }
 
-  private constructModelParams(params: GenerateContentParams): HybridParams {
+  private constructModelParams({ schema, systemInstruction }: GenerateContentParams): HybridParams {
     const remoteConfig = this.#configService.RemoteConfig;
     const model = getValue(remoteConfig, 'geminiModelName').asString() || 'gemini-3.5-flash';
     const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString() || 'LOW';
@@ -129,38 +155,21 @@ export class AiService {
       mode: InferenceMode.PREFER_ON_DEVICE,
       onDeviceParams: {
         promptOptions: {
-          responseConstraint: params.schema,
+          responseConstraint: schema,
         },
       },
       inCloudParams: {
         model,
         generationConfig: {
-          responseMimeType: params.schema ? 'application/json' : undefined,
-          responseSchema: params.schema,
+          responseMimeType: schema ? 'application/json' : undefined,
+          responseSchema: schema,
           thinkingConfig: {
             thinkingLevel,
             includeThoughts: true,
           },
         },
-        safetySettings: [
-          {
-            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
-          },
-        ],
-        systemInstruction: params.systemInstruction,
+        safetySettings: SAFETY_SETTINGS,
+        systemInstruction,
       },
     };
 
