@@ -6,11 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "firebase:emulate": "firebase emulators:start --project default",
-    "config:fetch": "node scripts/get-remote-config.js",
+    "config:fetch": "node scripts/get-firebase-remote-config.js",
     "lint": "eslint *.js",
     "format": "prettier --write .",
     "dev": "npm run --prefix .. start",
-    "config:generate": "node scripts/generate-config.js"
+    "config:generate": "node scripts/generate-firebase-config.js"
   },
   "keywords": [],
   "author": "",

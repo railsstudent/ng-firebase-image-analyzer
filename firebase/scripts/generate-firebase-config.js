@@ -5,7 +5,7 @@ try {
   const envPath = path.resolve(__dirname, '../.env');
   process.loadEnvFile(envPath);
 
-  const config = {
+  const app = {
     apiKey: process.env.FIREBASE_API_KEY,
     authDomain: process.env.FIREBASE_AUTH_DOMAIN,
     projectId: process.env.FIREBASE_PROJECT_ID,
@@ -15,13 +15,23 @@ try {
   };
 
   // Basic validation to check if all keys are filled
-  const missing = Object.entries(config)
+  const missing = Object.entries(app)
     .filter(([_, val]) => !val || val.startsWith('<'))
     .map(([key]) => key);
 
   if (missing.length > 0) {
     console.warn(`Warning: The following keys are missing or contain placeholder values: ${missing.join(', ')}`);
   }
+
+  // Check if recaptcha enterprise key is missing
+  if (!process.env.FIREBASE_RECAPTCHA_ENTERPRISE_KEY) {
+    console.warn('Warning: Recaptcha Enterprise key is missing');
+  }
+
+  const config = {
+    app,
+    recaptchaEnterpriseKey: process.env.FIREBASE_RECAPTCHA_ENTERPRISE_KEY,
+  };
 
   const outputPath = path.resolve(__dirname, '../firebase.config.json');
   fs.writeFileSync(outputPath, JSON.stringify(config, null, 2), 'utf-8');
