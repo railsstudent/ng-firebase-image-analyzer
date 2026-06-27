@@ -1,5 +1,5 @@
 {
-  "geminiModelName": "gemini-3.1-flash-lite",
+  "geminiModelName": "gemini-3.5-flash",
   "functionEmulatorHost": "localhost",
   "functionEmulatorPort": "5001",
   "vertexAILocation": "global",
