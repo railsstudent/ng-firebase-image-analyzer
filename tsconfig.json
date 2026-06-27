@@ -14,7 +14,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@/firebase/*": ["./firebase/*"],
+      "@/*": ["./src/app/*"],
+      "@/public/*": ["./public/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

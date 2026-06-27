@@ -1,3 +1,5 @@
+import { provideFirebaseAI } from '@/features/ai/providers/ai.provider';
+import { ConfigService } from '@/features/ai/services/config.service';
 import {
   ApplicationConfig,
   inject,
@@ -7,18 +9,13 @@ import {
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withExperimentalAutoCleanupInjectors } from '@angular/router';
 import { routes } from './app.routes';
-import { provideFirebaseAI } from './features/ai/providers/ai.provider';
-import { ConfigService } from './features/ai/services/config.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding(), withExperimentalAutoCleanupInjectors()),
-    provideAppInitializer(() => {
-      const configService = inject(ConfigService);
-      return configService.initialize();
-    }),
+    provideAppInitializer(() => inject(ConfigService).initialize()),
     provideFirebaseAI(),
   ],
 };
