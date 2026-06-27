@@ -1,2 +1,25 @@
 <h1 class="text-3xl font-bold underline">Hello world!</h1>
+<div>
+  Click this button: <button class="bg-blue-600" (click)="testImageAnalysis($event)">Test image analysis</button>
+  <div>
+    @let result = analyze();
+    @if (result) {
+      @for (t of result.alternativeTexts; track t) {
+        <p>{{ t }}</p>
+      }
+      @for (t of result.tags; track t; let i = $index) {
+        <p>Tag {{ i }}: {{ t.name }}, {{ t.sentence }}</p>
+      }
+      @for (t of result.recommendations; track t; let i = $index) {
+        <p>Recommendation {{ i + 1 }}: {{ t.recommendation }}, {{ t.sentence }}</p>
+      }
+      <ol>
+        <li>Brightness: {{ result.colorAdjustment?.brightness }}</li>
+        <li>Contrast: {{ result.colorAdjustment?.contrast }}</li>
+        <li>Saturat: {{ result.colorAdjustment?.saturation }}</li>
+        <li>Warmth: {{ result.colorAdjustment?.warmth }}</li>
+      </ol>
+    }
+  </div>
+</div>
 <router-outlet />

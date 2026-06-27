@@ -2,6 +2,7 @@ import { FIREBASE_AI } from '@/features/ai/constants/ai.constants';
 import { ConfigService } from '@/features/ai/services/config.service';
 import { inject, Service } from '@angular/core';
 import {
+  EnhancedGenerateContentResponse,
   GenerateContentResponse,
   GenerateContentStreamResult,
   getGenerativeModel,
@@ -19,7 +20,7 @@ export class AiService {
   #ai = inject(FIREBASE_AI);
   #configService = inject(ConfigService);
 
-  async generateContent(params: GenerateContentParams): Promise<GenerateContentResponse> {
+  async generateContent(params: GenerateContentParams): Promise<EnhancedGenerateContentResponse> {
     const { model, request } = this.preprocessParams(params);
 
     const result = await model.generateContent(request);
