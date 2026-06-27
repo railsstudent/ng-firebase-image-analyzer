@@ -1,8 +1,8 @@
-<h1 class="text-3xl font-bold underline">Hello world!</h1>
+<h1 class="text-3xl font-bold underline">Firebase AI Logic Hybrid & On-device Inference!</h1>
 <div>
   @let url = catURL();
   @if (url) {
-    <img [src]="url" style="width: 50%; height: auto" />
+    <img [src]="url" style="width: 25%; height: auto" />
     <button class="bg-blue-600" (click)="testImageAnalysis($event)">Analyse this image</button>
   }
   <div>
@@ -13,7 +13,7 @@
     @let tokenSummary = result?.tokenSummary;
     @let tokenBreakdown = result?.tokenModalityBreakdown;
 
-    <p>Performance: {{ duration() }}</p>
+    <p>Performance: {{ `${duration()}ms` }}</p>
     @if (fromCloudOrDevice) {
       <p>Source: {{ fromCloudOrDevice }}</p>
       <hr />
