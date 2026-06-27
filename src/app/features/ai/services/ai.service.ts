@@ -5,6 +5,7 @@ import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
   GenerateContentStreamResult,
+  GenerativeModel,
   getGenerativeModel,
   HarmBlockThreshold,
   HarmCategory,
@@ -23,6 +24,8 @@ export class AiService {
   async generateContent(params: GenerateContentParams): Promise<EnhancedGenerateContentResponse> {
     const { model, request } = this.preprocessParams(params);
 
+    await this.downloadDeviceModel(model);
+
     const result = await model.generateContent(request);
     this.validateResponse(result.response);
     return result.response;
@@ -30,6 +33,8 @@ export class AiService {
 
   async generateContentStream(params: GenerateContentParams): Promise<GenerateContentStreamResult> {
     const { model, request } = this.preprocessParams(params);
+
+    await this.downloadDeviceModel(model);
 
     const result = await model.generateContentStream(request);
     const originalResponsePromise = result.response;
@@ -39,6 +44,17 @@ export class AiService {
     });
 
     return result;
+  }
+
+  private downloadDeviceModel(model: GenerativeModel) {
+    // `initializeDeviceModel` must be called:
+    // (1) after or on an end-user page interaction such as a button click
+    // and
+    // (2) before any queries to the model (such as `generateContent()`)
+    // You may want to `await` this promise if using `ONLY_ON_DEVICE` (see note below).
+    if (model) {
+      model.initializeDeviceModel((val) => console.log(`Download progress: ${Math.round(val * 10000) / 100}%`));
+    }
   }
 
   private validateInputs(contents: unknown): void {

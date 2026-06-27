@@ -1,23 +1,38 @@
 <h1 class="text-3xl font-bold underline">Hello world!</h1>
 <div>
-  Click this button: <button class="bg-blue-600" (click)="testImageAnalysis($event)">Test image analysis</button>
+  @let url = catURL();
+  @if (url) {
+    <img [src]="url" style="width: 50%; height: auto" />
+    <button class="bg-blue-600" (click)="testImageAnalysis($event)">Analyse this image</button>
+  }
   <div>
-    @let result = analyze();
-    @if (result) {
-      @for (t of result.alternativeTexts; track t) {
-        <p>{{ t }}</p>
+    @let result = finalAnalysis();
+    @let fromCloudOrDevice = result?.source;
+    @let analysis = result?.analysis;
+    @let thoughtSummary = result?.thoughtSummary || '';
+
+    <p>Performance: {{ duration() }}</p>
+    @if (fromCloudOrDevice) {
+      <p>Source: {{ fromCloudOrDevice }}</p>
+    }
+    @if (thoughtSummary) {
+      <p>Thought Summary: {{ thoughtSummary }}</p>
+    }
+    @if (analysis) {
+      @for (t of analysis.alternativeTexts; track t; let i = $index) {
+        <p>Alternative Text {{ i }}: {{ t }}</p>
       }
-      @for (t of result.tags; track t; let i = $index) {
+      @for (t of analysis.tags; track t; let i = $index) {
         <p>Tag {{ i }}: {{ t.name }}, {{ t.sentence }}</p>
       }
-      @for (t of result.recommendations; track t; let i = $index) {
+      @for (t of analysis.recommendations; track t; let i = $index) {
         <p>Recommendation {{ i + 1 }}: {{ t.recommendation }}, {{ t.sentence }}</p>
       }
       <ol>
-        <li>Brightness: {{ result.colorAdjustment?.brightness }}</li>
-        <li>Contrast: {{ result.colorAdjustment?.contrast }}</li>
-        <li>Saturat: {{ result.colorAdjustment?.saturation }}</li>
-        <li>Warmth: {{ result.colorAdjustment?.warmth }}</li>
+        <li>Brightness: {{ analysis.colorAdjustment?.brightness }}</li>
+        <li>Contrast: {{ analysis.colorAdjustment?.contrast }}</li>
+        <li>Saturat: {{ analysis.colorAdjustment?.saturation }}</li>
+        <li>Warmth: {{ analysis.colorAdjustment?.warmth }}</li>
       </ol>
     }
   </div>

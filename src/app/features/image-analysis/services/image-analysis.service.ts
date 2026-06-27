@@ -2,7 +2,10 @@ import { fileToGenerativePart } from '@/core/utilities/base64.utils';
 import { validateImageInput, validatePrompt } from '@/core/utilities/image.utils';
 import { AiService } from '@/features/ai/services/ai.service';
 import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-analysis.schema';
-import { ImageAnalysisResponse } from '@/features/image-analysis/types/image-analysis.type';
+import {
+  ImageAnalysisResponse,
+  ImageAnalysisWithMetadata,
+} from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service } from '@angular/core';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from '../prompts/image-analysis.prompt';
 
@@ -17,7 +20,7 @@ export class ImageAnalysisService {
    * @param customPrompt Optional custom prompt to guide the AI model's analysis.
    * @returns A structured ImageAnalysisResponse object.
    */
-  async analyzeImage(file: File | Blob, customPrompt?: string): Promise<ImageAnalysisResponse> {
+  async analyzeImage(file: File | Blob, customPrompt?: string): Promise<ImageAnalysisWithMetadata> {
     // 1. Validate inputs
     validateImageInput(file);
     validatePrompt(customPrompt);
@@ -35,8 +38,6 @@ export class ImageAnalysisService {
       schema: ImageAnalysisSchema,
     });
 
-    console.log('response', response);
-
     // 5. Parse and return the JSON response
     const jsonText = response.text();
     if (!jsonText) {
@@ -44,7 +45,12 @@ export class ImageAnalysisService {
     }
 
     try {
-      return JSON.parse(jsonText) as ImageAnalysisResponse;
+      const analysis = JSON.parse(jsonText) as ImageAnalysisResponse;
+      return {
+        analysis,
+        source: response.inferenceSource,
+        thoughtSummary: response.thoughtSummary(),
+      };
     } catch (error) {
       throw new Error(`Failed to parse AI response as JSON: ${(error as Error).message}`, { cause: error });
     }
