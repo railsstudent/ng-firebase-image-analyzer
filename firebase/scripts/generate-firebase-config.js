@@ -3,7 +3,12 @@ const path = require('path');
 
 try {
   const envPath = path.resolve(__dirname, '../.env');
-  process.loadEnvFile(envPath);
+  if (fs.existsSync(envPath)) {
+    process.loadEnvFile(envPath);
+    console.log('Success: load .env file');
+  } else {
+    console.log('Warning: .env file does not exist. Use process.env fallback');
+  }
 
   const app = {
     apiKey: process.env.FIREBASE_API_KEY,
