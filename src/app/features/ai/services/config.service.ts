@@ -28,10 +28,8 @@ export class ConfigService {
     this.#app = initializeApp(firebaseConfig.app);
 
     if (firebaseConfig.recaptchaEnterpriseKey) {
-      if (isDevMode()) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isDevMode();
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isDevMode();
       initializeAppCheck(this.#app, {
         provider: new ReCaptchaEnterpriseProvider(firebaseConfig.recaptchaEnterpriseKey),
         isTokenAutoRefreshEnabled: true,
