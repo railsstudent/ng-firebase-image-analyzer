@@ -35,7 +35,7 @@ try {
 
   const outputPath = path.resolve(__dirname, '../firebase.config.json');
   fs.writeFileSync(outputPath, JSON.stringify(config, null, 2), 'utf-8');
-  console.log('Successfully generated firebase.config.json from .env');
+  console.log(`Successfully generated ${outputPath} from .env`);
 } catch (error) {
   console.error('Error generating firebase.config.json:', error.message);
   process.exit(1);

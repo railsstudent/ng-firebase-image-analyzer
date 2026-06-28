@@ -1,7 +1,11 @@
 {
-  "apphosting": {
-    "rootDir": ".."
-  },
+  "apphosting": [
+    {
+      "backendId": "ng-firebase-image-analyzer",
+      "rootDir": "..",
+      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "functions"]
+    }
+  ],
   "emulators": {
     "apphosting": {
       "port": 5005,
