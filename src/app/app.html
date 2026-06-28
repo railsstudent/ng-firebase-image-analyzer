@@ -2,7 +2,7 @@
 <div>
   @let url = catURL();
   @if (url) {
-    <img [src]="url" style="width: 25%; height: auto" />
+    <img [src]="url" style="width: 25%; height: auto" alt="image viewer" />
     <button class="bg-blue-600" (click)="testImageAnalysis($event)">Analyse this image</button>
   }
   <div>

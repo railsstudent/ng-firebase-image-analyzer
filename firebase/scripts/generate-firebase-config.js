@@ -16,7 +16,7 @@ try {
 
   // Basic validation to check if all keys are filled
   const missing = Object.entries(app)
-    .filter(([_, val]) => !val || val.startsWith('<'))
+    .filter((data) => !data[1] || data[1].startsWith('<'))
     .map(([key]) => key);
 
   if (missing.length > 0) {
@@ -33,7 +33,7 @@ try {
     recaptchaEnterpriseKey: process.env.FIREBASE_RECAPTCHA_ENTERPRISE_KEY,
   };
 
-  const outputPath = path.resolve(__dirname, '../firebase.config.json');
+  const outputPath = path.resolve(__dirname, '../../public/firebase.config.json');
   fs.writeFileSync(outputPath, JSON.stringify(config, null, 2), 'utf-8');
   console.log(`Successfully generated ${outputPath} from .env`);
 } catch (error) {

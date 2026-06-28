@@ -16,7 +16,7 @@ try {
 
   console.log('All prebuild tasks completed.');
 } catch (error) {
-  console.error('Prebuild failed during execution.');
+  console.error('Prebuild failed during execution.', error);
   // Exit with status 1 to tell Firebase App Hosting that the build failed
   process.exit(1);
 }

@@ -1,5 +1,5 @@
-import firebaseConfig from '@/firebase/firebase.config.json';
-import remoteConfigDefaults from '@/firebase/remote-config-defaults.json';
+import firebaseConfig from '@/public/firebase.config.json';
+import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { isDevMode, Service } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';

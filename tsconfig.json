@@ -16,7 +16,6 @@
     "module": "preserve",
     "resolveJsonModule": true,
     "paths": {
-      "@/firebase/*": ["./firebase/*"],
       "@/*": ["./src/app/*"],
       "@/public/*": ["./public/*"]
     }

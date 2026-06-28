@@ -24,7 +24,7 @@ try {
   }
 
   // Write to JSON file
-  const outputPath = path.join(firebaseDir, 'remote-config-defaults.json');
+  const outputPath = path.join(firebaseDir, '..', 'public', 'remote-config-defaults.json');
   fs.writeFileSync(outputPath, JSON.stringify(defaults, null, 2), 'utf-8');
   console.log(`Successfully wrote ${outputPath}`);
 } catch (error) {
