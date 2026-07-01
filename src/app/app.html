@@ -1,68 +1,73 @@
-<h1 class="text-3xl font-bold underline">Firebase AI Logic Hybrid & On-device Inference!</h1>
 <div>
-  @let url = catURL();
-  @if (url) {
-    <img [src]="url" style="width: 25%; height: auto" alt="image viewer" />
-    <button class="bg-blue-600" (click)="testImageAnalysis($event)">Analyse this image</button>
-  }
+  <app-header title="Firebase AI Logic Hybrid & On-device Inference" />
   <div>
-    @let result = finalAnalysis();
-    @let fromCloudOrDevice = result?.source;
-    @let analysis = result?.analysis;
-    @let thoughtSummary = result?.thoughtSummary || '';
-    @let tokenSummary = result?.tokenSummary;
-    @let tokenBreakdown = result?.tokenModalityBreakdown;
+    @let url = catURL();
+    @if (url) {
+      <img [src]="url" style="width: 25%; height: auto" alt="image viewer" />
+      <button class="bg-blue-600" (click)="testImageAnalysis($event)">Analyse this image</button>
 
-    <p>Performance: {{ `${duration()}ms` }}</p>
-    @if (fromCloudOrDevice) {
-      <p>Source: {{ fromCloudOrDevice }}</p>
-      <hr />
+      <img [src]="url" style="width: 25%; height: auto" alt="enhanced image viewer" />
     }
-    @if (thoughtSummary) {
-      <p>Thought Summary: {{ thoughtSummary }}</p>
-      <hr />
-    }
-    @if (tokenSummary) {
-      <p>Prompt Token Count: {{ tokenSummary.promptTokenCount }}</p>
-      <p>Output Token Count: {{ tokenSummary.outputTokenCount }}</p>
-      <p>Cached Token Count: {{ tokenSummary.cachedContentTokenCount }}</p>
-      <p>Thought Token Count: {{ tokenSummary.thoughtsTokenCount }}</p>
-      <p>Total Token Count: {{ tokenSummary.totalTokenCount }}</p>
-      <hr />
-    }
-    @if (tokenBreakdown) {
-      <p>Prompt Token Details:</p>
-      @for (item of tokenBreakdown.promptTokensDetails; track item.modality) {
-        <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
-      }
-      <p>Output Token Details:</p>
-      @for (item of tokenBreakdown.outputTokensDetails; track item.modality) {
-        <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
-      }
+    <div>
+      @let result = finalAnalysis();
+      @let fromCloudOrDevice = result?.source;
+      @let analysis = result?.analysis;
+      @let thoughtSummary = result?.thoughtSummary || '';
+      @let tokenSummary = result?.tokenSummary;
+      @let tokenBreakdown = result?.tokenModalityBreakdown;
 
-      <p>Cached Token Details:</p>
-      @for (item of tokenBreakdown.cacheTokensDetails; track item.modality) {
-        <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+      <p>Performance: {{ `${duration()}ms` }}</p>
+      @if (fromCloudOrDevice) {
+        <p>Source: {{ fromCloudOrDevice }}</p>
+        <hr />
       }
-      <hr />
-    }
-    @if (analysis) {
-      @for (t of analysis.alternativeTexts; track t; let i = $index) {
-        <p>Alternative Text {{ i }}: {{ t }}</p>
+      @if (thoughtSummary) {
+        <p>Thought Summary: {{ thoughtSummary }}</p>
+        <hr />
       }
-      @for (t of analysis.tags; track t; let i = $index) {
-        <p>Tag {{ i }}: {{ t.name }}, {{ t.sentence }}</p>
+      @if (tokenSummary) {
+        <p>Prompt Token Count: {{ tokenSummary.promptTokenCount }}</p>
+        <p>Output Token Count: {{ tokenSummary.outputTokenCount }}</p>
+        <p>Cached Token Count: {{ tokenSummary.cachedContentTokenCount }}</p>
+        <p>Thought Token Count: {{ tokenSummary.thoughtsTokenCount }}</p>
+        <p>Total Token Count: {{ tokenSummary.totalTokenCount }}</p>
+        <hr />
       }
-      @for (t of analysis.recommendations; track t; let i = $index) {
-        <p>Recommendation {{ i + 1 }}: {{ t.recommendation }}, {{ t.sentence }}</p>
+      @if (tokenBreakdown) {
+        <p>Prompt Token Details:</p>
+        @for (item of tokenBreakdown.promptTokensDetails; track item.modality) {
+          <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+        }
+        <p>Output Token Details:</p>
+        @for (item of tokenBreakdown.outputTokensDetails; track item.modality) {
+          <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+        }
+
+        <p>Cached Token Details:</p>
+        @for (item of tokenBreakdown.cacheTokensDetails; track item.modality) {
+          <p>Modality: {{ item.modality }}, Token Count: {{ item.tokenCount }}</p>
+        }
+        <hr />
       }
-      <ol>
-        <li>Brightness: {{ analysis.colorAdjustment?.brightness }}</li>
-        <li>Contrast: {{ analysis.colorAdjustment?.contrast }}</li>
-        <li>Saturat: {{ analysis.colorAdjustment?.saturation }}</li>
-        <li>Warmth: {{ analysis.colorAdjustment?.warmth }}</li>
-      </ol>
-    }
+      @if (analysis) {
+        @for (t of analysis.alternativeTexts; track t; let i = $index) {
+          <p>Alternative Text {{ i }}: {{ t }}</p>
+        }
+        @for (t of analysis.tags; track t; let i = $index) {
+          <p>Tag {{ i }}: {{ t.name }}, {{ t.sentence }}</p>
+        }
+        @for (t of analysis.recommendations; track t; let i = $index) {
+          <p>Recommendation {{ i + 1 }}: {{ t.recommendation }}, Reason: {{ t.sentence }}</p>
+        }
+        <ol>
+          <li>Brightness: {{ analysis.colorAdjustment?.brightness }}</li>
+          <li>Contrast: {{ analysis.colorAdjustment?.contrast }}</li>
+          <li>Saturat: {{ analysis.colorAdjustment?.saturation }}</li>
+          <li>Warmth: {{ analysis.colorAdjustment?.warmth }}</li>
+        </ol>
+      }
+    </div>
   </div>
+  <router-outlet />
+  <app-footer />
 </div>
-<router-outlet />

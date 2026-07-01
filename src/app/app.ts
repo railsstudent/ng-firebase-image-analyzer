@@ -3,10 +3,12 @@ import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ImageAnalysisWithMetadata } from './features/image-analysis/types/image-analysis-metadata.type';
+import { HeaderComponent } from '@/shared/ui/layout/header/header';
+import { FooterComponent } from '@/shared/ui/layout/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

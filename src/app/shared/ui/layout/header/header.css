@@ -1,0 +1,25 @@
+@reference "../../../../../styles.css";
+
+:host {
+  @apply block;
+}
+
+.header-container {
+  @apply bg-indigo-500 text-white p-4 shadow-md flex justify-between items-center;
+}
+
+.header-title {
+  @apply text-xl font-bold;
+}
+
+.header-status-container {
+  @apply flex gap-4 items-center;
+}
+
+.header-status-badge {
+  @apply text-sm bg-indigo-700 px-2 py-1 rounded;
+}
+
+.header-status-text {
+  @apply text-sm;
+}

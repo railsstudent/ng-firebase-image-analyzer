@@ -1,0 +1,9 @@
+@reference "../../../../../styles.css";
+
+.footer-container {
+  @apply bg-indigo-500 text-white mt-auto;
+}
+
+.footer-content {
+  @apply container mx-auto px-6 py-4 text-center text-slate-300;
+}
