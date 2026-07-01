@@ -1,5 +1,4 @@
 <div>
-  <app-header title="Firebase AI Logic Hybrid & On-device Inference" />
   <div>
     @let url = catURL();
     @if (url) {
@@ -85,6 +84,9 @@
       }
     </div>
   </div>
-  <router-outlet />
+  <app-header title="Firebase AI Logic Hybrid & On-device Inference" />
+  <main class="pt-16">
+    <router-outlet />
+  </main>
   <app-footer />
 </div>

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImageAnalysis } from './image-analysis';
+import ImageAnalysis from './image-analysis';
 
 describe('ImageAnalysis', () => {
   let component: ImageAnalysis;

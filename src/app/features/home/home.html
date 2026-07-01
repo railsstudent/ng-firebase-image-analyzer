@@ -1,1 +1,49 @@
-<p>home works!</p>
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center overflow-hidden hero-gradient logic-grid">
+  <div class="max-w-container-max mx-auto px-lg grid grid-cols-1 lg:grid-cols-12 gap-xxl items-center py-xxl">
+    <!-- Left side text content -->
+    <div class="lg:col-span-7 space-y-xl">
+      <div
+        class="inline-flex items-center gap-xs bg-primary-container/10 border border-primary-container/20 px-sm py-1 rounded-full"
+      >
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Now in Public Beta</span>
+      </div>
+
+      <h1 class="font-display-lg text-display-lg leading-tight">
+        Intelligent Inference.<br />
+        <span class="text-primary">Anywhere.</span>
+      </h1>
+
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+        Deploy hybrid AI logic across cloud and edge with Firebase. Real-time image analysis, on-device privacy, low
+        token costs, and cloud-scale power.
+      </p>
+
+      <div class="flex flex-wrap gap-md pt-md">
+        <button
+          class="bg-white text-primary px-xl py-md rounded-xl font-headline-md text-headline-md flex items-center gap-sm transition-all shadow-lg hover:bg-surface-container"
+          (click)="navigateTo('/image-analysis')"
+        >
+          Get Started
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right side modernized image/illustration -->
+    <div class="lg:col-span-5 relative">
+      <div class="relative z-10 animate-pulse transition-all duration-1000 hover:scale-[1.02]">
+        <img
+          src="/images/home.jpg"
+          alt="AI Image Analysis Illustration"
+          class="w-full h-auto rounded-xl shadow-lg border border-outline-variant/30"
+        />
+      </div>
+
+      <!-- Decorative Floating Elements -->
+      <div class="absolute -top-lg -right-lg w-32 h-32 bg-secondary-container/30 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-xl -left-xl w-48 h-48 bg-primary-container/20 rounded-full blur-3xl"></div>
+    </div>
+  </div>
+</section>
