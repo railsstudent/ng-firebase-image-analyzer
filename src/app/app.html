@@ -9,12 +9,27 @@
         <p>Analyzing.....</p>
       }
       Apply CSS Filter: {{ cssFilterFunctions() }}
-      <img
-        [src]="url"
-        style="width: 25%; height: auto"
-        alt="enhanced image viewer"
-        [style.filter]="cssFilterFunctions()"
-      />
+      @let wrapperStyle = containerCss();
+      @let imageStyle = imageCss();
+      @if (wrapperStyle && imageStyle) {
+        <div>
+          Position: {{ wrapperStyle.position }}, Aspect Ratio: {{ wrapperStyle.aspectRatio }}, Overflow:
+          {{ wrapperStyle.overflow }}, Width: {{ wrapperStyle.width }}
+        </div>
+        <div>
+          Left: {{ imageStyle.left }}, Top: {{ imageStyle.top }}, Width: {{ imageStyle.width }}, Position:
+          {{ imageStyle.position }}, Max Width: {{ imageStyle.maxWidth }}, Max Height: {{ imageStyle.maxHeight }}
+        </div>
+        <div [style]="wrapperStyle">
+          <img
+            style="display: block"
+            [src]="url"
+            [style.filter]="cssFilterFunctions()"
+            alt="Cropped subject"
+            [style]="imageStyle"
+          />
+        </div>
+      }
     }
     <div>
       @let result = finalAnalysis();

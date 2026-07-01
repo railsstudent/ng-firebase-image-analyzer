@@ -1,15 +1,16 @@
-import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis.service';
+import { ImageAnalysis } from '@/features/image-analysis/services/image-analysis';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
-import { CssFilter } from '@/features/image-enhancer/services/css-filter';
-import { FooterComponent } from '@/shared/ui/layout/footer/footer';
-import { HeaderComponent } from '@/shared/ui/layout/header/header';
+import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { CropImageStyles } from '@/features/image-enhancer/types/crop-image.type';
+import { Footer } from '@/shared/ui/layout/footer/footer';
+import { Header } from '@/shared/ui/layout/header/header';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -36,9 +37,12 @@ export class App {
   duration = signal(0);
   cssFilterFunctions = signal('');
   isAnalysisInProgress = signal(false);
+  cropCss = signal<CropImageStyles | undefined>(undefined);
+  containerCss = computed(() => this.cropCss()?.containerStyle);
+  imageCss = computed(() => this.cropCss()?.imageStyle);
 
-  imageAnalysisService = inject(ImageAnalysisService);
-  cssFilterService = inject(CssFilter);
+  imageAnalysisService = inject(ImageAnalysis);
+  cssFilterService = inject(ImageEffect);
 
   async testImageAnalysis(event: Event) {
     event.preventDefault();
@@ -46,6 +50,7 @@ export class App {
 
     this.finalAnalysis.set(undefined);
     this.cssFilterFunctions.set('');
+    this.cropCss.set(undefined);
     this.duration.set(0);
     const catBlob = this.cat();
     if (catBlob) {
@@ -55,8 +60,11 @@ export class App {
         const response = await this.imageAnalysisService.analyzeImage(catBlob);
         this.finalAnalysis.set(response);
 
-        const cssFilter = this.cssFilterService.getFunctions(response.analysis.colorAdjustment);
+        const cssFilter = this.cssFilterService.getCssFilter(response.analysis.colorAdjustment);
         this.cssFilterFunctions.set(cssFilter);
+
+        const cropInfo = this.cssFilterService.cropImage(response.analysis.crop);
+        this.cropCss.set(cropInfo);
       } finally {
         this.isAnalysisInProgress.set(false);
         this.duration.set(Date.now() - start);

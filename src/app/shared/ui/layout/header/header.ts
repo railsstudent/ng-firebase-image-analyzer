@@ -10,6 +10,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   styleUrl: './header.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent {
+export class Header {
   title = input('Home');
 }

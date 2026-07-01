@@ -2,6 +2,7 @@ import { Schema } from 'firebase/ai';
 import { ColorAdjustmentSchema } from './color-adjustment.schema';
 import { RecomendationSchema } from './recommendation.schema';
 import { TagSchema } from './tag.schema';
+import { CropSchema } from './crop.schema';
 
 export const ImageAnalysisSchema = Schema.object({
   properties: {
@@ -23,9 +24,10 @@ export const ImageAnalysisSchema = Schema.object({
       description: 'Recommendations to make the image more interesting or appealing.',
       minItems: 1,
     }),
+    crop: CropSchema,
     colorAdjustment: ColorAdjustmentSchema,
   },
-  optionalProperties: ['colorAdjustment'],
+  optionalProperties: ['colorAdjustment', 'crop'],
   description:
     'Structured output containing alternative text, tags, recommendations, and styling adjustments for the image.',
 });

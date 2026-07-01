@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-
-import { CssFilter } from './css-styling';
+import { ImageEffect } from './image-effect';
 
 describe('CssStyling', () => {
-  let service: CssFilter;
+  let service: ImageEffect;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CssFilter);
+    service = TestBed.inject(ImageEffect);
   });
 
   it('should be created', () => {

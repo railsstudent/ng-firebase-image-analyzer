@@ -8,10 +8,12 @@ import {
 } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service } from '@angular/core';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from '../prompts/image-analysis.prompt';
+import { SanitizeAdjustment } from './sanitize-adjustment';
 
 @Service()
-export class ImageAnalysisService {
+export class ImageAnalysis {
   #aiService = inject(AiService);
+  #sanitizeAdjustment = inject(SanitizeAdjustment);
 
   /**
    * Analyzes an image and returns alternative texts, tags, recommendations, and optional styling recommendations.
@@ -46,6 +48,12 @@ export class ImageAnalysisService {
 
     try {
       const analysis = JSON.parse(jsonText) as ImageAnalysisResponse;
+      if (analysis.colorAdjustment) {
+        analysis.colorAdjustment = this.#sanitizeAdjustment.sanitizeColorAdjustments(analysis.colorAdjustment);
+      }
+      if (analysis.crop) {
+        analysis.crop = this.#sanitizeAdjustment.sanitizeCrop(analysis.crop);
+      }
       const usageGroup = this.#aiService.processUsage(response);
       return {
         analysis,
