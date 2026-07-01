@@ -1,10 +1,11 @@
 import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis.service';
+import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
+import { CssFilter } from '@/features/image-enhancer/services/css-filter';
+import { FooterComponent } from '@/shared/ui/layout/footer/footer';
+import { HeaderComponent } from '@/shared/ui/layout/header/header';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ImageAnalysisWithMetadata } from './features/image-analysis/types/image-analysis-metadata.type';
-import { HeaderComponent } from '@/shared/ui/layout/header/header';
-import { FooterComponent } from '@/shared/ui/layout/footer/footer';
 
 @Component({
   selector: 'app-root',
@@ -33,19 +34,33 @@ export class App {
 
   finalAnalysis = signal<ImageAnalysisWithMetadata | undefined>(undefined);
   duration = signal(0);
+  cssFilterFunctions = signal('');
+  isAnalysisInProgress = signal(false);
 
   imageAnalysisService = inject(ImageAnalysisService);
+  cssFilterService = inject(CssFilter);
 
   async testImageAnalysis(event: Event) {
     event.preventDefault();
-    this.finalAnalysis.set(undefined);
-    const catBlob = this.cat();
-    this.duration.set(0);
     const start = Date.now();
+
+    this.finalAnalysis.set(undefined);
+    this.cssFilterFunctions.set('');
+    this.duration.set(0);
+    const catBlob = this.cat();
     if (catBlob) {
-      const response = await this.imageAnalysisService.analyzeImage(catBlob);
-      this.finalAnalysis.set(response);
-      this.duration.set(Date.now() - start);
+      try {
+        this.isAnalysisInProgress.set(true);
+
+        const response = await this.imageAnalysisService.analyzeImage(catBlob);
+        this.finalAnalysis.set(response);
+
+        const cssFilter = this.cssFilterService.getFunctions(response.analysis.colorAdjustment);
+        this.cssFilterFunctions.set(cssFilter);
+      } finally {
+        this.isAnalysisInProgress.set(false);
+        this.duration.set(Date.now() - start);
+      }
     } else {
       console.log('no blob to analyze');
     }

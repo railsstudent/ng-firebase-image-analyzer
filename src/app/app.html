@@ -5,8 +5,16 @@
     @if (url) {
       <img [src]="url" style="width: 25%; height: auto" alt="image viewer" />
       <button class="bg-blue-600" (click)="testImageAnalysis($event)">Analyse this image</button>
-
-      <img [src]="url" style="width: 25%; height: auto" alt="enhanced image viewer" />
+      @if (isAnalysisInProgress()) {
+        <p>Analyzing.....</p>
+      }
+      Apply CSS Filter: {{ cssFilterFunctions() }}
+      <img
+        [src]="url"
+        style="width: 25%; height: auto"
+        alt="enhanced image viewer"
+        [style.filter]="cssFilterFunctions()"
+      />
     }
     <div>
       @let result = finalAnalysis();
@@ -59,12 +67,6 @@
         @for (t of analysis.recommendations; track t; let i = $index) {
           <p>Recommendation {{ i + 1 }}: {{ t.recommendation }}, Reason: {{ t.sentence }}</p>
         }
-        <ol>
-          <li>Brightness: {{ analysis.colorAdjustment?.brightness }}</li>
-          <li>Contrast: {{ analysis.colorAdjustment?.contrast }}</li>
-          <li>Saturat: {{ analysis.colorAdjustment?.saturation }}</li>
-          <li>Warmth: {{ analysis.colorAdjustment?.warmth }}</li>
-        </ol>
       }
     </div>
   </div>
