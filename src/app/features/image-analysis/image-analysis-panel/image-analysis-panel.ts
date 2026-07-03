@@ -52,6 +52,36 @@ export class ImageAnalysisPanel {
     return imageDetail?.tokenCount ?? 0;
   });
 
+  // Parse details for output modality token split
+  outputTextTokens = computed(() => {
+    const textDetail = this.data()?.tokenModalityBreakdown?.outputTokensDetails?.find(
+      (d) => d.modality.toLowerCase() === 'text',
+    );
+    return textDetail?.tokenCount ?? 0;
+  });
+
+  outputImageTokens = computed(() => {
+    const imageDetail = this.data()?.tokenModalityBreakdown?.outputTokensDetails?.find(
+      (d) => d.modality.toLowerCase() === 'image',
+    );
+    return imageDetail?.tokenCount ?? 0;
+  });
+
+  // Parse details for output modality token split
+  cachedTextTokens = computed(() => {
+    const textDetail = this.data()?.tokenModalityBreakdown?.cacheTokensDetails?.find(
+      (d) => d.modality.toLowerCase() === 'text',
+    );
+    return textDetail?.tokenCount ?? 0;
+  });
+
+  cachedImageTokens = computed(() => {
+    const imageDetail = this.data()?.tokenModalityBreakdown?.cacheTokensDetails?.find(
+      (d) => d.modality.toLowerCase() === 'image',
+    );
+    return imageDetail?.tokenCount ?? 0;
+  });
+
   // Safe formatting helpers for crop settings
   cropImage = computed(() => {
     const crop = this.data()?.analysis?.crop;

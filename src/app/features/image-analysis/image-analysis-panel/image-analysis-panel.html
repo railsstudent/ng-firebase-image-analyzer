@@ -139,6 +139,54 @@
                     Image: {{ promptImageTokens() }}
                   </span>
                 </div>
+
+                <p class="token-details-label">Candidate Split (Output)</p>
+                <div class="modality-progress-bar">
+                  <div
+                    class="modality-text"
+                    [style.width.%]="candidatesTokens() > 0 ? (outputTextTokens() / candidatesTokens()) * 100 : 0"
+                    title="Text Metadata"
+                  ></div>
+                  <div
+                    class="modality-image"
+                    [style.width.%]="candidatesTokens() > 0 ? (outputImageTokens() / candidatesTokens()) * 100 : 0"
+                    title="Image Pixels"
+                  ></div>
+                </div>
+                <div class="modality-legend">
+                  <span class="modality-legend-item">
+                    <div class="legend-dot bg-input"></div>
+                    Text: {{ outputTextTokens() }}
+                  </span>
+                  <span class="modality-legend-item">
+                    <div class="legend-dot bg-output"></div>
+                    Image: {{ outputImageTokens() }}
+                  </span>
+                </div>
+
+                <p class="token-details-label">Saving (Cached)</p>
+                <div class="modality-progress-bar">
+                  <div
+                    class="modality-text"
+                    [style.width.%]="cachedTokens() > 0 ? (cachedTextTokens() / cachedTokens()) * 100 : 0"
+                    title="Text Metadata"
+                  ></div>
+                  <div
+                    class="modality-image"
+                    [style.width.%]="cachedTokens() > 0 ? (cachedImageTokens() / cachedTokens()) * 100 : 0"
+                    title="Image Pixels"
+                  ></div>
+                </div>
+                <div class="modality-legend">
+                  <span class="modality-legend-item">
+                    <div class="legend-dot bg-input"></div>
+                    Text: {{ cachedTextTokens() }}
+                  </span>
+                  <span class="modality-legend-item">
+                    <div class="legend-dot bg-output"></div>
+                    Image: {{ cachedImageTokens() }}
+                  </span>
+                </div>
               </div>
 
               <div class="cached-savings-card">
