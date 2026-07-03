@@ -1,0 +1,90 @@
+@reference "../../../styles.css";
+
+/* Component styles for app-image-uploader */
+:host {
+  display: block;
+}
+
+.uploader-container {
+  @apply relative;
+}
+
+.error-banner {
+  @apply absolute -top-12 left-0 right-0 text-center z-10;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.error-banner-text {
+  @apply bg-[var(--color-error-container)] text-[var(--color-on-error-container)] text-sm px-4 py-2 rounded-full border border-[var(--color-error)]/20 inline-block shadow-md;
+}
+
+.uploader-panel {
+  @apply relative h-auto min-h-[300px] border-2 border-dashed rounded-xl overflow-hidden shadow-sm transition-all duration-300 flex flex-col items-center justify-center cursor-pointer border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)];
+}
+
+.uploader-panel.is-dragging {
+  @apply border-[var(--color-primary)] bg-[var(--color-surface-container)];
+}
+
+.uploader-panel.has-image {
+  @apply border-[var(--color-primary)];
+}
+
+.preview-area {
+  @apply relative w-full h-full min-h-[300px] flex items-center justify-center bg-[var(--color-surface-dim)]/20;
+}
+
+.preview-image {
+  @apply w-full h-auto max-h-[450px] object-contain transition-all duration-300;
+}
+
+.remove-btn {
+  @apply absolute top-4 right-4 bg-[var(--color-inverse-surface)]/80 text-[var(--color-inverse-on-surface)] p-2.5 rounded-lg opacity-0 transition-opacity duration-200 flex items-center justify-center shadow-lg;
+}
+
+.preview-area:hover .remove-btn {
+  @apply opacity-100;
+}
+
+.remove-btn:hover {
+  @apply bg-[var(--color-error)] text-white;
+}
+
+.empty-state {
+  @apply flex flex-col items-center justify-center p-8 text-center space-y-4;
+}
+
+.upload-icon-wrapper {
+  @apply p-4 bg-[var(--color-surface-container-high)] rounded-full text-[var(--color-primary)];
+}
+
+.empty-state-text {
+  @apply space-y-1;
+}
+
+.empty-state-title {
+  @apply font-semibold text-lg text-[var(--color-on-surface)];
+}
+
+.empty-state-subtitle {
+  @apply text-sm text-[var(--color-on-surface-variant)];
+}
+
+.browse-link {
+  @apply text-[var(--color-primary)] font-semibold hover:underline;
+}
+
+.empty-state-footer {
+  @apply text-xs text-[var(--color-outline)];
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

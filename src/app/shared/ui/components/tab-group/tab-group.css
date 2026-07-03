@@ -1,0 +1,26 @@
+@reference "../../../../../styles.css";
+
+/* Component styles for app-tab-group */
+.tabs-header-list {
+  @apply flex border-b border-[var(--color-outline-variant)]/30 mb-8 overflow-x-auto;
+}
+
+.tab-header-btn {
+  @apply whitespace-nowrap px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 cursor-pointer border-transparent text-[var(--color-on-surface-variant)];
+}
+
+.tab-header-btn:hover {
+  @apply text-[var(--color-primary)];
+}
+
+.tab-header-btn.active {
+  @apply border-[var(--color-primary)] text-[var(--color-primary)];
+}
+
+.tabs-header-list::-webkit-scrollbar {
+  display: none;
+}
+.tabs-header-list {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

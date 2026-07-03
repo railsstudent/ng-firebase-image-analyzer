@@ -1,0 +1,26 @@
+@reference "../../../../styles.css";
+
+/* Component styles for app-tag-list */
+:host {
+  display: block;
+}
+
+.tag-list-wrapper {
+  @apply space-y-4;
+}
+
+.tag-list-title {
+  @apply text-xl font-bold tracking-tight text-[var(--color-on-surface)] flex items-center gap-2;
+}
+
+.tag-list-icon {
+  @apply text-[var(--color-primary)] text-2xl;
+}
+
+.tag-list-grid {
+  @apply flex flex-wrap gap-2.5;
+}
+
+.tag-list-empty {
+  @apply text-sm text-[var(--color-on-surface-variant)] italic;
+}

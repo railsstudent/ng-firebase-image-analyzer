@@ -32,19 +32,6 @@ export class ImageEffect {
     return styles;
   }
 
-  getClipPath(crop?: Crop) {
-    if (!crop) {
-      return '';
-    }
-
-    const xMinPercent = Math.round((crop.xMin / 1) * 100);
-    const yMinPercent = Math.round((crop.yMin / 1) * 100);
-    const xMaxPercent = Math.round(100 - (crop.xMax / 1) * 100);
-    const yMaxPercent = Math.round(100 - (crop.yMax / 1) * 100);
-
-    return `inset(${yMinPercent}% ${xMaxPercent}% ${yMaxPercent}% ${xMinPercent}%)`;
-  }
-
   cropImage(crop?: Crop, width = 25): CropImageStyles {
     // 1. Define the safe default crop (representing the full 100% image)
     const safeCrop = crop || { xMin: 0.0, yMin: 0.0, xMax: 1.0, yMax: 1.0 };

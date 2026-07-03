@@ -1,0 +1,33 @@
+@reference "../../../styles.css";
+
+.workspace-container {
+  @apply space-y-8 max-w-[var(--spacing-container-max)] mx-auto px-4 py-8;
+}
+
+.loading-container {
+  @apply flex flex-col items-center justify-center py-12 space-y-4;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-primary)];
+}
+
+.loading-text {
+  @apply text-sm font-mono text-[var(--color-outline)];
+}
+
+.tag-cloud-section {
+  @apply space-y-3;
+}
+
+.section-subtitle {
+  @apply text-xs font-bold uppercase tracking-widest text-[var(--color-outline)];
+}
+
+.action-container {
+  @apply flex justify-center py-4;
+}
+
+.primary-action-btn {
+  @apply flex items-center gap-2 bg-gradient-to-r from-[var(--color-primary)] to-indigo-600 hover:to-indigo-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all duration-300;
+}

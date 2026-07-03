@@ -1,0 +1,14 @@
+<div class="tag-list-wrapper">
+  <h3 class="tag-list-title">
+    <span class="material-symbols-outlined tag-list-icon">sell</span>
+    Detected Visual Tags
+  </h3>
+
+  <div class="tag-list-grid">
+    @for (tag of tags(); track tag.label) {
+      <app-tag [label]="tag.label" [tooltip]="tag.tooltip"></app-tag>
+    } @empty {
+      <p class="tag-list-empty">No tags detected yet. Run image analysis to extract visual labels.</p>
+    }
+  </div>
+</div>

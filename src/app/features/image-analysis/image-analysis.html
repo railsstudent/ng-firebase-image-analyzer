@@ -1,1 +1,38 @@
-<p>image-analysis works!</p>
+<div class="workspace-container">
+  <!-- Upload State Area -->
+  <app-image-uploader
+    [(imageUrl)]="imageUrl"
+    (fileSelected)="onFileSelected($event)"
+    (imageRemoved)="onImageRemoved()"
+  ></app-image-uploader>
+
+  <!-- Explicit Analyze Action Button -->
+  @if (imageUrl() && !analysisData() && !isLoading()) {
+    <div class="action-container">
+      <button (click)="triggerAnalysis()" class="primary-action-btn">
+        <span class="material-symbols-outlined">psychology</span>
+        Analyze Image
+      </button>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Processing multimodal neural tokens...</p>
+    </div>
+  } @else {
+    @if (tags().length > 0) {
+      <!-- Semantic Tag Cloud -->
+      <div class="tag-cloud-section">
+        <h4 class="section-subtitle">Detected Classifications</h4>
+        <app-tag-list [tags]="tags()"></app-tag-list>
+      </div>
+    }
+
+    @if (analysisData()) {
+      <!-- Advanced Analysis Results Panel -->
+      <app-image-analysis-panel [data]="analysisData()" [imageUrl]="imageUrl()"></app-image-analysis-panel>
+    }
+  }
+</div>

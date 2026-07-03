@@ -1,0 +1,245 @@
+@if (data(); as analysis) {
+  <div class="analysis-panel-container">
+    <app-tab-group>
+      <!-- 3.1: Thought Summary -->
+      <app-tab id="thought" label="Thought Summary">
+        <div class="analysis-section-card space-y-4">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined section-title-icon">psychology</span>
+            AI Reasoning Overview
+          </h3>
+
+          <div class="space-y-3">
+            <p class="reasoning-text">
+              {{ analysis.thoughtSummary || 'No technical logs provided.' }}
+            </p>
+
+            <p>Alternative Texts</p>
+            <ul class="recommendations-list">
+              @for (alt of analysis.analysis.alternativeTexts; track alt; let i = $index) {
+                <li class="recommendation-item">
+                  <p class="recommendation-reason">{{ i + 1 }}. {{ alt }}</p>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </app-tab>
+
+      <!-- 3.2: Recommendations -->
+      <app-tab id="detailed" label="Recommendations">
+        <div class="analysis-section-card space-y-4">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined section-title-icon">auto_awesome</span>
+            Visual & Composition Insights
+          </h3>
+
+          <ul class="recommendations-list">
+            @for (rec of analysis.analysis.recommendations; track rec.recommendation) {
+              <li class="recommendation-item">
+                <p class="recommendation-title">
+                  <span class="recommendation-indicator"></span>
+                  {{ rec.recommendation }}
+                </p>
+                <p class="recommendation-reason">
+                  {{ rec.sentence }}
+                </p>
+              </li>
+            }
+          </ul>
+        </div>
+      </app-tab>
+
+      <!-- 3.3: Token Usage -->
+      <app-tab id="tokens" label="Token Usage">
+        <div class="analysis-section-card space-y-6">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined section-title-icon">bar_chart</span>
+            Inference Token Analytics
+          </h3>
+
+          <div class="space-y-6">
+            <!-- Composite stacked progress bar -->
+            <div>
+              <div class="token-header">
+                <span class="token-header-label">Token Budget Allocation</span>
+                <span class="token-header-total">{{ totalTokens() }} Tokens</span>
+              </div>
+
+              <!-- Segmented horizontal bar -->
+              <div class="segmented-progress-bar">
+                <div
+                  class="segment-input"
+                  [style.width.%]="totalTokens() > 0 ? (promptTokens() / totalTokens()) * 100 : 0"
+                  title="Input Tokens"
+                ></div>
+                <div
+                  class="segment-output"
+                  [style.width.%]="totalTokens() > 0 ? (candidatesTokens() / totalTokens()) * 100 : 0"
+                  title="Output Tokens"
+                ></div>
+                <div
+                  class="segment-cached"
+                  [style.width.%]="totalTokens() > 0 ? (cachedTokens() / totalTokens()) * 100 : 0"
+                  title="Cached Tokens"
+                ></div>
+                <div
+                  class="segment-thought"
+                  [style.width.%]="totalTokens() > 0 ? (thoughtTokens() / totalTokens()) * 100 : 0"
+                  title="Thought Tokens"
+                ></div>
+              </div>
+
+              <!-- Legend -->
+              <div class="token-legend-grid">
+                <div class="legend-item">
+                  <div class="legend-dot bg-input"></div>
+                  <span class="legend-text">Input: {{ promptTokens() }}</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot bg-output"></div>
+                  <span class="legend-text">Output: {{ candidatesTokens() }}</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot bg-cached"></div>
+                  <span class="legend-text">Cached: {{ cachedTokens() }}</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot bg-thought"></div>
+                  <span class="legend-text">Thought: {{ thoughtTokens() }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modality Details -->
+            <div class="token-details-grid">
+              <div class="space-y-3">
+                <p class="token-details-label">Prompt Split (Input)</p>
+                <div class="modality-progress-bar">
+                  <div
+                    class="modality-text"
+                    [style.width.%]="promptTokens() > 0 ? (promptTextTokens() / promptTokens()) * 100 : 0"
+                    title="Text Metadata"
+                  ></div>
+                  <div
+                    class="modality-image"
+                    [style.width.%]="promptTokens() > 0 ? (promptImageTokens() / promptTokens()) * 100 : 0"
+                    title="Image Pixels"
+                  ></div>
+                </div>
+                <div class="modality-legend">
+                  <span class="modality-legend-item">
+                    <div class="legend-dot bg-input"></div>
+                    Text: {{ promptTextTokens() }}
+                  </span>
+                  <span class="modality-legend-item">
+                    <div class="legend-dot bg-output"></div>
+                    Image: {{ promptImageTokens() }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="cached-savings-card">
+                <div class="cached-savings-header">
+                  <span class="cached-savings-title">Cached Savings</span>
+                  <span class="cached-savings-value">-{{ cachedTokens() }} Tokens</span>
+                </div>
+                <p class="cached-savings-description">
+                  Re-using context vectors significantly lowers latency and active token cost.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </app-tab>
+
+      <!-- 3.4: Image Improvement -->
+      <app-tab id="improvement" label="Image Improvement">
+        <div class="analysis-section-card space-y-4">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined section-title-icon">photo_filter</span>
+            AI-Enhanced Image Generation
+          </h3>
+
+          <div class="improvement-grid">
+            <!-- Specs sidebar -->
+            <div class="specs-sidebar">
+              <div class="specs-box">
+                <p class="specs-title">Crop Metadata</p>
+                <ul class="specs-list">
+                  <li class="specs-item"><span class="specs-item-name">Crop Bounds:</span> {{ cropPosition() }}</li>
+                  <li class="specs-item"><span class="specs-item-name">Aspect Ratio:</span> {{ aspectRatio() }}</li>
+                </ul>
+              </div>
+
+              <div class="specs-box">
+                <p class="specs-title">Filters Applied</p>
+                <ul class="specs-list">
+                  <li class="specs-item">
+                    <span class="specs-item-name">Brightness:</span>
+                    {{ analysis.analysis.colorAdjustment?.brightness ?? 'N/A' }}
+                  </li>
+                  <li class="specs-item">
+                    <span class="specs-item-name">Saturation:</span>
+                    {{ analysis.analysis.colorAdjustment?.saturation ?? 'N/A' }}
+                  </li>
+                  <li class="specs-item">
+                    <span class="specs-item-name">Contrast:</span>
+                    {{ analysis.analysis.colorAdjustment?.contrast ?? 'N/A' }}
+                  </li>
+                  <li class="specs-item">
+                    <span class="specs-item-name">Warmth:</span>
+                    {{ analysis.analysis.colorAdjustment?.warmth ?? 'N/A' }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Enhanced Canvas -->
+            <div class="canvas-wrapper">
+              <div class="canvas-container">
+                @if (imageUrl()) {
+                  <!-- <img
+                    [alt]="'Enhanced image version'"
+                    class="enhanced-image"
+                    [src]="imageUrl()"
+                    [style.filter]="filterStyle()"
+                  /> -->
+                  @let wrapperStyle = containerCss();
+                  @let imageStyle = imageCss();
+                  @if (wrapperStyle && imageStyle) {
+                    <div [style]="wrapperStyle">
+                      <img
+                        style="display: block"
+                        [src]="imageUrl()"
+                        [style.filter]="filterStyle()"
+                        alt="Cropped subject"
+                        [style]="imageStyle"
+                      />
+                    </div>
+
+                    <!-- Download button floating hover -->
+                    <button
+                      type="button"
+                      (click)="downloadEnhancedImage(imageUrl() || '')"
+                      class="download-enhanced-btn"
+                    >
+                      <span class="material-symbols-outlined text-lg">download</span>
+                      Download PNG
+                    </button>
+                  } @else {
+                    <div class="no-image-placeholder">No image improvement available</div>
+                  }
+                } @else {
+                  <div class="no-image-placeholder">No image selected for preview</div>
+                }
+
+                <div class="canvas-badge">AI ENHANCED</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </app-tab>
+    </app-tab-group>
+  </div>
+}

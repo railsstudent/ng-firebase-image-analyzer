@@ -1,0 +1,47 @@
+<div class="uploader-container">
+  <!-- Error Message Banner -->
+  @if (errorMessage()) {
+    <div class="error-banner">
+      <span class="error-banner-text">
+        {{ errorMessage() }}
+      </span>
+    </div>
+  }
+
+  <!-- Uploader Panel -->
+  <div
+    class="uploader-panel"
+    [class.is-dragging]="isDragging()"
+    [class.has-image]="imageUrl()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="fileInput.click()"
+  >
+    <input #fileInput type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" />
+
+    @if (imageUrl()) {
+      <!-- Image Preview Area -->
+      <div class="preview-area">
+        <img [src]="imageUrl()" class="preview-image" alt="Selected preview" />
+
+        <!-- Hover Remove Action -->
+        <button type="button" class="remove-btn" (click)="removeImage($event)" title="Remove Image">
+          <span class="material-symbols-outlined text-xl">delete</span>
+        </button>
+      </div>
+    } @else {
+      <!-- Empty Upload State -->
+      <div class="empty-state">
+        <div class="upload-icon-wrapper">
+          <span class="material-symbols-outlined text-4xl">cloud_upload</span>
+        </div>
+        <div class="empty-state-text">
+          <p class="empty-state-title">Drag & drop your image here</p>
+          <p class="empty-state-subtitle">or <span class="browse-link">browse files</span></p>
+        </div>
+        <p class="empty-state-footer">Supports JPG, PNG, WebP up to 20MB</p>
+      </div>
+    }
+  </div>
+</div>
