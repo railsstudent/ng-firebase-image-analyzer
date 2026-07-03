@@ -4,6 +4,7 @@ import { Tab } from '../../../shared/ui/components/tab/tab';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { SanitizeAdjustment } from '../services/sanitize-adjustment';
 import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { InferenceSource } from 'firebase/ai';
 
 @Component({
   selector: 'app-image-analysis-panel',
@@ -16,6 +17,8 @@ import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 export class ImageAnalysisPanel {
   data = input<ImageAnalysisWithMetadata | null>(null);
   imageUrl = input<string | null>(null);
+  performance = input(0);
+  source = input<InferenceSource | undefined>(undefined);
 
   sanitizeAdjustment = inject(SanitizeAdjustment);
   imageEffect = inject(ImageEffect);
@@ -73,6 +76,17 @@ export class ImageAnalysisPanel {
     const safeCrop = this.sanitizeAdjustment.sanitizeCrop(crop);
     if (safeCrop) {
       return `xMin: ${safeCrop.xMin}, xMax: ${safeCrop.xMax}, yMin: ${safeCrop.yMin}, yMax: ${safeCrop.yMax}`;
+    }
+    return 'N/A';
+  });
+
+  sourceExplained = computed(() => {
+    if (this.source()) {
+      if (this.source() == 'on_device') {
+        return 'Gemini Nano';
+      } else if (this.source() === 'in_cloud') {
+        return 'Cloud AI';
+      }
     }
     return 'N/A';
   });

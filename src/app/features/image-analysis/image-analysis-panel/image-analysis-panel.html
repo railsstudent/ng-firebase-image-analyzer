@@ -10,6 +10,8 @@
           </h3>
 
           <div class="space-y-3">
+            <p class="reasoning-text">Performance: {{ performance() }} ms</p>
+            <p class="reasoning-text">Source: {{ sourceExplained() }}</p>
             <p class="reasoning-text">
               {{ analysis.thoughtSummary || 'No technical logs provided.' }}
             </p>

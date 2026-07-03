@@ -32,7 +32,12 @@
 
     @if (analysisData()) {
       <!-- Advanced Analysis Results Panel -->
-      <app-image-analysis-panel [data]="analysisData()" [imageUrl]="imageUrl()"></app-image-analysis-panel>
+      <app-image-analysis-panel
+        [data]="analysisData()"
+        [imageUrl]="imageUrl()"
+        [source]="source()"
+        [performance]="performance()"
+      ></app-image-analysis-panel>
     }
   }
 </div>

@@ -5,6 +5,7 @@ import { TagList, ImageTag } from './tag-list/tag-list';
 import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
 import { ImageAnalysis as ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
+import { InferenceSource } from 'firebase/ai';
 
 @Component({
   selector: 'app-image-analysis',
@@ -24,6 +25,8 @@ export default class ImageAnalysis {
   tags = signal<ImageTag[]>([]);
   analysisData = signal<ImageAnalysisWithMetadata | null>(null);
   isLoading = signal<boolean>(false);
+  performance = signal(0);
+  source = signal<InferenceSource | undefined>(undefined);
 
   onFileSelected(file: File) {
     this.selectedFile.set(file);
@@ -33,9 +36,13 @@ export default class ImageAnalysis {
 
   async triggerAnalysis() {
     const file = this.selectedFile();
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
+    const start = Date.now();
     try {
+      this.performance.set(0);
       this.isLoading.set(true);
 
       // Call the service to perform live AI analysis
@@ -49,12 +56,15 @@ export default class ImageAnalysis {
         })),
       );
 
+      this.source.set(response.source);
+
       // Store response directly to be bound in the panel
       this.analysisData.set(response);
     } catch (error) {
       console.error('Failed to analyze image with API', error);
     } finally {
       this.isLoading.set(false);
+      this.performance.set(Date.now() - start);
     }
   }
 
