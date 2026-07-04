@@ -1,7 +1,7 @@
 @reference "../../../../../styles.css";
 
 .footer-bar {
-  @apply bg-primary text-white w-full py-xxl mt-auto;
+  @apply bg-primary text-white w-full py-xl mt-auto;
 }
 
 .footer-container {
@@ -17,5 +17,5 @@
 }
 
 .footer-copyright {
-  @apply text-sm text-white/80 text-center md:text-left;
+  @apply text-lg text-white/80 text-center md:text-left;
 }

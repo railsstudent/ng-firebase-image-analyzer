@@ -21,7 +21,7 @@
 }
 
 .nav-links {
-  @apply hidden md:flex items-center gap-xl text-sm font-medium;
+  @apply hidden md:flex items-center gap-xl text-lg font-medium;
 }
 
 .nav-link {
