@@ -1,10 +1,11 @@
 import { Component, model, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { readFileAsDataURL } from '@/core/utils/base64.util';
 
-const MAX_FILE_SIZE_MB = 20 * 1024 * 1024; // Default max file size in MB
+const ONE_MB = 1024 * 1024;
+const MAX_FILE_SIZE_MB = 20 * ONE_MB; // Default max file size in MB
 
 @Component({
   selector: 'app-image-uploader',
-  standalone: true,
   templateUrl: './image-uploader.html',
   styleUrl: './image-uploader.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,23 +51,25 @@ export class ImageUploader {
     }
   }
 
-  handleFile(file: File) {
+  async handleFile(file: File) {
     this.errorMessage.set(null);
 
     if (file.size > this.maxSize()) {
-      const sizeInMb = (this.maxSize() / (1024 * 1024)).toFixed(0);
+      const sizeInMb = (this.maxSize() / ONE_MB).toFixed(0);
       this.errorMessage.set(`File too large (Max ${sizeInMb}MB)`);
       return;
     }
 
     this.fileSelected.emit(file);
 
-    // Read file for preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imageUrl.set(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+    // Read file for preview using the unified helper
+    try {
+      const dataUrl = await readFileAsDataURL(file);
+      this.imageUrl.set(dataUrl);
+    } catch (error) {
+      console.error('Failed to read file as data URL', error);
+      this.errorMessage.set('Failed to read image preview.');
+    }
   }
 
   removeImage(event: Event) {

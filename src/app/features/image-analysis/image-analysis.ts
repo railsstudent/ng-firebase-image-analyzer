@@ -1,8 +1,7 @@
 import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { ImageUploader } from '@/shared/image-uploader/image-uploader';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
 import { ImageTag, TagList } from './tag-list/tag-list';
@@ -10,7 +9,7 @@ import { ImageTag, TagList } from './tag-list/tag-list';
 @Component({
   selector: 'app-image-analysis',
   standalone: true,
-  imports: [CommonModule, ImageUploader, TagList, ImageAnalysisPanel],
+  imports: [ImageUploader, TagList, ImageAnalysisPanel],
   templateUrl: './image-analysis.html',
   styleUrl: './image-analysis.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,15 +21,30 @@ export default class ImageAnalysis {
   // Local reactive states
   imageUrl = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
-  tags = signal<ImageTag[]>([]);
   analysisData = signal<ImageAnalysisWithMetadata | null>(null);
   isLoading = signal<boolean>(false);
   performance = signal(0);
-  source = signal<InferenceSource | undefined>(undefined);
+
+  // Computed derived states
+  tags = computed<ImageTag[]>(() => {
+    const data = this.analysisData();
+    if (!data) {
+      return [];
+    }
+    return data.analysis.tags.map((t) => {
+      return {
+        label: t.name,
+        tooltip: t.sentence,
+      };
+    });
+  });
+
+  source = computed<InferenceSource | undefined>(() => {
+    return this.analysisData()?.source;
+  });
 
   onFileSelected(file: File) {
     this.selectedFile.set(file);
-    this.tags.set([]);
     this.analysisData.set(null);
   }
 
@@ -48,17 +62,7 @@ export default class ImageAnalysis {
       // Call the service to perform live AI analysis
       const response = await this.imageAnalysisService.analyzeImage(file);
 
-      // Map API tags to TagList model
-      this.tags.set(
-        response.analysis.tags.map((t) => ({
-          label: t.name,
-          tooltip: t.sentence,
-        })),
-      );
-
-      this.source.set(response.source);
-
-      // Store response directly to be bound in the panel
+      // Store response directly to be bound in the panel (tags and source derive instantly)
       this.analysisData.set(response);
     } catch (error) {
       console.error('Failed to analyze image with API', error);
@@ -70,7 +74,6 @@ export default class ImageAnalysis {
 
   onImageRemoved() {
     this.selectedFile.set(null);
-    this.tags.set([]);
     this.analysisData.set(null);
   }
 }
