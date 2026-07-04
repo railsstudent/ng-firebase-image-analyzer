@@ -1,11 +1,11 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ImageUploader } from '../../shared/image-uploader/image-uploader';
-import { TagList, ImageTag } from './tag-list/tag-list';
-import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
-import { ImageAnalysis as ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
+import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
+import { ImageUploader } from '@/shared/image-uploader/image-uploader';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
+import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
+import { ImageTag, TagList } from './tag-list/tag-list';
 
 @Component({
   selector: 'app-image-analysis',

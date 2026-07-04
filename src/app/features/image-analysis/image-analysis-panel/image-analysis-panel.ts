@@ -1,9 +1,9 @@
-import { Component, input, computed, ChangeDetectionStrategy, inject } from '@angular/core';
-import { TabGroup } from '../../../shared/ui/components/tab-group/tab-group';
-import { Tab } from '../../../shared/ui/components/tab/tab';
+import { SanitizeAdjustmentService } from '@/features/image-analysis/services/sanitize-adjustment';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
-import { SanitizeAdjustment } from '../services/sanitize-adjustment';
 import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { TabGroup } from '@/shared/ui/components/tab-group/tab-group';
+import { Tab } from '@/shared/ui/components/tab/tab';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 
 @Component({
@@ -20,7 +20,7 @@ export class ImageAnalysisPanel {
   performance = input(0);
   source = input<InferenceSource | undefined>(undefined);
 
-  sanitizeAdjustment = inject(SanitizeAdjustment);
+  sanitizeAdjustment = inject(SanitizeAdjustmentService);
   imageEffect = inject(ImageEffect);
 
   // Computes the CSS filter style string directly from the color adjustment response values

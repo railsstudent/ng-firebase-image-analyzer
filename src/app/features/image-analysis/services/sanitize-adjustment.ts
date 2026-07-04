@@ -4,7 +4,7 @@ import { Crop } from '@/features/image-analysis/types/crop.type';
 import { Service } from '@angular/core';
 
 @Service()
-export class SanitizeAdjustment {
+export class SanitizeAdjustmentService {
   /**
    * Analyzes an image and returns alternative texts, tags, recommendations, and optional styling recommendations.
    *

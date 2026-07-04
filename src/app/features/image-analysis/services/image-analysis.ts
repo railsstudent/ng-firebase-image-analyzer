@@ -8,12 +8,12 @@ import {
 } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service } from '@angular/core';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from '../prompts/image-analysis.prompt';
-import { SanitizeAdjustment } from './sanitize-adjustment';
+import { SanitizeAdjustmentService } from './sanitize-adjustment';
 
 @Service()
-export class ImageAnalysis {
+export class ImageAnalysisService {
   #aiService = inject(AiService);
-  #sanitizeAdjustment = inject(SanitizeAdjustment);
+  #sanitizeAdjustment = inject(SanitizeAdjustmentService);
 
   /**
    * Analyzes an image and returns alternative texts, tags, recommendations, and optional styling recommendations.
