@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NavService } from '@/core/services/nav.service';
+import { Component, inject } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
   styleUrl: './home.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class Home {
   private readonly nav = inject(NavService);

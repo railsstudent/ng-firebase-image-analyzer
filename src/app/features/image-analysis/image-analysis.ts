@@ -1,18 +1,17 @@
 import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
-import { ImageUploader } from '@/shared/image-uploader/image-uploader';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ImageUploader } from '@/shared/ui/image-uploader/image-uploader';
+import { Component, computed, inject, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
-import { ImageTag, TagList } from './tag-list/tag-list';
+import { TagList } from './tag-list/tag-list';
+import { ImageTag } from './tag-list/types/image-tag.type';
 
 @Component({
   selector: 'app-image-analysis',
-  standalone: true,
   imports: [ImageUploader, TagList, ImageAnalysisPanel],
   templateUrl: './image-analysis.html',
   styleUrl: './image-analysis.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ImageAnalysis {
   // Inject the actual neural analysis service

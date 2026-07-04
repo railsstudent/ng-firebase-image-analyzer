@@ -1,7 +1,7 @@
 import { NavService } from '@/core/services/nav.service';
 import { Footer } from '@/shared/ui/layout/footer/footer';
 import { Header } from '@/shared/ui/layout/header/header';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -9,7 +9,6 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   protected readonly nav = inject(NavService);

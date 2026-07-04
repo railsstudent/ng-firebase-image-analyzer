@@ -3,16 +3,14 @@ import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image
 import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { TabGroup } from '@/shared/ui/components/tab-group/tab-group';
 import { Tab } from '@/shared/ui/components/tab/tab';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 
 @Component({
   selector: 'app-image-analysis-panel',
-  standalone: true,
   imports: [TabGroup, Tab],
   templateUrl: './image-analysis-panel.html',
   styleUrl: './image-analysis-panel.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageAnalysisPanel {
   data = input<ImageAnalysisWithMetadata | null>(null);

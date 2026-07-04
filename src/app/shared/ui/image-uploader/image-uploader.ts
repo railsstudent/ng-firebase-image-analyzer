@@ -1,5 +1,5 @@
-import { Component, model, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { readFileAsDataURL } from '@/core/utils/base64.util';
+import { Component, input, model, output, signal } from '@angular/core';
 
 const ONE_MB = 1024 * 1024;
 const MAX_FILE_SIZE_MB = 20 * ONE_MB; // Default max file size in MB
@@ -8,7 +8,6 @@ const MAX_FILE_SIZE_MB = 20 * ONE_MB; // Default max file size in MB
   selector: 'app-image-uploader',
   templateUrl: './image-uploader.html',
   styleUrl: './image-uploader.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageUploader {
   imageUrl = model<string | null>(null);

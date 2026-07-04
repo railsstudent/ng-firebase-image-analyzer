@@ -1,4 +1,4 @@
-@reference "../../../styles.css";
+@reference "../../../../styles.css";
 
 /* Component styles for app-image-uploader */
 :host {

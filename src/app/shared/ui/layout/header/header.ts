@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NavLink } from '@/core/types/route.types';
 import { NavService } from '@/core/services/nav.service';
+import { NavLink } from '@/core/types/route.types';
+import { Component, inject, input } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -29,7 +29,6 @@ import { NavService } from '@/core/services/nav.service';
     </nav>
   `,
   styleUrl: './header.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
   title = input('Home');

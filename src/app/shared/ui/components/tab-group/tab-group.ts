@@ -1,12 +1,10 @@
-import { Component, contentChildren, effect, signal, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, contentChildren, effect, output, signal } from '@angular/core';
 import { Tab } from '../tab/tab';
 
 @Component({
   selector: 'app-tab-group',
-  standalone: true,
   templateUrl: './tab-group.html',
   styleUrl: './tab-group.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabGroup {
   tabs = contentChildren(Tab);
