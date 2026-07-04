@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavService } from '@/core/services/nav.service';
 
 @Component({
   selector: 'app-home',
@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class Home {
-  router = inject(Router);
+  private readonly nav = inject(NavService);
 
-  navigateTo(path: string) {
-    this.router.navigate([path]);
+  navigateTo() {
+    this.nav.to('/image-analysis');
   }
 }

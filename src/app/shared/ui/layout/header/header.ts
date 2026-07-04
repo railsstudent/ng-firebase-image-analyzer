@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavLink } from '@/core/types/route.types';
+import { NavService } from '@/core/services/nav.service';
 
 @Component({
   selector: 'app-header',
@@ -14,11 +16,14 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
           </span>
         </div>
         <div class="nav-links">
-          <a class="nav-link" routerLinkActive="nav-link-active" routerLink="/home">Home</a>
-          <a class="nav-link" routerLinkActive="nav-link-active" routerLink="/image-analysis">Inference</a>
+          @for (link of navLinks(); track link.path) {
+            <a class="nav-link" routerLinkActive="nav-link-active" [routerLink]="link.path">
+              {{ link.label }}
+            </a>
+          }
         </div>
         <div class="nav-actions">
-          <button class="nav-cta-btn" (click)="navigateTo('/image-analysis')">Get Started</button>
+          <button class="nav-cta-btn" (click)="getStarted()">Get Started</button>
         </div>
       </div>
     </nav>
@@ -28,10 +33,11 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class Header {
   title = input('Home');
+  navLinks = input<NavLink[]>([]);
 
-  router = inject(Router);
+  private readonly nav = inject(NavService);
 
-  navigateTo(path: string) {
-    this.router.navigate([path]);
+  getStarted() {
+    this.nav.to('/image-analysis');
   }
 }
