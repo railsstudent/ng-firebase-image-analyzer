@@ -1,0 +1,9 @@
+@reference "../styles.css";
+
+.app-container {
+  @apply flex flex-col min-h-screen;
+}
+
+.main-content {
+  @apply flex-grow pt-16;
+}
