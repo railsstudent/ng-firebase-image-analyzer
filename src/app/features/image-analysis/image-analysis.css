@@ -31,3 +31,23 @@
 .primary-action-btn {
   @apply flex items-center gap-2 bg-gradient-to-r from-[var(--color-primary)] to-indigo-600 hover:to-indigo-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all duration-300;
 }
+
+.error-banner {
+  @apply flex items-center gap-4 bg-red-500/10 border border-red-500/20 p-4 rounded-2xl mx-auto my-6;
+  max-width: 64rem;
+  box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.error-icon-badge {
+  @apply flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl h-10 w-10 shrink-0 border
+  border-red-500/10;
+}
+
+.error-icon-badge .material-symbols-outlined {
+  @apply text-3xl;
+}
+
+.error-text {
+  @apply text-2xl font-medium  text-red-300;
+}

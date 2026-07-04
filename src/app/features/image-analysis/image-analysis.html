@@ -6,8 +6,19 @@
     (imageRemoved)="onImageRemoved()"
   ></app-image-uploader>
 
+  @if (errorMessage()) {
+    <div class="error-banner max-w-md">
+      <div class="error-icon-badge">
+        <span class="material-symbols-outlined">error</span>
+      </div>
+      <div class="flex-1">
+        <p class="error-text">{{ errorMessage() }}</p>
+      </div>
+    </div>
+  }
+
   <!-- Explicit Analyze Action Button -->
-  @if (imageUrl() && !analysisData() && !isLoading()) {
+  @if (imageUrl() && !isLoading()) {
     <div class="action-container">
       <button (click)="triggerAnalysis()" class="primary-action-btn">
         <span class="material-symbols-outlined">psychology</span>

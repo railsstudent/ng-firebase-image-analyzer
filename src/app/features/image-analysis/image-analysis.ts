@@ -22,8 +22,9 @@ export default class ImageAnalysis {
   imageUrl = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
   analysisData = signal<ImageAnalysisWithMetadata | null>(null);
-  isLoading = signal<boolean>(false);
+  isLoading = signal(false);
   performance = signal(0);
+  errorMessage = signal('');
 
   // Computed derived states
   tags = computed<ImageTag[]>(() => {
@@ -46,6 +47,7 @@ export default class ImageAnalysis {
   onFileSelected(file: File) {
     this.selectedFile.set(file);
     this.analysisData.set(null);
+    this.errorMessage.set('');
   }
 
   async triggerAnalysis() {
@@ -58,6 +60,7 @@ export default class ImageAnalysis {
     try {
       this.performance.set(0);
       this.isLoading.set(true);
+      this.errorMessage.set('');
 
       // Call the service to perform live AI analysis
       const response = await this.imageAnalysisService.analyzeImage(file);
@@ -66,6 +69,8 @@ export default class ImageAnalysis {
       this.analysisData.set(response);
     } catch (error) {
       console.error('Failed to analyze image with API', error);
+      const message = error instanceof Error ? error.message : 'Unknown error occurred during image analysis.';
+      this.errorMessage.set(`Failed to analyze image: ${message}`);
     } finally {
       this.isLoading.set(false);
       this.performance.set(Date.now() - start);
@@ -75,5 +80,6 @@ export default class ImageAnalysis {
   onImageRemoved() {
     this.selectedFile.set(null);
     this.analysisData.set(null);
+    this.errorMessage.set('');
   }
 }
