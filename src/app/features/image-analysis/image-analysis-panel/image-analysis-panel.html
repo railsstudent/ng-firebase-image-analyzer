@@ -70,26 +70,10 @@
 
               <!-- Segmented horizontal bar -->
               <div class="segmented-progress-bar">
-                <div
-                  class="segment-input"
-                  [style.width.%]="totalTokens() > 0 ? (promptTokens() / totalTokens()) * 100 : 0"
-                  title="Input Tokens"
-                ></div>
-                <div
-                  class="segment-output"
-                  [style.width.%]="totalTokens() > 0 ? (candidatesTokens() / totalTokens()) * 100 : 0"
-                  title="Output Tokens"
-                ></div>
-                <div
-                  class="segment-cached"
-                  [style.width.%]="totalTokens() > 0 ? (cachedTokens() / totalTokens()) * 100 : 0"
-                  title="Cached Tokens"
-                ></div>
-                <div
-                  class="segment-thought"
-                  [style.width.%]="totalTokens() > 0 ? (thoughtTokens() / totalTokens()) * 100 : 0"
-                  title="Thought Tokens"
-                ></div>
+                <div class="segment-input" [style.width.%]="promptTokensPercentage()" title="Input Tokens"></div>
+                <div class="segment-output" [style.width.%]="candidatesTokensPercentage()" title="Output Tokens"></div>
+                <div class="segment-cached" [style.width.%]="cachedTokensPercentage()" title="Cached Tokens"></div>
+                <div class="segment-thought" [style.width.%]="thoughtTokensPercentage()" title="Thought Tokens"></div>
               </div>
 
               <!-- Legend -->
@@ -118,14 +102,10 @@
               <div class="space-y-3">
                 <p class="token-details-label">Prompt Split (Input)</p>
                 <div class="modality-progress-bar">
-                  <div
-                    class="modality-text"
-                    [style.width.%]="promptTokens() > 0 ? (promptTextTokens() / promptTokens()) * 100 : 0"
-                    title="Text Metadata"
-                  ></div>
+                  <div class="modality-text" [style.width.%]="promptTextTokensPercentage()" title="Text Metadata"></div>
                   <div
                     class="modality-image"
-                    [style.width.%]="promptTokens() > 0 ? (promptImageTokens() / promptTokens()) * 100 : 0"
+                    [style.width.%]="promptImageTokensPercentage()"
                     title="Image Pixels"
                   ></div>
                 </div>
@@ -142,14 +122,10 @@
 
                 <p class="token-details-label">Candidate Split (Output)</p>
                 <div class="modality-progress-bar">
-                  <div
-                    class="modality-text"
-                    [style.width.%]="candidatesTokens() > 0 ? (outputTextTokens() / candidatesTokens()) * 100 : 0"
-                    title="Text Metadata"
-                  ></div>
+                  <div class="modality-text" [style.width.%]="outputTextTokensPercentage()" title="Text Metadata"></div>
                   <div
                     class="modality-image"
-                    [style.width.%]="candidatesTokens() > 0 ? (outputImageTokens() / candidatesTokens()) * 100 : 0"
+                    [style.width.%]="outputImageTokensPercentage()"
                     title="Image Pixels"
                   ></div>
                 </div>
@@ -166,14 +142,10 @@
 
                 <p class="token-details-label">Saving (Cached)</p>
                 <div class="modality-progress-bar">
-                  <div
-                    class="modality-text"
-                    [style.width.%]="cachedTokens() > 0 ? (cachedTextTokens() / cachedTokens()) * 100 : 0"
-                    title="Text Metadata"
-                  ></div>
+                  <div class="modality-text" [style.width.%]="cachedTextTokensPercentage()" title="Text Metadata"></div>
                   <div
                     class="modality-image"
-                    [style.width.%]="cachedTokens() > 0 ? (cachedImageTokens() / cachedTokens()) * 100 : 0"
+                    [style.width.%]="cachedImageTokensPercentage()"
                     title="Image Pixels"
                   ></div>
                 </div>
@@ -249,12 +221,6 @@
             <div class="canvas-wrapper">
               <div class="canvas-container">
                 @if (imageUrl()) {
-                  <!-- <img
-                    [alt]="'Enhanced image version'"
-                    class="enhanced-image"
-                    [src]="imageUrl()"
-                    [style.filter]="filterStyle()"
-                  /> -->
                   @let wrapperStyle = containerCss();
                   @let imageStyle = imageCss();
                   @if (wrapperStyle && imageStyle) {

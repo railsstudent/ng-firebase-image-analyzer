@@ -1,10 +1,12 @@
+import { findModalityTokenCount } from '@/core/utils/modality-token-count.util';
+import { calculatePercentage } from '@/core/utils/percentage.util';
 import { SanitizeAdjustmentService } from '@/features/image-analysis/services/sanitize-adjustment';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { TabGroup } from '@/shared/ui/components/tab-group/tab-group';
 import { Tab } from '@/shared/ui/components/tab/tab';
 import { Component, computed, inject, input } from '@angular/core';
-import { InferenceSource } from 'firebase/ai';
+import { InferenceSource, Modality } from 'firebase/ai';
 
 @Component({
   selector: 'app-image-analysis-panel',
@@ -35,50 +37,49 @@ export class ImageAnalysisPanel {
   cachedTokens = computed(() => this.data()?.tokenSummary?.cachedContentTokenCount ?? 0);
   thoughtTokens = computed(() => this.data()?.tokenSummary?.thoughtsTokenCount ?? 0);
 
+  promptTokensPercentage = computed(() => calculatePercentage(this.promptTokens(), this.totalTokens()));
+  candidatesTokensPercentage = computed(() => calculatePercentage(this.candidatesTokens(), this.totalTokens()));
+  cachedTokensPercentage = computed(() => calculatePercentage(this.cachedTokens(), this.totalTokens()));
+  thoughtTokensPercentage = computed(() => calculatePercentage(this.thoughtTokens(), this.totalTokens()));
+
   // Parse details for prompt modality token split
   promptTextTokens = computed(() => {
-    const textDetail = this.data()?.tokenModalityBreakdown?.promptTokensDetails?.find(
-      (d) => d.modality.toLowerCase() === 'text',
-    );
-    return textDetail?.tokenCount ?? 0;
+    return findModalityTokenCount(this.data()?.tokenModalityBreakdown?.promptTokensDetails, Modality.TEXT);
   });
 
+  promptTextTokensPercentage = computed(() => calculatePercentage(this.promptTextTokens(), this.promptTokens()));
+
   promptImageTokens = computed(() => {
-    const imageDetail = this.data()?.tokenModalityBreakdown?.promptTokensDetails?.find(
-      (d) => d.modality.toLowerCase() === 'image',
-    );
-    return imageDetail?.tokenCount ?? 0;
+    return findModalityTokenCount(this.data()?.tokenModalityBreakdown?.promptTokensDetails, Modality.IMAGE);
   });
+
+  promptImageTokensPercentage = computed(() => calculatePercentage(this.promptImageTokens(), this.promptTokens()));
 
   // Parse details for output modality token split
   outputTextTokens = computed(() => {
-    const textDetail = this.data()?.tokenModalityBreakdown?.outputTokensDetails?.find(
-      (d) => d.modality.toLowerCase() === 'text',
-    );
-    return textDetail?.tokenCount ?? 0;
+    return findModalityTokenCount(this.data()?.tokenModalityBreakdown?.outputTokensDetails, Modality.TEXT);
   });
 
+  outputTextTokensPercentage = computed(() => calculatePercentage(this.outputTextTokens(), this.candidatesTokens()));
+
   outputImageTokens = computed(() => {
-    const imageDetail = this.data()?.tokenModalityBreakdown?.outputTokensDetails?.find(
-      (d) => d.modality.toLowerCase() === 'image',
-    );
-    return imageDetail?.tokenCount ?? 0;
+    return findModalityTokenCount(this.data()?.tokenModalityBreakdown?.outputTokensDetails, Modality.IMAGE);
   });
+
+  outputImageTokensPercentage = computed(() => calculatePercentage(this.outputImageTokens(), this.candidatesTokens()));
 
   // Parse details for output modality token split
   cachedTextTokens = computed(() => {
-    const textDetail = this.data()?.tokenModalityBreakdown?.cacheTokensDetails?.find(
-      (d) => d.modality.toLowerCase() === 'text',
-    );
-    return textDetail?.tokenCount ?? 0;
+    return findModalityTokenCount(this.data()?.tokenModalityBreakdown?.cacheTokensDetails, Modality.TEXT);
   });
 
+  cachedTextTokensPercentage = computed(() => calculatePercentage(this.cachedTextTokens(), this.cachedTokens()));
+
   cachedImageTokens = computed(() => {
-    const imageDetail = this.data()?.tokenModalityBreakdown?.cacheTokensDetails?.find(
-      (d) => d.modality.toLowerCase() === 'image',
-    );
-    return imageDetail?.tokenCount ?? 0;
+    return findModalityTokenCount(this.data()?.tokenModalityBreakdown?.cacheTokensDetails, Modality.IMAGE);
   });
+
+  cachedImageTokensPercentage = computed(() => calculatePercentage(this.cachedImageTokens(), this.cachedTokens()));
 
   // Safe formatting helpers for crop settings
   cropImage = computed(() => {
