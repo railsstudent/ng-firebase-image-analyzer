@@ -1,0 +1,41 @@
+@reference "../../../../styles.css";
+
+.token-header {
+  @apply flex justify-between items-center text-sm mb-2;
+}
+
+.token-header-label {
+  @apply font-semibold text-[var(--color-on-surface-variant)];
+}
+
+.token-header-total {
+  @apply font-mono font-bold text-[var(--color-primary)];
+}
+
+.token-details-grid {
+  @apply pt-6 border-t border-[var(--color-outline-variant)]/20 grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.token-details-label {
+  @apply text-xs font-bold uppercase tracking-widest text-[var(--color-outline)];
+}
+
+.cached-savings-card {
+  @apply p-4 bg-[var(--color-surface-container-low)] rounded-xl border border-[var(--color-outline-variant)]/20 flex flex-col justify-center;
+}
+
+.cached-savings-header {
+  @apply flex justify-between items-center;
+}
+
+.cached-savings-title {
+  @apply text-sm font-semibold text-[var(--color-on-surface)];
+}
+
+.cached-savings-value {
+  @apply font-mono text-emerald-600 font-bold;
+}
+
+.cached-savings-description {
+  @apply text-xs text-[var(--color-on-surface-variant)] mt-1;
+}

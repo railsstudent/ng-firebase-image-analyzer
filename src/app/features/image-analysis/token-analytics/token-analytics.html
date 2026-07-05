@@ -1,0 +1,67 @@
+<div class="analysis-section-card space-y-6">
+  <h3 class="section-title">
+    <span class="material-symbols-outlined section-title-icon">bar_chart</span>
+    Inference Token Analytics
+  </h3>
+
+  <div class="space-y-6">
+    <!-- Composite stacked progress bar -->
+    <div>
+      <div class="token-header">
+        <span class="token-header-label">Token Budget Allocation</span>
+        <span class="token-header-total">{{ totalTokens() }} Tokens</span>
+      </div>
+
+      <app-token-usage-bar
+        barCss="segmented-progress-bar"
+        [tokenSegments]="tokenDetails().segments"
+        gridCssClass="token-legend-grid"
+        [gridItems]="tokenDetails().legend"
+      />
+    </div>
+
+    <!-- Modality Details -->
+    <div class="token-details-grid">
+      <div class="space-y-3">
+        @if (promptTokens() > 0) {
+          <p class="token-details-label">Prompt Split (Input)</p>
+          <app-token-usage-bar
+            barCss="modality-progress-bar"
+            [tokenSegments]="promptModalityDetails().segments"
+            gridCssClass="modality-legend"
+            [gridItems]="promptModalityDetails().legend"
+          />
+        }
+        @if (candidatesTokens() > 0) {
+          <p class="token-details-label">Candidate Split (Output)</p>
+          <app-token-usage-bar
+            barCss="modality-progress-bar"
+            [tokenSegments]="outputModalityDetails().segments"
+            gridCssClass="modality-legend"
+            [gridItems]="outputModalityDetails().legend"
+          />
+        }
+
+        @if (cachedTokens() > 0) {
+          <p class="token-details-label">Saving (Cached)</p>
+          <app-token-usage-bar
+            barCss="modality-progress-bar"
+            [tokenSegments]="cachedModalityDetails().segments"
+            gridCssClass="modality-legend"
+            [gridItems]="cachedModalityDetails().legend"
+          />
+        }
+      </div>
+
+      <div class="cached-savings-card">
+        <div class="cached-savings-header">
+          <span class="cached-savings-title">Cached Savings</span>
+          <span class="cached-savings-value">-{{ cachedTokens() }} Tokens</span>
+        </div>
+        <p class="cached-savings-description">
+          Re-using context vectors significantly lowers latency and active token cost.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

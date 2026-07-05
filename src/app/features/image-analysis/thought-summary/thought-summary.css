@@ -1,0 +1,17 @@
+@reference "../../../../styles.css";
+
+.reasoning-text {
+  @apply text-[var(--color-on-surface-variant)] leading-relaxed;
+}
+
+.recommendations-list {
+  @apply divide-y divide-[var(--color-outline-variant)]/20;
+}
+
+.recommendation-item {
+  @apply py-4 first:pt-0 last:pb-0;
+}
+
+.recommendation-reason {
+  @apply text-sm text-[var(--color-on-surface-variant)] mt-1 ml-3.5 leading-relaxed;
+}

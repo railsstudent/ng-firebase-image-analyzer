@@ -12,6 +12,8 @@
   --color-primary: #6366f1;
   --color-primary-container: #6063ee;
   --color-secondary: #0f172a;
+  --color-tertiary: #10b981;
+  --color-quaternary: #f59e0b;
   --color-secondary-container: #dae2fd;
   --color-surface-container: #e5eeff;
   --color-surface-container-highest: #d3e4fe;
@@ -124,4 +126,25 @@ h6 {
 
 .max-w-xl {
   max-width: 36rem !important;
+}
+
+.analysis-section-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(211, 228, 254, 0.5);
+  @apply p-6 rounded-xl; /* Fully supported after @import 'tailwindcss' */
+}
+
+/* Global Dark Mode Override */
+.dark .analysis-section-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.section-title {
+  @apply text-xl font-bold tracking-tight text-[var(--color-on-surface)] flex items-center gap-2;
+}
+
+.section-title-icon {
+  @apply text-[var(--color-primary)] text-2xl;
 }

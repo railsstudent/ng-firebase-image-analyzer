@@ -3,176 +3,25 @@
     <app-tab-group>
       <!-- 3.1: Thought Summary -->
       <app-tab id="thought" label="Thought Summary">
-        <div class="analysis-section-card space-y-4">
-          <h3 class="section-title">
-            <span class="material-symbols-outlined section-title-icon">psychology</span>
-            AI Reasoning Overview
-          </h3>
-
-          <div class="space-y-3">
-            <p class="reasoning-text">Performance: {{ performance() }} ms</p>
-            <p class="reasoning-text">Source: {{ sourceExplained() }}</p>
-            <p class="reasoning-text">
-              {{ analysis.thoughtSummary || 'No technical logs provided.' }}
-            </p>
-
-            <p>Alternative Texts</p>
-            <ul class="recommendations-list">
-              @for (alt of analysis.analysis.alternativeTexts; track alt; let i = $index) {
-                <li class="recommendation-item">
-                  <p class="recommendation-reason">{{ i + 1 }}. {{ alt }}</p>
-                </li>
-              }
-            </ul>
-          </div>
-        </div>
+        <app-thought-summary
+          [alternativeTexts]="analysis.analysis.alternativeTexts"
+          [performance]="performance()"
+          [source]="sourceExplained()"
+          [thoughtSummary]="analysis.thoughtSummary || 'No technical logs provided.'"
+        />
       </app-tab>
 
       <!-- 3.2: Recommendations -->
       <app-tab id="detailed" label="Recommendations">
-        <div class="analysis-section-card space-y-4">
-          <h3 class="section-title">
-            <span class="material-symbols-outlined section-title-icon">auto_awesome</span>
-            Visual & Composition Insights
-          </h3>
-
-          <ul class="recommendations-list">
-            @for (rec of analysis.analysis.recommendations; track rec.recommendation) {
-              <li class="recommendation-item">
-                <p class="recommendation-title">
-                  <span class="recommendation-indicator"></span>
-                  {{ rec.recommendation }}
-                </p>
-                <p class="recommendation-reason">
-                  {{ rec.sentence }}
-                </p>
-              </li>
-            }
-          </ul>
-        </div>
+        <app-image-recommendation [recommendations]="analysis.analysis.recommendations" />
       </app-tab>
 
       <!-- 3.3: Token Usage -->
       <app-tab id="tokens" label="Token Usage">
-        <div class="analysis-section-card space-y-6">
-          <h3 class="section-title">
-            <span class="material-symbols-outlined section-title-icon">bar_chart</span>
-            Inference Token Analytics
-          </h3>
-
-          <div class="space-y-6">
-            <!-- Composite stacked progress bar -->
-            <div>
-              <div class="token-header">
-                <span class="token-header-label">Token Budget Allocation</span>
-                <span class="token-header-total">{{ totalTokens() }} Tokens</span>
-              </div>
-
-              <!-- Segmented horizontal bar -->
-              <div class="segmented-progress-bar">
-                <div class="segment-input" [style.width.%]="promptTokensPercentage()" title="Input Tokens"></div>
-                <div class="segment-output" [style.width.%]="candidatesTokensPercentage()" title="Output Tokens"></div>
-                <div class="segment-cached" [style.width.%]="cachedTokensPercentage()" title="Cached Tokens"></div>
-                <div class="segment-thought" [style.width.%]="thoughtTokensPercentage()" title="Thought Tokens"></div>
-              </div>
-
-              <!-- Legend -->
-              <div class="token-legend-grid">
-                <div class="legend-item">
-                  <div class="legend-dot bg-input"></div>
-                  <span class="legend-text">Input: {{ promptTokens() }}</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot bg-output"></div>
-                  <span class="legend-text">Output: {{ candidatesTokens() }}</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot bg-cached"></div>
-                  <span class="legend-text">Cached: {{ cachedTokens() }}</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot bg-thought"></div>
-                  <span class="legend-text">Thought: {{ thoughtTokens() }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Modality Details -->
-            <div class="token-details-grid">
-              <div class="space-y-3">
-                <p class="token-details-label">Prompt Split (Input)</p>
-                <div class="modality-progress-bar">
-                  <div class="modality-text" [style.width.%]="promptTextTokensPercentage()" title="Text Metadata"></div>
-                  <div
-                    class="modality-image"
-                    [style.width.%]="promptImageTokensPercentage()"
-                    title="Image Pixels"
-                  ></div>
-                </div>
-                <div class="modality-legend">
-                  <span class="modality-legend-item">
-                    <div class="legend-dot bg-input"></div>
-                    Text: {{ promptTextTokens() }}
-                  </span>
-                  <span class="modality-legend-item">
-                    <div class="legend-dot bg-output"></div>
-                    Image: {{ promptImageTokens() }}
-                  </span>
-                </div>
-
-                <p class="token-details-label">Candidate Split (Output)</p>
-                <div class="modality-progress-bar">
-                  <div class="modality-text" [style.width.%]="outputTextTokensPercentage()" title="Text Metadata"></div>
-                  <div
-                    class="modality-image"
-                    [style.width.%]="outputImageTokensPercentage()"
-                    title="Image Pixels"
-                  ></div>
-                </div>
-                <div class="modality-legend">
-                  <span class="modality-legend-item">
-                    <div class="legend-dot bg-input"></div>
-                    Text: {{ outputTextTokens() }}
-                  </span>
-                  <span class="modality-legend-item">
-                    <div class="legend-dot bg-output"></div>
-                    Image: {{ outputImageTokens() }}
-                  </span>
-                </div>
-
-                <p class="token-details-label">Saving (Cached)</p>
-                <div class="modality-progress-bar">
-                  <div class="modality-text" [style.width.%]="cachedTextTokensPercentage()" title="Text Metadata"></div>
-                  <div
-                    class="modality-image"
-                    [style.width.%]="cachedImageTokensPercentage()"
-                    title="Image Pixels"
-                  ></div>
-                </div>
-                <div class="modality-legend">
-                  <span class="modality-legend-item">
-                    <div class="legend-dot bg-input"></div>
-                    Text: {{ cachedTextTokens() }}
-                  </span>
-                  <span class="modality-legend-item">
-                    <div class="legend-dot bg-output"></div>
-                    Image: {{ cachedImageTokens() }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="cached-savings-card">
-                <div class="cached-savings-header">
-                  <span class="cached-savings-title">Cached Savings</span>
-                  <span class="cached-savings-value">-{{ cachedTokens() }} Tokens</span>
-                </div>
-                <p class="cached-savings-description">
-                  Re-using context vectors significantly lowers latency and active token cost.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-token-analytics
+          [tokenSummary]="this.data()?.tokenSummary"
+          [tokenModalityBreakdown]="this.data()?.tokenModalityBreakdown"
+        />
       </app-tab>
 
       <!-- 3.4: Image Improvement -->

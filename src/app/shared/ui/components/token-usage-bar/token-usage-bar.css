@@ -1,0 +1,69 @@
+@reference "../../../../../styles.css";
+
+.segmented-progress-bar {
+  @apply flex h-8 w-full rounded-full overflow-hidden shadow-sm bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]/10;
+}
+
+.segment-input {
+  @apply bg-[var(--color-primary)];
+}
+
+.segment-output {
+  @apply bg-[var(--color-secondary)];
+}
+
+.segment-cached {
+  @apply bg-[var(--color-tertiary)];
+}
+
+.segment-thought {
+  @apply bg-[var(--color-quaternary)];
+}
+
+.modality-progress-bar {
+  @apply flex h-5 w-full rounded-full overflow-hidden bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]/10;
+}
+
+.modality-text {
+  @apply bg-[var(--color-primary)];
+}
+
+.modality-image {
+  @apply bg-[var(--color-secondary)];
+}
+
+.token-legend-grid {
+  @apply grid grid-cols-2 md:grid-cols-4 gap-4 mt-4;
+}
+
+.legend-item {
+  @apply flex items-center gap-2;
+}
+
+.legend-dot {
+  @apply w-3 h-3 rounded-full;
+}
+
+.legend-dot.bg-input {
+  @apply bg-[var(--color-primary)];
+}
+
+.legend-dot.bg-output {
+  @apply bg-[var(--color-secondary)];
+}
+
+.legend-dot.bg-cached {
+  @apply bg-[var(--color-tertiary)];
+}
+
+.legend-dot.bg-thought {
+  @apply bg-[var(--color-quaternary)];
+}
+
+.modality-legend {
+  @apply flex justify-between text-xs font-mono text-[var(--color-on-surface-variant)];
+}
+
+.modality-legend-item {
+  @apply flex items-center gap-1.5;
+}

@@ -1,0 +1,21 @@
+@reference "../../../../styles.css";
+
+.recommendations-list {
+  @apply divide-y divide-[var(--color-outline-variant)]/20;
+}
+
+.recommendation-item {
+  @apply py-4 first:pt-0 last:pb-0;
+}
+
+.recommendation-title {
+  @apply font-bold text-[var(--color-on-surface)] flex items-center gap-2;
+}
+
+.recommendation-indicator {
+  @apply w-1.5 h-1.5 rounded-full bg-[var(--color-primary)];
+}
+
+.recommendation-reason {
+  @apply text-sm text-[var(--color-on-surface-variant)] mt-1 ml-3.5 leading-relaxed;
+}
