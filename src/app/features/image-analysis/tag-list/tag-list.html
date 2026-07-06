@@ -6,7 +6,7 @@
 
   <div class="tag-list-grid">
     @for (tag of tags(); track tag.label) {
-      <app-tag [label]="tag.label" [tooltip]="tag.tooltip"></app-tag>
+      <app-badge [label]="tag.label" [tooltip]="tag.tooltip" />
     } @empty {
       <p class="tag-list-empty">No tags detected yet. Run image analysis to extract visual labels.</p>
     }

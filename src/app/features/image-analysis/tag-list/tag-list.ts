@@ -1,10 +1,10 @@
-import { Tag } from '@/shared/ui/components/tag/tag';
+import { Badge } from '@/shared/ui/components/badge/badge';
 import { Component, input } from '@angular/core';
 import { ImageTag } from './types/image-tag.type';
 
 @Component({
   selector: 'app-tag-list',
-  imports: [Tag],
+  imports: [Badge],
   templateUrl: './tag-list.html',
   styleUrl: './tag-list.css',
 })
