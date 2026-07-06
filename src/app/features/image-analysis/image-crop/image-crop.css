@@ -1,0 +1,25 @@
+@reference "../../../../styles.css";
+
+.specs-sidebar {
+  @apply md:col-span-1 space-y-4;
+}
+
+.specs-box {
+  @apply p-4 bg-[var(--color-surface-container-low)] rounded-xl border border-[var(--color-outline-variant)]/20 space-y-3;
+}
+
+.specs-title {
+  @apply text-xs font-bold uppercase tracking-widest text-[var(--color-outline)];
+}
+
+.specs-list {
+  @apply text-xs font-mono text-[var(--color-on-surface-variant)] space-y-2;
+}
+
+.specs-item {
+  @apply flex justify-between;
+}
+
+.specs-item-name {
+  @apply font-semibold text-[var(--color-on-surface)];
+}

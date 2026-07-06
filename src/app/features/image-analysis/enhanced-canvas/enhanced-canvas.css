@@ -1,0 +1,29 @@
+@reference "../../../../styles.css";
+
+.canvas-wrapper {
+  @apply md:col-span-3;
+}
+
+.canvas-container {
+  @apply rounded-xl overflow-hidden border border-primary/20 bg-[var(--color-surface-container-low)] aspect-square flex items-center justify-center relative shadow-sm max-h-[400px];
+}
+
+.enhanced-image {
+  @apply w-full h-full object-cover object-top transition-transform duration-500 hover:scale-[1.01];
+}
+
+.download-enhanced-btn {
+  @apply absolute top-4 right-4 bg-primary text-white text-sm px-4 py-2.5 rounded-lg shadow-lg opacity-0 transition-opacity duration-200 flex items-center gap-2 font-medium;
+}
+
+.canvas-container:hover .download-enhanced-btn {
+  @apply opacity-100;
+}
+
+.download-enhanced-btn:hover {
+  @apply brightness-95;
+}
+
+.canvas-badge {
+  @apply absolute bottom-4 right-4 bg-primary text-white text-[10px] font-bold tracking-widest uppercase px-2.5 py-1.5 rounded shadow-lg;
+}

@@ -4,6 +4,10 @@
   @apply text-[var(--color-on-surface-variant)] leading-relaxed;
 }
 
+.recommendation-title {
+  @apply font-bold text-[var(--color-on-surface)] flex items-center gap-2;
+}
+
 .recommendations-list {
   @apply divide-y divide-[var(--color-outline-variant)]/20;
 }

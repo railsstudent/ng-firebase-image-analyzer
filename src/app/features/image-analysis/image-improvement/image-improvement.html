@@ -1,0 +1,17 @@
+<div class="analysis-section-card space-y-4">
+  <h3 class="section-title">
+    <span class="material-symbols-outlined section-title-icon">photo_filter</span>
+    AI-Enhanced Image Generation
+  </h3>
+
+  <div class="improvement-grid">
+    <app-image-crop
+      [colorAdjustment]="colorAdjustment()"
+      [aspectRatio]="cropImage().containerStyle.aspectRatio"
+      [cropPosition]="cropPosition()"
+    />
+
+    <!-- Enhanced Canvas -->
+    <app-enhanced-canvas [imageUrl]="imageUrl()" [cropImage]="cropImage()" [filterStyle]="filterStyle()" />
+  </div>
+</div>

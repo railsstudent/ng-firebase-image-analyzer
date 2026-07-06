@@ -1,0 +1,30 @@
+<div class="canvas-wrapper">
+  <div class="canvas-container">
+    @if (imageUrl(); as url) {
+      @let wrapperStyle = containerCss();
+      @let imageStyle = imageCss();
+      @if (wrapperStyle && imageStyle) {
+        <div [style]="wrapperStyle">
+          <img
+            style="display: block"
+            [src]="url"
+            [style.filter]="filterStyle()"
+            alt="Cropped subject"
+            [style]="imageStyle"
+          />
+        </div>
+
+        <!-- Download button floating hover -->
+        <button type="button" (click)="downloadEnhancedImage(url || '')" class="download-enhanced-btn">
+          <span class="material-symbols-outlined text-lg">download</span>
+          Download PNG
+        </button>
+        <div class="canvas-badge">AI ENHANCED</div>
+      } @else {
+        <div class="no-image-placeholder">No image improvement available</div>
+      }
+    } @else {
+      <div class="no-image-placeholder">No image selected for preview</div>
+    }
+  </div>
+</div>

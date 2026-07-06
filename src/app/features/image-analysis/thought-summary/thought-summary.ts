@@ -9,11 +9,11 @@ import { Component, input } from '@angular/core';
     </h3>
 
     <div class="space-y-3">
-      <p class="reasoning-text">Performance: {{ performance() }} ms</p>
-      <p class="reasoning-text">Source: {{ source() }}</p>
+      <p class="reasoning-text"><span class="recommendation-title">Performance:</span> {{ performance() }} ms</p>
+      <p class="reasoning-text"><span class="recommendation-title">Source:</span> {{ source() }}</p>
       <p class="reasoning-text">{{ thoughtSummary() }}</p>
 
-      <p>Alternative Texts</p>
+      <p class="recommendation-title">Alternative Texts</p>
       <ul class="recommendations-list">
         @for (alt of alternativeTexts(); track alt; let i = $index) {
           <li class="recommendation-item">
