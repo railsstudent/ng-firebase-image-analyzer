@@ -2,8 +2,14 @@ import { Component, input, signal } from '@angular/core';
 
 @Component({
   selector: 'app-tab',
-  templateUrl: './tab.html',
-  styleUrl: './tab.css',
+  template: ` <div [class.hidden]="!active()">
+    <ng-content></ng-content>
+  </div>`,
+  styles: `
+    :host {
+      display: block;
+    }
+  `,
 })
 export class Tab {
   id = input.required<string>();
