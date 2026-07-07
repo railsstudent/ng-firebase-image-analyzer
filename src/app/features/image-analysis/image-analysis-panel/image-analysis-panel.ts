@@ -20,40 +20,6 @@ export class ImageAnalysisPanel {
   performance = input(0);
   source = input<InferenceSource | undefined>(undefined);
 
-  // sanitizeAdjustment = inject(SanitizeAdjustmentService);
-  // imageEffect = inject(ImageEffect);
-
-  // Computes the CSS filter style string directly from the color adjustment response values
-  // filterStyle = computed(() => {
-  //   const adj = this.data()?.analysis?.colorAdjustment;
-  //   const safeAdj = this.sanitizeAdjustment.sanitizeColorAdjustments(adj);
-  //   return this.imageEffect.getCssFilter(safeAdj);
-  // });
-
-  // Safe formatting helpers for crop settings
-  // cropImage = computed(() => {
-  //   const crop = this.data()?.analysis?.crop;
-  //   const safeCrop = this.sanitizeAdjustment.sanitizeCrop(crop);
-  //   return this.imageEffect.cropImage(safeCrop);
-  // });
-
-  // containerCss = computed(() => {
-  //   return this.cropImage().containerStyle;
-  // });
-
-  // imageCss = computed(() => {
-  //   return this.cropImage().imageStyle;
-  // });
-
-  // cropPosition = computed(() => {
-  //   const crop = this.data()?.analysis?.crop;
-  //   const safeCrop = this.sanitizeAdjustment.sanitizeCrop(crop);
-  //   if (safeCrop) {
-  //     return `xMin: ${safeCrop.xMin}, xMax: ${safeCrop.xMax}, yMin: ${safeCrop.yMin}, yMax: ${safeCrop.yMax}`;
-  //   }
-  //   return 'N/A';
-  // });
-
   sourceExplained = computed(() => {
     if (this.source()) {
       if (this.source() == 'on_device') {
