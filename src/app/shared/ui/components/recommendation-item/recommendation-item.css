@@ -1,0 +1,14 @@
+@reference "../../../../../styles.css";
+
+:host {
+  display: block;
+  @apply py-4 border-t border-[var(--color-outline-variant)]/20 first:border-t-0;
+}
+
+.recommendation-item-title {
+  @apply font-bold text-[var(--color-on-surface)] flex items-center gap-2;
+}
+
+.recommendation-item-reason {
+  @apply text-sm text-[var(--color-on-surface-variant)] mt-1 ml-3.5 leading-relaxed;
+}

@@ -1,7 +1,10 @@
 import { Component, input } from '@angular/core';
+import { RecommendationList } from '@/shared/ui/components/recommendation-list/recommendation-list';
+import { RecommendationItem } from '@/shared/ui/components/recommendation-item/recommendation-item';
 
 @Component({
   selector: 'app-thought-summary',
+  imports: [RecommendationList, RecommendationItem],
   template: ` <div class="analysis-section-card space-y-4">
     <h3 class="section-title">
       <span class="material-symbols-outlined section-title-icon">psychology</span>
@@ -9,18 +12,18 @@ import { Component, input } from '@angular/core';
     </h3>
 
     <div class="space-y-3">
-      <p class="reasoning-text"><span class="recommendation-title">Performance:</span> {{ performance() }} ms</p>
-      <p class="reasoning-text"><span class="recommendation-title">Source:</span> {{ source() }}</p>
+      <p class="reasoning-text"><span class="thought-label">Performance:</span> {{ performance() }} ms</p>
+      <p class="reasoning-text"><span class="thought-label">Source:</span> {{ source() }}</p>
       <p class="reasoning-text">{{ thoughtSummary() }}</p>
 
-      <p class="recommendation-title">Alternative Texts</p>
-      <ul class="recommendations-list">
+      <app-recommendation-list listTitle="Alternative Texts">
         @for (alt of alternativeTexts(); track alt; let i = $index) {
-          <li class="recommendation-item">
-            <p class="recommendation-reason">{{ i + 1 }}. {{ alt }}</p>
-          </li>
+          <app-recommendation-item>
+            <span title>Alternative Text {{ i + 1 }}</span>
+            {{ alt }}
+          </app-recommendation-item>
         }
-      </ul>
+      </app-recommendation-list>
     </div>
   </div>`,
   styleUrl: './thought-summary.css',

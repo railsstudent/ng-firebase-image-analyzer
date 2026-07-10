@@ -4,18 +4,6 @@
   @apply text-[var(--color-on-surface-variant)] leading-relaxed;
 }
 
-.recommendation-title {
-  @apply font-bold text-[var(--color-on-surface)] flex items-center gap-2;
-}
-
-.recommendations-list {
-  @apply divide-y divide-[var(--color-outline-variant)]/20;
-}
-
-.recommendation-item {
-  @apply py-4 first:pt-0 last:pb-0;
-}
-
-.recommendation-reason {
-  @apply text-sm text-[var(--color-on-surface-variant)] mt-1 ml-3.5 leading-relaxed;
+.thought-label {
+  @apply font-bold text-[var(--color-on-surface)] gap-2;
 }
