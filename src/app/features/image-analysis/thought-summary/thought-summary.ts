@@ -16,12 +16,9 @@ import { RecommendationItem } from '@/shared/ui/components/recommendation-item/r
       <p class="reasoning-text"><span class="thought-label">Source:</span> {{ source() }}</p>
       <p class="reasoning-text">{{ thoughtSummary() }}</p>
 
-      <app-recommendation-list listTitle="Alternative Texts">
+      <app-recommendation-list listTitle="Suggested Alternative Texts">
         @for (alt of alternativeTexts(); track alt; let i = $index) {
-          <app-recommendation-item>
-            <span title>Alternative Text {{ i + 1 }}</span>
-            {{ alt }}
-          </app-recommendation-item>
+          <app-recommendation-item> {{ i + 1 }}. {{ alt }} </app-recommendation-item>
         }
       </app-recommendation-list>
     </div>
