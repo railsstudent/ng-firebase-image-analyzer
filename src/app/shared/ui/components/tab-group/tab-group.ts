@@ -1,4 +1,4 @@
-import { Component, computed, contentChildren, output, signal } from '@angular/core';
+import { Component, computed, contentChildren, signal } from '@angular/core';
 import { Tab } from '../tab/tab';
 import { TAB_GROUP_CONTEXT } from './constants/tab-group-context.const';
 
@@ -11,7 +11,6 @@ import { TAB_GROUP_CONTEXT } from './constants/tab-group-context.const';
 export class TabGroup {
   tabs = contentChildren(Tab);
   private selectedTabId = signal<string | null>(null);
-  tabChange = output<string>();
 
   activeTabId = computed(() => {
     const id = this.selectedTabId();
@@ -29,6 +28,5 @@ export class TabGroup {
 
   selectTab(id: string) {
     this.selectedTabId.set(id);
-    this.tabChange.emit(id);
   }
 }
