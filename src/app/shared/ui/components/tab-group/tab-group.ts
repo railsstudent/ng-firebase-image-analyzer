@@ -10,10 +10,10 @@ import { TAB_GROUP_CONTEXT } from './constants/tab-group-context.const';
 })
 export class TabGroup {
   tabs = contentChildren(Tab);
-  private selectedTabId = signal<string | null>(null);
+  private userSelectedTabId = signal<string | null>(null);
 
   activeTabId = computed(() => {
-    const id = this.selectedTabId();
+    const id = this.userSelectedTabId();
 
     if (this.tabs().length <= 0) {
       return null;
@@ -27,6 +27,6 @@ export class TabGroup {
   });
 
   selectTab(id: string) {
-    this.selectedTabId.set(id);
+    this.userSelectedTabId.set(id);
   }
 }

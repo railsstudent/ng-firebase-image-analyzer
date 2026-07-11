@@ -21,7 +21,7 @@ export class ImageAnalysisPanel {
   performance = input(0);
   source = input<InferenceSource | undefined>(undefined);
 
-  sourceExplained = computed<DisplaySource>(() => {
+  displaySource = computed<DisplaySource>(() => {
     if (this.source()) {
       if (this.source() == 'on_device') {
         return 'Gemini Nano';

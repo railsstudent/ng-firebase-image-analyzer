@@ -13,7 +13,7 @@ import { RecommendationItem } from '@/shared/ui/components/recommendation-item/r
 
     <div class="space-y-3">
       <p class="reasoning-text"><span class="thought-label">Performance:</span> {{ performance() }} ms</p>
-      <p class="reasoning-text"><span class="thought-label">Source:</span> {{ source() }}</p>
+      <p class="reasoning-text"><span class="thought-label">Source:</span> {{ displaySource() }}</p>
       <p class="reasoning-text">{{ thoughtSummary() }}</p>
 
       <app-recommendation-list listTitle="Suggested Alternative Texts">
@@ -27,7 +27,7 @@ import { RecommendationItem } from '@/shared/ui/components/recommendation-item/r
 })
 export class ThoughtSummary {
   performance = input(0);
-  source = input('N/A');
+  displaySource = input('N/A');
   thoughtSummary = input('No technical logs provided.');
   alternativeTexts = input<string[]>([]);
 }
