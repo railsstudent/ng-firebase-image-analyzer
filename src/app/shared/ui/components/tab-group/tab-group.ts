@@ -1,36 +1,34 @@
-import { Component, contentChildren, effect, output, signal } from '@angular/core';
+import { Component, computed, contentChildren, output, signal } from '@angular/core';
 import { Tab } from '../tab/tab';
+import { TAB_GROUP_CONTEXT } from './constants/tab-group-context.const';
 
 @Component({
   selector: 'app-tab-group',
   templateUrl: './tab-group.html',
   styleUrl: './tab-group.css',
+  providers: [{ provide: TAB_GROUP_CONTEXT, useExisting: TabGroup }],
 })
 export class TabGroup {
   tabs = contentChildren(Tab);
-  activeTabId = signal<string | null>(null);
+  private selectedTabId = signal<string | null>(null);
   tabChange = output<string>();
 
-  constructor() {
-    // Automatically select the first tab if none are active
-    effect(() => {
-      const currentTabs = this.tabs();
-      const currentActiveId = this.activeTabId();
+  activeTabId = computed(() => {
+    const id = this.selectedTabId();
 
-      if (currentTabs.length > 0) {
-        if (!currentActiveId || !currentTabs.some((t) => t.id() === currentActiveId)) {
-          this.selectTab(currentTabs[0].id());
-        } else {
-          // Keep active states synchronized
-          currentTabs.forEach((t) => t.active.set(t.id() === currentActiveId));
-        }
-      }
-    });
-  }
+    if (this.tabs().length <= 0) {
+      return null;
+    }
+
+    if (id && this.tabs().some((tab) => tab.id() === id)) {
+      return id;
+    }
+
+    return this.tabs()[0].id();
+  });
 
   selectTab(id: string) {
-    this.activeTabId.set(id);
+    this.selectedTabId.set(id);
     this.tabChange.emit(id);
-    this.tabs().forEach((t) => t.active.set(t.id() === id));
   }
 }

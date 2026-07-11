@@ -1,10 +1,11 @@
 <div class="tabs-header-list">
   @for (tab of tabs(); track tab.id()) {
-    <button class="tab-header-btn" [class.active]="activeTabId() === tab.id()" (click)="selectTab(tab.id())">
+    @let isActive = activeTabId() === tab.id();
+    <button class="tab-header-btn" [class.active]="isActive" (click)="selectTab(tab.id())">
       {{ tab.label() }}
     </button>
   }
 </div>
 <div class="tab-content">
-  <ng-content></ng-content>
+  <ng-content />
 </div>

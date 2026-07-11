@@ -7,6 +7,7 @@ import { TabGroup } from '@/shared/ui/components/tab-group/tab-group';
 import { Tab } from '@/shared/ui/components/tab/tab';
 import { Component, computed, input } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
+import { DisplaySource } from '../types/display-source.type';
 
 @Component({
   selector: 'app-image-analysis-panel',
@@ -20,7 +21,7 @@ export class ImageAnalysisPanel {
   performance = input(0);
   source = input<InferenceSource | undefined>(undefined);
 
-  sourceExplained = computed(() => {
+  sourceExplained = computed<DisplaySource>(() => {
     if (this.source()) {
       if (this.source() == 'on_device') {
         return 'Gemini Nano';
@@ -28,6 +29,6 @@ export class ImageAnalysisPanel {
         return 'Cloud AI';
       }
     }
-    return 'N/A';
+    return 'Unknown';
   });
 }
