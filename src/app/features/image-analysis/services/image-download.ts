@@ -1,4 +1,6 @@
+import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
 import { Crop } from '@/features/image-analysis/types/crop.type';
+import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
@@ -7,6 +9,8 @@ import { firstValueFrom } from 'rxjs';
 export class ImageDownloadService {
   private readonly httpService = inject(HttpClient);
   private readonly document = inject(DOCUMENT);
+
+  #imageEffect = inject(ImageEffect);
 
   #fetchImageBlob(url: string): Promise<Blob> {
     return firstValueFrom(this.httpService.get(url, { responseType: 'blob' }));
@@ -67,26 +71,25 @@ export class ImageDownloadService {
     });
   }
 
-  #sanitizeFilename(rawFilename: string): string {
+  #sanitizePngFilename(rawFilename: string): string {
     const trimmedFilename = rawFilename.trim();
     // Verify if the filename is English (ASCII characters only)
     // eslint-disable-next-line no-control-regex
     const isEnglish = /^[\x00-\x7F]*$/.test(trimmedFilename);
-    const filename = !isEnglish ? 'enhanced_image' : trimmedFilename;
+    const filename = !isEnglish ? 'enhanced-image' : trimmedFilename;
     const idx = filename.lastIndexOf('.');
     const basename = idx >= 0 ? filename.substring(0, idx) : filename;
 
-    return `${basename}.png`;
+    return `${basename || 'enhanced-image'}.png`;
   }
 
-  #triggerFileDownload(blob: Blob, rawFilename: string): void {
+  #triggerFileDownload(blob: Blob, filename: string): void {
     const downloadUrl = URL.createObjectURL(blob);
 
     try {
-      const safeFilename = this.#sanitizeFilename(rawFilename);
       const a = this.document.createElement('a');
       a.href = downloadUrl;
-      a.download = safeFilename;
+      a.download = filename;
       a.click();
     } finally {
       // Immediate Garbage Collection of the export Object URL
@@ -94,14 +97,16 @@ export class ImageDownloadService {
     }
   }
 
-  async downloadFilteredCrop(url: string, crop: Crop, filterStyle: string, filename: string) {
+  async downloadFilteredCrop(url: string, crop: Crop, filter: ColorAdjustment | undefined, filename: string) {
     const rawBlob = await this.#fetchImageBlob(url);
     const imageElement = await this.#loadImage(rawBlob);
 
     try {
+      const filterStyle = this.#imageEffect.getCssFilter(filter);
       const canvasElement = this.#renderCroppedCanvas(imageElement, crop, filterStyle);
       const exportedBlob = await this.#exportCanvasBlob(canvasElement);
-      this.#triggerFileDownload(exportedBlob, filename);
+      const safeFilename = this.#sanitizePngFilename(filename);
+      this.#triggerFileDownload(exportedBlob, safeFilename);
     } finally {
       // Garbage collection of the loaded image's object URL
       URL.revokeObjectURL(imageElement.src);

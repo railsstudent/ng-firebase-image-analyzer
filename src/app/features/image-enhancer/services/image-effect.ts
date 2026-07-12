@@ -60,6 +60,7 @@ export class ImageEffect {
         maxWidth: 'none',
         maxHeight: 'none',
       },
+      crop: safeCrop,
     };
   }
 }

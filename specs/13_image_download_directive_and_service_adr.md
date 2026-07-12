@@ -12,10 +12,12 @@ The current `EnhancedCanvas` component contains a local `downloadEnhancedImage` 
 4. **Memory Management**: Loading images and creating temporary object URLs requires strict garbage collection to prevent memory leaks in single-page apps.
 5. **Extension Mismatches (File Corruption Edge Case)**: If the Canvas is exported as a PNG blob (`image/png`) but the filename contains an incorrect extension like `hello.jpeg`, the binary signature will conflict with the extension, causing OS/viewer warning errors. We need a robust sanitization helper to guarantee a `.png` filename extension.
 6. **Dangling Object URLs on Exceptions**: If an exception occurs during the rendering or exporting stage after an Object URL has been created via `URL.createObjectURL()`, the execution halts and the cleanup code is bypassed, leaving raw binary leaks in browser memory. We must use deterministic `try/finally` blocks to guarantee cleanup under all execution paths.
+7. **Host Bindings Consistency**: Using scattered `@HostListener` decorators inside standalone directives is being deprecated in favor of compiling bindings inside the `@Directive` decorator's `host` metadata property. This consolidates bindings, reduces decorator overhead, and aligns with modern Angular 19 styles.
+8. **Double Input Clutter (Interface Design)**: To download the image, the custom directive needs both the CSS styles (for layout) and the raw crop coordinates (for canvas rendering). Passing these as two separate inputs (`[cropImage]` and `[crop]`) complicates the template interface.
 
 ## Decision
 
-To adhere to clean-code standards, we decided to implement a highly modular, decoupled architecture:
+To adhere to clean-code standards, we decided to implement a highly modular, decoupled architecture using **Option B**:
 
 1. **Dumb Components**: Turn `EnhancedCanvas` into a pure presentation element with no service imports, raw fetch calls, or network handlers.
 2. **Dedicated Export Service**: Create an `ImageDownloadService` inside `@/features/image-analysis/services/` that encapsulates network fetching via Angular's standard `HttpClient`, offscreen in-memory rendering, context filtering, and memory-safe garbage collection.
@@ -23,36 +25,109 @@ To adhere to clean-code standards, we decided to implement a highly modular, dec
 4. **In-Memory Rendering with Platform DI**: Inject Angular's `DOCUMENT` token to securely create offscreen canvas and image elements safely in SSR/test contexts, executing the render flow with standard Promises to avoid nested callback hell.
 5. **Strict PNG Extension Enforcement**: To eliminate potential file corruption from extension mismatches, the service will feature a private `#sanitizePngFilename(filename: string): string` helper that strips any existing file extension and guarantees a safe, matching `.png` extension.
 6. **Leak-Proof Exception Safety**: Wrap the orchestrator and file download execution inside robust `try/finally` blocks, ensuring that `URL.revokeObjectURL()` executes unconditionally even if downstream processing or exporting throws an error.
+7. **Modern Host Metadata Configuration**: Declare event interceptors directly in the directive's decorator using `host: { '(click)': 'onClick()' }` rather than `@HostListener('click')`, standardizing to modern Angular 19 best practices.
+8. **Cohesive State Wrapping (Option B)**: Modify the shared `CropImageStyles` interface to include the raw `crop` coordinates directly as an output of the `ImageEffect.cropImage` calculation. This allows `EnhancedCanvas` to receive all required layout styles and high-resolution coordinates within a single cohesive input (`[cropImage]`), keeping the template interface clean and uncluttered.
 
 ---
 
 ## Reference Implementation
 
-### 1. The Core `ImageDownloadService`
+### 1. Interface Updates
 
-Create a new file: `src/app/features/image-analysis/services/image-download.service.ts`
+Update `src/app/features/image-enhancer/types/crop-image.type.ts`:
 
 ```typescript
-import { DOCUMENT } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Crop } from '@/features/image-analysis/types/crop.type';
+
+export interface ContainerStyle {
+  width: string;
+  aspectRatio: string;
+  overflow: 'hidden';
+  position: 'relative' | 'static';
+}
+
+export interface ImageStyle {
+  width: string;
+  position: 'absolute' | 'static';
+  top: string;
+  left: string;
+  maxWidth: 'none';
+  maxHeight: 'none';
+}
+
+export interface CropImageStyles {
+  containerStyle: ContainerStyle;
+  imageStyle: ImageStyle;
+  crop: Crop; // <-- Add this to wrap the raw coordinates cohesively
+}
+```
+
+### 2. Service Calculations Updates
+
+Update `src/app/features/image-enhancer/services/image-effect.ts`:
+
+```typescript
+  cropImage(crop?: Crop, width = 100): CropImageStyles {
+    // 1. Define the safe default crop (representing the full 100% image)
+    const safeCrop = crop || { xMin: 0.0, yMin: 0.0, xMax: 1.0, yMax: 1.0 };
+
+    // 2. Calculate the crop box width and height
+    const cropWidth = +(safeCrop.xMax - safeCrop.xMin).toFixed(2);
+    const cropHeight = +(safeCrop.yMax - safeCrop.yMin).toFixed(2);
+
+    // 3. Apply ternary checks for the default "uncropped" state
+    const imgWidth = crop ? `${((1 / cropWidth) * 100).toFixed(2)}%` : '100%';
+    const imgLeft = crop ? `${(-(safeCrop.xMin / cropWidth) * 100).toFixed(2)}%` : 'auto';
+    const imgTop = crop ? `${(-(safeCrop.yMin / cropHeight) * 100).toFixed(2)}%` : 'auto';
+
+    return {
+      containerStyle: {
+        position: crop ? 'relative' : 'static',
+        aspectRatio: crop ? `${cropWidth} / ${cropHeight}` : 'auto',
+        overflow: 'hidden',
+        width: `${width}%`,
+      },
+      imageStyle: {
+        position: crop ? 'absolute' : 'static',
+        width: imgWidth,
+        left: imgLeft,
+        top: imgTop,
+        maxWidth: 'none',
+        maxHeight: 'none',
+      },
+      crop: safeCrop, // <-- Cohesively forward the safe crop coordinates
+    };
+  }
+```
+
+### 3. The Core `ImageDownloadService`
+
+Create a new file: `src/app/features/image-analysis/services/image-download.ts`
+
+```typescript
+import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
 import { Crop } from '../types/crop.type';
+import { HttpClient } from '@angular/common/http';
+import { DOCUMENT, inject, Service } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
 @Service()
 export class ImageDownloadService {
   private readonly http = inject(HttpClient);
   private readonly document = inject(DOCUMENT);
+  #imageEffect = inject(ImageEffect);
 
   /**
    * Orchestrates the complete on-demand fetching, cropping, filtering, and file download sequence.
    * Leverages try/finally blocks to ensure Object URLs are securely revoked even under exceptions.
    */
-  async downloadFilteredCrop(imageUrl: string, crop: Crop, filterStyle: string, filename: string): Promise<void> {
+  async downloadFilteredCrop(imageUrl: string, crop: Crop, filter: ColorAdjustment, filename: string): Promise<void> {
     const rawBlob = await this.#fetchImageBlob(imageUrl);
     const img = await this.#loadImage(rawBlob); // Object URL is generated inside here
     
     try {
+      const filterStyle = this.#imageEffect.getCssFilter(filter);
       const canvas = this.#renderCroppedCanvas(img, crop, filterStyle);
       const exportBlob = await this.#exportCanvasBlob(canvas);
       
@@ -147,27 +222,29 @@ export class ImageDownloadService {
 }
 ```
 
-### 2. The Standalone `DownloadEnhancedDirective`
+### 4. The Standalone `DownloadEnhancedDirective`
 
-Create a new file: `src/app/features/image-analysis/directives/download-enhanced.directive.ts`
+Create a new file: `src/app/features/image-analysis/directives/download-enhanced.ts`
 
 ```typescript
 import { Crop } from '@/features/image-analysis/types/crop.type';
-import { Directive, HostListener, inject, input } from '@angular/core';
-import { ImageDownloadService } from '../services/image-download.service';
+import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
+import { Directive, inject, input } from '@angular/core';
+import { ImageDownloadService } from '../services/image-download';
 
 @Directive({
   selector: '[appDownloadEnhanced]',
-  standalone: true,
+  host: {
+    '(click)': 'onClick()'
+  }
 })
 export class DownloadEnhancedDirective {
   imageUrl = input.required<string | null>({ alias: 'appDownloadEnhanced' });
   crop = input.required<Crop>();
-  filter = input.required<string>();
+  filter = input.required<ColorAdjustment | undefined>();
 
   #downloadService = inject(ImageDownloadService);
 
-  @HostListener('click')
   async onClick() {
     const url = this.imageUrl();
     if (!url) {
@@ -187,34 +264,55 @@ export class DownloadEnhancedDirective {
 }
 ```
 
-### 3. Component Updates (Declaring Inputs and Standalone Imports)
+### 5. Component Updates (Declaring Standalone Imports & Cohesive bindings)
 
-#### A. Passing the Raw Crop Input down to `EnhancedCanvas`
+#### A. Centralized Parent-Side Sanitization in `image-improvement.ts`
 
-Update `src/app/features/image-analysis/image-improvement/image-improvement.html`:
+Define a computed `safeColorAdjustment` signal to sanitize raw API adjustments once at the parent boundary:
 
-```html
-    <!-- Enhanced Canvas -->
-    <app-enhanced-canvas 
-      [imageUrl]="imageUrl()" 
-      [cropImage]="cropImage()" 
-      [filterStyle]="filterStyle()"
-      [crop]="safeCrop()" 
-    />
+```typescript
+  safeColorAdjustment = computed(() => {
+    const adj = this.analysis()?.colorAdjustment;
+    return this.sanitizeAdjustment.sanitizeColorAdjustments(adj);
+  });
 ```
 
-#### B. Updating `EnhancedCanvas` component ts
+#### B. Pass Safe Adjustment to Both Children in `image-improvement.html`
+
+Update `src/app/features/image-analysis/image-improvement/image-improvement.html` to feed the exact same sanitized data to both child presentation components:
+
+```html
+<div class="improvement-grid">
+  <!-- Image Crop (Sliders and applied list) -->
+  <app-image-crop
+    [colorAdjustment]="safeColorAdjustment()"
+    [aspectRatio]="cropImage().containerStyle.aspectRatio"
+    [cropPosition]="cropPosition()"
+  />
+
+  <!-- Enhanced Canvas (Preview and Downloader) -->
+  <app-enhanced-canvas 
+    [imageUrl]="imageUrl()" 
+    [cropImage]="cropImage()" 
+    [colorAdjustment]="safeColorAdjustment()" 
+  />
+</div>
+```
+
+#### C. Direct Property Extraction inside `EnhancedCanvas`
 
 Update `src/app/features/image-analysis/enhanced-canvas/enhanced-canvas.ts`:
 
-- Add `crop = input.required<Crop>()` as a new input.
-- Import `DownloadEnhancedDirective` and add it to `imports` metadata.
-- Delete the local legacy `downloadEnhancedImage` method.
+- Declare `cropImage` as input.
+- Automatically derive `crop` as a reactive `computed` signal from `cropImage().crop`.
+- Import `DownloadEnhancedDirective`.
+- Inject `ImageEffect` to compute the visual filter string locally.
 
 ```typescript
-import { Crop } from '@/features/image-analysis/types/crop.type';
-import { DownloadEnhancedDirective } from '../directives/download-enhanced.directive';
-import { Component, computed, input } from '@angular/core';
+import { DownloadEnhancedDirective } from '../directives/download-enhanced';
+import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
+import { Component, computed, inject, input } from '@angular/core';
 import { CropImageStyles } from './../../image-enhancer/types/crop-image.type';
 
 @Component({
@@ -226,11 +324,18 @@ import { CropImageStyles } from './../../image-enhancer/types/crop-image.type';
 export class EnhancedCanvas {
   imageUrl = input<string | null>(null);
   cropImage = input.required<CropImageStyles>();
-  filterStyle = input.required<string>();
-  crop = input.required<Crop>();
+  colorAdjustment = input<ColorAdjustment | undefined>(undefined);
+
+  #imageEffect = inject(ImageEffect);
 
   containerCss = computed(() => this.cropImage().containerStyle);
   imageCss = computed(() => this.cropImage().imageStyle);
+  
+  // Extract the raw coordinates directly from the style object computed parent-side!
+  crop = computed(() => this.cropImage().crop);
+  
+  // Compute the preview filter string locally using the injected domain service
+  filterStyle = computed(() => this.#imageEffect.getCssFilter(this.colorAdjustment()));
 }
 ```
 
@@ -239,12 +344,12 @@ export class EnhancedCanvas {
 Update `src/app/features/image-analysis/enhanced-canvas/enhanced-canvas.html`:
 
 ```html
-        <!-- Download button floating hover using modern directive -->
+        <!-- Download button with custom directive -->
         <button 
           type="button" 
           [appDownloadEnhanced]="imageUrl()" 
           [crop]="crop()" 
-          [filter]="filterStyle()" 
+          [filter]="colorAdjustment()" 
           class="download-enhanced-btn"
         >
           <span class="material-symbols-outlined text-lg">download</span>
@@ -262,3 +367,6 @@ Update `src/app/features/image-analysis/enhanced-canvas/enhanced-canvas.html`:
 - **Universal Directive Reusability**: Any component can now download a filtered/cropped canvas output just by attaching the `[appDownloadEnhanced]` directive.
 - **Guaranteed Extension Matching**: The `#sanitizePngFilename` helper strips any incorrect extension and force-appends `.png`, completely preventing file-corruption warnings.
 - **Deterministic Exception Safety**: Utilizing `try/finally` blocks guarantees that Object URLs are unconditionally revoked, keeping the browser's memory pristine even if render-time exceptions occur.
+- **Modern Consolidated Metadata**: Standardized host bindings inside the decorator config, improving tree-shaking, style consistency, and eliminating legacy `@HostListener` properties.
+- **Clean Single-Input HTML Interfaces**: Incorporating the raw crop coordinates directly into `CropImageStyles` completely avoids parent-to-child interface clutter, letting the parent compute everything in one step and passing down a single cohesive object.
+- **Perfect Domain Flow Safety**: Bypassing raw string primitive bindings entirely guarantees that only structured `ColorAdjustment` objects flow through your service and directive interfaces, ensuring type compliance at every step.

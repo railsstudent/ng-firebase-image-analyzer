@@ -15,7 +15,13 @@
         </div>
 
         <!-- Download button floating hover -->
-        <button type="button" class="download-enhanced-btn">
+        <button
+          type="button"
+          class="download-enhanced-btn"
+          [appDownloadEnhanced]="url"
+          [crop]="crop()"
+          [filter]="colorAdjustment()"
+        >
           <span class="material-symbols-outlined text-lg">download</span>
           Download PNG
         </button>

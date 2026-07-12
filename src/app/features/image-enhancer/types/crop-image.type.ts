@@ -1,3 +1,5 @@
+import { Crop } from '@/features/image-analysis/types/crop.type';
+
 export interface ContainerStyle {
   width: string;
   aspectRatio: string;
@@ -17,4 +19,5 @@ export interface ImageStyle {
 export interface CropImageStyles {
   containerStyle: ContainerStyle;
   imageStyle: ImageStyle;
+  crop: Crop;
 }

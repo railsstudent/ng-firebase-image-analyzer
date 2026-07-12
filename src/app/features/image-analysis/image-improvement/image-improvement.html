@@ -6,12 +6,12 @@
 
   <div class="improvement-grid">
     <app-image-crop
-      [colorAdjustment]="colorAdjustment()"
+      [colorAdjustment]="safeColorAdjustment()"
       [aspectRatio]="cropImage().containerStyle.aspectRatio"
       [cropPosition]="cropPosition()"
     />
 
     <!-- Enhanced Canvas -->
-    <app-enhanced-canvas [imageUrl]="imageUrl()" [cropImage]="cropImage()" [filterStyle]="filterStyle()" />
+    <app-enhanced-canvas [imageUrl]="imageUrl()" [cropImage]="cropImage()" [colorAdjustment]="safeColorAdjustment()" />
   </div>
 </div>

@@ -18,13 +18,9 @@ export class ImageImprovement {
   sanitizeAdjustment = inject(SanitizeAdjustmentService);
   imageEffect = inject(ImageEffect);
 
-  colorAdjustment = computed(() => this.analysis()?.colorAdjustment);
-
-  // Computes the CSS filter style string directly from the color adjustment response values
-  filterStyle = computed(() => {
+  safeColorAdjustment = computed(() => {
     const adj = this.analysis()?.colorAdjustment;
-    const safeAdj = this.sanitizeAdjustment.sanitizeColorAdjustments(adj);
-    return this.imageEffect.getCssFilter(safeAdj);
+    return this.sanitizeAdjustment.sanitizeColorAdjustments(adj);
   });
 
   safeCrop = computed(() => {
@@ -36,8 +32,7 @@ export class ImageImprovement {
   cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), 100));
 
   cropPosition = computed(() => {
-    const crop = this.analysis()?.crop;
-    const safeCrop = this.sanitizeAdjustment.sanitizeCrop(crop);
+    const safeCrop = this.safeCrop();
     if (safeCrop) {
       return `X: ${safeCrop.xMin}–${safeCrop.xMax} | Y: ${safeCrop.yMin}–${safeCrop.yMax}`;
     }
