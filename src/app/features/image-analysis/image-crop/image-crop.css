@@ -1,7 +1,11 @@
 @reference "../../../../styles.css";
 
+:host {
+  @apply block md:col-span-1;
+}
+
 .specs-sidebar {
-  @apply md:col-span-1 space-y-4;
+  @apply space-y-4;
 }
 
 .specs-box {

@@ -1,5 +1,5 @@
 @reference "../../../../styles.css";
 
 .improvement-grid {
-  @apply grid grid-cols-1 md:grid-cols-4 gap-6;
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
 }

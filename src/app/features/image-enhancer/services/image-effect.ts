@@ -32,7 +32,7 @@ export class ImageEffect {
     return styles;
   }
 
-  cropImage(crop?: Crop, width = 25): CropImageStyles {
+  cropImage(crop?: Crop, width = 100): CropImageStyles {
     // 1. Define the safe default crop (representing the full 100% image)
     const safeCrop = crop || { xMin: 0.0, yMin: 0.0, xMax: 1.0, yMax: 1.0 };
 

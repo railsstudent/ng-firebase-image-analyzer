@@ -33,13 +33,13 @@ export class ImageImprovement {
   });
 
   // Safe formatting helpers for crop settings
-  cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop()));
+  cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), 100));
 
   cropPosition = computed(() => {
     const crop = this.analysis()?.crop;
     const safeCrop = this.sanitizeAdjustment.sanitizeCrop(crop);
     if (safeCrop) {
-      return `xMin: ${safeCrop.xMin}, xMax: ${safeCrop.xMax}, yMin: ${safeCrop.yMin}, yMax: ${safeCrop.yMax}`;
+      return `X: ${safeCrop.xMin}–${safeCrop.xMax} | Y: ${safeCrop.yMin}–${safeCrop.yMax}`;
     }
     return 'N/A';
   });

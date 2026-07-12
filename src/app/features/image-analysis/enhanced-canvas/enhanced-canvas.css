@@ -1,7 +1,12 @@
 @reference "../../../../styles.css";
 
+:host {
+  @apply block md:col-span-2;
+  width: 100%;
+}
+
 .canvas-wrapper {
-  @apply md:col-span-3;
+  @apply space-y-4 max-w-[400px] mx-auto;
 }
 
 .canvas-container {
