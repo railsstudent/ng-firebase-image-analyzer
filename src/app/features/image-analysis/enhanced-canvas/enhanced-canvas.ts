@@ -15,20 +15,4 @@ export class EnhancedCanvas {
 
   containerCss = computed(() => this.cropImage().containerStyle);
   imageCss = computed(() => this.cropImage().imageStyle);
-
-  // Fallback download helper for image improvement preview
-  downloadEnhancedImage(url: string) {
-    if (!url) {
-      return;
-    }
-
-    fetch(url)
-      .then((r) => r.blob())
-      .then((b) => {
-        const a = this.document.createElement('a');
-        a.href = URL.createObjectURL(b);
-        a.download = 'enhanced-image.png';
-        a.click();
-      });
-  }
 }
