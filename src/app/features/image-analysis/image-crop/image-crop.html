@@ -10,22 +10,12 @@
   <div class="specs-box">
     <p class="specs-title">Filters Applied</p>
     <ul class="specs-list">
-      <li class="specs-item">
-        <span class="specs-item-name">Brightness:</span>
-        {{ colorAdjustment()?.brightness ?? 'N/A' }}
-      </li>
-      <li class="specs-item">
-        <span class="specs-item-name">Saturation:</span>
-        {{ colorAdjustment()?.saturation ?? 'N/A' }}
-      </li>
-      <li class="specs-item">
-        <span class="specs-item-name">Contrast:</span>
-        {{ colorAdjustment()?.contrast ?? 'N/A' }}
-      </li>
-      <li class="specs-item">
-        <span class="specs-item-name">Warmth:</span>
-        {{ colorAdjustment()?.warmth ?? 'N/A' }}
-      </li>
+      @for (item of appliedFilters(); track item.label) {
+        <li class="specs-item">
+          <span class="specs-item-name">{{ item.label }}:</span>
+          {{ item.value }}
+        </li>
+      }
     </ul>
   </div>
 </div>
