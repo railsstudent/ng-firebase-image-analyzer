@@ -1,5 +1,5 @@
-import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
 import { Crop } from '@/features/image-analysis/types/crop.type';
+import { ImageDownloadOptions } from '@/features/image-analysis/types/image-download-options.type';
 import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, inject, Service } from '@angular/core';
@@ -97,7 +97,8 @@ export class ImageDownloadService {
     }
   }
 
-  async downloadFilteredCrop(url: string, crop: Crop, filter: ColorAdjustment | undefined, filename: string) {
+  async downloadFilteredCrop(options: ImageDownloadOptions) {
+    const { url, crop, filter, filename } = options;
     const rawBlob = await this.#fetchImageBlob(url);
     const imageElement = await this.#loadImage(rawBlob);
 

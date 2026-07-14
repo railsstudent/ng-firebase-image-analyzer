@@ -20,7 +20,12 @@ export class DownloadEnhancedDirective {
     const url = this.imageUrl();
     if (url) {
       try {
-        await this.#downloadImageService.downloadFilteredCrop(url, this.crop(), this.filter(), 'enhanced-image.png');
+        await this.#downloadImageService.downloadFilteredCrop({
+          url,
+          crop: this.crop(),
+          filter: this.filter(),
+          filename: 'enhanced-image.png',
+        });
       } catch (err) {
         console.error('Failed to download enhanced image:', err);
       }
