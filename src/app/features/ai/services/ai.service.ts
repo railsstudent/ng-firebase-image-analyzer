@@ -72,14 +72,14 @@ export class AiService {
     return undefined;
   }
 
-  private downloadDeviceModel(model: GenerativeModel) {
+  private async downloadDeviceModel(model: GenerativeModel) {
     // `initializeDeviceModel` must be called:
     // (1) after or on an end-user page interaction such as a button click
     // and
     // (2) before any queries to the model (such as `generateContent()`)
     // You may want to `await` this promise if using `ONLY_ON_DEVICE` (see note below).
     if (model) {
-      model.initializeDeviceModel((val) => console.log(`Download progress: ${Math.round(val * 10000) / 100}%`));
+      await model.initializeDeviceModel((val) => console.log(`Download progress: ${Math.round(val * 10000) / 100}%`));
     }
   }
 
