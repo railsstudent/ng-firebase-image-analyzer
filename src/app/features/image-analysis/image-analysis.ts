@@ -1,7 +1,7 @@
 import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
 import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { ImageUploader } from '@/shared/ui/image-uploader/image-uploader';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
 import { TagList } from './tag-list/tag-list';
@@ -13,7 +13,7 @@ import { ImageTag } from './tag-list/types/image-tag.type';
   templateUrl: './image-analysis.html',
   styleUrl: './image-analysis.css',
 })
-export default class ImageAnalysis {
+export default class ImageAnalysis implements OnInit {
   // Inject the actual neural analysis service
   imageAnalysisService = inject(ImageAnalysisService);
 
@@ -24,6 +24,13 @@ export default class ImageAnalysis {
   isLoading = signal(false);
   performance = signal(0);
   errorMessage = signal('');
+
+  ngOnInit(): void {
+    this.imageAnalysisService
+      .preWarm()
+      .then(() => console.log('Gemini Nano pre-warmed and ready for action!'))
+      .catch((err) => console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err));
+  }
 
   // Computed derived states
   tags = computed<ImageTag[]>(() => {

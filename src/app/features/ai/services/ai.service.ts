@@ -1,28 +1,39 @@
-import { FIREBASE_AI } from '@/features/ai/constants/ai.const';
-import { ConfigService } from '@/features/ai/services/config.service';
 import { inject, Service } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
   GenerateContentStreamResult,
   GenerativeModel,
-  getGenerativeModel,
-  HybridParams,
-  InferenceMode,
-  ThinkingLevel,
 } from 'firebase/ai';
-import { getValue } from 'firebase/remote-config';
-import { SAFETY_SETTINGS } from '../constants/safety-settings.const';
 import { GenerateContentParams } from '../types/ai.types';
 import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '../types/token-usage.type';
+import { AiModelCacheService } from './ai-model-cache.service';
 
 @Service()
 export class AiService {
-  #ai = inject(FIREBASE_AI);
-  #configService = inject(ConfigService);
+  #cacheService = inject(AiModelCacheService);
+
+  private getCachedModel({ schema, systemInstruction }: GenerateContentParams) {
+    const model = this.#cacheService.getOrCreateModel({
+      schema,
+      systemInstruction,
+    });
+
+    return model;
+  }
+
+  /**
+   * Pre-warms and caches the on-device model configuration in the background.
+   */
+  async preWarmModel(params: GenerateContentParams): Promise<void> {
+    const model = this.getCachedModel(params);
+    await this.downloadDeviceModel(model);
+  }
 
   async generateContent(params: GenerateContentParams): Promise<EnhancedGenerateContentResponse> {
-    const { model, request } = this.preprocessParams(params);
+    this.validateInputs(params.contents);
+    const model = this.getCachedModel(params);
+    const request = this.constructRequest(params);
 
     await this.downloadDeviceModel(model);
 
@@ -32,7 +43,9 @@ export class AiService {
   }
 
   async generateContentStream(params: GenerateContentParams): Promise<GenerateContentStreamResult> {
-    const { model, request } = this.preprocessParams(params);
+    this.validateInputs(params.contents);
+    const model = this.getCachedModel(params);
+    const request = this.constructRequest(params);
 
     await this.downloadDeviceModel(model);
 
@@ -135,45 +148,6 @@ export class AiService {
     if (firstCandidate.finishReason && firstCandidate.finishReason !== 'STOP') {
       throw new Error(`Response generation did not finish normally. Reason: ${firstCandidate.finishReason}`);
     }
-  }
-
-  private preprocessParams(params: GenerateContentParams) {
-    this.validateInputs(params.contents);
-    const modelParams = this.constructModelParams(params);
-    const model = getGenerativeModel(this.#ai, modelParams);
-    const request = this.constructRequest(params);
-    return { model, request };
-  }
-
-  private constructModelParams({ schema, systemInstruction }: GenerateContentParams): HybridParams {
-    const remoteConfig = this.#configService.RemoteConfig;
-    const model = getValue(remoteConfig, 'geminiModelName').asString() || 'gemini-3.5-flash';
-    const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString() || 'LOW';
-    const thinkingLevel = ThinkingLevel[rawThinkingLevel as keyof typeof ThinkingLevel];
-
-    const modelParam: HybridParams = {
-      mode: InferenceMode.PREFER_ON_DEVICE,
-      onDeviceParams: {
-        promptOptions: {
-          responseConstraint: schema,
-        },
-      },
-      inCloudParams: {
-        model,
-        generationConfig: {
-          responseMimeType: schema ? 'application/json' : undefined,
-          responseSchema: schema,
-          thinkingConfig: {
-            thinkingLevel,
-            includeThoughts: true,
-          },
-        },
-        safetySettings: SAFETY_SETTINGS,
-        systemInstruction,
-      },
-    };
-
-    return modelParam;
   }
 
   private constructRequest(params: GenerateContentParams) {

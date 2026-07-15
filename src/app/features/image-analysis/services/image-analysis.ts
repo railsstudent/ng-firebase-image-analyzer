@@ -15,6 +15,14 @@ export class ImageAnalysisService {
   #aiService = inject(AiService);
   #sanitizeAdjustment = inject(SanitizeAdjustmentService);
 
+  async preWarm(): Promise<void> {
+    await this.#aiService.preWarmModel({
+      systemInstruction: SYSTEM_INSTRUCTION,
+      schema: ImageAnalysisSchema,
+      contents: [],
+    });
+  }
+
   /**
    * Analyzes an image and returns alternative texts, tags, recommendations, and optional styling recommendations.
    *
