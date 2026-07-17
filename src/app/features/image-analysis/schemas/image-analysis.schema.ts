@@ -1,31 +1,15 @@
 import { Schema } from 'firebase/ai';
+import { AltTextsSchema } from './alt-texts.schema';
 import { ColorAdjustmentSchema } from './color-adjustment.schema';
-import { RecomendationSchema } from './recommendation.schema';
-import { TagSchema } from './tag.schema';
 import { CropSchema } from './crop.schema';
+import { RecommendationsSchema } from './recommendation.schema';
+import { TagsSchema } from './tag.schema';
 
 export const ImageAnalysisSchema = Schema.object({
   properties: {
-    alternativeTexts: Schema.array({
-      items: Schema.string({
-        description: 'An alternative text description for the image.',
-      }),
-      minItems: 1,
-      maxItems: 2,
-      description: '1 to 3 alternative text options for the image.',
-    }),
-    tags: Schema.array({
-      items: TagSchema,
-      minItems: 2,
-      maxItems: 3,
-      description: 'At least 3 relevant tags describing the image, each with a justification sentence.',
-    }),
-    recommendations: Schema.array({
-      items: RecomendationSchema,
-      description: 'Recommendations to make the image more interesting or appealing.',
-      minItems: 1,
-      maxItems: 2,
-    }),
+    alternativeTexts: AltTextsSchema,
+    tags: TagsSchema,
+    recommendations: RecommendationsSchema,
     crop: CropSchema,
     colorAdjustment: ColorAdjustmentSchema,
   },

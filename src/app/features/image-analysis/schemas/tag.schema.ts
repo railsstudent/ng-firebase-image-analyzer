@@ -1,6 +1,6 @@
 import { Schema } from 'firebase/ai';
 
-export const TagSchema = Schema.object({
+const TagSchema = Schema.object({
   properties: {
     name: Schema.string({
       description: 'The tag name.',
@@ -10,4 +10,11 @@ export const TagSchema = Schema.object({
     }),
   },
   description: 'A tag with its name and selection explanation.',
+});
+
+export const TagsSchema = Schema.array({
+  items: TagSchema,
+  minItems: 2,
+  maxItems: 3,
+  description: 'At least 2 and no more than 3 relevant tags describing the image, each with a justification sentence.',
 });
