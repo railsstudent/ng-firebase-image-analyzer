@@ -10,7 +10,7 @@
 }
 
 .canvas-container {
-  @apply rounded-xl overflow-hidden border border-primary/20 bg-[var(--color-surface-container-low)] aspect-square flex items-center justify-center relative shadow-sm max-h-[400px];
+  @apply rounded-xl overflow-hidden border border-primary/20 bg-[var(--color-surface-container-low)] flex items-center justify-center relative shadow-sm max-h-[400px];
 }
 
 .enhanced-image {

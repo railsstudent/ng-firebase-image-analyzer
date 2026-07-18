@@ -1,5 +1,5 @@
 <div class="canvas-wrapper">
-  <div class="canvas-container">
+  <div class="canvas-container" [style.aspect-ratio]="containerAspectRatio()">
     @if (imageUrl(); as url) {
       @let wrapperStyle = containerCss();
       @let imageStyle = imageCss();
@@ -8,6 +8,7 @@
           <img
             style="display: block"
             [src]="url"
+            (load)="onImageLoad($event)"
             [style.filter]="filterStyle()"
             alt="Cropped subject"
             [style]="imageStyle"

@@ -43,7 +43,7 @@ export class ImageDownloadService {
       throw new Error('Failed to get 2D canvas context.');
     }
 
-    ctx.filter = filterStyle;
+    ctx.filter = filterStyle || 'none';
     ctx.drawImage(
       img,
       crop.xMin * img.naturalWidth,
@@ -99,11 +99,13 @@ export class ImageDownloadService {
 
   async downloadFilteredCrop(options: ImageDownloadOptions) {
     const { url, crop, filter, filename } = options;
+    console.log('[ImageDownloadService] Downloading with options:', { crop, filter, filename });
     const rawBlob = await this.#fetchImageBlob(url);
     const imageElement = await this.#loadImage(rawBlob);
 
     try {
       const filterStyle = this.#imageEffect.getCssFilter(filter);
+      console.log('[ImageDownloadService] Calculated filterStyle:', filterStyle);
       const canvasElement = this.#renderCroppedCanvas(imageElement, crop, filterStyle);
       const exportedBlob = await this.#exportCanvasBlob(canvasElement);
       const safeFilename = this.#sanitizePngFilename(filename);
