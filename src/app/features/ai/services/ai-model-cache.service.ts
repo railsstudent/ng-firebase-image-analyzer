@@ -5,11 +5,13 @@ import { GenerativeModel, getGenerativeModel, HybridParams, InferenceMode, Think
 import { getValue } from 'firebase/remote-config';
 import { SAFETY_SETTINGS } from '../constants/safety-settings.const';
 import { ModelConfigParams } from '../types/model-config-params.type';
+import { ConnectionService } from '@/core/services/connection.service';
 
 @Service()
 export class AiModelCacheService {
   #ai = inject(FIREBASE_AI);
   #configService = inject(ConfigService);
+  #connectionService = inject(ConnectionService);
   #modelCache = new Map<string, GenerativeModel>();
 
   /**
@@ -43,9 +45,11 @@ export class AiModelCacheService {
     const model = getValue(remoteConfig, 'geminiModelName').asString() || 'gemini-3.5-flash';
     const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString() || 'LOW';
     const thinkingLevel = ThinkingLevel[rawThinkingLevel as keyof typeof ThinkingLevel];
+    const isOnline = this.#connectionService.getOnlineStatus();
+    const mode = isOnline ? InferenceMode.PREFER_ON_DEVICE : InferenceMode.ONLY_ON_DEVICE;
 
     const modelParam: HybridParams = {
-      mode: InferenceMode.PREFER_ON_DEVICE,
+      mode,
       onDeviceParams: {
         promptOptions: {
           responseConstraint: schema,

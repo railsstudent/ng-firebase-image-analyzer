@@ -1,6 +1,7 @@
+import { ConnectionService } from '@/core/services/connection.service';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
-import { isDevMode, Service } from '@angular/core';
+import { inject, isDevMode, Service } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
@@ -9,6 +10,7 @@ import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote
 export class ConfigService {
   #app: FirebaseApp | undefined = undefined;
   #remoteConfig: RemoteConfig | undefined = undefined;
+  #connectionService = inject(ConnectionService);
 
   get firebaseApp(): FirebaseApp {
     if (!this.#app) {
@@ -27,7 +29,9 @@ export class ConfigService {
   async initialize(): Promise<void> {
     this.#app = initializeApp(firebaseConfig.app);
 
-    if (firebaseConfig.recaptchaEnterpriseKey) {
+    const isOnline = this.#connectionService.getOnlineStatus();
+
+    if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isDevMode();
       initializeAppCheck(this.#app, {
@@ -40,11 +44,13 @@ export class ConfigService {
     this.#remoteConfig.defaultConfig = remoteConfigDefaults;
     this.#remoteConfig.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : 3600000;
 
-    try {
-      const activated = await fetchAndActivate(this.#remoteConfig);
-      console.log('Remote Config initialized. Activated new values:', activated);
-    } catch (error) {
-      console.error('Failed to fetch and activate remote config:', error);
+    if (isOnline) {
+      try {
+        const activated = await fetchAndActivate(this.#remoteConfig);
+        console.log('Remote Config initialized. Activated new values:', activated);
+      } catch (error) {
+        console.error('Failed to fetch and activate remote config:', error);
+      }
     }
   }
 }
