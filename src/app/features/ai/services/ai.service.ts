@@ -6,6 +6,7 @@ import {
   GenerativeModel,
 } from 'firebase/ai';
 import { GenerateContentParams } from '../types/ai.types';
+import { PreWarmOptions } from '../types/pre-warm-options.type';
 import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '../types/token-usage.type';
 import { AiModelCacheService } from './ai-model-cache.service';
 
@@ -25,9 +26,47 @@ export class AiService {
   /**
    * Pre-warms and caches the on-device model configuration in the background.
    */
-  async preWarmModel(params: GenerateContentParams): Promise<void> {
+  async preWarmModel(params: GenerateContentParams, options: PreWarmOptions = {}): Promise<void> {
     const model = this.getCachedModel(params);
     await this.downloadDeviceModel(model);
+
+    if (options.runDummyQuery) {
+      const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
+      if (!isWebGPUSupported) {
+        console.log('WebGPU is not supported on this device. Skipping on-device shader compilation.');
+        return;
+      }
+
+      const size = options.dummySize || 512;
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(0, 0, size, size);
+        }
+        const dummyBase64 = canvas.toDataURL('image/jpeg', 0.1).split(',')[1];
+
+        const dummyImagePart = {
+          inlineData: {
+            data: dummyBase64,
+            mimeType: 'image/jpeg',
+          },
+        };
+
+        const request = this.constructRequest({
+          ...params,
+          contents: ['Respond with empty JSON', dummyImagePart],
+        });
+
+        await model.generateContent(request);
+        console.log(`WebGPU shaders pre-compiled successfully for shape ${size}x${size}!`);
+      } catch (err) {
+        console.warn('Silent WebGPU dummy query skipped or failed:', err);
+      }
+    }
   }
 
   async generateContent(params: GenerateContentParams): Promise<EnhancedGenerateContentResponse> {

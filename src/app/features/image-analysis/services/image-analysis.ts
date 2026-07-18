@@ -1,5 +1,5 @@
 import { fileToGenerativePart } from '@/core/utils/base64.util';
-import { validateImageInput, validatePrompt } from '@/core/utils/image.util';
+import { validateImageInput, validatePrompt, resizeToFixedDimensions } from '@/core/utils/image.util';
 import { AiService } from '@/features/ai/services/ai.service';
 import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-analysis.schema';
 import {
@@ -16,31 +16,21 @@ export class ImageAnalysisService {
   #sanitizeAdjustment = inject(SanitizeAdjustmentService);
 
   async preWarm(): Promise<void> {
-    await this.#aiService.preWarmModel({
-      systemInstruction: SYSTEM_INSTRUCTION,
-      schema: ImageAnalysisSchema,
-      contents: [],
-    });
-
-    // 2. Trigger the "Silent Dummy Query"
-    // We use a tiny 1x1 transparent pixel as a dummy image part
-    const dummy1x1Image = {
-      inlineData: {
-        data: 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', // Base64 for 1x1 transparent GIF
-        mimeType: 'image/gif',
-      },
-    };
-
     try {
-      // Run a tiny background generation to trigger WebGPU shader compilation
-      await this.#aiService.generateContent({
-        systemInstruction: SYSTEM_INSTRUCTION,
-        contents: ['Respond with empty JSON', dummy1x1Image],
-        schema: ImageAnalysisSchema, // Use the same schema so shaders are identical
-      });
-      console.log('WebGPU shaders compiled and warmed successfully!');
+      await this.#aiService.preWarmModel(
+        {
+          systemInstruction: SYSTEM_INSTRUCTION,
+          schema: ImageAnalysisSchema,
+          contents: [],
+        },
+        {
+          runDummyQuery: true,
+          dummySize: 512,
+        },
+      );
+      console.log('Image analysis on-device engine and WebGPU shaders warmed successfully!');
     } catch (err) {
-      console.warn('Silent pre-warm query failed or skipped.', err);
+      console.warn('Image analysis pre-warm sequence finished with warning/skip:', err);
     }
   }
 
@@ -56,8 +46,11 @@ export class ImageAnalysisService {
     validateImageInput(file);
     validatePrompt(customPrompt);
 
-    // 2. Convert File/Blob to base64 generative Part
-    const imagePart = await fileToGenerativePart(file);
+    // 2. Resize in-memory to exactly 512x512 for optimal WebGPU tensor shape matching
+    const optimizedFile = await resizeToFixedDimensions(file, 512);
+
+    // 3. Convert File/Blob to base64 generative Part
+    const imagePart = await fileToGenerativePart(optimizedFile);
 
     // 3. Formulate the prompt/instructions
     const userPrompt = customPrompt ? customPrompt : IMAGE_ANALYSIS_USER_PROMPT;
@@ -108,8 +101,11 @@ export class ImageAnalysisService {
     validateImageInput(file);
     validatePrompt(customPrompt);
 
-    // 2. Convert File/Blob to base64 generative Part
-    const imagePart = await fileToGenerativePart(file);
+    // 2. Resize in-memory to exactly 512x512 for optimal WebGPU tensor shape matching
+    const optimizedFile = await resizeToFixedDimensions(file, 512);
+
+    // 3. Convert File/Blob to base64 generative Part
+    const imagePart = await fileToGenerativePart(optimizedFile);
 
     // 3. Formulate the prompt/instructions
     const userPrompt = customPrompt ? customPrompt : IMAGE_ANALYSIS_USER_PROMPT;

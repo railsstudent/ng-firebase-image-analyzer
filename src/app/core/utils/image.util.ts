@@ -49,3 +49,46 @@ export function validatePrompt(prompt?: string): void {
     throw new Error('Prompt cannot be empty or whitespace.');
   }
 }
+/**
+ * Resizes any image File/Blob to an EXACT square dimension (e.g., 512x512)
+ * so that WebGPU tensor shapes match 100%, avoiding shader recompilation.
+ */
+export function resizeToFixedDimensions(file: File | Blob, size = 512): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) {
+        reject(new Error('Failed to get canvas 2D context'));
+        return;
+      }
+
+      // Draw image stretched/fitted to the exact square dimensions
+      ctx.drawImage(img, 0, 0, size, size);
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error('Failed to create Blob'));
+        },
+        'image/jpeg',
+        0.8,
+      );
+    };
+
+    img.onerror = (err) => {
+      URL.revokeObjectURL(url);
+      reject(err);
+    };
+
+    img.src = url;
+  });
+}
