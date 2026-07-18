@@ -13,12 +13,20 @@
     class="uploader-panel"
     [class.is-dragging]="isDragging()"
     [class.has-image]="imageUrl()"
+    [class.is-disabled]="disabled()"
     (dragover)="onDragOver($event)"
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
-    (click)="fileInput.click()"
+    (click)="!disabled() && fileInput.click()"
   >
-    <input #fileInput type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" />
+    <input
+      #fileInput
+      type="file"
+      class="hidden"
+      accept="image/*"
+      [disabled]="disabled()"
+      (change)="onFileSelected($event)"
+    />
 
     @if (imageUrl()) {
       <!-- Image Preview Area -->
@@ -29,6 +37,20 @@
         <button type="button" class="remove-btn" (click)="removeImage($event)" title="Remove Image">
           <span class="material-symbols-outlined text-xl">delete</span>
         </button>
+      </div>
+    } @else if (disabled()) {
+      <!-- Warming/Initializing Loading State -->
+      <div class="empty-state is-warming-state">
+        <div class="warming-spinner-wrapper">
+          <div class="warming-spinner"></div>
+        </div>
+        <div class="empty-state-text">
+          <p class="empty-state-title">Initializing On-Device AI...</p>
+          <p class="empty-state-subtitle text-primary font-medium">
+            {{ warmingMessage() || 'Compiling local GPU shaders...' }}
+          </p>
+        </div>
+        <p class="empty-state-footer">Pre-warming neural layers for premium zero-latency results</p>
       </div>
     } @else {
       <!-- Empty Upload State -->

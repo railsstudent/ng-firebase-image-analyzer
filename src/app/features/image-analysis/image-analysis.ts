@@ -25,11 +25,23 @@ export default class ImageAnalysis implements OnInit {
   performance = signal(0);
   errorMessage = signal('');
 
+  isWarming = computed(() => !!this.imageAnalysisService.warmingMessage());
+  warmingMessage = this.imageAnalysisService.warmingMessage;
+
   ngOnInit(): void {
-    this.imageAnalysisService
-      .preWarm()
-      .then(() => console.log('Gemini Nano pre-warmed and ready for action!'))
-      .catch((err) => console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err));
+    const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
+    if (isWebGPUSupported) {
+      this.imageAnalysisService
+        .preWarm()
+        .then(() => {
+          console.log('Gemini Nano pre-warmed and ready for action!');
+        })
+        .catch((err) => {
+          console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err);
+        });
+    } else {
+      console.log('WebGPU is not supported on this browser. Skipping on-device initialization, direct cloud mode.');
+    }
   }
 
   // Computed derived states

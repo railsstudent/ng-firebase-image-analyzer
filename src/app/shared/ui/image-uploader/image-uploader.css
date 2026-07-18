@@ -78,6 +78,28 @@
   @apply text-xs text-[var(--color-outline)];
 }
 
+.uploader-panel.is-disabled {
+  @apply opacity-75 cursor-not-allowed bg-[var(--color-surface-container-lowest)] border-[var(--color-outline-variant)]/40;
+}
+
+.warming-spinner-wrapper {
+  @apply flex items-center justify-center p-4 bg-[var(--color-primary-container)] rounded-full text-[var(--color-primary)];
+}
+
+.warming-spinner {
+  @apply w-10 h-10 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

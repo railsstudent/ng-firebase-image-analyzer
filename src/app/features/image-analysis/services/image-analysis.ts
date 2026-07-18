@@ -15,6 +15,8 @@ export class ImageAnalysisService {
   #aiService = inject(AiService);
   #sanitizeAdjustment = inject(SanitizeAdjustmentService);
 
+  public readonly warmingMessage = this.#aiService.warmingStatus;
+
   async preWarm(): Promise<void> {
     try {
       await this.#aiService.preWarmModel(

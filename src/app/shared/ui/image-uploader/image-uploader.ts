@@ -12,6 +12,8 @@ const MAX_FILE_SIZE_MB = 20 * ONE_MB; // Default max file size in MB
 export class ImageUploader {
   imageUrl = model<string | null>(null);
   maxSize = input<number>(MAX_FILE_SIZE_MB); // Default 20MB
+  disabled = input<boolean>(false);
+  warmingMessage = input<string | null>(null);
 
   fileSelected = output<File>();
   imageRemoved = output<void>();
@@ -20,18 +22,27 @@ export class ImageUploader {
   errorMessage = signal<string | null>(null);
 
   onDragOver(event: DragEvent) {
+    if (this.disabled()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(true);
   }
 
   onDragLeave(event: DragEvent) {
+    if (this.disabled()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
   }
 
   onDrop(event: DragEvent) {
+    if (this.disabled()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
@@ -43,6 +54,9 @@ export class ImageUploader {
   }
 
   onFileSelected(event: Event) {
+    if (this.disabled()) {
+      return;
+    }
     const inputElement = event.target as HTMLInputElement;
     const files = inputElement.files;
     if (files && files.length > 0) {

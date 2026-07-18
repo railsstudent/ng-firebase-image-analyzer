@@ -2,6 +2,8 @@
   <!-- Upload State Area -->
   <app-image-uploader
     [(imageUrl)]="imageUrl"
+    [disabled]="isWarming()"
+    [warmingMessage]="warmingMessage()"
     (fileSelected)="onFileSelected($event)"
     (imageRemoved)="onImageRemoved()"
   ></app-image-uploader>

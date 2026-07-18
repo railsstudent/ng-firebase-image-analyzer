@@ -1,4 +1,4 @@
-import { inject, Service } from '@angular/core';
+import { inject, Service, signal } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
@@ -14,6 +14,9 @@ import { AiModelCacheService } from './ai-model-cache.service';
 export class AiService {
   #cacheService = inject(AiModelCacheService);
 
+  #warmingStatus = signal<string | null>(null);
+  public readonly warmingStatus = this.#warmingStatus.asReadonly();
+
   private getCachedModel({ schema, systemInstruction }: GenerateContentParams) {
     const model = this.#cacheService.getOrCreateModel({
       schema,
@@ -27,45 +30,56 @@ export class AiService {
    * Pre-warms and caches the on-device model configuration in the background.
    */
   async preWarmModel(params: GenerateContentParams, options: PreWarmOptions = {}): Promise<void> {
-    const model = this.getCachedModel(params);
-    await this.downloadDeviceModel(model);
+    try {
+      this.#warmingStatus.set('Fetching neural model reference...');
+      const model = this.getCachedModel(params);
 
-    if (options.runDummyQuery) {
-      const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
-      if (!isWebGPUSupported) {
-        console.log('WebGPU is not supported on this device. Skipping on-device shader compilation.');
-        return;
-      }
+      this.#warmingStatus.set('Downloading and caching device model assets...');
+      await this.downloadDeviceModel(model);
 
-      const size = options.dummySize || 512;
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, size, size);
+      if (options.runDummyQuery) {
+        const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
+        if (!isWebGPUSupported) {
+          console.log('WebGPU is not supported on this device. Skipping on-device shader compilation.');
+          this.#warmingStatus.set(null);
+          return;
         }
-        const dummyBase64 = canvas.toDataURL('image/jpeg', 0.1).split(',')[1];
 
-        const dummyImagePart = {
-          inlineData: {
-            data: dummyBase64,
-            mimeType: 'image/jpeg',
-          },
-        };
+        const size = options.dummySize || 512;
+        try {
+          this.#warmingStatus.set(`Compiling ${size}x${size} GPU shaders (dummy run)...`);
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, size, size);
+          }
+          const dummyBase64 = canvas.toDataURL('image/jpeg', 0.1).split(',')[1];
 
-        const request = this.constructRequest({
-          ...params,
-          contents: ['Respond with empty JSON', dummyImagePart],
-        });
+          const dummyImagePart = {
+            inlineData: {
+              data: dummyBase64,
+              mimeType: 'image/jpeg',
+            },
+          };
 
-        await model.generateContent(request);
-        console.log(`WebGPU shaders pre-compiled successfully for shape ${size}x${size}!`);
-      } catch (err) {
-        console.warn('Silent WebGPU dummy query skipped or failed:', err);
+          const request = this.constructRequest({
+            ...params,
+            contents: ['Respond with empty JSON', dummyImagePart],
+          });
+
+          await model.generateContent(request);
+          this.#warmingStatus.set(`Shaders pre-compiled successfully for shape ${size}x${size}!`);
+          console.log(`WebGPU shaders pre-compiled successfully for shape ${size}x${size}!`);
+        } catch (err) {
+          console.warn('Silent WebGPU dummy query skipped or failed:', err);
+        }
       }
+    } finally {
+      // Clear warming state when completely finished or failed
+      this.#warmingStatus.set(null);
     }
   }
 
