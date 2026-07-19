@@ -1,10 +1,18 @@
 import { isPlatformBrowser } from '@angular/common';
 import { inject, InjectionToken, PLATFORM_ID } from '@angular/core';
 
-export const NAVIGATOR = new InjectionToken<Navigator | null>('NAVIGATOR', {
+export const WINDOW = new InjectionToken<Window | null>('WINDOW', {
   providedIn: 'root',
   factory: () => {
     const platformId = inject(PLATFORM_ID);
-    return isPlatformBrowser(platformId) ? window.navigator : null;
+    return isPlatformBrowser(platformId) ? window : null;
+  },
+});
+
+export const NAVIGATOR = new InjectionToken<Navigator | null>('NAVIGATOR', {
+  providedIn: 'root',
+  factory: () => {
+    const win = inject(WINDOW);
+    return win ? win.navigator : null;
   },
 });

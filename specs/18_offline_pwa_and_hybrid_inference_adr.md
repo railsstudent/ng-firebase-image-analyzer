@@ -159,19 +159,27 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
    };
    ```
 
-### 2. SSR-Safe Native `NAVIGATOR` Injection Token
+### 2. SSR-Safe `WINDOW` and `NAVIGATOR` Injection Tokens
 
-To access the browser's connectivity features cleanly and preserve compatibility with Server-Side Rendering (SSR) and testing, we will wrap the native global `window.navigator` inside an Angular `InjectionToken`:
+To safely reference browser globals like `window` and `window.navigator` without triggering compile or runtime exceptions during Server-Side Rendering (SSR) or static pre-rendering, we will wrap these globals in Angular `InjectionToken`s:
 
 ```typescript
 import { isPlatformBrowser } from '@angular/common';
 import { inject, InjectionToken, PLATFORM_ID } from '@angular/core';
 
-export const NAVIGATOR = new InjectionToken<Navigator | null>('NAVIGATOR', {
+export const WINDOW = new InjectionToken<Window | null>('WINDOW', {
   providedIn: 'root',
   factory: () => {
     const platformId = inject(PLATFORM_ID);
-    return isPlatformBrowser(platformId) ? window.navigator : null;
+    return isPlatformBrowser(platformId) ? window : null;
+  },
+});
+
+export const NAVIGATOR = new InjectionToken<Navigator | null>('NAVIGATOR', {
+  providedIn: 'root',
+  factory: () => {
+    const win = inject(WINDOW);
+    return win ? win.navigator : null;
   },
 });
 ```
@@ -182,7 +190,7 @@ Rather than binding imperative event listeners to the global window, we will cre
 
 ```typescript
 import { inject, Service } from '@angular/core';
-import { NAVIGATOR } from '@/core/tokens/navigator.token';
+import { NAVIGATOR } from '@/core/constants/navigator.const';
 
 @Service()
 export class ConnectionService {
@@ -203,18 +211,51 @@ const isOnline = this.#connectionService.getOnlineStatus();
 const mode = isOnline ? InferenceMode.PREFER_ON_DEVICE : InferenceMode.ONLY_ON_DEVICE;
 ```
 
-### 5. Network-Aware `ConfigService` Initialization
+### 5. Network-Aware `ConfigService` Initialization & Resilient Startup
 
-We will bypass blocking network calls inside `ConfigService.initialize()` when offline:
+We will bypass or safely guard blocking network calls inside `ConfigService.initialize()` when offline or under sluggish network connection states:
 
-- **App Check:** Only initialize if `getOnlineStatus()` returns `true`.
-- **Remote Config:** Only trigger `fetchAndActivate` when online. If offline, the config service will gracefully resolve and fall back to local JSON configuration values (`remote-config-defaults.json`).
+- **App Check Sandbox Support:** To ensure local production builds (running via `npm run preview` on `localhost`) bypass ReCaptcha Enterprise validation without failing, we will detect `isLocalhost` using the injected `WINDOW` token and force `FIREBASE_APPCHECK_DEBUG_TOKEN = true` under both dev and local production preview modes.
+- **Remote Config Fast-Timeout Race:** To prevent application bootstrapping from freezing on a blank screen under slow or false-positive online states, we will race `fetchAndActivate` against a strict **1.5-second timeout** using `Promise.race`. If it times out or fails, the application immediately resolves the initialization promise and utilizes pre-cached fallback values in `remote-config-defaults.json`.
+
+```typescript
+const isOnline = this.#connectionService.getOnlineStatus();
+const isLocalhost = this.#window && 
+  (this.#window.location.hostname === 'localhost' || this.#window.location.hostname === '127.0.0.1');
+
+if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
+  // Force debug tokens for localhost to support local preview mode testing!
+  (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isDevMode() || isLocalhost;
+  initializeAppCheck(this.#app, {
+    provider: new ReCaptchaEnterpriseProvider(firebaseConfig.recaptchaEnterpriseKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+}
+
+this.#remoteConfig = getRemoteConfig(this.#app);
+this.#remoteConfig.defaultConfig = remoteConfigDefaults;
+this.#remoteConfig.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : 3600000;
+
+if (isOnline) {
+  try {
+    const fetchPromise = fetchAndActivate(this.#remoteConfig);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Fetch timeout')), 1500)
+    );
+    await Promise.race([fetchPromise, timeoutPromise]);
+  } catch (error) {
+    console.warn('Remote Config fetch timed out or failed. Using defaults:', error);
+  }
+}
+```
 
 ---
 
 ## Consequences
 
 - **True Offline Autonomy:** Users can open, load, navigate, and analyze images with local Gemini Nano completely offline.
+- **Instant Bootstrapping Resilience:** The startup configuration never blocks for more than 1.5 seconds, even if the connection is laggy or unresponsive.
 - **Improved Performance:** No redundant network requests are attempted when offline, reducing connection timeouts and maximizing battery/performance efficiency.
-- **Robust SSR Safety:** The DI-based `NAVIGATOR` token guarantees that no browser globals are referenced on the server, keeping the rendering loop safe.
-- **Seamless Developer Experience:** The `NAVIGATOR` token makes offline capabilities simple to test with mocked providers.
+- **Robust SSR Safety:** The DI-based `WINDOW` and `NAVIGATOR` tokens guarantee that no browser globals are referenced on the server, keeping the rendering loop safe.
+- **Seamless Local Production Previews:** Developers and presenters can run optimized production builds on `localhost` without App Check rejecting local testing sessions.
+- **High-Impact Demos:** Enables watertight offline vs online capability demonstrations (such as showcasing Chrome succeeding offline while Firefox fails gracefully due to missing local APIs).
