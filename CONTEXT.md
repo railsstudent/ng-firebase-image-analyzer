@@ -10,7 +10,7 @@ To ensure consistency between developers and AI agents, the following terms repr
 
 * **Hybrid Inference**: The mechanism of automatically routing image analysis queries between client-side WebGPU execution (using Gemini Nano) and Cloud-scale Vertex AI, depending on browser capabilities and network connectivity.
 * **On-Device Pre-Warming**: The background process of downloading, caching, and compiling WebGPU shaders for the Gemini Nano model during application startup to ensure zero-latency first-run inference.
-* **App Check Sandbox**: A secure local development mechanism that bypasses reCAPTCHA Enterprise verification by forcing `FIREBASE_APPCHECK_DEBUG_TOKEN = true` when running on `localhost`.
+* **App Check Sandbox**: A secure local development mechanism that bypasses reCAPTCHA Enterprise verification on local environments. It can run in **Transient Mode** (automatically generating and logging single-session debug tokens to the browser console) or **Locked Mode** (using a persistent, pre-registered custom debug token string defined in the local `.env` configuration).
 * **Visual Enhancer**: The system component allowing users to calibrate image properties (brightness, contrast, and structure) based on the structural metadata returned by the analysis models.
 
 ---

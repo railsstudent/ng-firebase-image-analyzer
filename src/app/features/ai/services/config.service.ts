@@ -3,8 +3,8 @@ import { ConnectionService } from '@/core/services/connection.service';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';
-import { FirebaseApp, initializeApp } from 'firebase/app';
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
+import { AppCheck, initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
 
 @Service()
@@ -28,8 +28,28 @@ export class ConfigService {
     return this.#remoteConfig;
   }
 
+  // Testable helper methods to allow mocking of read-only ESM imports
+  protected initializeFirebaseApp(config: FirebaseOptions): FirebaseApp {
+    return initializeApp(config);
+  }
+
+  protected initializeAppCheckInstance(app: FirebaseApp, key: string): AppCheck {
+    return initializeAppCheck(app, {
+      provider: new ReCaptchaEnterpriseProvider(key),
+      isTokenAutoRefreshEnabled: true,
+    });
+  }
+
+  protected getRemoteConfigInstance(app: FirebaseApp): RemoteConfig {
+    return getRemoteConfig(app);
+  }
+
+  protected fetchRemoteConfig(rc: RemoteConfig): Promise<boolean> {
+    return fetchAndActivate(rc);
+  }
+
   async initialize(): Promise<void> {
-    this.#app = initializeApp(firebaseConfig.app);
+    this.#app = this.initializeFirebaseApp(firebaseConfig.app);
 
     const isOnline = this.#connectionService.getOnlineStatus();
     const isLocalhost =
@@ -38,20 +58,18 @@ export class ConfigService {
 
     if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isDevMode() || isLocalhost;
-      initializeAppCheck(this.#app, {
-        provider: new ReCaptchaEnterpriseProvider(firebaseConfig.recaptchaEnterpriseKey),
-        isTokenAutoRefreshEnabled: true,
-      });
+      (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN =
+        firebaseConfig.appCheckDebugToken || isDevMode() || isLocalhost;
+      this.initializeAppCheckInstance(this.#app, firebaseConfig.recaptchaEnterpriseKey);
     }
 
-    this.#remoteConfig = getRemoteConfig(this.#app);
+    this.#remoteConfig = this.getRemoteConfigInstance(this.#app);
     this.#remoteConfig.defaultConfig = remoteConfigDefaults;
     this.#remoteConfig.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : 3600000;
 
     if (isOnline) {
       try {
-        const fetchPromise = fetchAndActivate(this.#remoteConfig);
+        const fetchPromise = this.fetchRemoteConfig(this.#remoteConfig);
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Fetch timeout')), 1500),
         );

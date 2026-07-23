@@ -25,7 +25,7 @@ try {
 
   // Write to JSON file
   const outputPath = path.join(firebaseDir, '..', 'public', 'remote-config-defaults.json');
-  fs.writeFileSync(outputPath, JSON.stringify(defaults, null, 2), 'utf-8');
+  fs.writeFileSync(outputPath, `${JSON.stringify(defaults, null, 2)}\n`, 'utf-8');
   console.log(`Successfully wrote ${outputPath}`);
 } catch (error) {
   console.error('Error fetching or parsing remote config:', error.message);

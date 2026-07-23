@@ -43,3 +43,15 @@ Used by `/wayfinder`. The **map** is a single issue with **child** issues as tic
 - **Frontier query**: list the map's open children (`gh issue list --state open`, scoped to the map's sub-issues / task list), drop any with an open blocker (`issue_dependencies_summary.blocked_by > 0`, or an open issue in the `Blocked by` line) or an assignee; first in map order wins.
 - **Claim**: `gh issue edit <n> --add-assignee @me` — the session's first write.
 - **Resolve**: `gh issue comment <n> --body "<answer>"`, then `gh issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.
+
+## File-Based Backlog Fallback
+
+In development environments where the GitHub CLI (`gh`) is not installed or authenticated, PRDs, specs, and implementation decisions should be stored directly in the repository.
+
+- **Product Requirement Documents (PRDs)**: Stored in the `docs/prd/` directory (e.g., `docs/prd/20_app_check_debug_token_persistence_prd.md`).
+- **Architectural Decision Records (ADRs)**: Stored in the root `specs/` directory (e.g., `specs/19_app_check_debug_token_persistence_adr.md`).
+- **Naming Convention**: Use sequential numbering followed by a descriptive slug.
+- **Structure**: Follow the standard templates for PRD and ADR files.
+- **Reference**: Link these files directly within active ADRs or code commits for clear traceability.
+
+

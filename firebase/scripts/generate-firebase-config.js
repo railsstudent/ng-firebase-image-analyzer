@@ -36,6 +36,7 @@ try {
   const config = {
     app,
     recaptchaEnterpriseKey: process.env.FIREBASE_RECAPTCHA_ENTERPRISE_KEY,
+    appCheckDebugToken: process.env.FIREBASE_APPCHECK_DEBUG_TOKEN || '',
   };
 
   const outputPath = path.resolve(__dirname, '../../public/firebase.config.json');
