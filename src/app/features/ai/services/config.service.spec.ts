@@ -8,7 +8,7 @@ import { ConfigService } from './config.service';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 describe('ConfigService', () => {
   let service: ConfigService;
-  let connectionServiceSpy: jasmine.SpyObj<ConnectionService>;
+  let connectionServiceSpy: any;
   let mockWindow: { location: { hostname: string } };
   let originalAppCheckDebugToken: string;
 
@@ -16,8 +16,10 @@ describe('ConfigService', () => {
     // Store original token to restore after each test
     originalAppCheckDebugToken = firebaseConfig.appCheckDebugToken;
 
-    // Create mocks for injected services
-    connectionServiceSpy = jasmine.createSpyObj('ConnectionService', ['getOnlineStatus']);
+    // Create mocks for injected services using Vitest mocks
+    connectionServiceSpy = {
+      getOnlineStatus: vi.fn(),
+    };
     mockWindow = {
       location: {
         hostname: 'localhost',
@@ -36,18 +38,19 @@ describe('ConfigService', () => {
     service = TestBed.inject(ConfigService);
 
     // Spy on protected helper methods on the service instance to prevent actual Firebase SDK network calls
-    spyOn(service as any, 'initializeFirebaseApp').and.returnValue({} as any);
-    spyOn(service as any, 'initializeAppCheckInstance').and.returnValue({} as any);
-    spyOn(service as any, 'getRemoteConfigInstance').and.returnValue({
+    vi.spyOn(service as any, 'initializeFirebaseApp').mockReturnValue({} as any);
+    vi.spyOn(service as any, 'initializeAppCheckInstance').mockReturnValue({} as any);
+    vi.spyOn(service as any, 'getRemoteConfigInstance').mockReturnValue({
       settings: {},
     } as any);
-    spyOn(service as any, 'fetchRemoteConfig').and.returnValue(Promise.resolve(true));
+    vi.spyOn(service as any, 'fetchRemoteConfig').mockResolvedValue(true);
   });
 
   afterEach(() => {
     // Restore original config value to prevent cross-test leakage
     firebaseConfig.appCheckDebugToken = originalAppCheckDebugToken;
     delete (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN;
+    vi.restoreAllMocks();
   });
 
   it('should be created', () => {
@@ -58,7 +61,7 @@ describe('ConfigService', () => {
     it('should assign custom App Check debug token in Locked Mode when it is defined', async () => {
       // Arrange
       firebaseConfig.appCheckDebugToken = 'my-custom-persistent-token';
-      connectionServiceSpy.getOnlineStatus.and.returnValue(true);
+      connectionServiceSpy.getOnlineStatus.mockReturnValue(true);
 
       // Act
       await service.initialize();
@@ -70,7 +73,7 @@ describe('ConfigService', () => {
     it('should fallback to Transient Mode (isDevMode() or isLocalhost) when appCheckDebugToken is empty', async () => {
       // Arrange
       firebaseConfig.appCheckDebugToken = '';
-      connectionServiceSpy.getOnlineStatus.and.returnValue(true);
+      connectionServiceSpy.getOnlineStatus.mockReturnValue(true);
       mockWindow.location.hostname = 'localhost'; // Guarantees isLocalhost is true
 
       // Act
