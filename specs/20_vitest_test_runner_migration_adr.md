@@ -21,6 +21,10 @@ We will perform the following actions:
    - **Router-outlet Dependencies:** Add `provideRouter([])` to `app.spec.ts` to satisfy `RouterOutlet` dependencies.
    - **Deep Injection Mocking:** Fully mock `ImageAnalysisService` in `image-analysis.spec.ts` to decouple UI testing from the Firebase SDK and `FirebaseAI` token.
    - **Jasmine API Porting:** Refactor the Jasmine `spyOn` and `createSpyObj` assertions in `config.service.spec.ts` to use Vitest's `vi.spyOn` and `vi.fn()` utilities.
+5. **Implement Comprehensive WebGPU & Service Testing:**
+   - **WebGPU Mocking (Alternative A):** Explicitly mock `navigator.gpu` in `ai.service.spec.ts` to verify the downloading, asset caching, and mock compilation cycles of **On-Device Pre-Warming**.
+   - **API Drift Prevention (Option A):** Enforce strong contract type checks on our unit test service mocks (such as `ImageAnalysisService`) by utilizing TypeScript's `satisfies Partial<...>` type operator. Any future signature changes on the real class will automatically fail the spec compilation.
+   - **Sanitization Utility Validation (Option A):** Create a dedicated, parameterized spec file for `sanitize-adjustment.ts` using `test.each` to thoroughly test all clamping, underflow, and scale boundaries of our **Visual Enhancer** configurations.
 
 ## Consequences & Trade-offs
 

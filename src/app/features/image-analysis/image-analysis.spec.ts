@@ -7,8 +7,7 @@ describe('ImageAnalysis', () => {
   let component: ImageAnalysis;
   let fixture: ComponentFixture<ImageAnalysis>;
 
-  /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-  let mockImageAnalysisService: any;
+  let mockImageAnalysisService: Partial<ImageAnalysisService>;
 
   beforeEach(async () => {
     mockImageAnalysisService = {
@@ -18,7 +17,7 @@ describe('ImageAnalysis', () => {
         analysis: { tags: [] },
         source: 'cloud',
       }),
-    };
+    } satisfies Partial<ImageAnalysisService>;
 
     await TestBed.configureTestingModule({
       imports: [ImageAnalysis],

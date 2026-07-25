@@ -37,6 +37,9 @@ Additionally, we will refactor the existing failing spec files so that they exec
 * **Vitest Global APIs:** We will configure `tsconfig.spec.json` with `"vitest/globals"` to enable globally available testing primitives (`describe`, `it`, `expect`, `beforeEach`, `vi`), preventing the need to explicitly import them in every single file.
 * **Strict Service-Layer Mocking:** All spec files testing components that consume deep network-reliant services (such as `ImageAnalysisService`) must register lightweight mocked providers in `TestBed`. This ensures that unit tests never make live calls to Firebase or Vertex AI, which would break in sandboxed or offline environments.
 * **Host-Component Pattern for Directives:** Directives with signal inputs or constructor injections must be tested by compiling a dummy host component that consumes the directive, rather than instantiating the directive directly.
+* **Global WebGPU Mocking (Alternative A):** In `ai.service.spec.ts`, dynamically define properties on `globalThis.navigator.gpu` to emulate a fully WebGPU-compliant client. This allows us to unit-test shader compilation branches and state-warming behaviors without actual hardware constraints.
+* **Compile-Time Contract Guarding (Option A):** All unit test mocks of core services (such as `ImageAnalysisService`) must be strongly typed using TypeScript's `satisfies Partial<T>` operator. This ensures that any change or renaming of the real service methods instantly triggers a compilation failure, preventing silent API drift.
+* **Parameterized Utility Testing (Option A):** Write extensive, parameterized test matrices using `test.each` to thoroughly cover `sanitize-adjustment.ts` calculations. This targets the core clamp and crop algorithms of our **Visual Enhancer** with sub-millisecond mathematical validations.
 
 ## Testing Decisions
 
