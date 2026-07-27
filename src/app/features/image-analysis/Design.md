@@ -222,4 +222,3 @@ export class ImageAnalysis {
   }
 </div>
 ```
-

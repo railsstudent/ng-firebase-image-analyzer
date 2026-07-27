@@ -2,7 +2,6 @@
 
 This document outlines the design system, brand identity, and structural layout for the **Hybrid Image Analysis** application, as extracted from the design tokens and the **Home Page** screen in the Stitch platform. The main design system configurations and Tailwind v4 theme block are located in [src/styles.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/styles.css).
 
-
 ---
 
 ## 1. Atmosphere & Brand Identity
@@ -123,3 +122,46 @@ The layout of the Home Page leverages Tailwind CSS and standard layout rules to 
        * Bottom-Left: `absolute -bottom-xl -left-xl w-48 h-48 bg-primary-container/20 rounded-full blur-3xl`.
 3. **Footer (`footer`)**:
    * Primary background with structured left/right flex layout grouping branding items and license/credits text.
+
+---
+
+## 5. Streaming Loader & Progressive Visual States
+
+To accommodate the shift from standard blocking operations to real-time generative streams, the design system defines a set of micro-interactions and progressive layouts to keep the user interface feeling responsive, fluid, and premium.
+
+### 5.1 The Glassmorphic Streaming Loader Badge (`.streaming-loader-badge`)
+
+Rather than covering the screen with a destructive full-page blocking overlay, we use an in-situ glassmorphic status badge to keep the background workspace visible and alert the user to incoming real-time tokens:
+
+* **Aesthetic & Token Properties**:
+  * **Backdrop Blur**: `backdrop-filter: blur(12px)` for maximum glass transparency.
+  * **Background Spot**: Semitransparent fill (`rgba(255, 255, 255, 0.6)`) overlaid with a primary highlight tint.
+  * **Borders**: `1px solid rgba(var(--outline-variant-rgb), 0.3)` to define a clean, low-contrast, premium outline.
+  * **Shadow**: Subtle, diffuse shadow (`box-shadow: 0 4px 20px -2px rgba(70, 72, 212, 0.08)`).
+  * **Spacing**: Symmetrical inline padding (`px-4 py-2` or `sm`/`md` scale).
+* **Micro-Animations**:
+  * **Pulsing State**: A continuous, high-comfort scale pulse (`scale-[1.01]` transition with standard bezier timing) to evoke intelligence.
+  * **Sync Spinner**: Standard infinite rotation (`animate-spin` over `1.5s`) of the Material `sync` icon in the primary color (`#6366f1`).
+
+### 5.2 Progressive Content Reveal Animation (`.animate-fade-in`)
+
+To ensure streaming text and UI cards do not pop onto the canvas in a jarring, static manner, all progressive elements (including newly rendered tag lists and analysis tabs) are bound to a transition-smooth fade-and-rise entrance:
+
+```css
+@keyframes progressiveReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: progressiveReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+```
+
+This progressive approach maintains typographic rhythm and ensures the UI feels exceptionally natural and modern under progressive data conditions.
