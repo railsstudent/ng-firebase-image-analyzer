@@ -29,23 +29,26 @@
     </div>
   }
 
-  <!-- @if (isLoading()) { -->
-  <!-- <div class="loading-container">
-      <div class="loading-spinner"></div>
-      <p class="loading-text">Processing multimodal neural tokens...</p>
-    </div> -->
-  <!-- } @else { -->
+  @if (isLoading()) {
+    <div class="flex justify-center py-6">
+      <div class="streaming-loader-badge">
+        <span class="material-symbols-outlined animate-spin text-[var(--color-primary)]">sync</span>
+        <span class="streaming-loader-text">Streaming AI Insights...</span>
+      </div>
+    </div>
+  }
+
   @if (tags().length > 0) {
     <!-- Semantic Tag Cloud -->
-    <div class="tag-cloud-section">
+    <div class="tag-cloud-section animate-fade-in">
       <h4 class="section-subtitle">Detected Classifications</h4>
       <app-tag-list [tags]="tags()"></app-tag-list>
     </div>
-    <!-- } -->
 
     @if (analysisData()) {
       <!-- Advanced Analysis Results Panel -->
       <app-image-analysis-panel
+        class="animate-fade-in block"
         [data]="analysisData()"
         [imageUrl]="imageUrl()"
         [source]="source()"

@@ -140,8 +140,7 @@ export class AiService {
     if (schema) {
       try {
         return JSON.parse(text) as Partial<T>;
-      } catch (err) {
-        console.error(err);
+      } catch {
         return JSON.parse(jsonrepair(text)) as Partial<T>;
       }
     }
