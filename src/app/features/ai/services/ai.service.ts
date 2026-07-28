@@ -1,4 +1,3 @@
-import { ImageAnalysisResponse, PartialResponse } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service, signal } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,
@@ -8,7 +7,7 @@ import {
   TypedSchema,
 } from 'firebase/ai';
 import { jsonrepair } from 'jsonrepair';
-import { GenerateContentParams } from '../types/ai.types';
+import { GenerateContentParams, PartialResponse } from '../types/ai.types';
 import { PreWarmOptions } from '../types/pre-warm-options.type';
 import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '../types/token-usage.type';
 import { AiModelCacheService } from './ai-model-cache.service';
@@ -98,9 +97,7 @@ export class AiService {
     return result.response;
   }
 
-  async *generateContentStream<T extends ImageAnalysisResponse>(
-    params: GenerateContentParams,
-  ): AsyncGenerator<PartialResponse<T>> {
+  async *generateContentStream<T>(params: GenerateContentParams): AsyncGenerator<PartialResponse<T>> {
     this.validateInputs(params.contents);
     const model = this.getCachedModel(params);
     const request = this.constructRequest(params);
@@ -136,7 +133,7 @@ export class AiService {
     };
   }
 
-  private parseStreamJSONResponse<T extends ImageAnalysisResponse>(text: string, schema?: TypedSchema | SchemaRequest) {
+  private parseStreamJSONResponse<T>(text: string, schema?: TypedSchema | SchemaRequest) {
     if (schema) {
       try {
         return JSON.parse(text) as Partial<T>;
@@ -145,7 +142,7 @@ export class AiService {
       }
     }
 
-    return { alternativeTexts: [text] } as Partial<T>;
+    return { alternativeTexts: [text] } as unknown as Partial<T>;
   }
 
   processUsage(response: EnhancedGenerateContentResponse): TokenUsage | undefined {

@@ -13,7 +13,7 @@ import { ImageAnalysisResponse } from '../types/image-analysis-metadata.type';
 })
 export class ImageImprovement {
   imageUrl = input<string | null>(null);
-  analysis = input<ImageAnalysisResponse | null>(null);
+  analysis = input<Partial<ImageAnalysisResponse> | null>(null);
 
   sanitizeAdjustment = inject(SanitizeAdjustmentService);
   imageEffect = inject(ImageEffect);

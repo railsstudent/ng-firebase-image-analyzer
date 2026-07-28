@@ -12,18 +12,20 @@ import { RecommendationItem } from '@/shared/ui/components/recommendation-item/r
       Visual & Composition Insights
     </h3>
 
-    <app-recommendation-list>
-      @for (rec of recommendations(); track rec.recommendation) {
-        <app-recommendation-item>
-          <span indicator class="recommendation-indicator"></span>
-          <span title>{{ rec.recommendation }}</span>
-          {{ rec.sentence }}
-        </app-recommendation-item>
-      }
-    </app-recommendation-list>
+    @if (recommendations(); as recs) {
+      <app-recommendation-list>
+        @for (rec of recs; track rec.recommendation) {
+          <app-recommendation-item>
+            <span indicator class="recommendation-indicator"></span>
+            <span title>{{ rec.recommendation }}</span>
+            {{ rec.sentence }}
+          </app-recommendation-item>
+        }
+      </app-recommendation-list>
+    }
   </div>`,
   styleUrl: './image-recommendation.css',
 })
 export class ImageRecommendation {
-  recommendations = input<Recommendation[]>([]);
+  recommendations = input<Recommendation[] | undefined>([]);
 }

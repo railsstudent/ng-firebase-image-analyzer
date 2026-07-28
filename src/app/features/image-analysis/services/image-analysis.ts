@@ -5,6 +5,7 @@ import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-ana
 import {
   ImageAnalysisResponse,
   ImageAnalysisWithMetadata,
+  StreamingAnalysisWithMetadata,
 } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service } from '@angular/core';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from '../prompts/image-analysis.prompt';
@@ -98,7 +99,7 @@ export class ImageAnalysisService {
    * @param customPrompt Optional custom prompt to guide the AI model's analysis.
    * @returns A structured ImageAnalysisResponse object.
    */
-  async *analyzeImageStream(file: File | Blob, customPrompt?: string): AsyncGenerator<ImageAnalysisWithMetadata> {
+  async *analyzeImageStream(file: File | Blob, customPrompt?: string): AsyncGenerator<StreamingAnalysisWithMetadata> {
     // 1. Validate inputs
     validateImageInput(file);
     validatePrompt(customPrompt);
@@ -123,10 +124,10 @@ export class ImageAnalysisService {
       const response = update.response;
       const usageGroup = response ? this.#aiService.processUsage(response) : undefined;
       const partialData = update.partialData;
-      const analysis = {
-        alternativeTexts: partialData?.alternativeTexts || [],
-        tags: partialData?.tags || [],
-        recommendations: partialData?.recommendations || [],
+      const analysis: Partial<ImageAnalysisResponse> = {
+        alternativeTexts: partialData?.alternativeTexts,
+        tags: partialData?.tags,
+        recommendations: partialData?.recommendations,
         colorAdjustment: partialData?.colorAdjustment,
         crop: partialData?.crop,
       };

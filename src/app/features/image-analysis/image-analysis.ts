@@ -1,5 +1,5 @@
 import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
-import { ImageAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
+import { StreamingAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { ImageUploader } from '@/shared/ui/image-uploader/image-uploader';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
@@ -20,7 +20,7 @@ export default class ImageAnalysis implements OnInit {
   // Local reactive states
   imageUrl = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
-  analysisData = signal<ImageAnalysisWithMetadata | null>(null);
+  analysisData = signal<StreamingAnalysisWithMetadata | null>(null);
   isLoading = signal(false);
   performance = signal(0);
   errorMessage = signal('');
@@ -50,7 +50,7 @@ export default class ImageAnalysis implements OnInit {
     if (!data) {
       return [];
     }
-    return data.analysis.tags.map((t) => {
+    return (data.analysis.tags || []).map((t) => {
       return {
         label: t.name,
         tooltip: t.sentence,
@@ -86,6 +86,7 @@ export default class ImageAnalysis implements OnInit {
       // Stream the image analysis data that consists of partial data
       for await (const update of stream) {
         this.analysisData.set(update);
+        this.performance.set(Date.now() - start);
       }
     } catch (error) {
       console.error('Failed to analyze image with API', error);

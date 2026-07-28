@@ -1,5 +1,5 @@
 import { TokenModalityBreakdown, TokenSummary } from '@/features/ai/types/token-usage.type';
-import { EnhancedGenerateContentResponse, InferenceSource } from 'firebase/ai';
+import { InferenceSource } from 'firebase/ai';
 import { ColorAdjustment } from './color-adjustment.type';
 import { Crop } from './crop.type';
 import { Recommendation } from './recommendation.type';
@@ -21,7 +21,6 @@ export interface ImageAnalysisWithMetadata {
   tokenModalityBreakdown?: TokenModalityBreakdown;
 }
 
-export interface PartialResponse<T> {
-  partialData: Partial<T>;
-  response?: EnhancedGenerateContentResponse;
-}
+export type StreamingAnalysisWithMetadata = Omit<ImageAnalysisWithMetadata, 'analysis'> & {
+  analysis: Partial<ImageAnalysisResponse>;
+};

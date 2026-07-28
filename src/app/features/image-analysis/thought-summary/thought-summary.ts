@@ -16,11 +16,13 @@ import { RecommendationItem } from '@/shared/ui/components/recommendation-item/r
       <p class="reasoning-text"><span class="thought-label">Source:</span> {{ displaySource() }}</p>
       <p class="reasoning-text">{{ thoughtSummary() }}</p>
 
-      <app-recommendation-list listTitle="Suggested Alternative Texts">
-        @for (alt of alternativeTexts(); track alt; let i = $index) {
-          <app-recommendation-item> {{ i + 1 }}. {{ alt }} </app-recommendation-item>
-        }
-      </app-recommendation-list>
+      @if (alternativeTexts(); as altTexts) {
+        <app-recommendation-list listTitle="Suggested Alternative Texts">
+          @for (alt of altTexts; track alt; let i = $index) {
+            <app-recommendation-item> {{ i + 1 }}. {{ alt }} </app-recommendation-item>
+          }
+        </app-recommendation-list>
+      }
     </div>
   </div>`,
   styleUrl: './thought-summary.css',
@@ -29,5 +31,5 @@ export class ThoughtSummary {
   performance = input(0);
   displaySource = input('N/A');
   thoughtSummary = input('No technical logs provided.');
-  alternativeTexts = input<string[]>([]);
+  alternativeTexts = input<string[] | undefined>([]);
 }
