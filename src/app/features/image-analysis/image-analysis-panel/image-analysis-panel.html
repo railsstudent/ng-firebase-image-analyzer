@@ -5,7 +5,6 @@
       <app-tab id="thought" label="Thought Summary">
         <app-thought-summary
           [alternativeTexts]="analysis.analysis.alternativeTexts"
-          [performance]="performance()"
           [displaySource]="displaySource()"
           [thoughtSummary]="analysis.thoughtSummary || 'No technical logs provided.'"
         />

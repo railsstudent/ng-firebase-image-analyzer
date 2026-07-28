@@ -33,7 +33,7 @@
     <div class="flex justify-center py-6">
       <div class="streaming-loader-badge">
         <span class="material-symbols-outlined animate-spin text-[var(--color-primary)]">sync</span>
-        <span class="streaming-loader-text">Streaming AI Insights...</span>
+        <span class="streaming-loader-text">Streaming AI Insights ({{ performance() }}ms)...</span>
       </div>
     </div>
   }
@@ -52,7 +52,6 @@
         [data]="analysisData()"
         [imageUrl]="imageUrl()"
         [source]="source()"
-        [performance]="performance()"
       ></app-image-analysis-panel>
     }
   }

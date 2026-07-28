@@ -124,7 +124,7 @@ export class ImageAnalysisService {
       const response = update.response;
       const usageGroup = response ? this.#aiService.processUsage(response) : undefined;
       const partialData = update.partialData;
-      const analysis: Partial<ImageAnalysisResponse> = {
+      const analysis = {
         alternativeTexts: partialData?.alternativeTexts,
         tags: partialData?.tags,
         recommendations: partialData?.recommendations,

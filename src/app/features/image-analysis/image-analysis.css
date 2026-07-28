@@ -74,22 +74,26 @@
 @keyframes loaderPulse {
   0%,
   100% {
-    box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.08);
+    box-shadow: 0 4px 20px -2px rgba(70, 72, 212, 0.08);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 6px 24px 0 rgba(99, 102, 241, 0.15);
-    transform: scale(1.02);
+    box-shadow: 0 6px 24px 0 rgba(70, 72, 212, 0.15);
+    transform: scale(1.01);
   }
 }
 
 .streaming-loader-badge {
-  @apply flex items-center gap-3 px-5 py-2.5 rounded-full border transition-all duration-500 ease-out;
-  background: rgba(255, 255, 255, 0.65);
+  @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-500 ease-out;
+  background: rgba(255, 255, 255, 0.6);
   border-color: rgba(199, 196, 215, 0.3);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   animation: loaderPulse 2.5s infinite ease-in-out;
+}
+
+.streaming-loader-badge .animate-spin {
+  animation-duration: 1.5s !important;
 }
 
 .streaming-loader-text {
@@ -97,6 +101,6 @@
 }
 
 :host-context(.dark) .streaming-loader-badge {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(15, 23, 42, 0.6);
   border-color: rgba(70, 70, 90, 0.3);
 }

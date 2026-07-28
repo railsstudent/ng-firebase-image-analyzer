@@ -18,7 +18,6 @@ import { DisplaySource } from '../types/display-source.type';
 export class ImageAnalysisPanel {
   data = input<StreamingAnalysisWithMetadata | null>(null);
   imageUrl = input<string | null>(null);
-  performance = input(0);
   source = input<InferenceSource | undefined>(undefined);
 
   displaySource = computed<DisplaySource>(() => {

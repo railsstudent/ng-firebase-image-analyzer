@@ -1,0 +1,24 @@
+<div class="analysis-section-card space-y-4">
+  <h3 class="section-title">
+    <span class="material-symbols-outlined section-title-icon">psychology</span>
+    AI Reasoning Overview
+  </h3>
+
+  <div class="space-y-3">
+    <p class="reasoning-text"><span class="thought-label">Source:</span> {{ displaySource() }}</p>
+    <p class="reasoning-text">{{ thoughtSummary() }}</p>
+
+    @if (alternativeTexts(); as altTexts) {
+      <app-recommendation-list listTitle="Suggested Alternative Texts">
+        @for (alt of altTexts; track alt; let i = $index) {
+          <app-recommendation-item> {{ i + 1 }}. {{ alt }} </app-recommendation-item>
+        }
+      </app-recommendation-list>
+    } @else {
+      <div class="animate-pulse space-y-2 py-3">
+        <div class="skeleton-line w-3/4"></div>
+        <div class="skeleton-line w-1/2"></div>
+      </div>
+    }
+  </div>
+</div>

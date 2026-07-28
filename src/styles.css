@@ -149,3 +149,19 @@ h6 {
 .section-title-icon {
   @apply text-[var(--color-primary)] text-2xl;
 }
+
+/* ==========================================================================
+   Design System: Semantic Skeleton Placeholders
+   ========================================================================== */
+
+.skeleton-line {
+  @apply h-4 bg-slate-200 dark:bg-slate-700 rounded;
+}
+
+.skeleton-circle {
+  @apply h-6 w-6 bg-slate-200 dark:bg-slate-700 rounded-full;
+}
+
+.skeleton-block {
+  @apply bg-slate-200 dark:bg-slate-700 rounded-lg;
+}
