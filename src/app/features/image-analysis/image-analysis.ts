@@ -81,10 +81,12 @@ export default class ImageAnalysis implements OnInit {
       this.errorMessage.set('');
 
       // Call the service to perform live AI analysis
-      const response = await this.imageAnalysisService.analyzeImage(file);
+      const stream = await this.imageAnalysisService.analyzeImageStream(file);
 
-      // Store response directly to be bound in the panel (tags and source derive instantly)
-      this.analysisData.set(response);
+      // Stream the image analysis data that consists of partial data
+      for await (const update of stream) {
+        this.analysisData.set(update);
+      }
     } catch (error) {
       console.error('Failed to analyze image with API', error);
       const message = error instanceof Error ? error.message : 'Unknown error occurred during image analysis.';

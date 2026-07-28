@@ -1,10 +1,13 @@
+import { ImageAnalysisResponse, PartialResponse } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service, signal } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
-  GenerateContentStreamResult,
   GenerativeModel,
+  SchemaRequest,
+  TypedSchema,
 } from 'firebase/ai';
+import { jsonrepair } from 'jsonrepair';
 import { GenerateContentParams } from '../types/ai.types';
 import { PreWarmOptions } from '../types/pre-warm-options.type';
 import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '../types/token-usage.type';
@@ -95,7 +98,9 @@ export class AiService {
     return result.response;
   }
 
-  async generateContentStream(params: GenerateContentParams): Promise<GenerateContentStreamResult> {
+  async *generateContentStream<T extends ImageAnalysisResponse>(
+    params: GenerateContentParams,
+  ): AsyncGenerator<PartialResponse<T>> {
     this.validateInputs(params.contents);
     const model = this.getCachedModel(params);
     const request = this.constructRequest(params);
@@ -103,13 +108,45 @@ export class AiService {
     await this.downloadDeviceModel(model);
 
     const result = await model.generateContentStream(request);
-    const originalResponsePromise = result.response;
-    result.response = originalResponsePromise.then((response) => {
-      this.validateResponse(response);
-      return response;
-    });
+    let accumulatedText = '';
 
-    return result;
+    for await (const chunk of result.stream) {
+      try {
+        accumulatedText = accumulatedText + chunk.text();
+        const parsed = this.parseStreamJSONResponse<T>(accumulatedText, params.schema);
+        yield {
+          partialData: parsed,
+        };
+      } catch (err) {
+        // Silently swallow errors during the stream.
+        // The loop will try parsing again when the next chunk adds more text!
+        console.log('Temporary streaming JSON parse failure (normal during generation):', err);
+      }
+    }
+
+    // The stream is 100%  completed. Resolve the final Response promise
+    const finalResponse = await result.response;
+    this.validateResponse(finalResponse);
+
+    // Parse the final finished output securely
+    const finalParsed = this.parseStreamJSONResponse<T>(finalResponse.text(), params.schema);
+    yield {
+      partialData: finalParsed,
+      response: finalResponse,
+    };
+  }
+
+  private parseStreamJSONResponse<T extends ImageAnalysisResponse>(text: string, schema?: TypedSchema | SchemaRequest) {
+    if (schema) {
+      try {
+        return JSON.parse(text) as Partial<T>;
+      } catch (err) {
+        console.error(err);
+        return JSON.parse(jsonrepair(text)) as Partial<T>;
+      }
+    }
+
+    return { alternativeTexts: [text] } as Partial<T>;
   }
 
   processUsage(response: EnhancedGenerateContentResponse): TokenUsage | undefined {

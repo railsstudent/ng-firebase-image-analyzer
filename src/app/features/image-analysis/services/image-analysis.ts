@@ -1,5 +1,5 @@
 import { fileToGenerativePart } from '@/core/utils/base64.util';
-import { validateImageInput, validatePrompt, resizeToFixedDimensions } from '@/core/utils/image.util';
+import { resizeToFixedDimensions, validateImageInput, validatePrompt } from '@/core/utils/image.util';
 import { AiService } from '@/features/ai/services/ai.service';
 import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-analysis.schema';
 import {
@@ -98,7 +98,7 @@ export class ImageAnalysisService {
    * @param customPrompt Optional custom prompt to guide the AI model's analysis.
    * @returns A structured ImageAnalysisResponse object.
    */
-  async analyzeImageStream(file: File | Blob, customPrompt?: string): Promise<void> {
+  async *analyzeImageStream(file: File | Blob, customPrompt?: string): AsyncGenerator<ImageAnalysisWithMetadata> {
     // 1. Validate inputs
     validateImageInput(file);
     validatePrompt(customPrompt);
@@ -113,14 +113,31 @@ export class ImageAnalysisService {
     const userPrompt = customPrompt ? customPrompt : IMAGE_ANALYSIS_USER_PROMPT;
 
     // 4. Generate structured content
-    const result = await this.#aiService.generateContentStream({
+    const generator = await this.#aiService.generateContentStream<ImageAnalysisResponse>({
       systemInstruction: SYSTEM_INSTRUCTION,
       contents: [userPrompt, imagePart],
       schema: ImageAnalysisSchema,
     });
 
-    for await (const chunk of result.stream) {
-      console.log(chunk.text());
+    for await (const update of generator) {
+      const response = update.response;
+      const usageGroup = response ? this.#aiService.processUsage(response) : undefined;
+      const partialData = update.partialData;
+      const analysis = {
+        alternativeTexts: partialData?.alternativeTexts || [],
+        tags: partialData?.tags || [],
+        recommendations: partialData?.recommendations || [],
+        colorAdjustment: partialData?.colorAdjustment,
+        crop: partialData?.crop,
+      };
+
+      yield {
+        analysis,
+        source: response?.inferenceSource ?? 'on_device',
+        thoughtSummary: response?.thoughtSummary() ?? 'No thought summary',
+        tokenSummary: usageGroup?.tokenSummary,
+        tokenModalityBreakdown: usageGroup?.tokenBreakdown,
+      };
     }
   }
 }
