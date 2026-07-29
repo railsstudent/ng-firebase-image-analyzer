@@ -15,6 +15,6 @@ const RecomendationSchema = Schema.object({
 export const RecommendationsSchema = Schema.array({
   items: RecomendationSchema,
   minItems: 1,
-  maxItems: 2,
-  description: 'At most 2 recommendations to make the image more interesting or appealing.',
+  maxItems: 3,
+  description: 'At most 3 recommendations to make the image more interesting or appealing.',
 });

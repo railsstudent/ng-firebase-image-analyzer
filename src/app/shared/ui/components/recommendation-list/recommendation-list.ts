@@ -2,7 +2,6 @@ import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-recommendation-list',
-  standalone: true,
   template: `
     @if (listTitle()) {
       <p class="recommendation-list-title">{{ listTitle() }}</p>

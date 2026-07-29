@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-recommendation-item',
-  standalone: true,
   template: `
     <p class="recommendation-item-title">
       <ng-content select="[indicator]"></ng-content>
