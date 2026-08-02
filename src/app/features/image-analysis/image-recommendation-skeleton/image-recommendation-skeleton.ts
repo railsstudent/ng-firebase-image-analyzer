@@ -1,29 +1,21 @@
 import { Component } from '@angular/core';
 
+const ODD_ROW_CLASSES = ['w-1/4', 'w-5/6'];
+const EVEN_ROW_CLASSES = ['w-1/3', 'w-3/4'];
+
 @Component({
   selector: 'app-image-recommendation-skeleton',
   template: `<div class="animate-pulse space-y-4 py-3">
-    <div class="flex gap-4">
-      <div class="skeleton-circle"></div>
-      <div class="flex-1 space-y-2 py-1">
-        <div class="skeleton-line w-1/4"></div>
-        <div class="skeleton-line w-5/6"></div>
+    @for (row of segmentRows; track $index) {
+      <div class="flex gap-4">
+        <div class="skeleton-circle"></div>
+        <div class="flex-1 space-y-2 py-1">
+          @for (line of row; track line) {
+            <div class="skeleton-line {{ line }}"></div>
+          }
+        </div>
       </div>
-    </div>
-    <div class="flex gap-4">
-      <div class="skeleton-circle"></div>
-      <div class="flex-1 space-y-2 py-1">
-        <div class="skeleton-line w-1/3"></div>
-        <div class="skeleton-line w-3/4"></div>
-      </div>
-    </div>
-    <div class="flex gap-4">
-      <div class="skeleton-circle"></div>
-      <div class="flex-1 space-y-2 py-1">
-        <div class="skeleton-line w-1/4"></div>
-        <div class="skeleton-line w-5/6"></div>
-      </div>
-    </div>
+    }
   </div>`,
   styles: `
     :host {
@@ -31,4 +23,6 @@ import { Component } from '@angular/core';
     }
   `,
 })
-export class ImageRecommendationSkeleton {}
+export class ImageRecommendationSkeleton {
+  readonly segmentRows = [ODD_ROW_CLASSES, EVEN_ROW_CLASSES, ODD_ROW_CLASSES];
+}

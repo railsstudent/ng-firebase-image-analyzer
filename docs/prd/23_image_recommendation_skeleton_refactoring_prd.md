@@ -20,47 +20,39 @@ The newly created component `ImageRecommendationSkeleton` will be defined as an 
 
 ## 3. Refactoring Steps
 
-### Step 1: Create Image Recommendation Skeleton Component (`src/app/features/image-analysis/image-recommendation/image-recommendation-skeleton.ts`)
+### Step 1: Create Image Recommendation Skeleton Component (`src/app/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.ts`)
 
 Create the new subcomponent file:
 
 ```typescript
 import { Component } from '@angular/core';
 
+const ODD_ROW_CLASSES = ['w-1/4', 'w-5/6'];
+const EVEN_ROW_CLASSES = ['w-1/3', 'w-3/4'];
+
 @Component({
   selector: 'app-image-recommendation-skeleton',
-  template: `
-    <div class="animate-pulse space-y-4 py-3">
+  template: `<div class="animate-pulse space-y-4 py-3">
+    @for (row of segmentRows; track $index) {
       <div class="flex gap-4">
         <div class="skeleton-circle"></div>
         <div class="flex-1 space-y-2 py-1">
-          <div class="skeleton-line w-1/4"></div>
-          <div class="skeleton-line w-5/6"></div>
+          @for (line of row; track line) {
+            <div class="skeleton-line {{ line }}"></div>
+          }
         </div>
       </div>
-      <div class="flex gap-4">
-        <div class="skeleton-circle"></div>
-        <div class="flex-1 space-y-2 py-1">
-          <div class="skeleton-line w-1/3"></div>
-          <div class="skeleton-line w-3/4"></div>
-        </div>
-      </div>
-      <div class="flex gap-4">
-        <div class="skeleton-circle"></div>
-        <div class="flex-1 space-y-2 py-1">
-          <div class="skeleton-line w-1/4"></div>
-          <div class="skeleton-line w-5/6"></div>
-        </div>
-      </div>
-    </div>
-  `,
+    }
+  </div>`,
   styles: `
     :host {
       display: block;
     }
   `,
 })
-export class ImageRecommendationSkeleton {}
+export class ImageRecommendationSkeleton {
+  readonly segmentRows = [ODD_ROW_CLASSES, EVEN_ROW_CLASSES, ODD_ROW_CLASSES];
+}
 ```
 
 ### Step 2: Import Skeleton Component in Parent (`src/app/features/image-analysis/image-recommendation/image-recommendation.ts`)
@@ -86,44 +78,30 @@ export class ImageRecommendation {
 
 ```
 
-### Step 3: Inline Template (`src/app/features/image-analysis/image-recommendation/image-recommendation.ts`)
+### Step 3: Swap Fallback Markup in External HTML (`src/app/features/image-analysis/image-recommendation/image-recommendation.html`)
 
-Replace the hardcoded HTML skeleton block under the `@else` branch with the new component:
+Replace the hardcoded HTML skeleton block inside the external HTML template under the `@else` branch with the new custom skeleton tag:
 
-```typescript
-import { ImageRecommendationSkeleton } from '@/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton';
-import { RecommendationItem } from '@/shared/ui/components/recommendation-item/recommendation-item';
-import { RecommendationList } from '@/shared/ui/components/recommendation-list/recommendation-list';
-import { Component, input } from '@angular/core';
-import { Recommendation } from '../types/recommendation.type';
-
-@Component({
-  selector: 'app-image-recommendation',
-  imports: [RecommendationList, RecommendationItem, ImageRecommendationSkeleton],
-  template: `<div class="analysis-section-card space-y-4">
-    <h3 class="section-title">
-      <span class="material-symbols-outlined section-title-icon">auto_awesome</span>
-      Visual & Composition Insights
-    </h3>
-    @if (recommendations(); as recs) {
-      <app-recommendation-list>
-        @for (rec of recs; track rec.recommendation) {
-          <app-recommendation-item>
-            <span indicator class="recommendation-indicator"></span>
-            <span title>{{ rec.recommendation }}</span>
-            {{ rec.sentence }}
-          </app-recommendation-item>
-        }
-      </app-recommendation-list>
-    } @else {
-      <app-image-recommendation-skeleton />
-    }
-  </div>`,
-  styleUrl: './image-recommendation.css',
-})
-export class ImageRecommendation {
-  recommendations = input<Recommendation[] | undefined>(undefined);
-}
+```html
+<div class="analysis-section-card space-y-4">
+  <h3 class="section-title">
+    <span class="material-symbols-outlined section-title-icon">auto_awesome</span>
+    Visual & Composition Insights
+  </h3>
+  @if (recommendations(); as recs) {
+    <app-recommendation-list>
+      @for (rec of recs; track rec.recommendation) {
+        <app-recommendation-item>
+          <span indicator class="recommendation-indicator"></span>
+          <span title>{{ rec.recommendation }}</span>
+          {{ rec.sentence }}
+        </app-recommendation-item>
+      }
+    </app-recommendation-list>
+  } @else {
+    <app-image-recommendation-skeleton />
+  }
+</div>
 ```
 
 ---

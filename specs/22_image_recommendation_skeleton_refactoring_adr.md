@@ -26,17 +26,17 @@ We will extract the skeleton loader into a local, feature-scoped subcomponent na
 
 Create the component in `src/app/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.ts` right next to the parent component.
 
-### 2. Angular Standalone Component Pattern
+### 2. Angular Standalone Component Pattern & Looping
 
 Implement it as a lightweight standalone component with:
 
 - Selector: `app-image-recommendation-skeleton`
-- Inline template containing the extracted skeleton HTML markup.
+- Inline template using dynamic loop `@for` syntax with stable `$index` tracking to render the staggered lines and eliminate markup duplication.
 - Local host styling to ensure `display: block`.
 
-### 3. Local Import
+### 3. Local Import & Fallback Swap
 
-Import and declare `ImageRecommendationSkeleton` in `ImageRecommendation`'s `imports` list in `image-recommendation.ts`, delete `image-recommendation.html` and inline template to reference `<app-image-recommendation-skeleton />`.
+Import and declare `ImageRecommendationSkeleton` in `ImageRecommendation`'s `imports` list in `image-recommendation.ts`. Swap out the fallback markup inside `image-recommendation.html` for the new custom tag `<app-image-recommendation-skeleton />`. We retain the external template and stylesheet files to maintain architectural symmetry with `image-recommendation.css`.
 
 ---
 
