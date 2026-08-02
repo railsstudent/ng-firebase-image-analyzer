@@ -54,9 +54,6 @@ import { Component } from '@angular/core';
       </div>
     </div>
   `,
-  host: {
-    class: 'image-recommendation-skeleton-host',
-  },
   styles: `
     :host {
       display: block;
