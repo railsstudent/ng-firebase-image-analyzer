@@ -24,14 +24,14 @@ We will extract the skeleton loader into a local, feature-scoped subcomponent na
 
 ### 1. File Colocation
 
-Create the component in `src/app/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.ts` right next to the parent component.
+Create the component in a dedicated sibling folder `src/app/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.ts`.
 
 ### 2. Angular Standalone Component Pattern & Looping
 
 Implement it as a lightweight standalone component with:
 
 - Selector: `app-image-recommendation-skeleton`
-- Inline template using dynamic loop `@for` syntax with stable `$index` tracking to render the staggered lines and eliminate markup duplication.
+- Inline template using dynamic loop `@for` syntax tracking rows with `$index` and lines with `line` classes to render the staggered lines and eliminate markup duplication.
 - Local host styling to ensure `display: block`.
 
 ### 3. Local Import & Fallback Swap

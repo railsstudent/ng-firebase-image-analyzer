@@ -33,12 +33,12 @@ const EVEN_ROW_CLASSES = ['w-1/3', 'w-3/4'];
 @Component({
   selector: 'app-image-recommendation-skeleton',
   template: `<div class="animate-pulse space-y-4 py-3">
-    @for (row of segmentRows; track $index) {
+    @for (widthClasses of rowWidthStyles; track $index) {
       <div class="flex gap-4">
         <div class="skeleton-circle"></div>
         <div class="flex-1 space-y-2 py-1">
-          @for (line of row; track line) {
-            <div class="skeleton-line {{ line }}"></div>
+          @for (widthClass of widthClasses; track widthClass) {
+            <div class="skeleton-line {{ widthClass }}"></div>
           }
         </div>
       </div>
@@ -51,7 +51,7 @@ const EVEN_ROW_CLASSES = ['w-1/3', 'w-3/4'];
   `,
 })
 export class ImageRecommendationSkeleton {
-  readonly segmentRows = [ODD_ROW_CLASSES, EVEN_ROW_CLASSES, ODD_ROW_CLASSES];
+  readonly rowWidthStyles = [ODD_ROW_CLASSES, EVEN_ROW_CLASSES, ODD_ROW_CLASSES];
 }
 ```
 
