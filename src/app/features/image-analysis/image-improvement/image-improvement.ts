@@ -1,5 +1,6 @@
 import { EnhancedCanvas } from '@/features/image-analysis/enhanced-canvas/enhanced-canvas';
 import { ImageCrop } from '@/features/image-analysis/image-crop/image-crop';
+import { ImageImprovementSkeleton } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton';
 import { SanitizeAdjustmentService } from '@/features/image-analysis/services/sanitize-adjustment';
 import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { Component, computed, inject, input } from '@angular/core';
@@ -7,9 +8,39 @@ import { ImageAnalysisResponse } from '../types/image-analysis-metadata.type';
 
 @Component({
   selector: 'app-image-improvement',
-  imports: [ImageCrop, EnhancedCanvas],
-  templateUrl: './image-improvement.html',
-  styleUrl: './image-improvement.css',
+  imports: [ImageCrop, EnhancedCanvas, ImageImprovementSkeleton],
+  template: `<div class="analysis-section-card space-y-4">
+    <h3 class="section-title">
+      <span class="material-symbols-outlined section-title-icon" aria-hidden="true"> photo_filter </span>
+      Visual Enhancer Calibration
+    </h3>
+
+    @if (showSkeleton()) {
+      <app-image-improvement-skeleton />
+    } @else {
+      <div class="improvement-grid">
+        <app-image-crop
+          [colorAdjustment]="safeColorAdjustment()"
+          [aspectRatio]="cropImage().containerStyle.aspectRatio"
+          [cropPosition]="cropPosition()"
+        />
+
+        <!-- Enhanced Canvas -->
+        <app-enhanced-canvas
+          [imageUrl]="imageUrl()"
+          [cropImage]="cropImage()"
+          [colorAdjustment]="safeColorAdjustment()"
+        />
+      </div>
+    }
+  </div>`,
+  styles: `
+    @reference "../../../../styles.css";
+
+    .improvement-grid {
+      @apply grid grid-cols-1 md:grid-cols-3 gap-6;
+    }
+  `,
 })
 export class ImageImprovement {
   imageUrl = input<string | null>(null);
@@ -18,15 +49,11 @@ export class ImageImprovement {
   sanitizeAdjustment = inject(SanitizeAdjustmentService);
   imageEffect = inject(ImageEffect);
 
-  safeColorAdjustment = computed(() => {
-    const adj = this.analysis()?.colorAdjustment;
-    return this.sanitizeAdjustment.sanitizeColorAdjustments(adj);
-  });
+  safeColorAdjustment = computed(() =>
+    this.sanitizeAdjustment.sanitizeColorAdjustments(this.analysis()?.colorAdjustment),
+  );
 
-  safeCrop = computed(() => {
-    const crop = this.analysis()?.crop;
-    return this.sanitizeAdjustment.sanitizeCrop(crop);
-  });
+  safeCrop = computed(() => this.sanitizeAdjustment.sanitizeCrop(this.analysis()?.crop));
 
   // Safe formatting helpers for crop settings
   cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), 100));
@@ -38,4 +65,12 @@ export class ImageImprovement {
     }
     return 'N/A';
   });
+
+  showSkeleton = computed(
+    () =>
+      !this.imageUrl() ||
+      this.analysis() === null ||
+      this.analysis()?.crop === undefined ||
+      this.analysis()?.colorAdjustment === undefined,
+  );
 }
