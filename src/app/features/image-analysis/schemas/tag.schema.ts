@@ -15,6 +15,6 @@ const TagSchema = Schema.object({
 export const TagsSchema = Schema.array({
   items: TagSchema,
   minItems: 2,
-  maxItems: 3,
-  description: 'At least 2 and no more than 3 relevant tags describing the image, each with a justification sentence.',
+  maxItems: 4,
+  description: 'At least 2 and no more than 4 relevant tags describing the image, each with a justification sentence.',
 });

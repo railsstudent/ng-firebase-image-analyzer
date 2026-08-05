@@ -35,4 +35,15 @@ describe('ImageAnalysis', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should compute seconds formatted to one decimal place', () => {
+    component.performance.set(1240);
+    expect(component.seconds()).toBe('1.2');
+
+    component.performance.set(0);
+    expect(component.seconds()).toBe('0.0');
+
+    component.performance.set(450);
+    expect(component.seconds()).toBe('0.5');
+  });
 });

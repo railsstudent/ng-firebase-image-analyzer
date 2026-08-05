@@ -24,7 +24,7 @@
     <div class="action-container">
       <button (click)="triggerAnalysis()" class="primary-action-btn">
         <span class="material-symbols-outlined">psychology</span>
-        Analyze Image
+        Analyze Image ({{ seconds() }}s)
       </button>
     </div>
   }
@@ -33,7 +33,7 @@
     <div class="flex justify-center py-6">
       <div class="streaming-loader-badge">
         <span class="material-symbols-outlined animate-spin text-[var(--color-primary)]">sync</span>
-        <span class="streaming-loader-text">Streaming AI Insights ({{ performance() }}ms)...</span>
+        <span class="streaming-loader-text">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>
   }

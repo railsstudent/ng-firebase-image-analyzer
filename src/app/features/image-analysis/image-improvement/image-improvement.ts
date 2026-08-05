@@ -21,7 +21,7 @@ import { ImageAnalysisResponse } from '../types/image-analysis-metadata.type';
       <div class="improvement-grid">
         <app-image-crop
           [colorAdjustment]="safeColorAdjustment()"
-          [aspectRatio]="cropImage().containerStyle.aspectRatio"
+          [aspectRatio]="aspectRatio()"
           [cropPosition]="cropPosition()"
         />
 
@@ -57,6 +57,8 @@ export class ImageImprovement {
 
   // Safe formatting helpers for crop settings
   cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), 100));
+
+  aspectRatio = computed(() => this.cropImage().containerStyle.aspectRatio);
 
   cropPosition = computed(() => {
     const safeCrop = this.safeCrop();

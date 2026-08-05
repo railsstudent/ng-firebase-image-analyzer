@@ -25,6 +25,8 @@ export default class ImageAnalysis implements OnInit {
   performance = signal(0);
   errorMessage = signal('');
 
+  seconds = computed(() => (this.performance() / 1000).toFixed(1));
+
   isWarming = computed(() => !!this.imageAnalysisService.warmingMessage());
   warmingMessage = this.imageAnalysisService.warmingMessage;
 
