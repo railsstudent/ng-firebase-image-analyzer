@@ -98,12 +98,33 @@ The project provides npm scripts to run, test, and build the application in vari
 
 | Command | Action | URL / Port |
 | :--- | :--- | :--- |
-| `npm run start` | Launches local Angular development server | `http://localhost:4200` |
+| `npm run start` | Launches local Angular development server with Hot Module Replacement (HMR) | `http://localhost:4200` |
 | `npm run build` | Runs prebuild config generators and compiles production build | Output: `dist/` |
-| `npm run preview` | Runs the compiled production build locally | `http://localhost:5005` |
+| `npm run preview` | Runs the compiled production build locally on a fixed port | `http://localhost:5005` |
+| `npm run preview:emulator` | Runs the compiled production build on a dynamic emulator-assigned port | `$PORT` |
 | `npm run firebase:emulate` | Runs the application using the local Firebase App Hosting Emulator | `http://localhost:5005` |
 | `npm run test` | Executes unit tests with the Karma test runner | - |
 | `npm run lint` | Runs eslint across codebase | - |
+| **Pipeline Utilities:** | | |
+| `npm run config:fetch` | Manually fetches the Firebase Remote Config parameters as local defaults | - |
+| `npm run config:generate` | Manually parses `.env` to generate public-facing `firebase.config.json` | - |
+
+### 🔄 Local Emulation vs. Rapid Development Workflow
+
+When working locally, you have two distinct execution modes depending on your immediate objective:
+
+#### 1. Rapid Feature Development (90% of your time)
+* **Command**: `npm run start` (which triggers `ng serve`)
+* **URL**: `http://localhost:4200`
+* **How it works**: Runs the standard Angular development server with **Hot Module Replacement (HMR)** and dynamic compilation in under a second.
+* **Best for**: Adjusting UI layouts, tweaking styles, writing component logic, and fast iterative coding.
+* **Why not use the emulator?**: Serving production-like emulators requires compiling the full optimized bundle (`ng build`) on every single file save, disabling hot-reloading and slowing your iteration loop down to 10–15 seconds per edit.
+
+#### 2. High-Fidelity Pre-Deployment Emulation (Before Pushing to Git)
+* **Command**: `npm run firebase:emulate`
+* **URL**: `http://localhost:5005`
+* **How it works**: The Local Emulator Suite boots your application using the configured `startCommand` inside `firebase/firebase.json`. 
+* **Fidelity Optimization**: By default, the emulator is configured with `"startCommand": "npm run start"` for rapid local startup. To verify your optimized production assets, lazy-loaded chunk resolutions, environment variables, security rules, and PWA Service Workers before pushing, simply toggle the `startCommand` in `firebase.json` to point to `"npm run preview:emulator"`!
 
 ---
 

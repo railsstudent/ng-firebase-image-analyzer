@@ -7,6 +7,7 @@
     "prebuild": "node firebase/scripts/prebuild.js",
     "build": "ng build",
     "preview": "npm run build && npx serve dist/ng-firebase-image-analyzer/browser --listen 5005",
+    "preview:emulator": "npm run build && npx serve dist/ng-firebase-image-analyzer/browser --listen $PORT",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
