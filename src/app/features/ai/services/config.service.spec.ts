@@ -1,5 +1,4 @@
-import { WINDOW } from '@/core/constants/navigator.const';
-import { ConnectionService } from '@/core/services/connection.service';
+import { NAVIGATOR, WINDOW } from '@/core/constants/navigator.const';
 import firebaseConfig from '@/public/firebase.config.json';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -8,7 +7,7 @@ import { ConfigService } from './config.service';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 describe('ConfigService', () => {
   let service: ConfigService;
-  let connectionServiceSpy: any;
+  let mockNavigator: { onLine: boolean };
   let mockWindow: { location: { hostname: string } };
   let originalAppCheckDebugToken: string;
 
@@ -17,9 +16,7 @@ describe('ConfigService', () => {
     originalAppCheckDebugToken = firebaseConfig.appCheckDebugToken;
 
     // Create mocks for injected services using Vitest mocks
-    connectionServiceSpy = {
-      getOnlineStatus: vi.fn(),
-    };
+    mockNavigator = { onLine: true };
     mockWindow = {
       location: {
         hostname: 'localhost',
@@ -30,7 +27,7 @@ describe('ConfigService', () => {
       providers: [
         provideZonelessChangeDetection(),
         ConfigService,
-        { provide: ConnectionService, useValue: connectionServiceSpy },
+        { provide: NAVIGATOR, useValue: mockNavigator },
         { provide: WINDOW, useValue: mockWindow },
       ],
     });
@@ -61,7 +58,7 @@ describe('ConfigService', () => {
     it('should assign custom App Check debug token in Locked Mode when it is defined', async () => {
       // Arrange
       firebaseConfig.appCheckDebugToken = 'my-custom-persistent-token';
-      connectionServiceSpy.getOnlineStatus.mockReturnValue(true);
+      mockNavigator.onLine = true;
 
       // Act
       await service.initialize();
@@ -73,7 +70,7 @@ describe('ConfigService', () => {
     it('should fallback to Transient Mode (isDevMode() or isLocalhost) when appCheckDebugToken is empty', async () => {
       // Arrange
       firebaseConfig.appCheckDebugToken = '';
-      connectionServiceSpy.getOnlineStatus.mockReturnValue(true);
+      mockNavigator.onLine = true;
       mockWindow.location.hostname = 'localhost'; // Guarantees isLocalhost is true
 
       // Act

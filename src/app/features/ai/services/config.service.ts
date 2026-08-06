@@ -1,5 +1,5 @@
 import { WINDOW } from '@/core/constants/navigator.const';
-import { ConnectionService } from '@/core/services/connection.service';
+import { injectOnlineStatus } from '@/core/utils/connection.util';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';
@@ -11,7 +11,7 @@ import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote
 export class ConfigService {
   #app: FirebaseApp | undefined = undefined;
   #remoteConfig: RemoteConfig | undefined = undefined;
-  #connectionService = inject(ConnectionService);
+  #isOnline = injectOnlineStatus();
   #window = inject(WINDOW);
 
   get firebaseApp(): FirebaseApp {
@@ -51,7 +51,7 @@ export class ConfigService {
   async initialize(): Promise<void> {
     this.#app = this.initializeFirebaseApp(firebaseConfig.app);
 
-    const isOnline = this.#connectionService.getOnlineStatus();
+    const isOnline = this.#isOnline();
     const isLocalhost =
       this.#window &&
       (this.#window.location.hostname === 'localhost' || this.#window.location.hostname === '127.0.0.1');

@@ -2,7 +2,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AiModelCacheService } from './ai-model-cache.service';
 import { ConfigService } from '@/features/ai/services/config.service';
-import { ConnectionService } from '@/core/services/connection.service';
+import { NAVIGATOR } from '@/core/constants/navigator.const';
 import { FIREBASE_AI } from '@/features/ai/constants/ai.const';
 
 vi.mock('firebase/remote-config', () => ({
@@ -43,15 +43,13 @@ vi.mock('firebase/ai', () => ({
 describe('AiModelCacheService', () => {
   let service: AiModelCacheService;
   let mockConfigService: any;
-  let mockConnectionService: any;
+  let mockNavigator: { onLine: boolean };
 
   beforeEach(() => {
     mockConfigService = {
       RemoteConfig: {} as any,
     };
-    mockConnectionService = {
-      getOnlineStatus: vi.fn().mockReturnValue(true),
-    };
+    mockNavigator = { onLine: true };
 
     TestBed.configureTestingModule({
       providers: [
@@ -59,7 +57,7 @@ describe('AiModelCacheService', () => {
         AiModelCacheService,
         { provide: FIREBASE_AI, useValue: {} },
         { provide: ConfigService, useValue: mockConfigService },
-        { provide: ConnectionService, useValue: mockConnectionService },
+        { provide: NAVIGATOR, useValue: mockNavigator },
       ],
     });
 
