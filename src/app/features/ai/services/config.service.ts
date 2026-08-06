@@ -1,8 +1,8 @@
-import { WINDOW } from '@/core/constants/navigator.const';
 import { injectOnlineStatus } from '@/core/utils/connection.util';
+import { configureAppCheckDebugToken, injectIsLocalhost } from '@/core/utils/platform.util';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
-import { inject, isDevMode, Service } from '@angular/core';
+import { isDevMode, Service } from '@angular/core';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { AppCheck, initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
@@ -12,7 +12,7 @@ export class ConfigService {
   #app: FirebaseApp | undefined = undefined;
   #remoteConfig: RemoteConfig | undefined = undefined;
   #isOnline = injectOnlineStatus();
-  #window = inject(WINDOW);
+  #isLocalhost = injectIsLocalhost();
 
   get firebaseApp(): FirebaseApp {
     if (!this.#app) {
@@ -40,8 +40,11 @@ export class ConfigService {
     });
   }
 
-  protected getRemoteConfigInstance(app: FirebaseApp): RemoteConfig {
-    return getRemoteConfig(app);
+  protected setupRemoteConfig(app: FirebaseApp): RemoteConfig {
+    const rc = getRemoteConfig(app);
+    rc.defaultConfig = remoteConfigDefaults;
+    rc.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : 3600000;
+    return rc;
   }
 
   protected fetchRemoteConfig(rc: RemoteConfig): Promise<boolean> {
@@ -52,20 +55,14 @@ export class ConfigService {
     this.#app = this.initializeFirebaseApp(firebaseConfig.app);
 
     const isOnline = this.#isOnline();
-    const isLocalhost =
-      this.#window &&
-      (this.#window.location.hostname === 'localhost' || this.#window.location.hostname === '127.0.0.1');
+    const isLocalhost = this.#isLocalhost();
 
     if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN =
-        firebaseConfig.appCheckDebugToken || isDevMode() || isLocalhost;
+      configureAppCheckDebugToken(firebaseConfig.appCheckDebugToken, isLocalhost);
       this.initializeAppCheckInstance(this.#app, firebaseConfig.recaptchaEnterpriseKey);
     }
 
-    this.#remoteConfig = this.getRemoteConfigInstance(this.#app);
-    this.#remoteConfig.defaultConfig = remoteConfigDefaults;
-    this.#remoteConfig.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : 3600000;
+    this.#remoteConfig = this.setupRemoteConfig(this.#app);
 
     if (isOnline) {
       try {

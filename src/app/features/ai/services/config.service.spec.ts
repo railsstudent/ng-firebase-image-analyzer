@@ -37,9 +37,7 @@ describe('ConfigService', () => {
     // Spy on protected helper methods on the service instance to prevent actual Firebase SDK network calls
     vi.spyOn(service as any, 'initializeFirebaseApp').mockReturnValue({} as any);
     vi.spyOn(service as any, 'initializeAppCheckInstance').mockReturnValue({} as any);
-    vi.spyOn(service as any, 'getRemoteConfigInstance').mockReturnValue({
-      settings: {},
-    } as any);
+    vi.spyOn(service as any, 'setupRemoteConfig').mockReturnValue({} as any);
     vi.spyOn(service as any, 'fetchRemoteConfig').mockResolvedValue(true);
   });
 
