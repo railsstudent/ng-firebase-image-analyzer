@@ -10,10 +10,8 @@ export function provideFirebaseAI(): EnvironmentProviders {
       provide: FIREBASE_AI,
       useFactory: () => {
         const configService = inject(ConfigService);
-        const app = configService.firebaseApp;
-        const remoteConfig = configService.RemoteConfig;
-        const location = getValue(remoteConfig, 'vertexAILocation').asString() || 'global';
-        return getAI(app, {
+        const location = getValue(configService.RemoteConfig, 'vertexAILocation').asString() || 'global';
+        return getAI(configService.firebaseApp, {
           backend: new VertexAIBackend(location),
         });
       },
