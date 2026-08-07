@@ -85,18 +85,6 @@ export class AiService {
     }
   }
 
-  async generateContent(params: GenerateContentParams): Promise<EnhancedGenerateContentResponse> {
-    this.validateInputs(params.contents);
-    const model = this.getCachedModel(params);
-    const request = this.constructRequest(params);
-
-    await this.downloadDeviceModel(model);
-
-    const result = await model.generateContent(request);
-    this.validateResponse(result.response);
-    return result.response;
-  }
-
   async *generateContentStream<T>(params: GenerateContentParams): AsyncGenerator<PartialResponse<T>> {
     this.validateInputs(params.contents);
     const model = this.getCachedModel(params);

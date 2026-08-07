@@ -13,9 +13,13 @@ describe('ImageAnalysis', () => {
     mockImageAnalysisService = {
       warmingMessage: signal(''),
       preWarm: vi.fn().mockResolvedValue(undefined),
-      analyzeImage: vi.fn().mockResolvedValue({
-        analysis: { tags: [] },
-        source: 'cloud',
+      analyzeImageStream: vi.fn().mockReturnValue({
+        async *[Symbol.asyncIterator]() {
+          yield {
+            analysis: { tags: [] },
+            source: 'cloud',
+          };
+        },
       }),
     } satisfies Partial<ImageAnalysisService>;
 

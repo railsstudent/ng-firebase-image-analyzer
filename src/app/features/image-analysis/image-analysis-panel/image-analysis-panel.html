@@ -1,31 +1,35 @@
 @if (data(); as analysis) {
+  @let innerAnalysis = analysis.analysis;
+  @let alternativeTexts = innerAnalysis?.alternativeTexts;
+  @let recommendations = innerAnalysis?.recommendations;
+  @let thoughtSummary = analysis.thoughtSummary || 'No technical logs provided.';
+  @let tokenSummary = analysis.tokenSummary;
+  @let tokenModalityBreakdown = analysis.tokenModalityBreakdown;
+
   <div class="analysis-panel-container">
     <app-tab-group>
       <!-- 3.1: Thought Summary -->
       <app-tab id="thought" label="Thought Summary">
         <app-thought-summary
-          [alternativeTexts]="analysis.analysis.alternativeTexts"
+          [alternativeTexts]="alternativeTexts"
           [displaySource]="displaySource()"
-          [thoughtSummary]="analysis.thoughtSummary || 'No technical logs provided.'"
+          [thoughtSummary]="thoughtSummary"
         />
       </app-tab>
 
       <!-- 3.2: Recommendations -->
       <app-tab id="detailed" label="Recommendations">
-        <app-image-recommendation [recommendations]="analysis.analysis.recommendations" />
+        <app-image-recommendation [recommendations]="recommendations" />
       </app-tab>
 
       <!-- 3.3: Token Usage -->
       <app-tab id="tokens" label="Token Usage">
-        <app-token-analytics
-          [tokenSummary]="this.data()?.tokenSummary"
-          [tokenModalityBreakdown]="this.data()?.tokenModalityBreakdown"
-        />
+        <app-token-analytics [tokenSummary]="tokenSummary" [tokenModalityBreakdown]="tokenModalityBreakdown" />
       </app-tab>
 
       <!-- 3.4: Image Improvement -->
       <app-tab id="improvement" label="Image Improvement">
-        <app-image-improvement [analysis]="analysis.analysis" [imageUrl]="imageUrl()" />
+        <app-image-improvement [analysis]="innerAnalysis" [imageUrl]="imageUrl()" />
       </app-tab>
     </app-tab-group>
   </div>

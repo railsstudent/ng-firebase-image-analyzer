@@ -47,26 +47,6 @@ describe('AiService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('generateContent', () => {
-    it('should validate inputs, compile models, and return response metadata', async () => {
-      const params = { contents: 'Analyze this sample prompt' };
-      const response = await service.generateContent(params);
-
-      expect(mockCacheService.getOrCreateModel).toHaveBeenCalledWith({
-        schema: undefined,
-        systemInstruction: undefined,
-      });
-      expect(mockGenerativeModel.initializeDeviceModel).toHaveBeenCalled();
-      expect(mockGenerativeModel.generateContent).toHaveBeenCalled();
-      expect(response.candidates?.[0].finishReason).toBe('STOP');
-    });
-
-    it('should throw error for empty/whitespace contents', async () => {
-      const params = { contents: '   ' };
-      await expect(service.generateContent(params)).rejects.toThrow();
-    });
-  });
-
   describe('preWarmModel', () => {
     describe('when WebGPU is NOT supported', () => {
       beforeEach(() => {
