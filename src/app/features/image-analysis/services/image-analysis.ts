@@ -42,20 +42,15 @@ export class ImageAnalysisService {
    * @returns A structured ImageAnalysisResponse object.
    */
   async *analyzeImageStream(file: File | Blob, customPrompt?: string): AsyncGenerator<StreamingAnalysisWithMetadata> {
-    // 1. Validate inputs
     validateImageInput(file);
     validatePrompt(customPrompt);
 
-    // 2. Resize in-memory to exactly 512x512 for optimal WebGPU tensor shape matching
     const optimizedFile = await resizeToFixedDimensions(file, 512);
 
-    // 3. Convert File/Blob to base64 generative Part
     const imagePart = await fileToGenerativePart(optimizedFile);
 
-    // 3. Formulate the prompt/instructions
     const userPrompt = customPrompt ? customPrompt : IMAGE_ANALYSIS_USER_PROMPT;
 
-    // 4. Generate structured content
     const generator = await this.#aiService.generateContentStream<ImageAnalysisResponse>({
       systemInstruction: SYSTEM_INSTRUCTION,
       contents: [userPrompt, imagePart],
