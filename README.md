@@ -149,7 +149,7 @@ To ensure local builds running via `localhost` (such as `npm run start`, `npm ru
 1. Run the application locally in dev or preview mode.
 2. Open your browser's developer console (F12).
 3. Search for a console log from Firebase App Check containing a temporary debug token:
-   `App Check debug token: 12345678-abcd-ef01-2345-6789abcdef01`
+   `App Check debug token: <debug token>`
 4. Copy this debug token.
 5. In the [Firebase Console](https://console.firebase.google.com), navigate to **App Check > Apps**.
 6. Select your Web app, click the overflow menu (three dots), and select **Manage debug tokens**.
