@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 
 @Component({
   selector: 'app-footer',
@@ -10,11 +10,14 @@ import { Component } from '@angular/core';
           <span class="footer-brand-title">Firebase AI Logic</span>
         </div>
         <span class="footer-copyright">
-          &copy; 2026 Hybrid & On-device Image Analyzer. Built with Angular, Gemini, Firebase AI Logic & Tailwind.
+          &copy; {{ copyrightYear() }} Hybrid & On-device Image Analyzer. Built with Angular, Gemini, Firebase AI Logic
+          & Tailwind.
         </span>
       </div>
     </footer>
   `,
   styleUrl: './footer.css',
 })
-export class Footer {}
+export class Footer {
+  copyrightYear = computed(() => new Date(Date.now()).getFullYear());
+}
