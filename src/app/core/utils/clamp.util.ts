@@ -1,4 +1,6 @@
-export function clamp(value: number | undefined | null, min: number, max: number, fallback: number): number {
+import { ClampOptions } from '@/core/types/clamp-option.type';
+
+export function clamp({value, min, max, fallback}: ClampOptions): number {
   if (value === undefined || value === null || isNaN(value)) {
     return fallback;
   }

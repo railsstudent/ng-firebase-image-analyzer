@@ -1,4 +1,4 @@
-import { TokenModalityBreakdown, TokenSummary } from '@/features/ai/types/token-usage.type';
+import { TokenModalityBreakdown, TokenSummary } from '@/core/ai/types/token-usage.type';
 import { InferenceSource } from 'firebase/ai';
 import { ColorAdjustment } from './color-adjustment.type';
 import { Crop } from './crop.type';

@@ -1,4 +1,8 @@
-import { inject, Service, signal } from '@angular/core';
+import { FALLBACK_IMAGE_SIZE } from '@/core/ai/constants/image.const';
+import { GenerateContentParams, PartialResponse } from '@/core/ai/types/ai.types';
+import { PreWarmOptions } from '@/core/ai/types/pre-warm-options.type';
+import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '@/core/ai/types/token-usage.type';
+import { DOCUMENT, inject, Service, signal } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
@@ -7,9 +11,6 @@ import {
   TypedSchema,
 } from 'firebase/ai';
 import { jsonrepair } from 'jsonrepair';
-import { GenerateContentParams, PartialResponse } from '../types/ai.types';
-import { PreWarmOptions } from '../types/pre-warm-options.type';
-import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '../types/token-usage.type';
 import { AiModelCacheService } from './ai-model-cache.service';
 
 @Service()
@@ -18,6 +19,8 @@ export class AiService {
 
   #warmingStatus = signal<string | null>(null);
   public readonly warmingStatus = this.#warmingStatus.asReadonly();
+
+  #document = inject(DOCUMENT);
 
   private getCachedModel({ schema, systemInstruction }: GenerateContentParams) {
     const model = this.#cacheService.getOrCreateModel({
@@ -47,25 +50,10 @@ export class AiService {
           return;
         }
 
-        const size = options.dummySize || 512;
+        const size = options.dummySize || FALLBACK_IMAGE_SIZE;
         try {
           this.#warmingStatus.set(`Compiling ${size}x${size} GPU shaders (dummy run)...`);
-          const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, size, size);
-          }
-          const dummyBase64 = canvas.toDataURL('image/jpeg', 0.1).split(',')[1];
-
-          const dummyImagePart = {
-            inlineData: {
-              data: dummyBase64,
-              mimeType: 'image/jpeg',
-            },
-          };
+          const dummyImagePart = this.makeDummyImagePart(size);
 
           const request = this.constructRequest({
             ...params,
@@ -83,6 +71,27 @@ export class AiService {
       // Clear warming state when completely finished or failed
       this.#warmingStatus.set(null);
     }
+  }
+
+  private makeDummyImagePart(size: number) {
+    const canvas = this.#document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, size, size);
+    }
+    const imageQuality = 0.1;
+    const dummyBase64 = canvas.toDataURL('image/jpeg', imageQuality).split(',')[1];
+
+    const dummyImagePart = {
+      inlineData: {
+        data: dummyBase64,
+        mimeType: 'image/jpeg',
+      },
+    };
+    return dummyImagePart;
   }
 
   async *generateContentStream<T>(params: GenerateContentParams): AsyncGenerator<PartialResponse<T>> {
@@ -166,7 +175,11 @@ export class AiService {
     // (2) before any queries to the model (such as `generateContent()`)
     // You may want to `await` this promise if using `ONLY_ON_DEVICE` (see note below).
     if (model) {
-      await model.initializeDeviceModel((val) => console.log(`Download progress: ${Math.round(val * 10000) / 100}%`));
+      const percent = 100;
+      const roundPercentage = 10000;
+      await model.initializeDeviceModel((val) =>
+        console.log(`Download progress: ${Math.round(val * roundPercentage) / percent}%`),
+      );
     }
   }
 
@@ -183,35 +196,47 @@ export class AiService {
     }
 
     if (Array.isArray(contents)) {
-      if (contents.length === 0) {
-        throw new Error('Input contents array cannot be empty.');
-      }
-      for (const item of contents) {
-        if (item === null || item === undefined) {
-          throw new Error('Input contents array cannot contain null or undefined elements.');
-        }
-        if (typeof item === 'string') {
-          if (item.trim() === '') {
-            throw new Error('Input contents array cannot contain empty or whitespace strings.');
-          }
-        } else {
-          // Check if single Part object has keys
-          if (Object.keys(item).length === 0) {
-            throw new Error('Input contents array cannot contain empty Part objects.');
-          }
-        }
-      }
+      this.validateContentsArray(contents);
       return;
     }
 
     if (typeof contents === 'object') {
-      if (Object.keys(contents).length === 0) {
-        throw new Error('Input Part object cannot be empty.');
-      }
+      this.validatePartObject(contents);
       return;
     }
 
     throw new Error('Invalid input contents type.');
+  }
+
+  private validateContentsArray(contents: unknown[]): void {
+    if (contents.length === 0) {
+      throw new Error('Input contents array cannot be empty.');
+    }
+    for (const item of contents) {
+      this.validateArrayItem(item);
+    }
+  }
+
+  private validateArrayItem(item: unknown): void {
+    if (item === null || item === undefined) {
+      throw new Error('Input contents array cannot contain null or undefined elements.');
+    }
+    if (typeof item === 'string') {
+      if (item.trim() === '') {
+        throw new Error('Input contents array cannot contain empty or whitespace strings.');
+      }
+    } else {
+      // Check if single Part object has keys
+      if (Object.keys(item).length === 0) {
+        throw new Error('Input contents array cannot contain empty Part objects.');
+      }
+    }
+  }
+
+  private validatePartObject(contents: object): void {
+    if (Object.keys(contents).length === 0) {
+      throw new Error('Input Part object cannot be empty.');
+    }
   }
 
   private validateResponse(response: GenerateContentResponse): void {

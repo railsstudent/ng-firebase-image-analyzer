@@ -1,5 +1,5 @@
 import { NavService } from '@/core/services/nav.service';
-import { NavLink } from '@/core/types/route.types';
+import { NavLink } from '@/core/types/route.type';
 import { Component, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 

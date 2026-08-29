@@ -1,7 +1,7 @@
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download';
+import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
 import { Crop } from '@/features/image-analysis/types/crop.type';
 import { Directive, inject, input } from '@angular/core';
-import { ColorAdjustment } from '../types/color-adjustment.type';
 
 @Directive({
   selector: '[appDownloadEnhanced]',

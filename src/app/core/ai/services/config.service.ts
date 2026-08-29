@@ -7,6 +7,10 @@ import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { AppCheck, initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
 
+const SECONDS = 60;
+const MILLISECONDS = 1000;
+const FETCH_INTERVAL = SECONDS * SECONDS * MILLISECONDS;
+
 @Service()
 export class ConfigService {
   #app: FirebaseApp | undefined = undefined;
@@ -43,7 +47,7 @@ export class ConfigService {
   protected setupRemoteConfig(app: FirebaseApp): RemoteConfig {
     const rc = getRemoteConfig(app);
     rc.defaultConfig = remoteConfigDefaults;
-    rc.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : 3600000;
+    rc.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : FETCH_INTERVAL;
     return rc;
   }
 
@@ -66,11 +70,7 @@ export class ConfigService {
 
     if (isOnline) {
       try {
-        const fetchPromise = this.fetchRemoteConfig(this.#remoteConfig);
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Fetch timeout')), 1500),
-        );
-        const activated = await Promise.race([fetchPromise, timeoutPromise]);
+        const activated = await this.fetchRemoteConfig(this.#remoteConfig);
         console.log('Remote Config initialized. Activated new values:', activated);
       } catch (error) {
         console.warn('Remote Config fetch timed out or failed. Using defaults:', error);

@@ -1,13 +1,18 @@
+import { FALLBACK_IMAGE_SIZE } from '@/core/ai/constants/image.const';
+import { AiService } from '@/core/ai/services/ai.service';
 import { fileToGenerativePart } from '@/core/utils/base64.util';
 import { resizeToFixedDimensions, validateImageInput, validatePrompt } from '@/core/utils/image.util';
-import { AiService } from '@/features/ai/services/ai.service';
+import {
+  IMAGE_ANALYSIS_USER_PROMPT,
+  SYSTEM_INSTRUCTION,
+} from '@/features/image-analysis/prompts/image-analysis.prompt';
 import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-analysis.schema';
 import {
   ImageAnalysisResponse,
   StreamingAnalysisWithMetadata,
 } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { inject, Service } from '@angular/core';
-import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from '../prompts/image-analysis.prompt';
+import { InferenceSource } from 'firebase/ai';
 
 @Service()
 export class ImageAnalysisService {
@@ -45,7 +50,7 @@ export class ImageAnalysisService {
     validateImageInput(file);
     validatePrompt(customPrompt);
 
-    const optimizedFile = await resizeToFixedDimensions(file, 512);
+    const optimizedFile = await resizeToFixedDimensions(file, FALLBACK_IMAGE_SIZE);
 
     const imagePart = await fileToGenerativePart(optimizedFile);
 
@@ -60,21 +65,28 @@ export class ImageAnalysisService {
     for await (const update of generator) {
       const response = update.response;
       const usageGroup = response ? this.#aiService.processUsage(response) : undefined;
-      const partialData = update.partialData;
+      const partialData = update.partialData || {};
       const analysis = {
-        alternativeTexts: partialData?.alternativeTexts,
-        tags: partialData?.tags,
-        recommendations: partialData?.recommendations,
-        colorAdjustment: partialData?.colorAdjustment,
-        crop: partialData?.crop,
+        alternativeTexts: partialData.alternativeTexts,
+        tags: partialData.tags,
+        recommendations: partialData.recommendations,
+        colorAdjustment: partialData.colorAdjustment,
+        crop: partialData.crop,
       };
+
+      let source: InferenceSource = 'on_device';
+      let thoughtSummary = 'No thought summary';
+      if (response) {
+        source = response.inferenceSource || 'on_device';
+        thoughtSummary = response.thoughtSummary() || 'No thought summary';
+      }
 
       yield {
         analysis,
-        source: response?.inferenceSource ?? 'on_device',
-        thoughtSummary: response?.thoughtSummary() ?? 'No thought summary',
-        tokenSummary: usageGroup?.tokenSummary,
-        tokenModalityBreakdown: usageGroup?.tokenBreakdown,
+        source,
+        thoughtSummary,
+        tokenSummary: usageGroup ? usageGroup.tokenSummary : undefined,
+        tokenModalityBreakdown: usageGroup ? usageGroup.tokenBreakdown : undefined,
       };
     }
   }

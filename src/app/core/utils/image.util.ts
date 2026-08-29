@@ -1,5 +1,4 @@
-const ONE_MB = 1024 * 1024;
-const MAX_BYTES = 20 * ONE_MB;
+import { FALLBACK_IMAGE_SIZE, MAX_FILE_SIZE_MB, ONE_MB } from '@/core/ai/constants/image.const';
 
 function formatFileSizeMbs(fileSize: number) {
   return `${(fileSize / ONE_MB).toFixed(2)}MB`;
@@ -29,9 +28,9 @@ export function validateImageInput(file: File | Blob): void {
   }
 
   // Validate size (Gemini inline data limit is 20MB)
-  if (file.size > MAX_BYTES) {
+  if (file.size > MAX_FILE_SIZE_MB) {
     const strFileSize = formatFileSizeMbs(file.size);
-    throw new Error(`File size (${strFileSize} exceeds the ${MAX_BYTES}MB limit for inline analysis.`);
+    throw new Error(`File size (${strFileSize} exceeds the ${MAX_FILE_SIZE_MB}MB limit for inline analysis.`);
   }
 }
 
@@ -53,7 +52,7 @@ export function validatePrompt(prompt?: string): void {
  * Resizes any image File/Blob to an EXACT square dimension (e.g., 512x512)
  * so that WebGPU tensor shapes match 100%, avoiding shader recompilation.
  */
-export function resizeToFixedDimensions(file: File | Blob, size = 512): Promise<Blob> {
+export function resizeToFixedDimensions(file: File | Blob, size = FALLBACK_IMAGE_SIZE): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
@@ -74,13 +73,17 @@ export function resizeToFixedDimensions(file: File | Blob, size = 512): Promise<
       // Draw image stretched/fitted to the exact square dimensions
       ctx.drawImage(img, 0, 0, size, size);
 
+      const quality = 0.8;
       canvas.toBlob(
         (blob) => {
-          if (blob) resolve(blob);
-          else reject(new Error('Failed to create Blob'));
+          if (blob) {
+            return resolve(blob);
+          } else {
+            return reject(new Error('Failed to create Blob'));
+          }
         },
         'image/jpeg',
-        0.8,
+        quality,
       );
     };
 

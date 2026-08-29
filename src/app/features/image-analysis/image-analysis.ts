@@ -7,6 +7,8 @@ import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel'
 import { TagList } from './tag-list/tag-list';
 import { ImageTag } from './tag-list/types/image-tag.type';
 
+const MILLISECONDS = 1000;
+
 @Component({
   selector: 'app-image-analysis',
   imports: [ImageUploader, TagList, ImageAnalysisPanel],
@@ -25,7 +27,7 @@ export default class ImageAnalysis implements OnInit {
   performance = signal(0);
   errorMessage = signal('');
 
-  seconds = computed(() => (this.performance() / 1000).toFixed(1));
+  seconds = computed(() => (this.performance() / MILLISECONDS).toFixed(1));
 
   isWarming = computed(() => !!this.imageAnalysisService.warmingMessage());
   warmingMessage = this.imageAnalysisService.warmingMessage;
@@ -52,17 +54,13 @@ export default class ImageAnalysis implements OnInit {
     if (!data) {
       return [];
     }
-    return (data.analysis.tags || []).map((t) => {
-      return {
-        label: t.name,
-        tooltip: t.sentence,
-      };
-    });
+    return (data.analysis.tags || []).map((t) => ({
+      label: t.name,
+      tooltip: t.sentence,
+    }));
   });
 
-  source = computed<InferenceSource | undefined>(() => {
-    return this.analysisData()?.source;
-  });
+  source = computed<InferenceSource | undefined>(() => this.analysisData()?.source);
 
   onFileSelected(file: File) {
     this.selectedFile.set(file);

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ROUTE_PATHS } from './core/types/route.types';
+import { ROUTE_PATHS } from './core/types/route.type';
 
 export const routes: Routes = [
   {

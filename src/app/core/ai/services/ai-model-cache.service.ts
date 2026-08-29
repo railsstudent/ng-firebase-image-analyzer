@@ -1,11 +1,11 @@
-import { FIREBASE_AI } from '@/features/ai/constants/ai.const';
-import { ConfigService } from '@/features/ai/services/config.service';
+import { FIREBASE_AI } from '@/core/ai/constants/ai.const';
+import { SAFETY_SETTINGS } from '@/core/ai/constants/safety-settings.const';
+import { ConfigService } from '@/core/ai/services/config.service';
+import { ModelConfigParams } from '@/core/ai/types/model-config-params.type';
+import { injectOnlineStatus } from '@/core/utils/connection.util';
 import { inject, Service } from '@angular/core';
 import { GenerativeModel, getGenerativeModel, HybridParams, InferenceMode, ThinkingLevel } from 'firebase/ai';
 import { getValue } from 'firebase/remote-config';
-import { SAFETY_SETTINGS } from '../constants/safety-settings.const';
-import { ModelConfigParams } from '../types/model-config-params.type';
-import { injectOnlineStatus } from '@/core/utils/connection.util';
 
 @Service()
 export class AiModelCacheService {

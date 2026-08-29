@@ -1,15 +1,19 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AiModelCacheService } from './ai-model-cache.service';
-import { ConfigService } from '@/features/ai/services/config.service';
+import { ConfigService } from '@/core/ai/services/config.service';
 import { NAVIGATOR } from '@/core/constants/navigator.const';
-import { FIREBASE_AI } from '@/features/ai/constants/ai.const';
+import { FIREBASE_AI } from '@/core/ai/constants/ai.const';
 
 vi.mock('firebase/remote-config', () => ({
   getValue: vi.fn((_config, key) => ({
     asString: () => {
-      if (key === 'geminiModelName') return 'mock-gemini-model';
-      if (key === 'thinkingLevel') return 'LOW';
+      if (key === 'geminiModelName') {
+        return 'mock-gemini-model';
+      }
+      if (key === 'thinkingLevel') {
+        return 'LOW';
+      }
       return '';
     },
   })),

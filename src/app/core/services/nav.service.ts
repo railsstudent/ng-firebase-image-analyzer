@@ -1,6 +1,6 @@
+import { AppRoute, NavLink } from '@/core/types/route.type';
 import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppRoute, NavLink } from '../types/route.types';
 
 @Service()
 export class NavService {

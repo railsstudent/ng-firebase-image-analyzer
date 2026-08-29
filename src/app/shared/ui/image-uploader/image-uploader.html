@@ -14,10 +14,14 @@
     [class.is-dragging]="isDragging()"
     [class.has-image]="imageUrl()"
     [class.is-disabled]="disabled()"
+    tabindex="0"
+    role="button"
     (dragover)="onDragOver($event)"
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
     (click)="!disabled() && fileInput.click()"
+    (keydown.enter)="!disabled() && fileInput.click()"
+    (keydown.space)="$event.preventDefault(); !disabled() && fileInput.click()"
   >
     <input
       #fileInput

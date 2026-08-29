@@ -1,8 +1,6 @@
+import { MAX_FILE_SIZE_MB, ONE_MB } from '@/core/ai/constants/image.const';
 import { readFileAsDataURL } from '@/core/utils/base64.util';
 import { Component, input, model, output, signal } from '@angular/core';
-
-const ONE_MB = 1024 * 1024;
-const MAX_FILE_SIZE_MB = 20 * ONE_MB; // Default max file size in MB
 
 @Component({
   selector: 'app-image-uploader',

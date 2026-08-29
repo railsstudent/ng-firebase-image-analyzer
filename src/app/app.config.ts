@@ -1,5 +1,5 @@
-import { provideFirebaseAI } from '@/features/ai/providers/ai.provider';
-import { ConfigService } from '@/features/ai/services/config.service';
+import { provideFirebaseAI } from '@/core/ai/providers/ai.provider';
+import { ConfigService } from '@/core/ai/services/config.service';
 import {
   ApplicationConfig,
   inject,

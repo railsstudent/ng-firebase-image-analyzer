@@ -81,12 +81,11 @@ export class VisualCalibrationService {
       return undefined;
     }
 
-    const half = 0.5;
     return {
-      brightness: clamp(adjustment.brightness, half, 2.0, 1.0),
-      saturation: clamp(adjustment.saturation, 0.0, 2.0, 1.0),
-      contrast: clamp(adjustment.contrast, half, 2.0, 1.0),
-      warmth: clamp(adjustment.warmth, 0.0, 1.0, half),
+      brightness: clamp({ value: adjustment.brightness, min: 0.5, max: 2.0, fallback: 1.0 }),
+      saturation: clamp({ value: adjustment.saturation, min: 0.0, max: 2.0, fallback: 1.0 }),
+      contrast: clamp({ value: adjustment.contrast, min: 0.5, max: 2.0, fallback: 1.0 }),
+      warmth: clamp({ value: adjustment.warmth, min: 0.0, max: 1.0, fallback: 0.5 }),
     };
   }
 
@@ -95,10 +94,10 @@ export class VisualCalibrationService {
       return undefined;
     }
 
-    const clampedxMin = clamp(crop.xMin, 0, 1, 0);
-    const clampedyMin = clamp(crop.yMin, 0, 1, 0);
-    const clampedxMax = clamp(crop.xMax, 0, 1, 1);
-    const clampedyMax = clamp(crop.yMax, 0, 1, 1);
+    const clampedxMin = clamp({ value: crop.xMin, min: 0, max: 1, fallback: 0 });
+    const clampedyMin = clamp({ value: crop.yMin, min: 0, max: 1, fallback: 0 });
+    const clampedxMax = clamp({ value: crop.xMax, min: 0, max: 1, fallback: 1 });
+    const clampedyMax = clamp({ value: crop.yMax, min: 0, max: 1, fallback: 1 });
 
     const xMin = Math.min(clampedxMin, clampedxMax);
     const yMin = Math.min(clampedyMin, clampedyMax);

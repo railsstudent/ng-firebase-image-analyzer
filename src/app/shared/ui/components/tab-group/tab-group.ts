@@ -1,5 +1,5 @@
+import { Tab } from '@/shared/ui/components/tab/tab';
 import { Component, computed, contentChildren, signal } from '@angular/core';
-import { Tab } from '../tab/tab';
 import { TAB_GROUP_CONTEXT } from './constants/tab-group-context.const';
 
 @Component({

@@ -1,7 +1,8 @@
+import { TokenSummary } from '@/core/ai/types/token-usage.type';
 import { findModalityTokenCount } from '@/core/utils/modality-token-count.util';
 import { calculatePercentage } from '@/core/utils/percentage.util';
-import { TokenSummary } from '@/features/ai/types/token-usage.type';
 import { BaseModalityTokens, ModalitySegments } from '@/features/image-analysis/types/modality-tokens.type';
+import { TokenUsageMetadata } from '@/features/image-analysis/types/token-usage.type';
 import { TokenLegendItem } from '@/shared/ui/components/token-usage-bar/types/token-legend-item.type';
 import { TokenSegment } from '@/shared/ui/components/token-usage-bar/types/token-segment.type';
 import { Modality, ModalityTokenCount } from 'firebase/ai';
@@ -61,6 +62,50 @@ export function parseTokenDetails(tokenSummary: TokenSummary | undefined, totalT
   const cachedTokens = tokenSummary?.cachedContentTokenCount ?? 0;
   const thoughtTokens = tokenSummary?.thoughtsTokenCount ?? 0;
 
+  const x = { promptTokens, totalTokenCount, candidatesTokens, cachedTokens, thoughtTokens }
+  const tokenUsageSegments = getTokenUsageSegments(x);
+  const tokenUsageLegend = getTokenUsageLegend(x);
+
+  return {
+    segments: tokenUsageSegments,
+    legend: tokenUsageLegend,
+  };
+}
+
+function getTokenUsageLegend({ promptTokens, candidatesTokens, cachedTokens, thoughtTokens }: TokenUsageMetadata): TokenLegendItem[] {
+  return [
+    {
+      type: 'prompt',
+      itemCssClass: 'legend-item',
+      itemDotCssClass: 'bg-input',
+      token: promptTokens,
+      label: 'Input',
+    },
+    {
+      type: 'output',
+      itemCssClass: 'legend-item',
+      itemDotCssClass: 'bg-output',
+      token: candidatesTokens,
+      label: 'Output',
+    },
+    {
+      type: 'cached',
+      itemCssClass: 'legend-item',
+      itemDotCssClass: 'bg-cached',
+      token: cachedTokens,
+      label: 'Cached',
+    },
+    {
+      type: 'thought',
+      itemCssClass: 'legend-item',
+      itemDotCssClass: 'bg-thought',
+      token: thoughtTokens,
+      label: 'Thought',
+    },
+  ];
+}
+
+function getTokenUsageSegments({ promptTokens, totalTokenCount, candidatesTokens, cachedTokens, thoughtTokens }: TokenUsageMetadata) {
   const promptTokensPercentage = calculatePercentage(promptTokens, totalTokenCount);
   const outputTokensPercentage = calculatePercentage(candidatesTokens, totalTokenCount);
   const cachedTokensPercentage = calculatePercentage(cachedTokens, totalTokenCount);
@@ -91,40 +136,6 @@ export function parseTokenDetails(tokenSummary: TokenSummary | undefined, totalT
       title: 'Thought Tokens',
     },
   ];
-
-  const tokenUsageLegend: TokenLegendItem[] = [
-    {
-      type: 'prompt',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-input',
-      token: promptTokens,
-      label: 'Input',
-    },
-    {
-      type: 'output',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-output',
-      token: candidatesTokens,
-      label: 'Output',
-    },
-    {
-      type: 'cached',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-cached',
-      token: cachedTokens,
-      label: 'Cached',
-    },
-    {
-      type: 'thought',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-thought',
-      token: thoughtTokens,
-      label: 'Thought',
-    },
-  ];
-
-  return {
-    segments: tokenUsageSegments,
-    legend: tokenUsageLegend,
-  };
+  return tokenUsageSegments;
 }
+
