@@ -1,17 +1,14 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { SanitizeAdjustmentService } from './sanitize-adjustment';
-import { ColorAdjustment } from '../types/color-adjustment.type';
-import { Crop } from '../types/crop.type';
+import { VisualCalibrationService } from './visual-calibration';
+import { Crop } from '@/features/image-analysis/types/crop.type';
+import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
 
-describe('SanitizeAdjustmentService', () => {
-  let service: SanitizeAdjustmentService;
+describe('CssStyling', () => {
+  let service: VisualCalibrationService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [provideZonelessChangeDetection(), SanitizeAdjustmentService],
-    });
-    service = TestBed.inject(SanitizeAdjustmentService);
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(VisualCalibrationService);
   });
 
   it('should be created', () => {

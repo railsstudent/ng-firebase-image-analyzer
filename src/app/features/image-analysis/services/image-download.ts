@@ -1,16 +1,16 @@
 import { Crop } from '@/features/image-analysis/types/crop.type';
 import { ImageDownloadOptions } from '@/features/image-analysis/types/image-download-options.type';
-import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { VisualCalibrationService } from './visual-calibration';
 
 @Service()
 export class ImageDownloadService {
   private readonly httpService = inject(HttpClient);
   private readonly document = inject(DOCUMENT);
 
-  #imageEffect = inject(ImageEffect);
+  #imageEffect = inject(VisualCalibrationService);
 
   #fetchImageBlob(url: string): Promise<Blob> {
     return firstValueFrom(this.httpService.get(url, { responseType: 'blob' }));

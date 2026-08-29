@@ -1,9 +1,8 @@
 import { EnhancedCanvas } from '@/features/image-analysis/enhanced-canvas/enhanced-canvas';
 import { ImageCrop } from '@/features/image-analysis/image-crop/image-crop';
 import { ImageImprovementSkeleton } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton';
-import { SanitizeAdjustmentService } from '@/features/image-analysis/services/sanitize-adjustment';
 import { ImageAnalysisResponse } from '@/features/image-analysis/types/image-analysis-metadata.type';
-import { DEFAULT_IMAGE_WIDTH, ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { DEFAULT_IMAGE_WIDTH, VisualCalibrationService } from '@/features/image-analysis/services/visual-calibration';
 import { Component, computed, inject, input } from '@angular/core';
 
 @Component({
@@ -46,15 +45,11 @@ import { Component, computed, inject, input } from '@angular/core';
 export class ImageImprovement {
   imageUrl = input<string | null>(null);
   analysis = input<Partial<ImageAnalysisResponse> | null>(null);
+  imageEffect = inject(VisualCalibrationService);
 
-  sanitizeAdjustment = inject(SanitizeAdjustmentService);
-  imageEffect = inject(ImageEffect);
+  safeColorAdjustment = computed(() => this.imageEffect.sanitizeColorAdjustments(this.analysis()?.colorAdjustment));
 
-  safeColorAdjustment = computed(() =>
-    this.sanitizeAdjustment.sanitizeColorAdjustments(this.analysis()?.colorAdjustment),
-  );
-
-  safeCrop = computed(() => this.sanitizeAdjustment.sanitizeCrop(this.analysis()?.crop));
+  safeCrop = computed(() => this.imageEffect.sanitizeCrop(this.analysis()?.crop));
 
   // Safe formatting helpers for crop settings
   cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), DEFAULT_IMAGE_WIDTH));

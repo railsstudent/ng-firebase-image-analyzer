@@ -1,6 +1,6 @@
 import { DownloadEnhancedDirective } from '@/features/image-analysis/directives/download-enhanced';
 import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
-import { CropImageStyles } from '@/features/image-enhancer/types/crop-image.type';
+import { CropImageStyles } from '@/features/image-analysis/types/crop-image.type';
 import { Component, computed, input, signal } from '@angular/core';
 
 const DECIMAL_PLACES = 4;

@@ -1,13 +1,14 @@
+import { clamp } from '@/core/utils/clamp.util';
 import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
+import { CropImageStyles } from '@/features/image-analysis/types/crop-image.type';
 import { Crop } from '@/features/image-analysis/types/crop.type';
-import { CropImageStyles } from '@/features/image-enhancer/types/crop-image.type';
 import { Service } from '@angular/core';
 
 export const DEFAULT_IMAGE_WIDTH = 100;
 export const PERCENT = 100;
 
 @Service()
-export class ImageEffect {
+export class VisualCalibrationService {
   getCssFilter(adjustment?: ColorAdjustment) {
     if (!adjustment) {
       return '';
@@ -66,5 +67,54 @@ export class ImageEffect {
       },
       crop: safeCrop,
     };
+  }
+
+  /**
+   * Analyzes an image and returns altedoirnative texts, tags, recommendations, and optional styling recommendations.
+   *
+   * @param file The image File or Blob to analyze.
+   * @param customPrompt Optional custom prompt to guide the AI model's analysis.
+   * @returns A structured ImageAnalysisResponse object.
+   */
+  sanitizeColorAdjustments(adjustment?: ColorAdjustment): ColorAdjustment | undefined {
+    if (!adjustment) {
+      return undefined;
+    }
+
+    const half = 0.5;
+    return {
+      brightness: clamp(adjustment.brightness, half, 2.0, 1.0),
+      saturation: clamp(adjustment.saturation, 0.0, 2.0, 1.0),
+      contrast: clamp(adjustment.contrast, half, 2.0, 1.0),
+      warmth: clamp(adjustment.warmth, 0.0, 1.0, half),
+    };
+  }
+
+  sanitizeCrop(crop?: Crop): Crop | undefined {
+    if (!crop) {
+      return undefined;
+    }
+
+    const clampedxMin = clamp(crop.xMin, 0, 1, 0);
+    const clampedyMin = clamp(crop.yMin, 0, 1, 0);
+    const clampedxMax = clamp(crop.xMax, 0, 1, 1);
+    const clampedyMax = clamp(crop.yMax, 0, 1, 1);
+
+    const xMin = Math.min(clampedxMin, clampedxMax);
+    const yMin = Math.min(clampedyMin, clampedyMax);
+    const xMax = Math.max(clampedxMin, clampedxMax);
+    const yMax = Math.max(clampedyMin, clampedyMax);
+    const min_delta = 0.1;
+
+    if (xMax - xMin >= min_delta && yMax - yMin >= min_delta) {
+      return {
+        xMin: xMin,
+        yMin: yMin,
+        xMax: xMax,
+        yMax: yMax,
+      };
+    }
+
+    return undefined;
   }
 }
