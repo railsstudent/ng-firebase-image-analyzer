@@ -3,6 +3,9 @@ import { Crop } from '@/features/image-analysis/types/crop.type';
 import { CropImageStyles } from '@/features/image-enhancer/types/crop-image.type';
 import { Service } from '@angular/core';
 
+export const DEFAULT_IMAGE_WIDTH = 100;
+export const PERCENT = 100;
+
 @Service()
 export class ImageEffect {
   getCssFilter(adjustment?: ColorAdjustment) {
@@ -24,15 +27,16 @@ export class ImageEffect {
     }
 
     if (adjustment.warmth) {
+      const rotation = 30;
       // Warmth is not a standard CSS filter, but we can simulate it using a combination of filters.
       // For example, we can use a combination of sepia and hue-rotate to create a warmth effect.
-      styles += `sepia(${adjustment.warmth}) hue-rotate(${adjustment.warmth * 30}deg) `;
+      styles += `sepia(${adjustment.warmth}) hue-rotate(${adjustment.warmth * rotation}deg) `;
     }
 
     return styles;
   }
 
-  cropImage(crop?: Crop, width = 100): CropImageStyles {
+  cropImage(crop?: Crop, width = DEFAULT_IMAGE_WIDTH): CropImageStyles {
     // 1. Define the safe default crop (representing the full 100% image)
     const safeCrop = crop || { xMin: 0.0, yMin: 0.0, xMax: 1.0, yMax: 1.0 };
 
@@ -41,9 +45,9 @@ export class ImageEffect {
     const cropHeight = +(safeCrop.yMax - safeCrop.yMin).toFixed(2); // 1.0 - 0.0 = 1.0
 
     // 3. Apply ternary checks for the default "uncropped" state
-    const imgWidth = crop ? `${((1 / cropWidth) * 100).toFixed(2)}%` : '100%';
-    const imgLeft = crop ? `${(-(safeCrop.xMin / cropWidth) * 100).toFixed(2)}%` : 'auto';
-    const imgTop = crop ? `${(-(safeCrop.yMin / cropHeight) * 100).toFixed(2)}%` : 'auto';
+    const imgWidth = crop ? `${((1 / cropWidth) * PERCENT).toFixed(2)}%` : '100%';
+    const imgLeft = crop ? `${(-(safeCrop.xMin / cropWidth) * PERCENT).toFixed(2)}%` : 'auto';
+    const imgTop = crop ? `${(-(safeCrop.yMin / cropHeight) * PERCENT).toFixed(2)}%` : 'auto';
 
     return {
       containerStyle: {

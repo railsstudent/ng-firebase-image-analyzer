@@ -2,9 +2,9 @@ import { EnhancedCanvas } from '@/features/image-analysis/enhanced-canvas/enhanc
 import { ImageCrop } from '@/features/image-analysis/image-crop/image-crop';
 import { ImageImprovementSkeleton } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton';
 import { SanitizeAdjustmentService } from '@/features/image-analysis/services/sanitize-adjustment';
-import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
+import { ImageAnalysisResponse } from '@/features/image-analysis/types/image-analysis-metadata.type';
+import { DEFAULT_IMAGE_WIDTH, ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { Component, computed, inject, input } from '@angular/core';
-import { ImageAnalysisResponse } from '../types/image-analysis-metadata.type';
 
 @Component({
   selector: 'app-image-improvement',
@@ -30,6 +30,7 @@ import { ImageAnalysisResponse } from '../types/image-analysis-metadata.type';
           [imageUrl]="imageUrl()"
           [cropImage]="cropImage()"
           [colorAdjustment]="safeColorAdjustment()"
+          [filterStyle]="filterStyle()"
         />
       </div>
     }
@@ -56,7 +57,7 @@ export class ImageImprovement {
   safeCrop = computed(() => this.sanitizeAdjustment.sanitizeCrop(this.analysis()?.crop));
 
   // Safe formatting helpers for crop settings
-  cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), 100));
+  cropImage = computed(() => this.imageEffect.cropImage(this.safeCrop(), DEFAULT_IMAGE_WIDTH));
 
   aspectRatio = computed(() => this.cropImage().containerStyle.aspectRatio);
 
@@ -75,4 +76,6 @@ export class ImageImprovement {
       this.analysis()?.crop === undefined ||
       this.analysis()?.colorAdjustment === undefined,
   );
+
+  filterStyle = computed(() => this.imageEffect.getCssFilter(this.safeColorAdjustment()));
 }

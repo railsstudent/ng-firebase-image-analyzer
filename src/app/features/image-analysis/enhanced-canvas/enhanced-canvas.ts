@@ -1,8 +1,9 @@
 import { DownloadEnhancedDirective } from '@/features/image-analysis/directives/download-enhanced';
 import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
-import { ImageEffect } from '@/features/image-enhancer/services/image-effect';
 import { CropImageStyles } from '@/features/image-enhancer/types/crop-image.type';
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
+
+const DECIMAL_PLACES = 4;
 
 @Component({
   selector: 'app-enhanced-canvas',
@@ -14,8 +15,7 @@ export class EnhancedCanvas {
   imageUrl = input<string | null>(null);
   cropImage = input.required<CropImageStyles>();
   colorAdjustment = input<ColorAdjustment | undefined>(undefined);
-
-  #imageEffect = inject(ImageEffect);
+  filterStyle = input.required();
 
   imageAspectRatio = signal<number | null>(null);
 
@@ -33,7 +33,7 @@ export class EnhancedCanvas {
     if (crop && aspect) {
       const cropWidth = crop.xMax - crop.xMin;
       const cropHeight = crop.yMax - crop.yMin;
-      return `${((cropWidth / cropHeight) * aspect).toFixed(4)}`;
+      return `${((cropWidth / cropHeight) * aspect).toFixed(DECIMAL_PLACES)}`;
     }
     return '1'; // Default to square before image load
   });
@@ -49,7 +49,7 @@ export class EnhancedCanvas {
       const correctedAspect = (cropWidth / cropHeight) * aspect;
       return {
         ...baseStyle,
-        aspectRatio: `${correctedAspect.toFixed(4)}`,
+        aspectRatio: `${correctedAspect.toFixed(DECIMAL_PLACES)}`,
       };
     }
     return baseStyle;
@@ -57,5 +57,4 @@ export class EnhancedCanvas {
 
   imageCss = computed(() => this.cropImage().imageStyle);
   crop = computed(() => this.cropImage().crop);
-  filterStyle = computed(() => this.#imageEffect.getCssFilter(this.colorAdjustment()));
 }
