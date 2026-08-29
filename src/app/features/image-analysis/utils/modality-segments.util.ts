@@ -62,9 +62,9 @@ export function parseTokenDetails(tokenSummary: TokenSummary | undefined, totalT
   const cachedTokens = tokenSummary?.cachedContentTokenCount ?? 0;
   const thoughtTokens = tokenSummary?.thoughtsTokenCount ?? 0;
 
-  const x = { promptTokens, totalTokenCount, candidatesTokens, cachedTokens, thoughtTokens }
-  const tokenUsageSegments = getTokenUsageSegments(x);
-  const tokenUsageLegend = getTokenUsageLegend(x);
+  const tokenMetadata = { promptTokens, totalTokenCount, candidatesTokens, cachedTokens, thoughtTokens };
+  const tokenUsageSegments = getTokenUsageSegments(tokenMetadata);
+  const tokenUsageLegend = getTokenUsageLegend(tokenMetadata);
 
   return {
     segments: tokenUsageSegments,
@@ -72,7 +72,8 @@ export function parseTokenDetails(tokenSummary: TokenSummary | undefined, totalT
   };
 }
 
-function getTokenUsageLegend({ promptTokens, candidatesTokens, cachedTokens, thoughtTokens }: TokenUsageMetadata): TokenLegendItem[] {
+function getTokenUsageLegend(metadata: TokenUsageMetadata): TokenLegendItem[] {
+  const { promptTokens, candidatesTokens, cachedTokens, thoughtTokens } = metadata;
   return [
     {
       type: 'prompt',
@@ -105,7 +106,13 @@ function getTokenUsageLegend({ promptTokens, candidatesTokens, cachedTokens, tho
   ];
 }
 
-function getTokenUsageSegments({ promptTokens, totalTokenCount, candidatesTokens, cachedTokens, thoughtTokens }: TokenUsageMetadata) {
+function getTokenUsageSegments({
+  promptTokens,
+  totalTokenCount,
+  candidatesTokens,
+  cachedTokens,
+  thoughtTokens,
+}: TokenUsageMetadata) {
   const promptTokensPercentage = calculatePercentage(promptTokens, totalTokenCount);
   const outputTokensPercentage = calculatePercentage(candidatesTokens, totalTokenCount);
   const cachedTokensPercentage = calculatePercentage(cachedTokens, totalTokenCount);
@@ -138,4 +145,3 @@ function getTokenUsageSegments({ promptTokens, totalTokenCount, candidatesTokens
   ];
   return tokenUsageSegments;
 }
-

@@ -1,0 +1,19 @@
+@if (pwaUpdateService.updateAvailable() && !isDismissed()) {
+  <div class="pwa-banner-card">
+    <div class="pwa-banner-header">
+      <div class="pwa-banner-badge-wrapper">
+        <span class="material-symbols-outlined pwa-banner-badge-icon">system_update_alt</span>
+      </div>
+      <div class="pwa-banner-content">
+        <h4 class="pwa-banner-title">App Update Ready</h4>
+        <p class="pwa-banner-desc">
+          We've added new performance boosts and layout enhancements. Reload to apply instantly.
+        </p>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button (click)="dismiss()" class="pwa-banner-btn-secondary">Later</button>
+      <button (click)="pwaUpdateService.reloadPage()" class="pwa-banner-btn-primary">Reload Now</button>
+    </div>
+  </div>
+}
