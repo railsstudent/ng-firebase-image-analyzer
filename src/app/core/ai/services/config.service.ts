@@ -10,6 +10,8 @@ import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote
 const SECONDS = 60;
 const MILLISECONDS = 1000;
 const FETCH_INTERVAL = SECONDS * SECONDS * MILLISECONDS;
+const DEV_TIMEOUT = 1000;
+const PROD_TIMEOUT = 2000;
 
 @Service()
 export class ConfigService {
@@ -48,6 +50,7 @@ export class ConfigService {
     const rc = getRemoteConfig(app);
     rc.defaultConfig = remoteConfigDefaults;
     rc.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : FETCH_INTERVAL;
+    rc.settings.fetchTimeoutMillis = isDevMode() ? DEV_TIMEOUT : PROD_TIMEOUT;
     return rc;
   }
 
