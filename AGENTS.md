@@ -10,4 +10,4 @@ Issues and PRDs for this repo live as GitHub issues. See `docs/agents/issue-trac
 
 ### Domain docs
 
-Single-context layout with a root `CONTEXT.md` and decisions under `specs/`. See `docs/agents/domain.md`.
+Single-context layout with a root `GLOSSARY.md` and decisions under `specs/`. See `docs/agents/domain.md`.
