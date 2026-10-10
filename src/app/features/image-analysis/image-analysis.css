@@ -1,7 +1,7 @@
 @reference "../../../styles.css";
 
 .workspace-container {
-  @apply space-y-8 max-w-[var(--spacing-container-max)] mx-auto px-4 py-8;
+  @apply space-y-8 max-w-(--spacing-container-max) mx-auto px-4 py-8;
 }
 
 .loading-container {
@@ -9,11 +9,11 @@
 }
 
 .loading-spinner {
-  @apply animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-primary)];
+  @apply animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-(--color-primary);
 }
 
 .loading-text {
-  @apply text-sm font-mono text-[var(--color-outline)];
+  @apply text-sm font-mono text-(--color-outline);
 }
 
 .tag-cloud-section {
@@ -21,7 +21,7 @@
 }
 
 .section-subtitle {
-  @apply text-xs font-bold uppercase tracking-widest text-[var(--color-outline)];
+  @apply text-xs font-bold uppercase tracking-widest text-(--color-outline);
 }
 
 .action-container {
@@ -29,19 +29,19 @@
 }
 
 .primary-action-btn {
-  @apply flex items-center gap-2 bg-gradient-to-r from-[var(--color-primary)] to-indigo-600 hover:to-indigo-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all duration-300;
+  @apply flex items-center gap-2 bg-gradient-to-r from-(--color-primary) to-(--color-primary-container) hover:opacity-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-(--color-primary)/20 active:scale-95 transition-all duration-300;
 }
 
 .error-banner {
-  @apply flex items-center gap-4 bg-red-500/10 border border-red-500/20 p-4 rounded-2xl mx-auto my-6;
+  @apply flex items-center gap-4 bg-(--color-error-container) border border-(--color-error-border) p-4 rounded-2xl mx-auto my-6;
   max-width: 64rem;
-  box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.15);
+  box-shadow: var(--shadow-error);
   backdrop-filter: blur(8px);
 }
 
 .error-icon-badge {
-  @apply flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl h-10 w-10 shrink-0 border
-  border-red-500/10;
+  @apply flex items-center justify-center bg-(--color-error-container) text-(--color-error-text-muted) rounded-xl h-10 w-10 shrink-0 border
+  border-(--color-error-border);
 }
 
 .error-icon-badge app-error-icon {
@@ -49,7 +49,7 @@
 }
 
 .error-text {
-  @apply text-2xl font-medium  text-red-300;
+  @apply text-2xl font-medium text-(--color-error-text);
 }
 
 /* ==========================================
@@ -74,19 +74,19 @@
 @keyframes loaderPulse {
   0%,
   100% {
-    box-shadow: 0 4px 20px -2px rgba(70, 72, 212, 0.08);
+    box-shadow: var(--shadow-primary-glow);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 6px 24px 0 rgba(70, 72, 212, 0.15);
+    box-shadow: 0 6px 24px 0 #4648d426;
     transform: scale(1.01);
   }
 }
 
 .streaming-loader-badge {
   @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-500 ease-out;
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(199, 196, 215, 0.3);
+  background: var(--color-surface-glass);
+  border-color: var(--color-surface-glass-border);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   animation: loaderPulse 2.5s infinite ease-in-out;
@@ -97,10 +97,10 @@
 }
 
 .streaming-loader-text {
-  @apply text-xs font-bold uppercase tracking-wider text-[var(--color-on-surface-variant)] font-mono;
+  @apply text-xs font-bold uppercase tracking-wider text-(--color-on-surface-variant) font-mono;
 }
 
 :host-context(.dark) .streaming-loader-badge {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(70, 70, 90, 0.3);
+  background: var(--color-surface-glass-dark);
+  border-color: var(--color-surface-glass-border-dark);
 }

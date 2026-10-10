@@ -18,69 +18,88 @@ The brand identity centers on **Firebase AI Logic**, projecting a sense of secur
 
 ## 2. Color Roles & Tokens
 
-The color palette is built using Material Design 3 semantic color variables mapped to functional styling roles.
+The color palette is built using Material Design 3 semantic color variables mapped to functional styling roles, backed by `:root` and `@theme` definitions in [src/styles.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/styles.css). All transparency is strictly declared using 8-digit hex notation (`#rrggbbaa`).
+
+### Core Brand & Surface Roles
 
 | Token Name | Hex Value | Role / Usage |
 | :--- | :--- | :--- |
-| `primary` | `#4648d4` (Override: `#6366f1`) | Primary branding, buttons, active interactive states |
-| `primary-container` | `#6063ee` | Background container color for high-visibility highlights |
-| `secondary` | `#565e74` (Override: `#0f172a`) | Authoritative text colors, secondary structural elements |
+| `primary` | `#6366f1` | Primary branding, buttons, active interactive states |
+| `primary-container` | `#6063ee` | High-visibility container background and gradient stops |
+| `on-primary` | `#ffffff` | High-contrast text on primary buttons and badges |
+| `secondary` | `#0f172a` | Authoritative text colors, tooltips, secondary elements |
 | `secondary-container` | `#dae2fd` | Soft secondary accents and containers |
-| `background` / `surface` | `#f8f9ff` | Application canvas backdrop |
+| `surface` / `background` | `#f8f9ff` | Application canvas backdrop |
 | `surface-container` | `#e5eeff` | Default cards and panels |
+| `surface-container-high` | `#ecf2ff` | Elevated surfaces and tag pills |
 | `surface-container-highest` | `#d3e4fe` | Highest elevation surfaces |
 | `on-surface` | `#0b1c30` | Main text color on surfaces |
 | `on-surface-variant` | `#464554` | Subdued descriptive text |
 | `outline` | `#767586` | Low-contrast borders and lines |
 | `outline-variant` | `#c7c4d7` | Muted division lines |
 
+### Semantic Error & Glassmorphism Tokens
+
+| Token Name | Hex Value | Role / Usage |
+| :--- | :--- | :--- |
+| `error` | `#ef4444` | High-visibility alert states and error icons |
+| `error-container` | `#ef44441a` | 10% opacity backdrop for error banners |
+| `error-border` | `#ef444433` | 20% opacity border for error containers |
+| `error-text` | `#fca5a5` | Error banner headline and label text |
+| `error-text-muted` | `#f87171` | Secondary error messages |
+| `surface-glass` | `#ffffffb3` | 70% opacity light mode glass card background |
+| `surface-glass-border` | `#d3e4fe80` | 50% opacity subtle glass panel border |
+| `surface-glass-dark` | `#0f172a99` | 60% opacity dark mode glass surface |
+| `surface-glass-border-dark` | `#94a3b81a` | 10% opacity dark mode glass border |
+| `skeleton` | `#e2e8f0` | Light mode placeholder loading shimmer |
+| `skeleton-dark` | `#334155` | Dark mode placeholder loading shimmer |
+
 ---
 
 ## 3. Typography Scales
 
-Typography uses a carefully chosen triad of fonts designed to structure information hierarchy:
+Typography uses a zero-dependency 2-tier system font hierarchy designed to maximize rendering speed and eliminate network font downloads:
 
-1. **Hanken Grotesk** (Headline / Display)
-2. **Inter** (Body text)
-3. **Geist** (Labels / Technical blocks)
+1. **`--font-sans`** (`'Inter', ui-sans-serif, system-ui, sans-serif`): Headlines, display banners, and body text.
+2. **`--font-mono`** (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`): Numeric metrics, badges, code blocks, and streaming status text.
 
 ### Scales
 
 * **`display-lg`** (Hero Heading)
-  * **Font Family**: Hanken Grotesk
+  * **Font Family**: `--font-sans`
   * **Size**: `64px`
   * **Line Height**: `1.1`
   * **Font Weight**: `700`
   * **Letter Spacing**: `-0.02em`
 * **`headline-lg`** (Primary Headings)
-  * **Font Family**: Hanken Grotesk
+  * **Font Family**: `--font-sans`
   * **Size**: `40px`
   * **Line Height**: `1.2`
   * **Font Weight**: `600`
   * **Letter Spacing**: `-0.01em`
 * **`headline-md`** (Secondary Headings)
-  * **Font Family**: Hanken Grotesk
+  * **Font Family**: `--font-sans`
   * **Size**: `24px`
   * **Line Height**: `1.4`
   * **Font Weight**: `500`
 * **`body-lg`** (Lead Paragraphs)
-  * **Font Family**: Inter
+  * **Font Family**: `--font-sans`
   * **Size**: `18px`
   * **Line Height**: `1.6`
   * **Font Weight**: `400`
 * **`body-md`** (Default Body Text)
-  * **Font Family**: Inter
+  * **Font Family**: `--font-sans`
   * **Size**: `16px`
   * **Line Height**: `1.6`
   * **Font Weight**: `400`
 * **`label-md`** (Buttons and Navigation Labels)
-  * **Font Family**: Geist
+  * **Font Family**: `--font-mono`
   * **Size**: `14px`
   * **Line Height**: `1.2`
   * **Font Weight**: `500`
   * **Letter Spacing**: `0.05em`
 * **`code-sm`** (Monospace Text)
-  * **Font Family**: Geist
+  * **Font Family**: `--font-mono`
   * **Size**: `13px`
   * **Line Height**: `1.5`
   * **Font Weight**: `400`
@@ -113,7 +132,7 @@ The layout of the Home Page leverages Tailwind CSS and standard layout rules to 
      * **Beta Badge**: An inline flex badge with text `Now in Public Beta` (`text-[10px] font-bold uppercase tracking-widest text-primary`) accompanied by a pulsing dot (`w-2 h-2 rounded-full bg-primary animate-pulse`).
      * **Display Headline**: `Intelligent Inference. Anywhere.` (`font-display-lg text-display-lg leading-tight`), where "Anywhere." is styled with the primary color (`text-primary`).
      * **Subhead description**: `Deploy hybrid AI logic across cloud and edge with Firebase. Real-time image analysis, on-device privacy, low token costs, and cloud-scale power.` (`font-body-lg text-body-lg text-on-surface-variant max-w-xl`).
-     * **Primary CTA Button**: `Get Started` accompanied by a Material Symbols arrow icon (`arrow_forward`). Sizing/styling: `bg-white text-primary px-xl py-md rounded-xl font-headline-md text-headline-md flex items-center gap-sm transition-all shadow-lg hover:bg-surface-container`.
+     * **Primary CTA Button**: `Get Started` accompanied by the standalone SVG icon component `<app-arrow-forward-icon>`. Sizing/styling: `bg-white text-primary px-xl py-md rounded-xl font-headline-md text-headline-md flex items-center gap-sm transition-all shadow-lg hover:bg-surface-container`.
    * **Right Side Column (`lg:col-span-5 relative`)**:
      * **Illustration Container**: A pulse-animated wrapper with a transition state (`animate-pulse transition-all duration-1000 hover:scale-[1.02]`).
      * **Image**: High-fidelity AI Image Analysis mock illustration (`src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjtrFLoMuWP5EhhqL-qnY4m60vzu8YMk2FIkjwfeYq0Qj-a_kzItlOTkcAeumw0F3bL1TJEw2Eby3Awsu4fBsntLbzAk3cp0qjcAW2j6c9OgHEqaE6uQEfHx5uhle6b0yKt_Tg2nXDht0qbpWHiUZ-XcKGVeiINAUtxkopYd1Ri2rFvZumZJFL8Z-sS0YNQh01rvtRsBPLBzxSetGWorQrHW2_QA0HoiXGEA5uPKxQsE6yGxqMY48TSQ"`), with rounded corners, a light shadow, and a subtle border (`w-full h-auto rounded-xl shadow-lg border border-outline-variant/30`).
@@ -135,13 +154,13 @@ Rather than covering the screen with a destructive full-page blocking overlay, w
 
 * **Aesthetic & Token Properties**:
   * **Backdrop Blur**: `backdrop-filter: blur(12px)` for maximum glass transparency.
-  * **Background Spot**: Semitransparent fill (`rgba(255, 255, 255, 0.6)`) overlaid with a primary highlight tint.
-  * **Borders**: `1px solid rgba(var(--outline-variant-rgb), 0.3)` to define a clean, low-contrast, premium outline.
-  * **Shadow**: Subtle, diffuse shadow (`box-shadow: 0 4px 20px -2px rgba(70, 72, 212, 0.08)`).
+  * **Background Spot**: Semitransparent fill (`var(--color-surface-glass)`, `#ffffffb3` / dark `#0f172a99`) overlaid with a primary highlight tint.
+  * **Borders**: `1px solid var(--color-surface-glass-border)` (`#d3e4fe80` / dark `#94a3b81a`) to define a clean, low-contrast, premium outline.
+  * **Shadow**: Subtle, diffuse shadow (`var(--shadow-primary-glow)` / `0 4px 20px -2px #4648d414`).
   * **Spacing**: Symmetrical inline padding (`px-4 py-2` or `sm`/`md` scale).
 * **Micro-Animations**:
   * **Pulsing State**: A continuous, high-comfort scale pulse (`scale-[1.01]` transition with standard bezier timing) to evoke intelligence.
-  * **Sync Spinner**: Standard infinite rotation (`animate-spin` over `1.5s`) of the Material `sync` icon in the primary color (`#6366f1`).
+  * **Sync Spinner**: Standard infinite rotation (`animate-spin` over `1.5s`) of the standalone `<app-sync-icon>` in the primary color (`#4648d4`).
 
 ### 5.2 Progressive Content Reveal Animation (`.animate-fade-in`)
 
@@ -165,3 +184,43 @@ To ensure streaming text and UI cards do not pop onto the canvas in a jarring, s
 ```
 
 This progressive approach maintains typographic rhythm and ensures the UI feels exceptionally natural and modern under progressive data conditions.
+
+---
+
+## 6. Image Analysis Feature Architecture
+
+The Image Analysis workspace orchestrates the `ImageUploader`, `TagList`, and `ImageAnalysisPanel` into a cohesive, responsive workspace with progressive streaming support.
+
+### 6.1 Orchestration Architecture
+
+```mermaid
+graph TD
+    ImageAnalysis["ImageAnalysis Orchestrator"] -->|"selectedImage model / File Output"| ImageUploader["ImageUploader"]
+    ImageAnalysis -->|"tags Input"| TagList["TagList"]
+    ImageAnalysis -->|"analysisData Input"| ImageAnalysisPanel["ImageAnalysisPanel"]
+
+    ImageUploader -->|"fileSelected"| ImageAnalysis["Store File reference"]
+    ImageUploader -->|"imageRemoved"| ImageAnalysis["Reset workspace states"]
+    ImageAnalysis -->|"Click Analyze"| TriggerInference["Dispatch AI API reasoning"]
+```
+
+### 6.2 Advanced Analysis Panel (4-Tab Control System)
+
+The results section employs a 4-tab control system allowing users to deep-dive into multi-modal metadata:
+
+1. **Thought Summary**:
+   * Card utilizing glassmorphic aesthetics (`var(--color-surface-glass)` and `var(--color-surface-glass-border)`).
+   * Presents AI reasoning steps, model confidence scores, and structured insights (e.g. breed detection, environmental context, lighting conditions).
+2. **Recommendations List**:
+   * Structured list of composition, visual, and lighting suggestions (e.g. cropping guidelines, color balance shifts).
+   * Uses high-contrast typography labels (`font-headline-sm`) and secondary supporting descriptions (`text-on-surface-variant`).
+3. **Token Usage Analytics**:
+   * **Stacked Progress Bar**: Custom horizontal compound bar displaying relative ratio of:
+     * **Input Tokens** (`var(--color-primary)`)
+     * **Output Tokens** (`var(--color-secondary)`)
+     * **Cached Tokens** (`var(--color-tertiary)`)
+     * **Thought/Reasoning Tokens** (`var(--color-primary-container)`)
+   * Detailed breakdown charts illustrating prompt modality details (text vs. image), output details, and cache status with precise numeric counts.
+4. **Image Improvement (AI Enhanced Preview)**:
+   * **Metadata Sidebar**: Column displaying crop coordinates/aspect ratios and precise filtering metadata (brightness, saturation, contrast adjustments).
+   * **Enhanced Canvas**: Interactive high-fidelity preview showing the filtered/cropped output with download capability.
