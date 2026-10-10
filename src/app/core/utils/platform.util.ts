@@ -4,7 +4,7 @@ import { WINDOW } from '@/core/constants/navigator.const';
 /**
  * Injection token representing hostnames that are considered localhost.
  */
-export const LOCAL_DOMAINS = new InjectionToken<string[]>('LOCAL_DOMAINS', {
+const LOCAL_DOMAINS = new InjectionToken<string[]>('LOCAL_DOMAINS', {
   providedIn: 'root',
   factory: () => ['localhost', '127.0.0.1', '::1', '[::1]'],
 });

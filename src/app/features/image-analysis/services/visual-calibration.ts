@@ -5,7 +5,7 @@ import { Crop } from '@/features/image-analysis/types/crop.type';
 import { Service } from '@angular/core';
 
 export const DEFAULT_IMAGE_WIDTH = 100;
-export const PERCENT = 100;
+const PERCENT = 100;
 
 @Service()
 export class VisualCalibrationService {

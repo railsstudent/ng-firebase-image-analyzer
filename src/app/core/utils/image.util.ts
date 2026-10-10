@@ -5,13 +5,6 @@ function formatFileSizeMbs(fileSize: number) {
 }
 
 /**
- * Validates whether the given value is a File or Blob.
- */
-export function isValidFile(file: unknown): file is File | Blob {
-  return file instanceof File || file instanceof Blob;
-}
-
-/**
  * Validates that the file is an image and under the 20MB size limit for inline data.
  *
  * @param file The File or Blob to validate.

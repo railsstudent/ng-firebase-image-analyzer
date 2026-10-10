@@ -13,7 +13,7 @@ export interface ImageAnalysisResponse {
   crop?: Crop;
 }
 
-export interface ImageAnalysisWithMetadata {
+interface ImageAnalysisWithMetadata {
   analysis: ImageAnalysisResponse;
   source?: InferenceSource;
   thoughtSummary?: string;

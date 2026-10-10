@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import { ROUTE_PATHS } from './core/types/route.type';
+import Home from './features/home/home';
 
 export const routes: Routes = [
   {
     path: ROUTE_PATHS.HOME,
-    loadComponent: () => import('./features/home/home'),
+    loadComponent: () => Home,
   },
   {
     path: ROUTE_PATHS.IMAGE_ANALYSIS,

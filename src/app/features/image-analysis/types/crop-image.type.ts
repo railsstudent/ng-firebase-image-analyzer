@@ -1,13 +1,13 @@
 import { Crop } from '@/features/image-analysis/types/crop.type';
 
-export interface ContainerStyle {
+interface ContainerStyle {
   width: string;
   aspectRatio: string;
   overflow: 'hidden';
   position: 'relative' | 'static';
 }
 
-export interface ImageStyle {
+interface ImageStyle {
   width: string;
   position: 'absolute' | 'static';
   top: string;
