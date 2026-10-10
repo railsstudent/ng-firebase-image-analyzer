@@ -37,7 +37,7 @@ export class ImageUploader {
     this.isDragging.set(false);
   }
 
-  onDrop(event: DragEvent) {
+  async onDrop(event: DragEvent): Promise<void> {
     if (this.disabled()) {
       return;
     }
@@ -47,22 +47,22 @@ export class ImageUploader {
 
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      this.handleFile(files[0]);
+      await this.handleFile(files[0]);
     }
   }
 
-  onFileSelected(event: Event) {
+  async onFileSelected(event: Event): Promise<void> {
     if (this.disabled()) {
       return;
     }
     const inputElement = event.target as HTMLInputElement;
     const files = inputElement.files;
     if (files && files.length > 0) {
-      this.handleFile(files[0]);
+      await this.handleFile(files[0]);
     }
   }
 
-  async handleFile(file: File) {
+  async handleFile(file: File): Promise<void> {
     this.errorMessage.set(null);
 
     if (file.size > this.maxSize()) {

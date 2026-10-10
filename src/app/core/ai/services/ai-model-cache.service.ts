@@ -20,8 +20,9 @@ export class AiModelCacheService {
    */
   getOrCreateModel(config: ModelConfigParams): GenerativeModel {
     const cacheKey = this.getCacheKey(config);
-    if (this.#modelCache.has(cacheKey)) {
-      return this.#modelCache.get(cacheKey)!;
+    const cachedModel = this.#modelCache.get(cacheKey);
+    if (cachedModel) {
+      return cachedModel;
     }
 
     const modelParams = this.constructModelParams(config);

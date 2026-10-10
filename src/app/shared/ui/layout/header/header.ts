@@ -36,7 +36,7 @@ export class Header {
 
   private readonly nav = inject(NavService);
 
-  getStarted() {
-    this.nav.to('/image-analysis');
+  async getStarted(): Promise<void> {
+    await this.nav.to('/image-analysis');
   }
 }

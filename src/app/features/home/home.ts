@@ -9,7 +9,7 @@ import { Component, inject } from '@angular/core';
 export default class Home {
   private readonly nav = inject(NavService);
 
-  navigateTo() {
-    this.nav.to('/image-analysis');
+  async navigateTo(): Promise<void> {
+    await this.nav.to('/image-analysis');
   }
 }
