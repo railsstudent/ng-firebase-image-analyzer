@@ -11,7 +11,7 @@
   @if (errorMessage()) {
     <div class="error-banner max-w-md">
       <div class="error-icon-badge">
-        <span class="material-symbols-outlined">error</span>
+        <app-error-icon />
       </div>
       <div class="flex-1">
         <p class="error-text">{{ errorMessage() }}</p>
@@ -23,7 +23,7 @@
   @if (imageUrl() && !isLoading()) {
     <div class="action-container">
       <button (click)="triggerAnalysis()" class="primary-action-btn">
-        <span class="material-symbols-outlined">psychology</span>
+        <app-psychology-icon />
         Analyze Image ({{ seconds() }}s)
       </button>
     </div>
@@ -32,7 +32,7 @@
   @if (isLoading()) {
     <div class="flex justify-center py-6">
       <div class="streaming-loader-badge">
-        <span class="material-symbols-outlined animate-spin text-[var(--color-primary)]">sync</span>
+        <app-sync-icon class="animate-spin text-[var(--color-primary)]" />
         <span class="streaming-loader-text">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>

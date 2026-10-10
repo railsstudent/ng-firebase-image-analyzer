@@ -1,6 +1,9 @@
 import { ImageAnalysisService } from '@/features/image-analysis/services/image-analysis';
 import { StreamingAnalysisWithMetadata } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { ImageUploader } from '@/shared/ui/image-uploader/image-uploader';
+import { ErrorIconComponent } from '@/shared/ui/icons/error-icon/error-icon.component';
+import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psychology-icon.component';
+import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanel } from './image-analysis-panel/image-analysis-panel';
@@ -11,7 +14,7 @@ const MILLISECONDS = 1000;
 
 @Component({
   selector: 'app-image-analysis',
-  imports: [ImageUploader, TagList, ImageAnalysisPanel],
+  imports: [ImageUploader, TagList, ImageAnalysisPanel, ErrorIconComponent, PsychologyIconComponent, SyncIconComponent],
   templateUrl: './image-analysis.html',
   styleUrl: './image-analysis.css',
 })

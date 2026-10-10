@@ -35,7 +35,7 @@
 }
 
 .pwa-banner-badge-icon {
-  @apply text-2xl font-normal select-none;
+  @apply w-6 h-6 select-none;
 }
 
 .pwa-banner-content {
@@ -43,11 +43,11 @@
 }
 
 .pwa-banner-title {
-  @apply m-0 text-base font-semibold text-slate-900 dark:text-slate-50 font-hanken tracking-tight leading-snug;
+  @apply m-0 text-base font-semibold text-slate-900 dark:text-slate-50 font-sans tracking-tight leading-snug;
 }
 
 .pwa-banner-desc {
-  @apply m-0 text-xs text-slate-500 dark:text-slate-400 font-inter leading-relaxed;
+  @apply m-0 text-xs text-slate-500 dark:text-slate-400 font-sans leading-relaxed;
 }
 
 .pwa-banner-actions {

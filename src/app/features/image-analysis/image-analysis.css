@@ -44,8 +44,8 @@
   border-red-500/10;
 }
 
-.error-icon-badge .material-symbols-outlined {
-  @apply text-3xl;
+.error-icon-badge app-error-icon {
+  @apply w-7 h-7;
 }
 
 .error-text {

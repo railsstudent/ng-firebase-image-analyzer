@@ -1,11 +1,12 @@
 import { TokenModalityBreakdown, TokenSummary } from '@/core/ai/types/token-usage.type';
 import { parseModalityDetails, parseTokenDetails } from '@/features/image-analysis/utils/modality-segments.util';
 import { TokenUsageBar } from '@/shared/ui/components/token-usage-bar/token-usage-bar';
+import { BarChartIconComponent } from '@/shared/ui/icons/bar-chart-icon/bar-chart-icon.component';
 import { Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-token-analytics',
-  imports: [TokenUsageBar],
+  imports: [TokenUsageBar, BarChartIconComponent],
   templateUrl: './token-analytics.html',
   styleUrl: './token-analytics.css',
 })

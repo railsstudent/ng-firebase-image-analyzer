@@ -39,7 +39,7 @@
 
         <!-- Hover Remove Action -->
         <button type="button" class="remove-btn" (click)="removeImage($event)" title="Remove Image">
-          <span class="material-symbols-outlined text-xl">delete</span>
+          <app-delete-icon />
         </button>
       </div>
     } @else if (disabled()) {
@@ -60,7 +60,7 @@
       <!-- Empty Upload State -->
       <div class="empty-state">
         <div class="upload-icon-wrapper">
-          <span class="material-symbols-outlined text-4xl">cloud_upload</span>
+          <app-cloud-upload-icon class="w-10 h-10" />
         </div>
         <div class="empty-state-text">
           <p class="empty-state-title">Drag & drop your image here</p>

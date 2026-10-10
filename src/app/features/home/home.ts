@@ -1,8 +1,10 @@
 import { NavService } from '@/core/services/nav.service';
+import { ArrowForwardIconComponent } from '@/shared/ui/icons/arrow-forward-icon/arrow-forward-icon.component';
 import { Component, inject } from '@angular/core';
 
 @Component({
   selector: 'app-home',
+  imports: [ArrowForwardIconComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

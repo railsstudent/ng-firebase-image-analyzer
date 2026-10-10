@@ -1,17 +1,18 @@
 import { NavService } from '@/core/services/nav.service';
 import { NavLink } from '@/core/types/route.type';
+import { TerminalIconComponent } from '@/shared/ui/icons/terminal-icon/terminal-icon.component';
 import { Component, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, TerminalIconComponent],
   template: `
     <nav class="nav-bar">
       <div class="nav-container">
         <div class="nav-brand">
           <span class="nav-brand-title">
-            <span class="material-symbols-outlined">terminal</span>
+            <app-terminal-icon />
             {{ title() }}
           </span>
         </div>

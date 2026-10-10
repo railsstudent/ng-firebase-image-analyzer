@@ -3,14 +3,15 @@ import { ImageCrop } from '@/features/image-analysis/image-crop/image-crop';
 import { ImageImprovementSkeleton } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton';
 import { ImageAnalysisResponse } from '@/features/image-analysis/types/image-analysis-metadata.type';
 import { DEFAULT_IMAGE_WIDTH, VisualCalibrationService } from '@/features/image-analysis/services/visual-calibration';
+import { PhotoFilterIconComponent } from '@/shared/ui/icons/photo-filter-icon/photo-filter-icon.component';
 import { Component, computed, inject, input } from '@angular/core';
 
 @Component({
   selector: 'app-image-improvement',
-  imports: [ImageCrop, EnhancedCanvas, ImageImprovementSkeleton],
+  imports: [ImageCrop, EnhancedCanvas, ImageImprovementSkeleton, PhotoFilterIconComponent],
   template: `<div class="analysis-section-card space-y-4">
     <h3 class="section-title">
-      <span class="material-symbols-outlined section-title-icon" aria-hidden="true"> photo_filter </span>
+      <app-photo-filter-icon class="section-title-icon" />
       Visual Enhancer Calibration
     </h3>
 

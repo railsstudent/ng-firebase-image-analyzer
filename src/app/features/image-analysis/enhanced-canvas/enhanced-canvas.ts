@@ -1,13 +1,14 @@
 import { DownloadEnhancedDirective } from '@/features/image-analysis/directives/download-enhanced';
 import { ColorAdjustment } from '@/features/image-analysis/types/color-adjustment.type';
 import { CropImageStyles } from '@/features/image-analysis/types/crop-image.type';
+import { DownloadIconComponent } from '@/shared/ui/icons/download-icon/download-icon.component';
 import { Component, computed, input, signal } from '@angular/core';
 
 const DECIMAL_PLACES = 4;
 
 @Component({
   selector: 'app-enhanced-canvas',
-  imports: [DownloadEnhancedDirective],
+  imports: [DownloadEnhancedDirective, DownloadIconComponent],
   templateUrl: './enhanced-canvas.html',
   styleUrl: './enhanced-canvas.css',
 })

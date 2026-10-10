@@ -1,9 +1,12 @@
 import { MAX_FILE_SIZE_MB, ONE_MB } from '@/core/ai/constants/image.const';
 import { readFileAsDataURL } from '@/core/utils/base64.util';
+import { CloudUploadIconComponent } from '@/shared/ui/icons/cloud-upload-icon/cloud-upload-icon.component';
+import { DeleteIconComponent } from '@/shared/ui/icons/delete-icon/delete-icon.component';
 import { Component, input, model, output, signal } from '@angular/core';
 
 @Component({
   selector: 'app-image-uploader',
+  imports: [DeleteIconComponent, CloudUploadIconComponent],
   templateUrl: './image-uploader.html',
   styleUrl: './image-uploader.css',
 })
