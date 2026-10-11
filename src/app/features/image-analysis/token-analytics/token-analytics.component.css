@@ -5,23 +5,23 @@
 }
 
 .token-header-label {
-  @apply font-semibold text-[var(--color-on-surface-variant)];
+  @apply font-semibold text-on-surface-variant;
 }
 
 .token-header-total {
-  @apply font-mono font-bold text-[var(--color-primary)];
+  @apply font-mono font-bold text-primary;
 }
 
 .token-details-grid {
-  @apply pt-6 border-t border-[var(--color-outline-variant)]/20 grid grid-cols-1 md:grid-cols-2 gap-6;
+  @apply pt-6 border-t border-outline-variant/20 grid grid-cols-1 md:grid-cols-2 gap-6;
 }
 
 .token-details-label {
-  @apply text-xs font-bold uppercase tracking-widest text-[var(--color-outline)];
+  @apply text-xs font-bold uppercase tracking-widest text-outline;
 }
 
 .cached-savings-card {
-  @apply p-4 bg-[var(--color-surface-container-low)] rounded-xl border border-[var(--color-outline-variant)]/20 flex flex-col justify-center;
+  @apply p-4 bg-surface-card rounded-xl border border-outline-variant/20 flex flex-col justify-center;
 }
 
 .cached-savings-header {
@@ -29,7 +29,7 @@
 }
 
 .cached-savings-title {
-  @apply text-sm font-semibold text-[var(--color-on-surface)];
+  @apply text-sm font-semibold text-on-surface;
 }
 
 .cached-savings-value {
@@ -37,5 +37,5 @@
 }
 
 .cached-savings-description {
-  @apply text-xs text-[var(--color-on-surface-variant)] mt-1;
+  @apply text-xs text-on-surface-variant mt-1;
 }

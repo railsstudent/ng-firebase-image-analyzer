@@ -1,0 +1,13 @@
+@reference "../../../../styles.css";
+
+.analysis-section-card {
+  @apply p-6 rounded-xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark;
+}
+
+.section-title {
+  @apply text-xl font-bold tracking-tight text-on-surface flex items-center gap-2;
+}
+
+.section-title-icon {
+  @apply text-primary text-2xl;
+}

@@ -15,23 +15,23 @@
 }
 
 .error-banner-text {
-  @apply bg-[var(--color-error-container)] text-[var(--color-on-error-container)] text-sm px-4 py-2 rounded-full border border-[var(--color-error)]/20 inline-block shadow-md;
+  @apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border border-error/20 inline-block shadow-md;
 }
 
 .uploader-panel {
-  @apply relative h-auto min-h-[300px] border-2 border-dashed rounded-xl overflow-hidden shadow-sm transition-all duration-300 flex flex-col items-center justify-center cursor-pointer border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)];
+  @apply relative h-auto min-h-[300px] border-2 border-dashed rounded-xl overflow-hidden shadow-sm transition-all duration-300 flex flex-col items-center justify-center cursor-pointer border-outline-variant bg-surface-card;
 }
 
 .uploader-panel.is-dragging {
-  @apply border-[var(--color-primary)] bg-[var(--color-surface-container)];
+  @apply border-primary bg-surface-container;
 }
 
 .uploader-panel.has-image {
-  @apply border-[var(--color-primary)];
+  @apply border-primary;
 }
 
 .preview-area {
-  @apply relative w-full h-full min-h-[300px] flex items-center justify-center bg-[var(--color-surface-dim)]/20;
+  @apply relative w-full h-full min-h-[300px] flex items-center justify-center bg-transparent;
 }
 
 .preview-image {
@@ -39,7 +39,7 @@
 }
 
 .remove-btn {
-  @apply absolute top-4 right-4 bg-[var(--color-inverse-surface)]/80 text-[var(--color-inverse-on-surface)] p-2.5 rounded-lg opacity-0 transition-opacity duration-200 flex items-center justify-center shadow-lg;
+  @apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 transition-opacity duration-200 flex items-center justify-center shadow-lg;
 }
 
 .preview-area:hover .remove-btn {
@@ -47,7 +47,7 @@
 }
 
 .remove-btn:hover {
-  @apply bg-[var(--color-error)] text-white;
+  @apply bg-error text-white;
 }
 
 .empty-state {
@@ -55,7 +55,7 @@
 }
 
 .upload-icon-wrapper {
-  @apply p-4 bg-[var(--color-surface-container-high)] rounded-full text-[var(--color-primary)];
+  @apply p-4 bg-surface-container-high rounded-full text-primary;
 }
 
 .empty-state-text {
@@ -63,31 +63,31 @@
 }
 
 .empty-state-title {
-  @apply font-semibold text-lg text-[var(--color-on-surface)];
+  @apply font-semibold text-lg text-on-surface;
 }
 
 .empty-state-subtitle {
-  @apply text-sm text-[var(--color-on-surface-variant)];
+  @apply text-sm text-on-surface-variant;
 }
 
 .browse-link {
-  @apply text-[var(--color-primary)] font-semibold hover:underline;
+  @apply text-primary font-semibold hover:underline;
 }
 
 .empty-state-footer {
-  @apply text-xs text-[var(--color-outline)];
+  @apply text-xs text-outline;
 }
 
 .uploader-panel.is-disabled {
-  @apply opacity-75 cursor-not-allowed bg-[var(--color-surface-container-lowest)] border-[var(--color-outline-variant)]/40;
+  @apply opacity-75 cursor-not-allowed bg-surface-card border-outline-variant/40;
 }
 
 .warming-spinner-wrapper {
-  @apply flex items-center justify-center p-4 bg-[var(--color-primary-container)] rounded-full text-[var(--color-primary)];
+  @apply flex items-center justify-center p-4 bg-primary-container rounded-full text-primary;
 }
 
 .warming-spinner {
-  @apply w-10 h-10 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full;
+  @apply w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full;
   animation: spin 1s linear infinite;
 }
 

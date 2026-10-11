@@ -1,4 +1,4 @@
-import { ColorAdjustment } from '@/features/image-analysis/interfaces/color-adjustment.interface';
+import { ColorAdjustment } from '@/core/image-analysis';
 import { Component, computed, input } from '@angular/core';
 
 @Component({

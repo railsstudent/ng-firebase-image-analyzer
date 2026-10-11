@@ -9,11 +9,11 @@
   ></app-image-uploader>
 
   @if (errorMessage()) {
-    <div class="error-banner max-w-md">
+    <div class="error-banner">
       <div class="error-icon-badge">
         <app-error-icon />
       </div>
-      <div class="flex-1">
+      <div class="error-content-body">
         <p class="error-text">{{ errorMessage() }}</p>
       </div>
     </div>
@@ -30,9 +30,9 @@
   }
 
   @if (isLoading()) {
-    <div class="flex justify-center py-6">
+    <div class="streaming-loader-container">
       <div class="streaming-loader-badge">
-        <app-sync-icon class="animate-spin text-[var(--color-primary)]" />
+        <app-sync-icon class="streaming-loader-icon" />
         <span class="streaming-loader-text">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>

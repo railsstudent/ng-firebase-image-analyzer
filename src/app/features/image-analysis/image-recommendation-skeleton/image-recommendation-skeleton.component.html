@@ -1,0 +1,12 @@
+<div class="animate-pulse space-y-4 py-3">
+  @for (widthClasses of rowWidthStyles; track $index) {
+    <div class="flex gap-4">
+      <div class="skeleton-circle"></div>
+      <div class="flex-1 space-y-2 py-1">
+        @for (widthClass of widthClasses; track widthClass) {
+          <div class="skeleton-line {{ widthClass }}"></div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,26 @@
+<div class="analysis-section-card space-y-4">
+  <h3 class="section-title">
+    <app-photo-filter-icon class="section-title-icon" />
+    Visual Enhancer Calibration
+  </h3>
+
+  @if (showSkeleton()) {
+    <app-image-improvement-skeleton />
+  } @else {
+    <div class="improvement-grid">
+      <app-image-crop
+        [colorAdjustment]="safeColorAdjustment()"
+        [aspectRatio]="aspectRatio()"
+        [cropPosition]="cropPosition()"
+      />
+
+      <!-- Enhanced Canvas -->
+      <app-enhanced-canvas
+        [imageUrl]="imageUrl()"
+        [cropImage]="cropImage()"
+        [colorAdjustment]="safeColorAdjustment()"
+        [filterStyle]="filterStyle()"
+      />
+    </div>
+  }
+</div>

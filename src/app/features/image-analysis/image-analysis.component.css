@@ -100,6 +100,18 @@
   @apply text-xs font-bold uppercase tracking-wider text-(--color-on-surface-variant) font-mono;
 }
 
+.error-content-body {
+  @apply flex-1;
+}
+
+.streaming-loader-container {
+  @apply flex justify-center py-6;
+}
+
+.streaming-loader-icon {
+  @apply animate-spin text-primary;
+}
+
 :host-context(.dark) .streaming-loader-badge {
   background: var(--color-surface-glass-dark);
   border-color: var(--color-surface-glass-border-dark);

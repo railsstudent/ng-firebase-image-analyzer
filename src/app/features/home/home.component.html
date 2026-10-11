@@ -1,23 +1,20 @@
 <!-- Hero Section -->
-<section class="relative min-h-[90vh] flex items-center overflow-hidden hero-gradient logic-grid">
-  <div class="max-w-container-max mx-auto px-lg grid grid-cols-1 lg:grid-cols-12 gap-xxl items-center py-xxl">
+<section class="hero-section hero-gradient logic-grid">
+  <div class="hero-container">
     <!-- Left side text content -->
-    <div class="lg:col-span-7 space-y-xl">
-      <h1 class="font-display-lg text-display-lg leading-tight">
+    <div class="hero-content">
+      <h1 class="hero-title">
         Intelligent Inference.<br />
         <span class="text-primary">Anywhere.</span>
       </h1>
 
-      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+      <p class="hero-description">
         Deploy hybrid AI logic across cloud and edge with Firebase. Real-time image analysis, on-device privacy, low
         token costs, and cloud-scale power.
       </p>
 
-      <div class="flex flex-wrap gap-md pt-md">
-        <a
-          routerLink="/image-analysis"
-          class="bg-white text-primary px-xl py-md rounded-xl font-headline-md text-headline-md flex items-center gap-sm transition-all shadow-lg hover:bg-surface-container"
-        >
+      <div class="pt-2">
+        <a routerLink="/image-analysis" class="hero-cta-btn">
           Get Started
           <app-arrow-forward-icon />
         </a>
@@ -25,18 +22,14 @@
     </div>
 
     <!-- Right side modernized image/illustration -->
-    <div class="lg:col-span-5 relative">
-      <div class="relative z-10 animate-pulse transition-all duration-1000 hover:scale-[1.02]">
-        <img
-          src="/images/home.jpg"
-          alt="AI Image Analysis Illustration"
-          class="w-full h-auto rounded-xl shadow-lg border border-outline-variant/30"
-        />
+    <div class="hero-visual">
+      <div class="hero-image-wrapper">
+        <img src="/images/home.jpg" alt="AI Image Analysis Illustration" class="hero-image" />
       </div>
 
       <!-- Decorative Floating Elements -->
-      <div class="absolute -top-lg -right-lg w-32 h-32 bg-secondary-container/30 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-xl -left-xl w-48 h-48 bg-primary-container/20 rounded-full blur-3xl"></div>
+      <div class="floating-blur-top"></div>
+      <div class="floating-blur-bottom"></div>
     </div>
   </div>
 </section>

@@ -5,5 +5,5 @@
 }
 
 .recommendation-list-title {
-  @apply font-bold text-[var(--color-on-surface)] mb-2 flex items-center gap-2;
+  @apply font-bold text-on-surface mb-2 flex items-center gap-2;
 }

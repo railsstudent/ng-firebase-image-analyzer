@@ -3,7 +3,53 @@
 .hero-gradient {
   background: radial-gradient(circle at 50% 50%, #4648d40d 0%, #f8f9ff00 70%);
 }
+
 .logic-grid {
   background-image: radial-gradient(circle, var(--color-surface-container) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+.hero-section {
+  @apply relative min-h-[90vh] flex items-center overflow-hidden;
+}
+
+.hero-container {
+  @apply max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center py-16;
+}
+
+.hero-content {
+  @apply lg:col-span-7 space-y-8;
+}
+
+.hero-title {
+  @apply text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-on-surface;
+}
+
+.hero-description {
+  @apply text-lg text-on-surface-variant leading-relaxed;
+  max-width: 36rem;
+}
+
+.hero-cta-btn {
+  @apply inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-xl font-semibold text-lg transition-all shadow-lg hover:bg-surface-container;
+}
+
+.hero-visual {
+  @apply lg:col-span-5 relative;
+}
+
+.hero-image-wrapper {
+  @apply relative z-10 animate-pulse transition-all duration-1000 hover:scale-[1.02];
+}
+
+.hero-image {
+  @apply w-full h-auto rounded-xl shadow-lg border border-outline-variant/30;
+}
+
+.floating-blur-top {
+  @apply absolute -top-6 -right-6 w-32 h-32 bg-secondary-container/30 rounded-full blur-3xl;
+}
+
+.floating-blur-bottom {
+  @apply absolute -bottom-8 -left-8 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl;
 }

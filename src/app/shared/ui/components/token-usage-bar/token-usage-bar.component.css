@@ -1,35 +1,35 @@
 @reference "../../../../../styles.css";
 
 .segmented-progress-bar {
-  @apply flex h-8 w-full rounded-full overflow-hidden shadow-sm bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]/10;
+  @apply flex h-8 w-full rounded-full overflow-hidden shadow-sm bg-surface-container-high border border-outline-variant/10;
 }
 
 .segment-input {
-  @apply bg-[var(--color-primary)];
+  @apply bg-primary;
 }
 
 .segment-output {
-  @apply bg-[var(--color-secondary)];
+  @apply bg-secondary;
 }
 
 .segment-cached {
-  @apply bg-[var(--color-tertiary)];
+  @apply bg-tertiary;
 }
 
 .segment-thought {
-  @apply bg-[var(--color-quaternary)];
+  @apply bg-quaternary;
 }
 
 .modality-progress-bar {
-  @apply flex h-5 w-full rounded-full overflow-hidden bg-[var(--color-surface-container-high)] border border-[var(--color-outline-variant)]/10;
+  @apply flex h-5 w-full rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/10;
 }
 
 .modality-text {
-  @apply bg-[var(--color-primary)];
+  @apply bg-primary;
 }
 
 .modality-image {
-  @apply bg-[var(--color-secondary)];
+  @apply bg-secondary;
 }
 
 .token-legend-grid {
@@ -45,23 +45,23 @@
 }
 
 .legend-dot.bg-input {
-  @apply bg-[var(--color-primary)];
+  @apply bg-primary;
 }
 
 .legend-dot.bg-output {
-  @apply bg-[var(--color-secondary)];
+  @apply bg-secondary;
 }
 
 .legend-dot.bg-cached {
-  @apply bg-[var(--color-tertiary)];
+  @apply bg-tertiary;
 }
 
 .legend-dot.bg-thought {
-  @apply bg-[var(--color-quaternary)];
+  @apply bg-quaternary;
 }
 
 .modality-legend {
-  @apply flex justify-between text-xs font-mono text-[var(--color-on-surface-variant)];
+  @apply flex justify-between text-xs font-mono text-on-surface-variant;
 }
 
 .modality-legend-item {

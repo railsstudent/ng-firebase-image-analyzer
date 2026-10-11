@@ -1,9 +1,9 @@
 @reference "../../../../styles.css";
 
 .reasoning-text {
-  @apply text-[var(--color-on-surface-variant)] leading-relaxed;
+  @apply text-on-surface-variant leading-relaxed;
 }
 
 .thought-label {
-  @apply font-bold text-[var(--color-on-surface)] gap-2;
+  @apply font-bold text-on-surface gap-2;
 }

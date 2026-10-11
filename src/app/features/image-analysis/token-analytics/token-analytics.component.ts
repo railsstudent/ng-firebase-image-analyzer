@@ -8,7 +8,7 @@ import { Component, computed, input } from '@angular/core';
   selector: 'app-token-analytics',
   imports: [TokenUsageBarComponent, BarChartIconComponent],
   templateUrl: './token-analytics.component.html',
-  styleUrl: './token-analytics.component.css',
+  styleUrls: ['../../../shared/ui/styles/section-card.css', './token-analytics.component.css'],
 })
 export class TokenAnalyticsComponent {
   tokenSummary = input<TokenSummary | undefined>(undefined);

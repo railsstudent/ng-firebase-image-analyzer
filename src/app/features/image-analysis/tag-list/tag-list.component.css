@@ -10,11 +10,11 @@
 }
 
 .tag-list-title {
-  @apply text-xl font-bold tracking-tight text-[var(--color-on-surface)] flex items-center gap-2;
+  @apply text-xl font-bold tracking-tight text-on-surface flex items-center gap-2;
 }
 
 .tag-list-icon {
-  @apply text-[var(--color-primary)] text-2xl;
+  @apply text-primary text-2xl;
 }
 
 .tag-list-grid {
@@ -22,5 +22,5 @@
 }
 
 .tag-list-empty {
-  @apply text-sm text-[var(--color-on-surface-variant)] italic;
+  @apply text-sm text-on-surface-variant italic;
 }

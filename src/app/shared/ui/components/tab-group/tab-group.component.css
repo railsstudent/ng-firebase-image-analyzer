@@ -2,19 +2,19 @@
 
 /* Component styles for app-tab-group */
 .tabs-header-list {
-  @apply flex border-b border-[var(--color-outline-variant)]/30 mb-8 overflow-x-auto;
+  @apply flex border-b border-outline-variant/30 mb-8 overflow-x-auto;
 }
 
 .tab-header-btn {
-  @apply whitespace-nowrap px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 cursor-pointer border-transparent text-[var(--color-on-surface-variant)];
+  @apply whitespace-nowrap px-6 py-3 text-sm font-medium transition-all duration-200 border-0 border-b-2 cursor-pointer border-transparent bg-transparent outline-none text-on-surface-variant -mb-px;
 }
 
 .tab-header-btn:hover {
-  @apply text-[var(--color-primary)];
+  @apply text-primary border-b-outline-variant/40;
 }
 
 .tab-header-btn.active {
-  @apply border-[var(--color-primary)] text-[var(--color-primary)];
+  @apply border-b-primary text-primary font-semibold;
 }
 
 .tabs-header-list::-webkit-scrollbar {

@@ -7,7 +7,11 @@ import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psych
   selector: 'app-thought-summary',
   imports: [RecommendationListComponent, RecommendationItemComponent, PsychologyIconComponent],
   templateUrl: './thought-summary.component.html',
-  styleUrl: './thought-summary.component.css',
+  styleUrls: [
+    '../../../shared/ui/styles/section-card.css',
+    '../../../shared/ui/styles/skeleton.css',
+    './thought-summary.component.css',
+  ],
 })
 export class ThoughtSummaryComponent {
   displaySource = input('N/A');

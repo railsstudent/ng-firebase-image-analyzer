@@ -1,5 +1,5 @@
 @reference "../../../../styles.css";
 
 .recommendation-indicator {
-  @apply w-1.5 h-1.5 rounded-full bg-[var(--color-primary)];
+  @apply w-1.5 h-1.5 rounded-full bg-primary;
 }
