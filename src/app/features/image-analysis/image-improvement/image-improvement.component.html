@@ -9,17 +9,17 @@
   } @else {
     <div class="improvement-grid">
       <app-image-crop
-        [colorAdjustment]="safeColorAdjustment()"
-        [aspectRatio]="aspectRatio()"
-        [cropPosition]="cropPosition()"
+        [colorAdjustment]="calibration().safeColorAdjustment"
+        [aspectRatio]="calibration().aspectRatio"
+        [cropPosition]="calibration().cropPosition"
       />
 
       <!-- Enhanced Canvas -->
       <app-enhanced-canvas
         [imageUrl]="imageUrl()"
-        [cropImage]="cropImage()"
-        [colorAdjustment]="safeColorAdjustment()"
-        [filterStyle]="filterStyle()"
+        [cropImage]="calibration().cropImage"
+        [colorAdjustment]="calibration().safeColorAdjustment"
+        [filterStyle]="calibration().filterStyle"
       />
     </div>
   }

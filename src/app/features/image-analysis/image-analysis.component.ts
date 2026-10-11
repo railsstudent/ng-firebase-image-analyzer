@@ -8,6 +8,7 @@ import { ImageAnalysisService, StreamingAnalysisWithMetadata } from '@/core/imag
 import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
 import { TagListComponent } from './tag-list/tag-list.component';
 import { ImageTag } from './tag-list/interfaces/image-tag.interface';
+import { WINDOW } from '@/core/constants/navigator.const';
 
 const MILLISECONDS = 1000;
 
@@ -27,6 +28,7 @@ const MILLISECONDS = 1000;
 export default class ImageAnalysisComponent implements OnInit {
   // Inject the actual neural analysis service
   readonly #imageAnalysisService = inject(ImageAnalysisService);
+  readonly #win = inject(WINDOW);
 
   // Local reactive states
   imageUrl = signal<string | null>(null);
@@ -42,7 +44,7 @@ export default class ImageAnalysisComponent implements OnInit {
   warmingMessage = this.#imageAnalysisService.warmingMessage;
 
   ngOnInit(): void {
-    const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
+    const isWebGPUSupported = this.#win?.navigator && !!this.#win?.navigator.gpu;
     if (isWebGPUSupported) {
       this.#imageAnalysisService
         .preWarm()

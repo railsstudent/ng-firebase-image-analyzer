@@ -20,30 +20,31 @@ export class ImageImprovementComponent {
   analysis = input<Partial<ImageAnalysisResponse> | null>(null);
   readonly #imageEffect = inject(VisualCalibrationService);
 
-  safeColorAdjustment = computed(() => this.#imageEffect.sanitizeColorAdjustments(this.analysis()?.colorAdjustment));
+  readonly calibration = computed(() => {
+    const analysis = this.analysis();
+    const safeCrop = this.#imageEffect.sanitizeCrop(analysis?.crop);
+    const safeColorAdjustment = this.#imageEffect.sanitizeColorAdjustments(analysis?.colorAdjustment);
+    const cropImage = this.#imageEffect.cropImage(safeCrop, DEFAULT_IMAGE_WIDTH);
+    const filterStyle = this.#imageEffect.getCssFilter(safeColorAdjustment);
+    const cropPosition = safeCrop
+      ? `X: ${safeCrop.xMin}–${safeCrop.xMax} | Y: ${safeCrop.yMin}–${safeCrop.yMax}`
+      : 'N/A';
 
-  safeCrop = computed(() => this.#imageEffect.sanitizeCrop(this.analysis()?.crop));
-
-  // Safe formatting helpers for crop settings
-  cropImage = computed(() => this.#imageEffect.cropImage(this.safeCrop(), DEFAULT_IMAGE_WIDTH));
-
-  aspectRatio = computed(() => this.cropImage().containerStyle.aspectRatio);
-
-  cropPosition = computed(() => {
-    const safeCrop = this.safeCrop();
-    if (safeCrop) {
-      return `X: ${safeCrop.xMin}–${safeCrop.xMax} | Y: ${safeCrop.yMin}–${safeCrop.yMax}`;
-    }
-    return 'N/A';
+    return {
+      safeCrop,
+      safeColorAdjustment,
+      cropImage,
+      aspectRatio: cropImage.containerStyle.aspectRatio,
+      cropPosition,
+      filterStyle,
+    };
   });
 
-  showSkeleton = computed(
+  readonly showSkeleton = computed(
     () =>
       !this.imageUrl() ||
       this.analysis() === null ||
       this.analysis()?.crop === undefined ||
       this.analysis()?.colorAdjustment === undefined,
   );
-
-  filterStyle = computed(() => this.#imageEffect.getCssFilter(this.safeColorAdjustment()));
 }
