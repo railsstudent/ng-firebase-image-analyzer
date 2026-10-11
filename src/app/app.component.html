@@ -3,6 +3,8 @@
   <main class="main-content">
     <router-outlet />
   </main>
-  <app-pwa-update-banner />
+  @defer (when updateAvailable()) {
+    <app-pwa-update-banner />
+  }
   <app-footer />
 </div>

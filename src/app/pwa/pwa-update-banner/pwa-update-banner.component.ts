@@ -9,8 +9,8 @@ import { Component, inject, signal } from '@angular/core';
   styleUrl: './pwa-update-banner.component.css',
 })
 export class PwaUpdateBannerComponent {
-  protected readonly pwaUpdateService = inject(PwaUpdateService);
-  protected readonly isDismissed = signal(false);
+  readonly pwaUpdateService = inject(PwaUpdateService);
+  readonly isDismissed = signal(false);
 
   dismiss(): void {
     this.isDismissed.set(true);

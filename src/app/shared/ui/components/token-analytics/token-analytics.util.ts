@@ -1,6 +1,6 @@
 import { TokenSummary } from '@/core/firebase';
-import { TokenLegendItem } from '@/shared/ui/components/token-usage-bar/types/token-legend-item.type';
-import { TokenSegment } from '@/shared/ui/components/token-usage-bar/types/token-segment.type';
+import { TokenLegendItem } from '@/shared/ui/components/token-usage-bar/token-legend-item.type';
+import { TokenSegment } from '@/shared/ui/components/token-usage-bar/token-segment.type';
 import { Modality, ModalityTokenCount } from 'firebase/ai';
 import { ModalitySegments } from './modality-segments.type';
 import { BaseModalityTokens, TokenUsageMetadata } from './token-analytics.interface';

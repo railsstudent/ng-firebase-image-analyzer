@@ -1,4 +1,4 @@
-import { TAB_GROUP_CONTEXT } from '@/shared/ui/components/tab-group/constants/tab-group-context.const';
+import { TAB_GROUP_CONTEXT } from '@/shared/ui/components/tab-group/tab-group-context.const';
 import { Component, computed, inject, input } from '@angular/core';
 
 @Component({

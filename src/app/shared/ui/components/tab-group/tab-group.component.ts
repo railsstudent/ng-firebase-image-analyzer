@@ -1,6 +1,6 @@
 import { TabComponent } from '@/shared/ui/components/tab/tab.component';
 import { Component, computed, contentChildren, signal } from '@angular/core';
-import { TAB_GROUP_CONTEXT } from './constants/tab-group-context.const';
+import { TAB_GROUP_CONTEXT } from './tab-group-context.const';
 
 @Component({
   selector: 'app-tab-group',

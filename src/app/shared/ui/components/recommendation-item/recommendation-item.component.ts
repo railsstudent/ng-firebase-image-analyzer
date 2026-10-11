@@ -2,16 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-recommendation-item',
-  template: `
-    <p class="recommendation-item-title">
-      <ng-content select="[indicator]"></ng-content>
-      <ng-content select="[title]"></ng-content>
-    </p>
-
-    <p class="recommendation-item-reason">
-      <ng-content></ng-content>
-    </p>
-  `,
+  templateUrl: './recommendation-item.component.html',
   host: {
     role: 'listitem',
     class: 'recommendation-item',
