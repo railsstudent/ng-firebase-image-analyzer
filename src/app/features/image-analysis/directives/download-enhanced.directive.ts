@@ -1,6 +1,5 @@
+import { ColorAdjustment, Crop } from '@/core/image-analysis';
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
-import { ColorAdjustment } from '@/features/image-analysis/interfaces/color-adjustment.interface';
-import { Crop } from '@/features/image-analysis/interfaces/crop.interface';
 import { Directive, inject, input } from '@angular/core';
 
 @Directive({

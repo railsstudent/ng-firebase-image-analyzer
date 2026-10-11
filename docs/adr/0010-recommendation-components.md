@@ -6,17 +6,19 @@ This document outlines the design, rationale, and implementation steps to resolv
 
 ## 1. Context & Problem Statement
 
-Both `ThoughtSummary` and `ImageRecommendation` display structured recommendation lists with identical layout needs (such as borders, vertical padding, font weights, and spacing). 
+Both `ThoughtSummary` and `ImageRecommendation` display structured recommendation lists with identical layout needs (such as borders, vertical padding, font weights, and spacing).
 
 Currently, the styling rules for:
-*   `.recommendations-list` (container dividers)
-*   `.recommendation-item` (item borders and padding)
-*   `.recommendation-title` (header styles and text weights)
-*   `.recommendation-reason` (muted description styling)
+
+- `.recommendations-list` (container dividers)
+- `.recommendation-item` (item borders and padding)
+- `.recommendation-title` (header styles and text weights)
+- `.recommendation-reason` (muted description styling)
 
 are duplicated across [thought-summary.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/features/image-analysis/thought-summary/thought-summary.css) and [image-recommendation.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/features/image-analysis/image-recommendation/image-recommendation.css).
 
 Furthermore, while the layout is highly similar, their inline DOM trees have key differences:
+
 1.  `ImageRecommendation` requires an indicator dot preceding the item-level title.
 2.  `ThoughtSummary` requires an index number preceding the item-level title.
 3.  `ThoughtSummary` contains a list-level header ("Alternative Texts") above the entire list, which shares styling with the individual items' titles.
@@ -41,9 +43,10 @@ By utilizing standard element selectors, we fully comply with `@angular-eslint/c
 The new components will be located in the shared UI library:
 
 ### A. List Wrapper Component
-*   **Directory:** `src/app/shared/ui/components/recommendation-list`
-*   **Template File:** `recommendation-list.ts` (Inline template)
-*   **Stylesheet:** `recommendation-list.css`
+
+- **Directory:** `src/app/shared/ui/components/recommendation-list`
+- **Template File:** `recommendation-list.ts` (Inline template)
+- **Stylesheet:** `recommendation-list.css`
 
 ```typescript
 // recommendation-list.ts
@@ -59,8 +62,8 @@ import { Component, input } from '@angular/core';
     <ng-content></ng-content>
   `,
   host: {
-    'role': 'list',
-    'class': 'recommendations-list',
+    role: 'list',
+    class: 'recommendations-list',
   },
   styleUrl: './recommendation-list.css',
 })
@@ -89,9 +92,10 @@ export class RecommendationList {
 ---
 
 ### B. List Item Component
-*   **Directory:** `src/app/shared/ui/components/recommendation-item`
-*   **Template File:** `recommendation-item.ts` (Inline template)
-*   **Stylesheet:** `recommendation-item.css`
+
+- **Directory:** `src/app/shared/ui/components/recommendation-item`
+- **Template File:** `recommendation-item.ts` (Inline template)
+- **Stylesheet:** `recommendation-item.css`
 
 ```typescript
 // recommendation-item.ts
@@ -105,14 +109,14 @@ import { Component } from '@angular/core';
       <ng-content select="[indicator]"></ng-content>
       <ng-content select="[title]"></ng-content>
     </p>
-    
+
     <p class="recommendation-item-reason">
       <ng-content></ng-content>
     </p>
   `,
   host: {
-    'role': 'listitem',
-    'class': 'recommendation-item',
+    role: 'listitem',
+    class: 'recommendation-item',
   },
   styleUrl: './recommendation-item.css',
 })
@@ -147,38 +151,43 @@ export class RecommendationItem {}
 Once approved, the refactoring will execute as follows:
 
 ### Step 1: Create Shared Components
+
 Generate and populate the stylesheets and standalone components as specified above under `src/app/shared/ui/components/`.
 
 ### Step 2: Update Image Recommendation
+
 Refactor `image-recommendation.ts` to import `RecommendationList` and `RecommendationItem`. Update the HTML structure:
 
 ```html
 <app-recommendation-list>
   @for (rec of recommendations(); track rec.recommendation) {
-    <app-recommendation-item>
-      <span indicator class="recommendation-indicator"></span>
-      <span title>{{ rec.recommendation }}</span>
-      {{ rec.sentence }}
-    </app-recommendation-item>
+  <app-recommendation-item>
+    <span indicator class="recommendation-indicator"></span>
+    <span title>{{ rec.recommendation }}</span>
+    {{ rec.sentence }}
+  </app-recommendation-item>
   }
 </app-recommendation-list>
 ```
-*Clean Up:* Delete the duplicated classes in `image-recommendation.css`, keeping only `.recommendation-indicator` as it is uniquely required for this component.
+
+_Clean Up:_ Delete the duplicated classes in `image-recommendation.css`, keeping only `.recommendation-indicator` as it is uniquely required for this component.
 
 ### Step 3: Update Thought Summary
+
 Refactor `thought-summary.ts` to import `RecommendationList` and `RecommendationItem`. Update the HTML structure:
 
 ```html
 <app-recommendation-list listTitle="Alternative Texts">
   @for (alt of alternativeTexts(); track alt; let i = $index) {
-    <app-recommendation-item>
-      <span title>{{ i + 1 }}. Alternative Suggestion</span>
-      {{ alt }}
-    </app-recommendation-item>
+  <app-recommendation-item>
+    <span title>{{ i + 1 }}. Alternative Suggestion</span>
+    {{ alt }}
+  </app-recommendation-item>
   }
 </app-recommendation-list>
 ```
-*Clean Up:* Delete all duplicated styles from `thought-summary.css`, keeping only the local card overview typography.
+
+_Clean Up:_ Delete all duplicated styles from `thought-summary.css`, keeping only the local card overview typography.
 
 ---
 

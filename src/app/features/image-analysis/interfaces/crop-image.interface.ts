@@ -1,4 +1,4 @@
-import { Crop } from './crop.interface';
+import { Crop } from '@/core/image-analysis';
 
 interface ContainerStyle {
   width: string;

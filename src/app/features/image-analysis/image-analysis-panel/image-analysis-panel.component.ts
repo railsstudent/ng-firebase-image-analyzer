@@ -3,7 +3,7 @@ import { ImageRecommendationComponent } from '@/features/image-analysis/image-re
 import { ThoughtSummaryComponent } from '@/features/image-analysis/thought-summary/thought-summary.component';
 import { TokenAnalyticsComponent } from '@/features/image-analysis/token-analytics/token-analytics.component';
 import { DisplaySource } from '@/features/image-analysis/types/display-source.type';
-import { StreamingAnalysisWithMetadata } from '@/features/image-analysis/types/streaming-analysis-with-metadata.type';
+import { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { TabGroupComponent } from '@/shared/ui/components/tab-group/tab-group.component';
 import { TabComponent } from '@/shared/ui/components/tab/tab.component';
 import { Component, computed, input } from '@angular/core';

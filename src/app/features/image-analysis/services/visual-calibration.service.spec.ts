@@ -1,7 +1,6 @@
+import { ColorAdjustment, Crop } from '@/core/image-analysis';
 import { TestBed } from '@angular/core/testing';
 import { VisualCalibrationService } from './visual-calibration.service';
-import { ColorAdjustment } from '@/features/image-analysis/interfaces/color-adjustment.interface';
-import { Crop } from '@/features/image-analysis/interfaces/crop.interface';
 
 describe('VisualCalibrationService', () => {
   let service: VisualCalibrationService;

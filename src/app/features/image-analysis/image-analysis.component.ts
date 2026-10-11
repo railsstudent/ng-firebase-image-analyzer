@@ -4,11 +4,10 @@ import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psych
 import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
+import { ImageAnalysisService, StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
-import { ImageAnalysisService } from './services/image-analysis.service';
 import { TagListComponent } from './tag-list/tag-list.component';
 import { ImageTag } from './tag-list/interfaces/image-tag.interface';
-import { StreamingAnalysisWithMetadata } from './types/streaming-analysis-with-metadata.type';
 
 const MILLISECONDS = 1000;
 

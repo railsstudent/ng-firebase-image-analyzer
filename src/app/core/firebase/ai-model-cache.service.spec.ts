@@ -69,7 +69,7 @@ describe('AiModelCacheService', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be created', () => {

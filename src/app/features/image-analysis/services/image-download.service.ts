@@ -1,4 +1,4 @@
-import { Crop } from '@/features/image-analysis/interfaces/crop.interface';
+import { Crop } from '@/core/image-analysis';
 import { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, inject, Service } from '@angular/core';

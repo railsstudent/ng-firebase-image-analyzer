@@ -46,12 +46,12 @@ export const appConfig: ApplicationConfig = {
       return configService.initialize();
     }),
     provideFirebaseAI(),
-  ]
+  ],
 };
 ```
 
-* **App Check Security:** Leverages `ReCaptchaEnterpriseProvider` to sign cloud queries securely. During development (`isDevMode()`), App Check falls back to a debug token persisted locally to allow developer emulation on local ports.
-* **Refresh Intervals:** Remote Config fetching is optimized with a `0-second` interval in local development (instant updates) and a conservative `1-hour` interval in production to eliminate rate-limiting.
+- **App Check Security:** Leverages `ReCaptchaEnterpriseProvider` to sign cloud queries securely. During development (`isDevMode()`), App Check falls back to a debug token persisted locally to allow developer emulation on local ports.
+- **Refresh Intervals:** Remote Config fetching is optimized with a `0-second` interval in local development (instant updates) and a conservative `1-hour` interval in production to eliminate rate-limiting.
 
 ### C. Phase 3: The Abstraction Layer (`AiService` Contract)
 
@@ -94,9 +94,9 @@ export const ImageAnalysisSchema: Schema = {
         type: Type.OBJECT,
         properties: {
           name: { type: Type.STRING },
-          sentence: { type: Type.STRING }
-        }
-      }
+          sentence: { type: Type.STRING },
+        },
+      },
     },
     recommendations: { type: Type.ARRAY, items: { type: Type.STRING } },
     colorAdjustment: {
@@ -105,14 +105,14 @@ export const ImageAnalysisSchema: Schema = {
         brightness: { type: Type.NUMBER },
         saturation: { type: Type.NUMBER },
         contrast: { type: Type.NUMBER },
-        warmth: { type: Type.NUMBER }
-      }
-    }
-  }
+        warmth: { type: Type.NUMBER },
+      },
+    },
+  },
 };
 ```
 
-* **Image Verifications (`image.utils.ts`):** Pre-validates payloads to ensure binary files are under 20MB and belong to a valid MIME type (`image/*`), preventing unnecessary cloud invocation overhead.
+- **Image Verifications (`image.utils.ts`):** Pre-validates payloads to ensure binary files are under 20MB and belong to a valid MIME type (`image/*`), preventing unnecessary cloud invocation overhead.
 
 ### E. Phase 5: Centralized SSR-Safe Navigation (`NavService`)
 
@@ -125,10 +125,10 @@ export const ROUTE_PATHS = {
   IMAGE_ANALYSIS: 'image-analysis',
 } as const;
 
-export type AppRoute = `/${typeof ROUTE_PATHS[keyof typeof ROUTE_PATHS]}`;
+export type AppRoute = `/${(typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS]}`;
 ```
 
-* **The NavService Provider:**
+- **The NavService Provider:**
 
   ```typescript
   @Service()
@@ -145,7 +145,7 @@ export type AppRoute = `/${typeof ROUTE_PATHS[keyof typeof ROUTE_PATHS]}`;
   }
   ```
 
-* **Decoupled Presenters:** Standalone shell structures (such as `<app-header [navLinks]="nav.links" />`) bind to these read-only signals. Direct, non-encapsulated `Router` instances are strictly banned.
+- **Decoupled Presenters:** Standalone shell structures (such as `<app-header [navLinks]="nav.links" />`) bind to these read-only signals. Direct, non-encapsulated `Router` instances are strictly banned.
 
 ---
 

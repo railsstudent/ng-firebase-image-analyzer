@@ -1,5 +1,5 @@
 import { DownloadEnhancedDirective } from '@/features/image-analysis/directives/download-enhanced.directive';
-import { ColorAdjustment } from '@/features/image-analysis/interfaces/color-adjustment.interface';
+import { ColorAdjustment } from '@/core/image-analysis';
 import { CropImageStyles } from '@/features/image-analysis/interfaces/crop-image.interface';
 import { DownloadIconComponent } from '@/shared/ui/icons/download-icon/download-icon.component';
 import { Component, computed, input, signal } from '@angular/core';

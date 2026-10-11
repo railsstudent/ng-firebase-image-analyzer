@@ -1,7 +1,6 @@
+import { ColorAdjustment, Crop } from '@/core/image-analysis';
 import { ClampOptions } from '@/features/image-analysis/interfaces/clamp-option.interface';
-import { ColorAdjustment } from '@/features/image-analysis/interfaces/color-adjustment.interface';
 import { CropImageStyles } from '@/features/image-analysis/interfaces/crop-image.interface';
-import { Crop } from '@/features/image-analysis/interfaces/crop.interface';
 import { Service } from '@angular/core';
 
 export const DEFAULT_IMAGE_WIDTH = 100;

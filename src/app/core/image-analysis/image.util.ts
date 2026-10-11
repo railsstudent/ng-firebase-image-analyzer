@@ -41,6 +41,7 @@ export function validatePrompt(prompt?: string): void {
     throw new Error('Prompt cannot be empty or whitespace.');
   }
 }
+
 /**
  * Resizes any image File/Blob to an EXACT square dimension (e.g., 512x512)
  * so that WebGPU tensor shapes match 100%, avoiding shader recompilation.

@@ -1,5 +1,4 @@
-import { ColorAdjustment } from './color-adjustment.interface';
-import { Crop } from './crop.interface';
+import { ColorAdjustment, Crop } from '@/core/image-analysis';
 
 export interface ImageDownloadOptions {
   url: string;

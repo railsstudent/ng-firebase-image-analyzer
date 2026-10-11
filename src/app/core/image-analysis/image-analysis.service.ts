@@ -1,19 +1,11 @@
 import { AiService, FALLBACK_IMAGE_SIZE } from '@/core/firebase';
 import { readFileAsDataURL } from '@/shared/utils/file-reader.util';
-import {
-  resizeToFixedDimensions,
-  validateImageInput,
-  validatePrompt,
-} from '@/features/image-analysis/utils/image.util';
-import {
-  IMAGE_ANALYSIS_USER_PROMPT,
-  SYSTEM_INSTRUCTION,
-} from '@/features/image-analysis/prompts/image-analysis.prompt';
-import { ImageAnalysisSchema } from '@/features/image-analysis/schemas/image-analysis.schema';
-import { ImageAnalysisResponse } from '@/features/image-analysis/interfaces/image-analysis-response.interface';
-import { StreamingAnalysisWithMetadata } from '@/features/image-analysis/types/streaming-analysis-with-metadata.type';
 import { inject, Service } from '@angular/core';
 import { InferenceSource, Part } from 'firebase/ai';
+import { ImageAnalysisResponse, StreamingAnalysisWithMetadata } from './image-analysis.interface';
+import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from './image-analysis.prompt';
+import { ImageAnalysisSchema } from './image-analysis.schema';
+import { resizeToFixedDimensions, validateImageInput, validatePrompt } from './image.util';
 
 @Service()
 export class ImageAnalysisService {

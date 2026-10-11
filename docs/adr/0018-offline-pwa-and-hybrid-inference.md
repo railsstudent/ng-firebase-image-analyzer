@@ -50,13 +50,7 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
          "name": "app",
          "installMode": "prefetch",
          "resources": {
-           "files": [
-             "/favicon.ico",
-             "/index.html",
-             "/manifest.webmanifest",
-             "/*.css",
-             "/*.js"
-           ]
+           "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
          }
        },
        {
@@ -64,15 +58,8 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
          "installMode": "lazy",
          "updateMode": "prefetch",
          "resources": {
-           "files": [
-             "/assets/**",
-             "/images/**",
-             "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
-           ],
-           "urls": [
-             "https://fonts.googleapis.com/**",
-             "https://fonts.gstatic.com/**"
-           ]
+           "files": ["/assets/**", "/images/**", "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"],
+           "urls": ["https://fonts.googleapis.com/**", "https://fonts.gstatic.com/**"]
          }
        }
      ]
@@ -137,8 +124,7 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
    Add the following `<link>` and `<meta>` tags inside the `<head>` of `src/index.html`:
 
    ```html
-   <link rel="manifest" href="manifest.webmanifest">
-   <meta name="theme-color" content="#1976d2">
+   <link rel="manifest" href="manifest.webmanifest" /> <meta name="theme-color" content="#1976d2" />
    ```
 
 6. **Register the Service Worker in `src/app/app.config.ts`:**
@@ -153,9 +139,9 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
        // ... existing providers,
        provideServiceWorker('ngsw-worker.js', {
          enabled: !isDevMode(),
-         registrationStrategy: 'registerWhenStable:30000'
-       })
-     ]
+         registrationStrategy: 'registerWhenStable:30000',
+       }),
+     ],
    };
    ```
 
@@ -220,8 +206,8 @@ We will bypass or safely guard blocking network calls inside `ConfigService.init
 
 ```typescript
 const isOnline = this.#connectionService.getOnlineStatus();
-const isLocalhost = this.#window && 
-  (this.#window.location.hostname === 'localhost' || this.#window.location.hostname === '127.0.0.1');
+const isLocalhost =
+  this.#window && (this.#window.location.hostname === 'localhost' || this.#window.location.hostname === '127.0.0.1');
 
 if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
   // Force debug tokens for localhost to support local preview mode testing!
@@ -240,7 +226,7 @@ if (isOnline) {
   try {
     const fetchPromise = fetchAndActivate(this.#remoteConfig);
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Fetch timeout')), 1500)
+      setTimeout(() => reject(new Error('Fetch timeout')), 1500),
     );
     await Promise.race([fetchPromise, timeoutPromise]);
   } catch (error) {

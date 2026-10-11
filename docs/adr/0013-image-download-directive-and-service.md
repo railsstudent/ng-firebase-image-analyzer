@@ -7,7 +7,7 @@ We decided to refactor the image download functionality to make `EnhancedCanvas`
 The current `EnhancedCanvas` component contains a local `downloadEnhancedImage` helper that uses raw `fetch` to retrieve the image and download it. This has several drawbacks:
 
 1. **Coupled Design**: The presentation component is coupled with HTTP network requests, DOM manipulation (anchor tags), and downloading side-effects.
-2. **Loss of Enhancements**: Downloading the raw image URL directly fetches the un-cropped and un-filtered original image. To download the actual *enhanced* preview, we must draw the image onto a canvas, apply coordinates, apply CSS filters, and export the resulting Blob.
+2. **Loss of Enhancements**: Downloading the raw image URL directly fetches the un-cropped and un-filtered original image. To download the actual _enhanced_ preview, we must draw the image onto a canvas, apply coordinates, apply CSS filters, and export the resulting Blob.
 3. **No DI Container Integration**: Raw `fetch` bypasses Angular's `HttpClient`, making interceptors (like authentication or storage headers) and mocking during unit testing impossible.
 4. **Memory Management**: Loading images and creating temporary object URLs requires strict garbage collection to prevent memory leaks in single-page apps.
 5. **Extension Mismatches (File Corruption Edge Case)**: If the Canvas is exported as a PNG blob (`image/png`) but the filename contains an incorrect extension like `hello.jpeg`, the binary signature will conflict with the extension, causing OS/viewer warning errors. We need a robust sanitization helper to guarantee a `.png` filename extension.
@@ -37,6 +37,7 @@ To adhere to clean-code standards, we decided to implement a highly modular, dec
 ## Reference Implementation
 
 ### 1. Options Interface Types
+
 Created `src/app/features/image-analysis/types/image-download-options.type.ts`:
 
 ```typescript
@@ -52,6 +53,7 @@ export interface ImageDownloadOptions {
 ```
 
 ### 2. Interface Updates (State Wrapping)
+
 Update `src/app/features/image-enhancer/types/crop-image.type.ts`:
 
 ```typescript
@@ -77,6 +79,7 @@ export interface CropImageStyles {
 ```
 
 ### 3. The Core `ImageDownloadService`
+
 Update `src/app/features/image-analysis/services/image-download.ts`:
 
 ```typescript
@@ -94,12 +97,12 @@ export class ImageDownloadService {
     const { url, crop, filter, filename } = options;
     const rawBlob = await this.#fetchImageBlob(url);
     const img = await this.#loadImage(rawBlob);
-    
+
     try {
       const filterStyle = this.#imageEffect.getCssFilter(filter);
       const canvas = this.#renderCroppedCanvas(img, crop, filterStyle);
       const exportBlob = await this.#exportCanvasBlob(canvas);
-      
+
       const safeFilename = this.#sanitizePngFilename(filename);
       this.#triggerFileDownload(exportBlob, safeFilename);
     } finally {
@@ -110,14 +113,15 @@ export class ImageDownloadService {
 ```
 
 ### 4. The Standalone `DownloadEnhancedDirective`
+
 Created `src/app/features/image-analysis/directives/download-enhanced.ts`:
 
 ```typescript
 @Directive({
   selector: '[appDownloadEnhanced]',
   host: {
-    '(click)': 'onClick()'
-  }
+    '(click)': 'onClick()',
+  },
 })
 export class DownloadEnhancedDirective {
   imageUrl = input.required<string | null>({ alias: 'appDownloadEnhanced' });
@@ -136,7 +140,7 @@ export class DownloadEnhancedDirective {
         url,
         crop: this.crop(),
         filter: this.filter(),
-        filename: 'enhanced-image.png'
+        filename: 'enhanced-image.png',
       });
     } catch (error) {
       console.error('Failed to download enhanced image:', error);
