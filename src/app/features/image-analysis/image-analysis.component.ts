@@ -1,0 +1,116 @@
+import { ImageUploaderComponent } from '@/shared/ui/image-uploader/image-uploader.component';
+import { ErrorIconComponent } from '@/shared/ui/icons/error-icon/error-icon.component';
+import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psychology-icon.component';
+import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { InferenceSource } from 'firebase/ai';
+import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
+import { ImageAnalysisService } from './services/image-analysis.service';
+import { TagListComponent } from './tag-list/tag-list.component';
+import { ImageTag } from './tag-list/interfaces/image-tag.interface';
+import { StreamingAnalysisWithMetadata } from './types/streaming-analysis-with-metadata.type';
+
+const MILLISECONDS = 1000;
+
+@Component({
+  selector: 'app-image-analysis',
+  imports: [
+    ImageUploaderComponent,
+    TagListComponent,
+    ImageAnalysisPanelComponent,
+    ErrorIconComponent,
+    PsychologyIconComponent,
+    SyncIconComponent,
+  ],
+  templateUrl: './image-analysis.component.html',
+  styleUrl: './image-analysis.component.css',
+})
+export default class ImageAnalysisComponent implements OnInit {
+  // Inject the actual neural analysis service
+  readonly #imageAnalysisService = inject(ImageAnalysisService);
+
+  // Local reactive states
+  imageUrl = signal<string | null>(null);
+  selectedFile = signal<File | null>(null);
+  analysisData = signal<StreamingAnalysisWithMetadata | null>(null);
+  isLoading = signal(false);
+  performance = signal(0);
+  errorMessage = signal('');
+
+  seconds = computed(() => (this.performance() / MILLISECONDS).toFixed(1));
+
+  isWarming = computed(() => !!this.#imageAnalysisService.warmingMessage());
+  warmingMessage = this.#imageAnalysisService.warmingMessage;
+
+  ngOnInit(): void {
+    const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
+    if (isWebGPUSupported) {
+      this.#imageAnalysisService
+        .preWarm()
+        .then(() => {
+          console.log('Gemini Nano pre-warmed and ready for action!');
+        })
+        .catch((err) => {
+          console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err);
+        });
+    } else {
+      console.log('WebGPU is not supported on this browser. Skipping on-device initialization, direct cloud mode.');
+    }
+  }
+
+  // Computed derived states
+  tags = computed<ImageTag[]>(() => {
+    const data = this.analysisData();
+    if (!data) {
+      return [];
+    }
+    return (data.analysis.tags || []).map((t) => ({
+      label: t.name,
+      tooltip: t.sentence,
+    }));
+  });
+
+  source = computed<InferenceSource | undefined>(() => this.analysisData()?.source);
+
+  onFileSelected(file: File) {
+    this.selectedFile.set(file);
+    this.analysisData.set(null);
+    this.errorMessage.set('');
+  }
+
+  async triggerAnalysis() {
+    const file = this.selectedFile();
+    if (!file) {
+      return;
+    }
+
+    const start = Date.now();
+    try {
+      this.performance.set(0);
+      this.isLoading.set(true);
+      this.errorMessage.set('');
+
+      // Call the service to perform live AI analysis
+      const stream = await this.#imageAnalysisService.analyzeImageStream(file);
+
+      // Stream the image analysis data that consists of partial data
+      for await (const update of stream) {
+        this.analysisData.set(update);
+        this.performance.set(Date.now() - start);
+      }
+    } catch (error) {
+      console.error('Failed to analyze image with API', error);
+      const message = error instanceof Error ? error.message : 'Unknown error occurred during image analysis.';
+      this.errorMessage.set(`Failed to analyze image: ${message}`);
+    } finally {
+      this.isLoading.set(false);
+      this.performance.set(Date.now() - start);
+    }
+  }
+
+  onImageRemoved() {
+    this.selectedFile.set(null);
+    this.analysisData.set(null);
+    this.errorMessage.set('');
+  }
+}

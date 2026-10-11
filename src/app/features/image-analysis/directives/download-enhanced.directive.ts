@@ -1,0 +1,34 @@
+import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
+import { ColorAdjustment } from '@/features/image-analysis/interfaces/color-adjustment.interface';
+import { Crop } from '@/features/image-analysis/interfaces/crop.interface';
+import { Directive, inject, input } from '@angular/core';
+
+@Directive({
+  selector: '[appDownloadEnhanced]',
+  host: {
+    '(click)': 'onClick()',
+  },
+})
+export class DownloadEnhancedDirective {
+  imageUrl = input.required<string | null>({ alias: 'appDownloadEnhanced' });
+  crop = input.required<Crop>();
+  filter = input.required<ColorAdjustment | undefined>();
+
+  #downloadImageService = inject(ImageDownloadService);
+
+  async onClick() {
+    const url = this.imageUrl();
+    if (url) {
+      try {
+        await this.#downloadImageService.downloadFilteredCrop({
+          url,
+          crop: this.crop(),
+          filter: this.filter(),
+          filename: 'enhanced-image.png',
+        });
+      } catch (err) {
+        console.error('Failed to download enhanced image:', err);
+      }
+    }
+  }
+}

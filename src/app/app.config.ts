@@ -1,4 +1,4 @@
-import { ConfigService, provideFirebaseAI } from '@/core/firebase';
+import { ConfigService, provideFirebaseAI } from './core/firebase';
 import {
   ApplicationConfig,
   inject,
