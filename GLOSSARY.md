@@ -21,5 +21,9 @@ The process and controls for calibrating image properties (brightness, saturatio
 _Avoid_: Photo filter, image editing, post-processing
 
 **Modality Tokens**:
-The token breakdown categorizing input and output cost metrics across text, image, and thinking modalities during model inference.
+The token breakdown categorizing input and output cost metrics across text, image, and thinking modalities during model inference across features.
 _Avoid_: Token counter, inference cost
+
+**AI Reasoning Summary**:
+The structured overview presenting generative model thought chains, source attribution, and contextual remarks across AI features.
+_Avoid_: Model log, raw output, explanation box

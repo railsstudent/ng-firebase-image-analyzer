@@ -6,7 +6,7 @@ import { Component, input } from '@angular/core';
     @if (listTitle()) {
       <p class="recommendation-list-title">{{ listTitle() }}</p>
     }
-    <ng-content></ng-content>
+    <ng-content />
   `,
   host: {
     role: 'list',

@@ -1,4 +1,4 @@
-@reference "../../../../styles.css";
+@reference "../../../../../styles.css";
 
 .token-header {
   @apply flex justify-between items-center text-sm mb-2;

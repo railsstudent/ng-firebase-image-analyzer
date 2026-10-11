@@ -1,7 +1,7 @@
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
 import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
-import { ThoughtSummaryComponent } from '@/features/image-analysis/thought-summary/thought-summary.component';
-import { TokenAnalyticsComponent } from '@/features/image-analysis/token-analytics/token-analytics.component';
+import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
+import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { DisplaySource } from '@/features/image-analysis/types/display-source.type';
 import { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { TabGroupComponent } from '@/shared/ui/components/tab-group/tab-group.component';

@@ -8,10 +8,10 @@
     <p class="reasoning-text"><span class="thought-label">Source:</span> {{ displaySource() }}</p>
     <p class="reasoning-text">{{ thoughtSummary() }}</p>
 
-    @if (alternativeTexts(); as altTexts) {
-      <app-recommendation-list listTitle="Suggested Alternative Texts">
-        @for (alt of altTexts; track alt; let i = $index) {
-          <app-recommendation-item> {{ i + 1 }}. {{ alt }} </app-recommendation-item>
+    @if (remarks(); as remarkList) {
+      <app-recommendation-list [listTitle]="remarksTitle()">
+        @for (remark of remarkList; track remark; let i = $index) {
+          <app-recommendation-item> {{ i + 1 }}. {{ remark }} </app-recommendation-item>
         }
       </app-recommendation-list>
     } @else {

@@ -1,4 +1,4 @@
-@reference "../../../../styles.css";
+@reference "../../../../../styles.css";
 
 .reasoning-text {
   @apply text-on-surface-variant leading-relaxed;
