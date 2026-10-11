@@ -1,0 +1,21 @@
+# Firebase Hybrid Image Analyzer
+
+> An Angular Progressive Web App (PWA) leveraging Firebase AI Logic and on-device WebGPU Gemini Nano for hybrid multimodal image analysis, smart cropping, visual calibration, and tag generation.
+
+## Overview
+- **Application Type**: Angular PWA with zoneless change detection and Signal-based state architecture.
+- **AI Engine**: Hybrid inference with automated fallback:
+  - **On-Device**: WebGPU-accelerated Chrome built-in AI (Prompt API / Gemini Nano).
+  - **Cloud**: Firebase AI Logic via Vertex AI for Firebase (Gemini 2.5 Flash / Gemini 2.5 Pro).
+- **Core Capabilities**:
+  - Image Classification and Tag Cloud Generation.
+  - Multimodal Vision Analysis (composition, technical quality, subject detection).
+  - Smart Aspect Ratio Crop Presets (1:1, 4:3, 16:9, 9:16).
+  - Contrast, Brightness, and Saturation Visual Calibration Filters.
+  - Streaming Markdown Thought Summaries and Token Analytics.
+  - PWA Offline Caching & Background Asset Precaching.
+
+## Architecture
+- `src/app/core/`: Cohesive flat domain packages (Firebase AI, App Check, Remote Config).
+- `src/app/features/image-analysis/`: Multimodal vision UI components, streaming token metrics, and interactive canvas manipulation.
+- `src/app/shared/`: Reusable zero-dependency SVG icons, UI badges, and reactive utilities.

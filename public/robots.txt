@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Agent & LLM Information
+# See /llms.txt for agent-readable overview and context
