@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { NAVIGATOR } from '@/core/constants/navigator.const';
+import { WINDOW } from '@/core/constants/navigator.const';
 
 /**
  * Utility function to check online status.
@@ -8,6 +8,6 @@ import { NAVIGATOR } from '@/core/constants/navigator.const';
  * @returns A function that queries the online status of the navigator.
  */
 export function injectOnlineStatus(): () => boolean {
-  const navigator = inject(NAVIGATOR);
-  return () => navigator?.onLine ?? true;
+  const win = inject(WINDOW);
+  return () => win?.navigator.onLine ?? true;
 }

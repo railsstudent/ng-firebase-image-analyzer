@@ -1,12 +1,13 @@
+import { WINDOW } from '@/core/constants/navigator.const';
 import { injectOnlineStatus } from '@/core/utils/connection.util';
-import { configureAppCheckDebugToken, injectIsLocalhost } from '@/core/utils/platform.util';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
-import { isDevMode, Service } from '@angular/core';
+import { inject, isDevMode, Service } from '@angular/core';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { AppCheck, initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
 
+const LOCAL_DOMAINS = ['localhost', '127.0.0.1', '::1', '[::1]'];
 const SECONDS = 60;
 const MILLISECONDS = 1000;
 const FETCH_INTERVAL = SECONDS * SECONDS * MILLISECONDS;
@@ -15,10 +16,10 @@ const PROD_TIMEOUT = 2000;
 
 @Service()
 export class ConfigService {
+  readonly #window = inject(WINDOW);
+  readonly #isOnline = injectOnlineStatus();
   #app: FirebaseApp | undefined = undefined;
   #remoteConfig: RemoteConfig | undefined = undefined;
-  #isOnline = injectOnlineStatus();
-  #isLocalhost = injectIsLocalhost();
 
   get firebaseApp(): FirebaseApp {
     if (!this.#app) {
@@ -58,6 +59,27 @@ export class ConfigService {
     return fetchAndActivate(rc);
   }
 
+  #isLocalhost(): boolean {
+    return !!this.#window && LOCAL_DOMAINS.includes(this.#window.location.hostname);
+  }
+
+  /**
+   * Configures the Firebase App Check debug token on the global scope.
+   * App Check uses this global variable to determine if it should run in debug/sandbox mode.
+   *
+   * @param configToken A custom persistent debug token supplied from the firebase configuration.
+   * @param isLocalhost Whether the application is currently running on a local development domain.
+   * @param isDevContext Whether the application is in development mode (defaults to isDevMode()).
+   */
+  protected configureAppCheckDebugToken(configToken?: string, isLocalhost?: boolean, isDevContext = isDevMode()): void {
+    const isLocalContext = isDevContext || !!isLocalhost;
+
+    // STRICT PROTECTION: If we are in production on a live server,
+    // we completely disable the App Check debug token, ignoring any accidental values in the config.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isLocalContext ? configToken || true : false;
+  }
+
   async initialize(): Promise<void> {
     this.#app = this.initializeFirebaseApp(firebaseConfig.app);
 
@@ -65,7 +87,7 @@ export class ConfigService {
     const isLocalhost = this.#isLocalhost();
 
     if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
-      configureAppCheckDebugToken(firebaseConfig.appCheckDebugToken, isLocalhost);
+      this.configureAppCheckDebugToken(firebaseConfig.appCheckDebugToken, isLocalhost);
       this.initializeAppCheckInstance(this.#app, firebaseConfig.recaptchaEnterpriseKey);
     }
 

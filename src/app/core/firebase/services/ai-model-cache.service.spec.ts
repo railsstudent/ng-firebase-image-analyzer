@@ -2,7 +2,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AiModelCacheService } from './ai-model-cache.service';
 import { ConfigService } from '@/core/firebase/services/config.service';
-import { NAVIGATOR } from '@/core/constants/navigator.const';
+import { WINDOW } from '@/core/constants/navigator.const';
 import { FIREBASE_AI } from '@/core/firebase/constants/ai.const';
 
 vi.mock('firebase/remote-config', () => ({
@@ -47,13 +47,13 @@ vi.mock('firebase/ai', () => ({
 describe('AiModelCacheService', () => {
   let service: AiModelCacheService;
   let mockConfigService: any;
-  let mockNavigator: { onLine: boolean };
+  let mockWindow: { navigator: { onLine: boolean } };
 
   beforeEach(() => {
     mockConfigService = {
       RemoteConfig: {} as any,
     };
-    mockNavigator = { onLine: true };
+    mockWindow = { navigator: { onLine: true } };
 
     TestBed.configureTestingModule({
       providers: [
@@ -61,7 +61,7 @@ describe('AiModelCacheService', () => {
         AiModelCacheService,
         { provide: FIREBASE_AI, useValue: {} },
         { provide: ConfigService, useValue: mockConfigService },
-        { provide: NAVIGATOR, useValue: mockNavigator },
+        { provide: WINDOW, useValue: mockWindow },
       ],
     });
 

@@ -10,7 +10,7 @@ This file provides context, rules, and guidance for AI assistants working on thi
 Follow this directory layout and architectural pattern when adding new files:
 
 - **`firebase/`**: Contains all Firebase CLI configurations (`firebase.json`, Remote Config templates, prebuild scripts). Scripts in `package.json` copy `firebase/firebase.json` to the root ephemerally during execution (`cp firebase/firebase.json .; ...; rm firebase.json`) to keep the root directory clean.
-- **`src/app/core/`**: Core domain logic, singleton services, guards, and startup initializers. Core business domains should be organized as cohesive domain packages (e.g., `src/app/core/vision/`, `src/app/core/speech/`, `src/app/core/auth/`) that present a clean, deep public interface via `index.ts` while collocating their private internal utilities, schemas, and domain-scoped interfaces.
+- **`src/app/core/`**: Core domain logic, singleton services, guards, and startup initializers. Core business domains should be organized as cohesive domain packages (e.g., `src/app/core/firebase/`) that present a clean, deep public interface via `index.ts` while collocating their private internal utilities, schemas, and domain-scoped interfaces.
 - **`src/app/features/`**: Feature-specific components, routing, and modules (e.g., dashboard, settings).
 - **`src/app/pwa/`**: Progressive Web App infrastructure, update checking services, and banner components. Must use direct targeted file imports without a barrel file (`index.ts`) to preserve `@defer` code-splitting boundaries.
 - **`src/app/shared/`**: Reusable components, directives, pipes, domain models, and shared utilities.
@@ -46,7 +46,7 @@ When writing or refactoring TypeScript code, you MUST adhere to the following ru
    - Never commit oversized or unscaled raw assets (such as 1024x1024 master images or multi-megabyte uncompressed files) into `public/`.
    - Always downscale images to their exact target resolutions (using CLI utilities like `sips -z <height> <width> <file>` on macOS) to ensure strict PWA compliance, minimal asset payloads, and optimal caching behavior.
 8. **Domain Package Boundaries & Invariants**:
-   - **Domain Packages (`src/app/core/<domain>/`)**: Core business logic, services, and utilities must be organized as cohesive, deep domain packages (e.g. `src/app/core/vision/`, `src/app/core/speech/`, `src/app/core/auth/`). Each domain package presents a clean, minimal public API surface via its `index.ts` entry point while encapsulating internal services, helper functions, schemas, and domain-scoped interfaces. Never broaden member visibility or export internal helpers for testing; test domain packages strictly through their public API surface.
+   - **Domain Packages (`src/app/core/<domain>/`)**: Core business logic, services, and utilities must be organized as cohesive, deep domain packages (e.g. `src/app/core/firebase/`). Each domain package presents a clean, minimal public API surface via its `index.ts` entry point while encapsulating internal services, helper functions, schemas, and domain-scoped interfaces. Never broaden member visibility or export internal helpers for testing; test domain packages strictly through their public API surface.
    - **Architectural Invariants & Linter Compliance**: All authored code must preserve architectural invariants on initial generation (zero `!` non-null assertions, native `#` private fields, sibling `./` imports or absolute `@/` path aliases, and zero parent `../` imports). Numerical AST metrics (line lengths, parameter limits, complexity thresholds, and magic numbers) are deterministically enforced by `npm run lint`.
    - **Barrel File Restrictions**: Barrel files (`index.ts`) are strictly reserved for core domain packages under `src/app/core/<domain>/`. Never create barrel files in `src/app/pwa/`, feature folders, or component directories containing `@defer` components, as eager service imports from a shared barrel bundle deferred components into the initial chunk.
 
@@ -84,7 +84,7 @@ Single-context layout with a root `GLOSSARY.md` and decisions under `specs/`. Se
 Before authoring new utilities, styles, or services, inspect existing project declarations first:
 
 - **Design Tokens**: Inspect `@theme` in `src/styles.css` for existing tokens (e.g. `text-(--color-text-secondary)`) instead of using raw Tailwind palette classes.
-- **Platform Injections**: Inspect `src/app/core/constants/navigator.const.ts` for existing injection tokens (`WINDOW`, `NAVIGATOR`) instead of writing ad-hoc `typeof` checks.
+- **Platform Injections**: Inspect `src/app/core/constants/navigator.const.ts` for the existing `WINDOW` injection token to access browser globals (`win?.navigator`, `win?.location`) instead of writing ad-hoc `typeof` checks or creating fragmented browser tokens.
 - **Architectural Decisions**: Inspect `docs/adr/` for relevant domain specifications and design decisions.
 
 ### Framework & Library Research Protocols

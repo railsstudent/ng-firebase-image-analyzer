@@ -1,4 +1,4 @@
-import { NAVIGATOR, WINDOW } from '@/core/constants/navigator.const';
+import { WINDOW } from '@/core/constants/navigator.const';
 import firebaseConfig from '@/public/firebase.config.json';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -7,8 +7,7 @@ import { ConfigService } from './config.service';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 describe('ConfigService', () => {
   let service: ConfigService;
-  let mockNavigator: { onLine: boolean };
-  let mockWindow: { location: { hostname: string } };
+  let mockWindow: { location: { hostname: string }; navigator: { onLine: boolean } };
   let originalAppCheckDebugToken: string;
 
   beforeEach(() => {
@@ -16,20 +15,17 @@ describe('ConfigService', () => {
     originalAppCheckDebugToken = firebaseConfig.appCheckDebugToken;
 
     // Create mocks for injected services using Vitest mocks
-    mockNavigator = { onLine: true };
     mockWindow = {
       location: {
         hostname: 'localhost',
       },
+      navigator: {
+        onLine: true,
+      },
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        provideZonelessChangeDetection(),
-        ConfigService,
-        { provide: NAVIGATOR, useValue: mockNavigator },
-        { provide: WINDOW, useValue: mockWindow },
-      ],
+      providers: [provideZonelessChangeDetection(), ConfigService, { provide: WINDOW, useValue: mockWindow }],
     });
 
     service = TestBed.inject(ConfigService);
@@ -56,7 +52,7 @@ describe('ConfigService', () => {
     it('should assign custom App Check debug token in Locked Mode when it is defined', async () => {
       // Arrange
       firebaseConfig.appCheckDebugToken = 'my-custom-persistent-token';
-      mockNavigator.onLine = true;
+      mockWindow.navigator.onLine = true;
 
       // Act
       await service.initialize();
@@ -68,7 +64,7 @@ describe('ConfigService', () => {
     it('should fallback to Transient Mode (isDevMode() or isLocalhost) when appCheckDebugToken is empty', async () => {
       // Arrange
       firebaseConfig.appCheckDebugToken = '';
-      mockNavigator.onLine = true;
+      mockWindow.navigator.onLine = true;
       mockWindow.location.hostname = 'localhost'; // Guarantees isLocalhost is true
 
       // Act

@@ -8,11 +8,3 @@ export const WINDOW = new InjectionToken<Window | null>('WINDOW', {
     return isPlatformBrowser(platformId) ? window : null;
   },
 });
-
-export const NAVIGATOR = new InjectionToken<Navigator | null>('NAVIGATOR', {
-  providedIn: 'root',
-  factory: () => {
-    const win = inject(WINDOW);
-    return win ? win.navigator : null;
-  },
-});
