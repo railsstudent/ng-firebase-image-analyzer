@@ -1,7 +1,7 @@
-import { FALLBACK_IMAGE_SIZE } from '@/core/ai/constants/image.const';
-import { GenerateContentParams, PartialResponse } from '@/core/ai/types/ai.types';
-import { PreWarmOptions } from '@/core/ai/types/pre-warm-options.type';
-import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '@/core/ai/types/token-usage.type';
+import { FALLBACK_IMAGE_SIZE } from '@/core/firebase/constants/image.const';
+import { GenerateContentParams, PartialResponse } from '@/core/firebase/types/ai.types';
+import { PreWarmOptions } from '@/core/firebase/types/pre-warm-options.type';
+import { TokenModalityBreakdown, TokenSummary, TokenUsage } from '@/core/firebase/types/token-usage.type';
 import { DOCUMENT, inject, Service, signal } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,

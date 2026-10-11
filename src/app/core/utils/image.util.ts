@@ -1,4 +1,4 @@
-import { FALLBACK_IMAGE_SIZE, MAX_FILE_SIZE_MB, ONE_MB } from '@/core/ai/constants/image.const';
+import { FALLBACK_IMAGE_SIZE, MAX_FILE_SIZE_MB, ONE_MB } from '@/core/firebase';
 
 function formatFileSizeMbs(fileSize: number) {
   return `${(fileSize / ONE_MB).toFixed(2)}MB`;

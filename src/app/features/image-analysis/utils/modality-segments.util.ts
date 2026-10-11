@@ -1,4 +1,4 @@
-import { TokenSummary } from '@/core/ai/types/token-usage.type';
+import { TokenSummary } from '@/core/firebase';
 import { findModalityTokenCount } from '@/core/utils/modality-token-count.util';
 import { calculatePercentage } from '@/core/utils/percentage.util';
 import { BaseModalityTokens, ModalitySegments } from '@/features/image-analysis/types/modality-tokens.type';

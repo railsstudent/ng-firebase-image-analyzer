@@ -1,5 +1,4 @@
-import { FALLBACK_IMAGE_SIZE } from '@/core/ai/constants/image.const';
-import { AiService } from '@/core/ai/services/ai.service';
+import { AiService, FALLBACK_IMAGE_SIZE } from '@/core/firebase';
 import { fileToGenerativePart } from '@/core/utils/base64.util';
 import { resizeToFixedDimensions, validateImageInput, validatePrompt } from '@/core/utils/image.util';
 import {

@@ -1,4 +1,4 @@
-import { MAX_FILE_SIZE_MB, ONE_MB } from '@/core/ai/constants/image.const';
+import { MAX_FILE_SIZE_MB, ONE_MB } from '@/core/firebase';
 import { readFileAsDataURL } from '@/core/utils/base64.util';
 import { CloudUploadIconComponent } from '@/shared/ui/icons/cloud-upload-icon/cloud-upload-icon.component';
 import { DeleteIconComponent } from '@/shared/ui/icons/delete-icon/delete-icon.component';

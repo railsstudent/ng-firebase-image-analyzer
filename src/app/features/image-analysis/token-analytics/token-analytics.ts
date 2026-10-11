@@ -1,4 +1,4 @@
-import { TokenModalityBreakdown, TokenSummary } from '@/core/ai/types/token-usage.type';
+import { TokenModalityBreakdown, TokenSummary } from '@/core/firebase';
 import { parseModalityDetails, parseTokenDetails } from '@/features/image-analysis/utils/modality-segments.util';
 import { TokenUsageBar } from '@/shared/ui/components/token-usage-bar/token-usage-bar';
 import { BarChartIconComponent } from '@/shared/ui/icons/bar-chart-icon/bar-chart-icon.component';

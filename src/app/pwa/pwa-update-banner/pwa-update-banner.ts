@@ -1,4 +1,4 @@
-import { PwaUpdateService } from '@/core/services/pwa-update.service';
+import { PwaUpdateService } from '@/pwa/services/pwa-update.service';
 import { SystemUpdateAltIconComponent } from '@/shared/ui/icons/system-update-alt-icon/system-update-alt-icon.component';
 import { Component, inject, signal } from '@angular/core';
 
