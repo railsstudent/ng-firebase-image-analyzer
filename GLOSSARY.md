@@ -27,3 +27,11 @@ _Avoid_: Token counter, inference cost
 **AI Reasoning Summary**:
 The structured overview presenting generative model thought chains, source attribution, and contextual remarks across AI features.
 _Avoid_: Model log, raw output, explanation box
+
+**Deferred AI Initialization**:
+The architectural pattern of delaying the dynamic import, configuration, and instantiation of Firebase AI and core Firebase SDK modules until an AI-enabled route or action is explicitly requested, keeping the root application bundle completely free of backend SDK code.
+_Avoid_: Eager AI bootstrap, root initialization
+
+**Staged Firebase Loading**:
+The stepwise asynchronous import sequence where Firebase App, Remote Config, App Check, and Vertex AI Logic dependencies load in independent chunks on demand to eliminate network bottlenecks and prevent race conditions with remote configurations.
+_Avoid_: Monolithic Firebase import, sync SDK loading

@@ -1,3 +1,4 @@
+import { WINDOW } from '@/core/constants/navigator.const';
 import { inject, Service } from '@angular/core';
 import {
   GenerativeModel,
@@ -11,8 +12,8 @@ import {
 import { getValue } from 'firebase/remote-config';
 import { FIREBASE_AI } from './ai.const';
 import { ConfigService } from './config.service';
-import { injectOnlineStatus } from './connection.util';
 import { ModelConfigParams } from './model-config-params.interface';
+import { isOnline } from './host.util';
 
 const SAFETY_SETTINGS = [
   {
@@ -37,8 +38,8 @@ const SAFETY_SETTINGS = [
 export class AiModelCacheService {
   #ai = inject(FIREBASE_AI);
   #configService = inject(ConfigService);
-  #isOnline = injectOnlineStatus();
   #modelCache = new Map<string, GenerativeModel>();
+  #win = inject(WINDOW);
 
   /**
    * Retrieves an existing cached model, or creates a new one and caches it.
@@ -72,8 +73,8 @@ export class AiModelCacheService {
     const model = getValue(remoteConfig, 'geminiModelName').asString() || 'gemini-3.5-flash';
     const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString() || 'LOW';
     const thinkingLevel = ThinkingLevel[rawThinkingLevel as keyof typeof ThinkingLevel];
-    const isOnline = this.#isOnline();
-    const mode = isOnline ? InferenceMode.PREFER_ON_DEVICE : InferenceMode.ONLY_ON_DEVICE;
+    const isOnlineStatus = isOnline(this.#win);
+    const mode = isOnlineStatus ? InferenceMode.PREFER_ON_DEVICE : InferenceMode.ONLY_ON_DEVICE;
 
     const modelParam: HybridParams = {
       mode,

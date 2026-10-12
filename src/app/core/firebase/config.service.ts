@@ -1,13 +1,12 @@
 import { WINDOW } from '@/core/constants/navigator.const';
-import { injectOnlineStatus } from './connection.util';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { AppCheck, initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
+import { isLocalhost, isOnline } from './host.util';
 
-const LOCAL_DOMAINS = ['localhost', '127.0.0.1', '::1', '[::1]'];
 const SECONDS = 60;
 const MILLISECONDS = 1000;
 const FETCH_INTERVAL = SECONDS * SECONDS * MILLISECONDS;
@@ -16,8 +15,7 @@ const PROD_TIMEOUT = 2000;
 
 @Service()
 export class ConfigService {
-  readonly #window = inject(WINDOW);
-  readonly #isOnline = injectOnlineStatus();
+  readonly #win = inject(WINDOW);
   #app: FirebaseApp | undefined = undefined;
   #remoteConfig: RemoteConfig | undefined = undefined;
 
@@ -59,10 +57,6 @@ export class ConfigService {
     return fetchAndActivate(rc);
   }
 
-  private isLocalhost(): boolean {
-    return !!this.#window && LOCAL_DOMAINS.includes(this.#window.location.hostname);
-  }
-
   /**
    * Configures the Firebase App Check debug token on the global scope.
    * App Check uses this global variable to determine if it should run in debug/sandbox mode.
@@ -83,17 +77,16 @@ export class ConfigService {
   async initialize(): Promise<void> {
     this.#app = this.initializeFirebaseApp(firebaseConfig.app);
 
-    const isOnline = this.#isOnline();
-    const isLocalhost = this.isLocalhost();
+    const isOnlineStatus = isOnline();
 
-    if (isOnline && firebaseConfig.recaptchaEnterpriseKey) {
-      this.configureAppCheckDebugToken(firebaseConfig.appCheckDebugToken, isLocalhost);
+    if (isOnlineStatus && firebaseConfig.recaptchaEnterpriseKey) {
+      this.configureAppCheckDebugToken(firebaseConfig.appCheckDebugToken, isLocalhost(this.#win));
       this.initializeAppCheckInstance(this.#app, firebaseConfig.recaptchaEnterpriseKey);
     }
 
     this.#remoteConfig = this.setupRemoteConfig(this.#app);
 
-    if (isOnline) {
+    if (isOnlineStatus) {
       try {
         const activated = await this.fetchRemoteConfig(this.#remoteConfig);
         console.log('Remote Config initialized. Activated new values:', activated);
