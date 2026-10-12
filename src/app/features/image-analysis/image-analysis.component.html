@@ -2,10 +2,8 @@
   <!-- Upload State Area -->
   <app-image-uploader
     [(imageUrl)]="imageUrl"
-    [disabled]="isWarming()"
-    [warmingMessage]="warmingMessage()"
     (fileSelected)="onFileSelected($event)"
-    (imageRemoved)="onImageRemoved()"
+    (filePickerOpened)="preWarm()"
   ></app-image-uploader>
 
   @if (errorMessage()) {
@@ -24,7 +22,7 @@
     <div class="action-container">
       <button (click)="triggerAnalysis()" class="primary-action-btn">
         <app-psychology-icon />
-        Analyze Image ({{ seconds() }}s)
+        <span>Analyze Image ({{ seconds() }}s)</span>
       </button>
     </div>
   }
@@ -44,15 +42,15 @@
       <h4 class="section-subtitle">Detected Classifications</h4>
       <app-tag-list [tags]="tags()"></app-tag-list>
     </div>
+  }
 
-    @if (analysisData()) {
-      <!-- Advanced Analysis Results Panel -->
-      <app-image-analysis-panel
-        class="animate-fade-in block"
-        [data]="analysisData()"
-        [imageUrl]="imageUrl()"
-        [source]="source()"
-      ></app-image-analysis-panel>
-    }
+  @if (analysisData()) {
+    <!-- Advanced Analysis Results Panel -->
+    <app-image-analysis-panel
+      class="animate-fade-in block"
+      [data]="analysisData()"
+      [imageUrl]="imageUrl()"
+      [source]="source()"
+    ></app-image-analysis-panel>
   }
 </div>

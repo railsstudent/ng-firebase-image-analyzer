@@ -23,7 +23,11 @@ This document defines testing conventions, DI mocking contracts, and verificatio
    - Never widen `private` or `#` member visibility on production classes to facilitate testing.
    - Test components and services strictly through their public API surface (signals, inputs, outputs, public methods, and DOM behaviors).
 
-3. **Isolated Mock Factories**:
+3. **Testing `injectAsync` & Background Tasks**:
+   - Always await async methods (e.g. `await component.preWarm()`) or use `await vi.waitFor(...)` within tests so asynchronous injector lookups and dynamic module loads settle before the `TestBed` fixture is torn down.
+   - Prevents `NG0205: Injector has already been destroyed` runtime errors in test suites.
+
+4. **Isolated Mock Factories**:
    - Reusable or complex mocks belong in `src/testing/` (e.g. `src/testing/factories/`).
    - Never mutate shared mock instances across tests; instantiate fresh mock objects inside `beforeEach`.
 

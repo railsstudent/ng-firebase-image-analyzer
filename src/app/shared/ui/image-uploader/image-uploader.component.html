@@ -13,22 +13,21 @@
     class="uploader-panel"
     [class.is-dragging]="isDragging()"
     [class.has-image]="imageUrl()"
-    [class.is-disabled]="disabled()"
     tabindex="0"
     role="button"
     (dragover)="onDragOver($event)"
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
-    (click)="!disabled() && fileInput.click()"
-    (keydown.enter)="!disabled() && fileInput.click()"
-    (keydown.space)="$event.preventDefault(); !disabled() && fileInput.click()"
+    (click)="openFilePicker(fileInput)"
+    (keydown.enter)="openFilePicker(fileInput)"
+    (keydown.space)="$event.preventDefault(); openFilePicker(fileInput)"
   >
     <input
       #fileInput
       type="file"
       class="hidden"
       accept="image/*"
-      [disabled]="disabled()"
+      (click)="$event.stopPropagation()"
       (change)="onFileSelected($event)"
     />
 
@@ -38,23 +37,15 @@
         <img [src]="imageUrl()" class="preview-image" alt="Selected preview" />
 
         <!-- Hover Remove Action -->
-        <button type="button" class="remove-btn" (click)="removeImage($event)" title="Remove Image">
+        <button
+          type="button"
+          class="remove-btn"
+          (click)="removeImage($event, fileInput)"
+          (keydown)="$event.stopPropagation()"
+          title="Remove Image"
+        >
           <app-delete-icon />
         </button>
-      </div>
-    } @else if (disabled()) {
-      <!-- Warming/Initializing Loading State -->
-      <div class="empty-state is-warming-state">
-        <div class="warming-spinner-wrapper">
-          <div class="warming-spinner"></div>
-        </div>
-        <div class="empty-state-text">
-          <p class="empty-state-title">Initializing On-Device AI...</p>
-          <p class="empty-state-subtitle text-primary font-medium">
-            {{ warmingMessage() || 'Compiling local GPU shaders...' }}
-          </p>
-        </div>
-        <p class="empty-state-footer">Pre-warming neural layers for premium zero-latency results</p>
       </div>
     } @else {
       <!-- Empty Upload State -->
@@ -66,7 +57,7 @@
           <p class="empty-state-title">Drag & drop your image here</p>
           <p class="empty-state-subtitle">or <span class="browse-link">browse files</span></p>
         </div>
-        <p class="empty-state-footer">Supports JPG, PNG, WebP up to 20MB</p>
+        <p class="empty-state-footer">Supports JPEG, JPG, PNG, WebP up to 20MB</p>
       </div>
     }
   </div>

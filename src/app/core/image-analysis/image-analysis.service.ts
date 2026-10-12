@@ -10,10 +10,16 @@ import { resizeToFixedDimensions, validateImageInput, validatePrompt } from './i
 @Service()
 export class ImageAnalysisService {
   #aiService = inject(AiService);
+  #preWarmPromise: Promise<void> | null = null;
 
-  public readonly warmingMessage = this.#aiService.warmingStatus;
+  preWarm(): Promise<void> {
+    if (!this.#preWarmPromise) {
+      this.#preWarmPromise = this.loadPreWarm();
+    }
+    return this.#preWarmPromise;
+  }
 
-  async preWarm(): Promise<void> {
+  private async loadPreWarm(): Promise<void> {
     try {
       await this.#aiService.preWarmModel(
         {
@@ -28,6 +34,7 @@ export class ImageAnalysisService {
       );
       console.log('Image analysis on-device engine and WebGPU shaders warmed successfully!');
     } catch (err) {
+      this.#preWarmPromise = null;
       console.warn('Image analysis pre-warm sequence finished with warning/skip:', err);
     }
   }

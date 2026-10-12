@@ -1,10 +1,9 @@
-import { WINDOW } from '@/core/constants/navigator.const';
 import type { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { ErrorIconComponent } from '@/shared/ui/icons/error-icon/error-icon.component';
 import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psychology-icon.component';
 import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
 import { ImageUploaderComponent } from '@/shared/ui/image-uploader/image-uploader.component';
-import { Component, computed, inject, injectAsync, signal } from '@angular/core';
+import { Component, computed, injectAsync, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
 import { ImageTag } from './tag-list/interfaces/image-tag.interface';
@@ -30,7 +29,6 @@ export default class ImageAnalysisComponent {
   readonly #asyncImageAnalysisService = injectAsync(() =>
     import('@/core/image-analysis/image-analysis.service').then((m) => m.ImageAnalysisService),
   );
-  readonly #win = inject(WINDOW);
 
   // Local reactive states
   imageUrl = signal<string | null>(null);
@@ -39,11 +37,7 @@ export default class ImageAnalysisComponent {
   isLoading = signal(false);
   performance = signal(0);
   errorMessage = signal('');
-  warmingMessage = signal('');
-  isWarming = computed(() => !!this.warmingMessage());
-
   seconds = computed(() => (this.performance() / MILLISECONDS).toFixed(1));
-  readonly #isWebGPUSupported = this.#win?.navigator && !!this.#win?.navigator.gpu;
 
   // Computed derived states
   tags = computed<ImageTag[]>(() => {
@@ -59,18 +53,20 @@ export default class ImageAnalysisComponent {
 
   source = computed<InferenceSource | undefined>(() => this.analysisData()?.source);
 
-  async onFileSelected(file: File) {
-    const imageAnalysisService = await this.#asyncImageAnalysisService();
-
-    if (this.#isWebGPUSupported) {
-      imageAnalysisService
-        .preWarm()
-        .then(() => console.log('Gemini Nano pre-warmed and ready for action!'))
-        .catch((err) => console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err));
-    } else {
-      console.log('WebGPU is not supported on this browser. Skipping on-device initialization, direct cloud mode.');
+  async preWarm(): Promise<void> {
+    try {
+      const imageAnalysisService = await this.#asyncImageAnalysisService();
+      await imageAnalysisService.preWarm();
+      console.log('Gemini Nano pre-warmed and ready for action!');
+    } catch (err: unknown) {
+      console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err);
     }
+  }
 
+  onFileSelected(file: File | null) {
+    if (file) {
+      this.preWarm().catch((err: unknown) => console.warn('Pre-warm failed on file selection:', err));
+    }
     this.selectedFile.set(file);
     this.analysisData.set(null);
     this.errorMessage.set('');
@@ -105,11 +101,5 @@ export default class ImageAnalysisComponent {
       this.isLoading.set(false);
       this.performance.set(Date.now() - start);
     }
-  }
-
-  onImageRemoved() {
-    this.selectedFile.set(null);
-    this.analysisData.set(null);
-    this.errorMessage.set('');
   }
 }

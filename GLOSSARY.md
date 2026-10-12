@@ -9,7 +9,7 @@ The mechanism of routing image analysis queries between client-side WebGPU execu
 _Avoid_: Dual inference, fallback inference
 
 **On-Device Pre-Warming**:
-The background process of downloading, caching, and compiling WebGPU shaders for the Gemini Nano model during image selection to ensure zero-latency first-run inference without delaying initial route loading.
+The background process of downloading, caching, and compiling WebGPU shaders for the Gemini Nano model during feature initialization to ensure zero-latency first-run inference without delaying initial route loading.
 _Avoid_: Lazy caching, background downloading
 
 **App Check Sandbox**:

@@ -13,37 +13,26 @@ import { Component, input, model, output, signal } from '@angular/core';
 export class ImageUploaderComponent {
   imageUrl = model<string | null>(null);
   maxSize = input<number>(MAX_FILE_SIZE_MB); // Default 20MB
-  disabled = input<boolean>(false);
-  warmingMessage = input<string | null>(null);
 
-  fileSelected = output<File>();
-  imageRemoved = output<void>();
+  filePickerOpened = output();
+  fileSelected = output<File | null>();
 
   isDragging = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
 
   onDragOver(event: DragEvent) {
-    if (this.disabled()) {
-      return;
-    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(true);
   }
 
   onDragLeave(event: DragEvent) {
-    if (this.disabled()) {
-      return;
-    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
   }
 
   async onDrop(event: DragEvent): Promise<void> {
-    if (this.disabled()) {
-      return;
-    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
@@ -54,10 +43,12 @@ export class ImageUploaderComponent {
     }
   }
 
+  openFilePicker(fileInput: HTMLInputElement) {
+    this.filePickerOpened.emit();
+    fileInput.click();
+  }
+
   async onFileSelected(event: Event): Promise<void> {
-    if (this.disabled()) {
-      return;
-    }
     const inputElement = event.target as HTMLInputElement;
     const files = inputElement.files;
     if (files && files.length > 0) {
@@ -86,10 +77,13 @@ export class ImageUploaderComponent {
     }
   }
 
-  removeImage(event: Event) {
+  removeImage(event: Event, fileInput?: HTMLInputElement) {
     event.stopPropagation();
+    if (fileInput) {
+      fileInput.value = '';
+    }
     this.imageUrl.set(null);
     this.errorMessage.set(null);
-    this.imageRemoved.emit();
+    this.fileSelected.emit(null);
   }
 }

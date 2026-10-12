@@ -1,6 +1,5 @@
-import { WINDOW } from '@/core/constants/navigator.const';
 import { ImageAnalysisService } from '@/core/image-analysis';
-import { provideZonelessChangeDetection, signal } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import ImageAnalysisComponent from './image-analysis.component';
 
@@ -9,15 +8,9 @@ describe('ImageAnalysisComponent', () => {
   let fixture: ComponentFixture<ImageAnalysisComponent>;
 
   let mockImageAnalysisService: Partial<ImageAnalysisService>;
-  const mockWindow = {
-    navigator: {
-      gpu: {},
-    },
-  } as unknown as Window;
 
   beforeEach(async () => {
     mockImageAnalysisService = {
-      warmingMessage: signal(''),
       preWarm: vi.fn().mockResolvedValue(undefined),
       analyzeImageStream: vi.fn().mockReturnValue({
         async *[Symbol.asyncIterator]() {
@@ -34,7 +27,6 @@ describe('ImageAnalysisComponent', () => {
       providers: [
         provideZonelessChangeDetection(),
         { provide: ImageAnalysisService, useValue: mockImageAnalysisService },
-        { provide: WINDOW, useValue: mockWindow },
       ],
     }).compileComponents();
 
@@ -58,12 +50,19 @@ describe('ImageAnalysisComponent', () => {
     expect(component.seconds()).toBe('0.5');
   });
 
-  it('should prewarm model when file is selected and WebGPU is supported', async () => {
+  it('should prewarm model on preWarm when WebGPU is supported', async () => {
+    await component.preWarm();
+
+    expect(mockImageAnalysisService.preWarm).toHaveBeenCalled();
+  });
+
+  it('should select file on onFileSelected', () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
-    await component.onFileSelected(file);
+    component.onFileSelected(file);
 
     expect(component.selectedFile()).toBe(file);
-    expect(mockImageAnalysisService.preWarm).toHaveBeenCalled();
+    expect(component.analysisData()).toBeNull();
+    expect(component.errorMessage()).toBe('');
   });
 
   it('should trigger analysis stream and populate analysisData', async () => {
@@ -80,12 +79,12 @@ describe('ImageAnalysisComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('should reset state on onImageRemoved', () => {
+  it('should reset state on onFileSelected', () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     component.selectedFile.set(file);
     component.analysisData.set({ analysis: { tags: [] }, source: 'cloud' } as never);
 
-    component.onImageRemoved();
+    component.onFileSelected(null);
 
     expect(component.selectedFile()).toBeNull();
     expect(component.analysisData()).toBeNull();

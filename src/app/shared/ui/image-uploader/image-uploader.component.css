@@ -78,19 +78,6 @@
   @apply text-xs text-outline;
 }
 
-.uploader-panel.is-disabled {
-  @apply opacity-75 cursor-not-allowed bg-surface-card border-outline-variant/40;
-}
-
-.warming-spinner-wrapper {
-  @apply flex items-center justify-center p-4 bg-primary-container rounded-full text-primary;
-}
-
-.warming-spinner {
-  @apply w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full;
-  animation: spin 1s linear infinite;
-}
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);

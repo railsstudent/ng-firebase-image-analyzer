@@ -1,4 +1,5 @@
-import { DOCUMENT, inject, Service, signal } from '@angular/core';
+import { WINDOW } from '@/core/constants/navigator.const';
+import { DOCUMENT, inject, Service } from '@angular/core';
 import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
@@ -15,12 +16,13 @@ import { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.
 
 @Service()
 export class AiService {
-  #cacheService = inject(AiModelCacheService);
+  readonly #cacheService = inject(AiModelCacheService);
+  readonly #document = inject(DOCUMENT);
+  readonly #win = inject(WINDOW);
 
-  #warmingStatus = signal<string | null>(null);
-  public readonly warmingStatus = this.#warmingStatus.asReadonly();
-
-  #document = inject(DOCUMENT);
+  private isWebGPUSupported(): boolean {
+    return Boolean(this.#win?.navigator?.gpu);
+  }
 
   private getCachedModel({ schema, systemInstruction }: GenerateContentParams) {
     const model = this.#cacheService.getOrCreateModel({
@@ -35,41 +37,29 @@ export class AiService {
    * Pre-warms and caches the on-device model configuration in the background.
    */
   async preWarmModel(params: GenerateContentParams, options: PreWarmOptions = {}): Promise<void> {
-    try {
-      this.#warmingStatus.set('Fetching neural model reference...');
-      const model = this.getCachedModel(params);
+    const model = this.getCachedModel(params);
+    await this.downloadDeviceModel(model);
 
-      this.#warmingStatus.set('Downloading and caching device model assets...');
-      await this.downloadDeviceModel(model);
-
-      if (options.runDummyQuery) {
-        const isWebGPUSupported = typeof navigator !== 'undefined' && !!navigator.gpu;
-        if (!isWebGPUSupported) {
-          console.log('WebGPU is not supported on this device. Skipping on-device shader compilation.');
-          this.#warmingStatus.set(null);
-          return;
-        }
-
-        const size = options.dummySize || FALLBACK_IMAGE_SIZE;
-        try {
-          this.#warmingStatus.set(`Compiling ${size}x${size} GPU shaders (dummy run)...`);
-          const dummyImagePart = this.makeDummyImagePart(size);
-
-          const request = this.constructRequest({
-            ...params,
-            contents: ['Respond with empty JSON', dummyImagePart],
-          });
-
-          await model.generateContent(request);
-          this.#warmingStatus.set(`Shaders pre-compiled successfully for shape ${size}x${size}!`);
-          console.log(`WebGPU shaders pre-compiled successfully for shape ${size}x${size}!`);
-        } catch (err) {
-          console.warn('Silent WebGPU dummy query skipped or failed:', err);
-        }
+    if (options.runDummyQuery) {
+      if (!this.isWebGPUSupported()) {
+        console.log('WebGPU is not supported on this device. Skipping on-device shader compilation.');
+        return;
       }
-    } finally {
-      // Clear warming state when completely finished or failed
-      this.#warmingStatus.set(null);
+
+      const size = options.dummySize || FALLBACK_IMAGE_SIZE;
+      try {
+        const dummyImagePart = this.makeDummyImagePart(size);
+
+        const request = this.constructRequest({
+          ...params,
+          contents: ['Respond with empty JSON', dummyImagePart],
+        });
+
+        await model.generateContent(request);
+        console.log(`WebGPU shaders pre-compiled successfully for shape ${size}x${size}!`);
+      } catch (err) {
+        console.warn('Silent WebGPU dummy query skipped or failed:', err);
+      }
     }
   }
 
