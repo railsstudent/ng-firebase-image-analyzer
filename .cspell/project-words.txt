@@ -126,3 +126,4 @@ xcodeproj
 xcuserdata
 xcworkspace
 XSSI
+wgsl

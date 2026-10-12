@@ -3,7 +3,7 @@ import { Component, computed, inject, input } from '@angular/core';
 
 @Component({
   selector: 'app-tab',
-  template: ` <div [class.hidden]="isInactive()">
+  template: ` <div [class.hidden]="!isActive()">
     <ng-content>No content at the moment</ng-content>
   </div>`,
   styles: `
@@ -17,5 +17,5 @@ export class TabComponent {
   label = input.required<string>();
   readonly #tabGroup = inject(TAB_GROUP_CONTEXT);
 
-  isInactive = computed(() => this.id() !== this.#tabGroup.activeTabId());
+  isActive = computed(() => this.id() === this.#tabGroup.activeTabId());
 }
