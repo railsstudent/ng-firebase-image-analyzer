@@ -27,9 +27,24 @@ This document defines testing conventions, DI mocking contracts, and verificatio
    - Always await async methods (e.g. `await component.preWarm()`) or use `await vi.waitFor(...)` within tests so asynchronous injector lookups and dynamic module loads settle before the `TestBed` fixture is torn down.
    - Prevents `NG0205: Injector has already been destroyed` runtime errors in test suites.
 
-4. **Isolated Mock Factories**:
-   - Reusable or complex mocks belong in `src/testing/` (e.g. `src/testing/factories/`).
-   - Never mutate shared mock instances across tests; instantiate fresh mock objects inside `beforeEach`.
+4. **Testing Zoneless `@defer` Hydration**:
+   - In Zoneless Angular (`provideZonelessChangeDetection()`), hydrate `@defer (when condition)` blocks by triggering the condition (setting input signal or dispatching DOM event like `button.click()`), followed by change detection and fixture stability:
+     ```typescript
+     // 1. Trigger the deferral condition
+     tabButtons[1].click();
+     // 2. Run change detection and wait for stability
+     fixture.detectChanges();
+     await fixture.whenStable();
+     // 3. Assert on hydrated component presence
+     expect(fixture.debugElement.query(By.directive(HydratedComponent))).toBeTruthy();
+     ```
+   - Never use deprecated APIs like `deferBlock.render()`, `fakeAsync`, or `tick()`.
+
+5. **Shared Test Helpers & Mock Factories (`src/testing/`)**:
+   - Reusable mock factories, custom harness helpers, and DOM stabilization helpers belong in `src/testing/` (e.g., `src/testing/factories/`, `src/testing/helpers/`).
+   - When writing test helpers:
+     - Keep helpers pure, synchronous/async explicit, and accepting generic `ComponentFixture<T>`.
+     - Never mutate shared mock instances across tests; instantiate fresh mock objects per test run inside `beforeEach`.
 
 ## Test Execution Workflow
 
