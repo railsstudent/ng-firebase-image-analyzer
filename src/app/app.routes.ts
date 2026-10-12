@@ -1,4 +1,6 @@
+import { inject, provideEnvironmentInitializer } from '@angular/core';
 import { Routes } from '@angular/router';
+import { ConfigService } from './core/firebase';
 import { ROUTE_PATHS } from './core/routing';
 import HomeComponent from './features/home/home.component';
 
@@ -9,6 +11,7 @@ export const routes: Routes = [
   },
   {
     path: ROUTE_PATHS.IMAGE_ANALYSIS,
+    providers: [provideEnvironmentInitializer(() => inject(ConfigService).initialize())],
     loadComponent: () => import('./features/image-analysis/image-analysis.component'),
   },
   {
