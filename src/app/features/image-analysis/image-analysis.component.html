@@ -36,13 +36,19 @@
     </div>
   }
 
-  @if (tags().length > 0) {
-    <!-- Semantic Tag Cloud -->
-    <div class="tag-cloud-section animate-fade-in">
-      <h4 class="section-subtitle">Detected Classifications</h4>
-      <app-tag-list [tags]="tags()"></app-tag-list>
-    </div>
-  }
+  <!-- Semantic Tag Cloud -->
+  <div class="tag-cloud-section">
+    <span class="section-subtitle">Analysis Output</span>
+    <h3 class="section-title">
+      <app-sell-icon class="section-title-icon" />
+      Detected Visual Tags
+    </h3>
+    @defer (when tags().length > 0) {
+      <app-tag-list class="animate-fade-in block" [tags]="tags()"></app-tag-list>
+    } @placeholder {
+      <p class="empty-state-text">No tags detected yet. Run image analysis to extract visual labels.</p>
+    }
+  </div>
 
   @if (analysisData()) {
     <!-- Advanced Analysis Results Panel -->

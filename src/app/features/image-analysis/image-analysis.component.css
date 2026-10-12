@@ -20,10 +20,6 @@
   @apply space-y-3;
 }
 
-.section-subtitle {
-  @apply text-xs font-bold uppercase tracking-widest text-(--color-outline);
-}
-
 .action-container {
   @apply flex justify-center py-4;
 }

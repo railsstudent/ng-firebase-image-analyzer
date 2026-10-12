@@ -89,4 +89,30 @@ describe('ImageAnalysisComponent', () => {
     expect(component.selectedFile()).toBeNull();
     expect(component.analysisData()).toBeNull();
   });
+
+  it('should render empty tag placeholder initially when no tags exist', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const emptyPlaceholder = compiled.querySelector('.tag-cloud-section .empty-state-text');
+    expect(emptyPlaceholder?.textContent).toContain(
+      'No tags detected yet. Run image analysis to extract visual labels.',
+    );
+    expect(compiled.querySelector('app-tag-list')).toBeNull();
+  });
+
+  it('should hydrate deferred TagListComponent when tags are populated', async () => {
+    component.analysisData.set({
+      analysis: {
+        tags: [{ name: 'Landscape', sentence: 'Panoramic mountain view' }],
+      },
+      source: 'cloud',
+    } as never);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-tag-list')).toBeTruthy();
+  });
 });

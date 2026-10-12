@@ -1,6 +1,7 @@
 import type { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { ErrorIconComponent } from '@/shared/ui/icons/error-icon/error-icon.component';
 import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psychology-icon.component';
+import { SellIconComponent } from '@/shared/ui/icons/sell-icon/sell-icon.component';
 import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
 import { ImageUploaderComponent } from '@/shared/ui/image-uploader/image-uploader.component';
 import { Component, computed, injectAsync, signal } from '@angular/core';
@@ -20,9 +21,14 @@ const MILLISECONDS = 1000;
     ErrorIconComponent,
     PsychologyIconComponent,
     SyncIconComponent,
+    SellIconComponent,
   ],
   templateUrl: './image-analysis.component.html',
-  styleUrl: './image-analysis.component.css',
+  styleUrls: [
+    '../../shared/ui/styles/section-card.css',
+    '../../shared/ui/styles/empty-state.css',
+    './image-analysis.component.css',
+  ],
 })
 export default class ImageAnalysisComponent {
   // Inject the actual neural analysis service

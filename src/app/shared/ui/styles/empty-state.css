@@ -1,0 +1,5 @@
+@reference "../../../../styles.css";
+
+.empty-state-text {
+  @apply text-sm text-on-surface-variant italic;
+}
