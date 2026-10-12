@@ -12,8 +12,8 @@ import { jsonrepair } from 'jsonrepair';
 import { AiModelCacheService } from './ai-model-cache.service';
 import { GenerateContentParams, PartialResponse } from './ai.interface';
 import { FALLBACK_IMAGE_SIZE } from './image.const';
-import { PreWarmOptions } from './pre-warm-options.interface';
 import { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.interface';
+import { PreWarmOptions } from './model-config-params.interface';
 
 @Service()
 export class AiService {
