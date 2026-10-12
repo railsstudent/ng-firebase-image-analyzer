@@ -1,4 +1,5 @@
 import { TokenModalityBreakdown, TokenSummary } from '@/core/firebase';
+import { TokenAnalyticsSkeletonComponent } from '@/features/image-analysis/token-analytics-skeleton/token-analytics-skeleton.component';
 import { TokenUsageBarComponent } from '@/shared/ui/components/token-usage-bar/token-usage-bar.component';
 import { BarChartIconComponent } from '@/shared/ui/icons/bar-chart-icon/bar-chart-icon.component';
 import { Component, computed, input } from '@angular/core';
@@ -6,7 +7,7 @@ import { parseModalityDetails, parseTokenDetails } from './token-analytics.util'
 
 @Component({
   selector: 'app-token-analytics',
-  imports: [TokenUsageBarComponent, BarChartIconComponent],
+  imports: [TokenUsageBarComponent, BarChartIconComponent, TokenAnalyticsSkeletonComponent],
   templateUrl: './token-analytics.component.html',
   styleUrls: ['../../styles/section-card.css', './token-analytics.component.css'],
 })

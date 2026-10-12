@@ -1,4 +1,11 @@
-import { AiService, FALLBACK_IMAGE_SIZE } from '@/core/firebase';
+import {
+  AiService,
+  FALLBACK_IMAGE_SIZE,
+  PartialResponse,
+  TokenModalityBreakdown,
+  TokenSummary,
+  ZERO_TOKEN_SUMMARY,
+} from '@/core/firebase';
 import { readFileAsDataURL } from '@/shared/utils/file-reader.util';
 import { inject, Service } from '@angular/core';
 import { InferenceSource, Part } from 'firebase/ai';
@@ -51,9 +58,7 @@ export class ImageAnalysisService {
     validatePrompt(customPrompt);
 
     const optimizedFile = await resizeToFixedDimensions(file, FALLBACK_IMAGE_SIZE);
-
     const imagePart = await this.fileToGenerativePart(optimizedFile);
-
     const userPrompt = customPrompt ? customPrompt : IMAGE_ANALYSIS_USER_PROMPT;
 
     const generator = await this.#aiService.generateContentStream<ImageAnalysisResponse>({
@@ -64,31 +69,39 @@ export class ImageAnalysisService {
 
     for await (const update of generator) {
       const response = update.response;
-      const usageGroup = response ? this.#aiService.processUsage(response) : undefined;
-      const partialData = update.partialData || {};
-      const analysis = {
-        alternativeTexts: partialData.alternativeTexts,
-        tags: partialData.tags,
-        recommendations: partialData.recommendations,
-        colorAdjustment: partialData.colorAdjustment,
-        crop: partialData.crop,
-      };
+      const analysis = this.constructAnalysis(update);
 
       let source: InferenceSource = 'on_device';
       let thoughtSummary = 'No thought summary';
+      let tokenSummary: TokenSummary | undefined = undefined;
+      let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
       if (response) {
         source = response.inferenceSource || 'on_device';
         thoughtSummary = response.thoughtSummary() || 'No thought summary';
+        const usageGroup = this.#aiService.processUsage(response);
+        tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;
+        tokenModalityBreakdown = usageGroup?.tokenBreakdown;
       }
 
       yield {
         analysis,
         source,
         thoughtSummary,
-        tokenSummary: usageGroup ? usageGroup.tokenSummary : undefined,
-        tokenModalityBreakdown: usageGroup ? usageGroup.tokenBreakdown : undefined,
+        tokenSummary,
+        tokenModalityBreakdown,
       };
     }
+  }
+
+  private constructAnalysis(update: PartialResponse<ImageAnalysisResponse>) {
+    const partialData = update.partialData || {};
+    return {
+      alternativeTexts: partialData.alternativeTexts,
+      tags: partialData.tags,
+      recommendations: partialData.recommendations,
+      colorAdjustment: partialData.colorAdjustment,
+      crop: partialData.crop,
+    };
   }
 
   private async fileToGenerativePart(file: File | Blob, mimeType?: string): Promise<Part> {

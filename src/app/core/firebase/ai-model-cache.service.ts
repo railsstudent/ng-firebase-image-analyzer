@@ -4,7 +4,7 @@ import { getValue } from 'firebase/remote-config';
 import { FIREBASE_AI } from './ai.const';
 import { ConfigService } from './config.service';
 import { injectOnlineStatus } from './connection.util';
-import { ModelConfigParams } from './model-config-params.type';
+import { ModelConfigParams } from './model-config-params.interface';
 import { SAFETY_SETTINGS } from './safety-settings.const';
 
 @Service()

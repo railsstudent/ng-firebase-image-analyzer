@@ -6,7 +6,12 @@ const EVEN_ROW_CLASSES = ['w-1/3', 'w-3/4'];
 @Component({
   selector: 'app-image-recommendation-skeleton',
   templateUrl: './image-recommendation-skeleton.component.html',
-  styleUrls: ['../../../shared/ui/styles/skeleton.css', './image-recommendation-skeleton.component.css'],
+  styles: `
+    :host {
+      display: block;
+    }
+  `,
+  styleUrls: ['../../../shared/ui/styles/skeleton.css'],
 })
 export class ImageRecommendationSkeletonComponent {
   readonly rowWidthStyles = [ODD_ROW_CLASSES, EVEN_ROW_CLASSES, ODD_ROW_CLASSES];

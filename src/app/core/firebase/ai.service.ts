@@ -6,13 +6,14 @@ import {
   GenerativeModel,
   SchemaRequest,
   TypedSchema,
+  UsageMetadata,
 } from 'firebase/ai';
 import { jsonrepair } from 'jsonrepair';
 import { AiModelCacheService } from './ai-model-cache.service';
 import { GenerateContentParams, PartialResponse } from './ai.interface';
 import { FALLBACK_IMAGE_SIZE } from './image.const';
-import { PreWarmOptions } from './pre-warm-options.type';
-import { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.type';
+import { PreWarmOptions } from './pre-warm-options.interface';
+import { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.interface';
 
 @Service()
 export class AiService {
@@ -93,9 +94,13 @@ export class AiService {
 
     const result = await model.generateContentStream(request);
     let accumulatedText = '';
+    let latestUsage: UsageMetadata | undefined = undefined;
 
     for await (const chunk of result.stream) {
       try {
+        if (chunk.usageMetadata) {
+          latestUsage = chunk.usageMetadata;
+        }
         accumulatedText = accumulatedText + chunk.text();
         const parsed = this.parseStreamJSONResponse<T>(accumulatedText, params.schema);
         yield {
@@ -110,6 +115,9 @@ export class AiService {
 
     // The stream is 100%  completed. Resolve the final Response promise
     const finalResponse = await result.response;
+    if (!finalResponse.usageMetadata && latestUsage) {
+      finalResponse.usageMetadata = latestUsage;
+    }
     this.validateResponse(finalResponse);
 
     // Parse the final finished output securely
