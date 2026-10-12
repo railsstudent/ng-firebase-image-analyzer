@@ -81,14 +81,8 @@
   --text-code-sm--line-height: 1.5;
   --text-code-sm--font-weight: 400;
 
-  --spacing-base: 4px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-xxl: 64px;
   --spacing-container-max: 1280px;
+  --container-max: 1280px;
 
   --shadow-error: 0 10px 30px -10px #ef444426;
   --shadow-primary-glow: 0 4px 20px -2px #4648d414;
@@ -138,14 +132,8 @@
   --font-label-md: var(--font-mono);
   --font-code-sm: var(--font-mono);
 
-  --spacing-base: 4px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-xxl: 64px;
   --spacing-container-max: 1280px;
+  --container-max: 1280px;
 
   --shadow-error: 0 10px 30px -10px #ef444426;
   --shadow-primary-glow: 0 4px 20px -2px #4648d414;

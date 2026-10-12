@@ -127,3 +127,5 @@ xcuserdata
 xcworkspace
 XSSI
 wgsl
+actioned
+Contentful

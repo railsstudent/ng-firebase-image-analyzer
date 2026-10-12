@@ -9,11 +9,11 @@
 }
 
 .nav-container {
-  @apply flex justify-between items-center h-16 px-lg max-w-container-max mx-auto;
+  @apply flex justify-between items-center h-16 px-6 max-w-container-max mx-auto;
 }
 
 .nav-brand {
-  @apply flex items-center gap-sm;
+  @apply flex items-center gap-2;
 }
 
 .nav-brand-title {
@@ -21,7 +21,7 @@
 }
 
 .nav-links {
-  @apply hidden md:flex items-center gap-xl text-lg font-medium;
+  @apply hidden md:flex items-center gap-8 text-lg font-medium;
 }
 
 .nav-link {
@@ -33,7 +33,7 @@
 }
 
 .nav-actions {
-  @apply flex items-center gap-md;
+  @apply flex items-center gap-4;
 }
 
 .nav-cta-btn {
