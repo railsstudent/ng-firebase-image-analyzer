@@ -50,13 +50,19 @@
     }
   </div>
 
-  @if (analysisData()) {
-    <!-- Advanced Analysis Results Panel -->
+  <!-- Advanced Analysis Results Panel -->
+  @defer (when analysisData()) {
     <app-image-analysis-panel
       class="animate-fade-in block"
       [data]="analysisData()"
       [imageUrl]="imageUrl()"
       [source]="source()"
     ></app-image-analysis-panel>
+  } @placeholder {
+    <div class="analysis-section-card">
+      <p class="empty-state-text">
+        No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.
+      </p>
+    </div>
   }
 </div>

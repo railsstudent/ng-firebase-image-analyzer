@@ -38,3 +38,7 @@ This document outlines project-specific coding standards and architectural conve
 - **Explicit Async Signatures**: Methods performing asynchronous tasks must be declared with `async` and return `Promise<void>`, encapsulating failure handling within internal `try/catch` blocks.
 - **Floating Promises Handling**: At caller sites requiring non-blocking / fire-and-forget execution, handle the returned Promise with `.catch(...)` to satisfy `@typescript-eslint/no-floating-promises`.
 - **Ban `void` Operator Keyword**: Never use the `void` expression operator keyword (e.g. `void this.method()`) at call sites.
+
+## 7. Deferred Component Empty State Invariant
+
+- **One-Way Hydration & Empty State Invariant**: Angular `@defer (when condition)` triggers hydration once and never reverts to `@placeholder` if data becomes falsy or is cleared post-hydration. While the parent `@placeholder` handles initial FCP/CLS, every deferred child component rendering nullable or dynamic models MUST maintain an internal `@empty` or `@else` fallback state to safely handle data resets.

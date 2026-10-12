@@ -115,4 +115,30 @@ describe('ImageAnalysisComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('app-tag-list')).toBeTruthy();
   });
+
+  it('should render empty analysis panel placeholder card initially when analysisData is null', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const analysisPlaceholder = compiled.querySelector('.analysis-section-card .empty-state-text');
+    expect(analysisPlaceholder?.textContent).toContain(
+      "No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.",
+    );
+    expect(compiled.querySelector('app-image-analysis-panel')).toBeNull();
+  });
+
+  it('should hydrate deferred ImageAnalysisPanelComponent when analysisData is set', async () => {
+    component.analysisData.set({
+      analysis: {
+        tags: [{ name: 'Landscape', sentence: 'Panoramic mountain view' }],
+      },
+      source: 'cloud',
+    } as never);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-image-analysis-panel')).toBeTruthy();
+  });
 });

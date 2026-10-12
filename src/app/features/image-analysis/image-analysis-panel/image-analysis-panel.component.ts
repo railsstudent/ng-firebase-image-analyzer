@@ -20,7 +20,11 @@ import { InferenceSource } from 'firebase/ai';
     ImageImprovementComponent,
   ],
   templateUrl: './image-analysis-panel.component.html',
-  styleUrl: './image-analysis-panel.component.css',
+  styleUrls: [
+    '../../../shared/ui/styles/section-card.css',
+    '../../../shared/ui/styles/empty-state.css',
+    './image-analysis-panel.component.css',
+  ],
 })
 export class ImageAnalysisPanelComponent {
   data = input<StreamingAnalysisWithMetadata | null>(null);

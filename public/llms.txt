@@ -2,20 +2,14 @@
 
 > An Angular Progressive Web App (PWA) leveraging Firebase AI Logic and on-device WebGPU Gemini Nano for hybrid multimodal image analysis, smart cropping, visual calibration, and tag generation.
 
-## Overview
-- **Application Type**: Angular PWA with zoneless change detection and Signal-based state architecture.
-- **AI Engine**: Hybrid inference with automated fallback:
-  - **On-Device**: WebGPU-accelerated Chrome built-in AI (Prompt API / Gemini Nano).
-  - **Cloud**: Firebase AI Logic via Vertex AI for Firebase (Gemini 2.5 Flash / Gemini 2.5 Pro).
-- **Core Capabilities**:
-  - Image Classification and Tag Cloud Generation.
-  - Multimodal Vision Analysis (composition, technical quality, subject detection).
-  - Smart Aspect Ratio Crop Presets (1:1, 4:3, 16:9, 9:16).
-  - Contrast, Brightness, and Saturation Visual Calibration Filters.
-  - Streaming Markdown Thought Summaries and Token Analytics.
-  - PWA Offline Caching & Background Asset Precaching.
+## Core Capabilities
+- [Image Analysis & Tag Generation](/): Multimodal image classification, visual label extraction, and tag cloud generation.
+- [Visual Calibration & Smart Crop](/): Aspect ratio presets (1:1, 4:3, 16:9, 9:16) and contrast/brightness/saturation filters.
+- [Web App Manifest](/manifest.webmanifest): Progressive Web App standalone configuration and icons.
 
-## Architecture
-- `src/app/core/`: Cohesive flat domain packages (Firebase AI, App Check, Remote Config).
-- `src/app/features/image-analysis/`: Multimodal vision UI components, streaming token metrics, and interactive canvas manipulation.
-- `src/app/shared/`: Reusable zero-dependency SVG icons, UI badges, and reactive utilities.
+## Platform Documentation
+- [Firebase AI Logic](https://firebase.google.com/docs/ai-logic): Vertex AI for Firebase multimodal text and image generation.
+- [Chrome Built-in AI (Prompt API)](https://developer.chrome.com/docs/ai/built-in): Client-side WebGPU Gemini Nano hardware-accelerated local inference.
+- [Angular Deferrable Views](https://angular.dev/guide/defer): Declarative `@defer` block lazy loading and hydration lifecycle.
+- [Firebase App Check](https://firebase.google.com/docs/app-check): reCAPTCHA Enterprise and local debug token protection.
+

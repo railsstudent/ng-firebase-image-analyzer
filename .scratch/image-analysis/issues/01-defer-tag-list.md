@@ -5,7 +5,7 @@ Deferred loading for the semantic visual tags section. When the image analysis w
 
 **Blocked by:** None (can start immediately)
 
-**Status:** completed
+**Status:** done
 
 ## Acceptance criteria
 
