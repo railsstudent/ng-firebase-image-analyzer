@@ -1,13 +1,13 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { AiService } from './ai.service';
+import type { EnhancedGenerateContentResponse, GenerativeModel } from 'firebase/ai';
 import { AiModelCacheService } from './ai-model-cache.service';
+import { AiService } from './ai.service';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 describe('AiService', () => {
   let service: AiService;
-  let mockCacheService: any;
-  let mockGenerativeModel: any;
+  let mockCacheService: Partial<AiModelCacheService>;
+  let mockGenerativeModel: Partial<GenerativeModel>;
 
   beforeEach(() => {
     mockGenerativeModel = {
@@ -22,10 +22,23 @@ describe('AiService', () => {
           },
         },
       }),
+      generateContentStream: vi.fn().mockResolvedValue({
+        stream: (async function* () {
+          yield {
+            text: () => '{"caption": "A test image"}',
+            usageMetadata: { totalTokenCount: 50, promptTokenCount: 20, candidatesTokenCount: 30 },
+          };
+        })(),
+        response: Promise.resolve({
+          text: () => '{"caption": "A test image"}',
+          candidates: [{ finishReason: 'STOP', content: {} }],
+          usageMetadata: { totalTokenCount: 50, promptTokenCount: 20, candidatesTokenCount: 30 },
+        }),
+      }),
     };
 
     mockCacheService = {
-      getOrCreateModel: vi.fn().mockReturnValue(mockGenerativeModel),
+      getOrCreateModel: vi.fn().mockResolvedValue(mockGenerativeModel),
     };
 
     TestBed.configureTestingModule({
@@ -45,6 +58,23 @@ describe('AiService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('generateContentStream', () => {
+    it('should stream generated content chunks and return final parsed result', async () => {
+      const results = [];
+      for await (const chunk of service.generateContentStream({ contents: 'test stream' })) {
+        results.push(chunk);
+      }
+
+      expect(mockCacheService.getOrCreateModel).toHaveBeenCalledWith({
+        schema: undefined,
+        systemInstruction: undefined,
+      });
+      expect(mockGenerativeModel.initializeDeviceModel).toHaveBeenCalled();
+      expect(mockGenerativeModel.generateContentStream).toHaveBeenCalled();
+      expect(results.length).toBeGreaterThan(0);
+    });
   });
 
   describe('preWarmModel', () => {
@@ -88,7 +118,7 @@ describe('AiService', () => {
         vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
           fillStyle: '',
           fillRect: vi.fn(),
-        } as any);
+        } as unknown as CanvasRenderingContext2D);
 
         vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockReturnValue('data:image/jpeg;base64,dummybase64content');
       });
@@ -121,14 +151,14 @@ describe('AiService', () => {
 
   describe('processUsage', () => {
     it('should parse usage metadata correctly', () => {
-      const responseMock: any = {
+      const responseMock = {
         usageMetadata: {
           totalTokenCount: 150,
           promptTokenCount: 90,
           thoughtsTokenCount: 10,
           candidatesTokenCount: 50,
         },
-      };
+      } as unknown as EnhancedGenerateContentResponse;
 
       const usage = service.processUsage(responseMock);
 
@@ -140,7 +170,7 @@ describe('AiService', () => {
     });
 
     it('should return undefined if usageMetadata is missing', () => {
-      const responseMock: any = {};
+      const responseMock = {} as unknown as EnhancedGenerateContentResponse;
       const usage = service.processUsage(responseMock);
       expect(usage).toBeUndefined();
     });

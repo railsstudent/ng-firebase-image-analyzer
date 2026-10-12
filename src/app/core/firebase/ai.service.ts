@@ -25,8 +25,8 @@ export class AiService {
     return Boolean(this.#win?.navigator?.gpu);
   }
 
-  private getCachedModel({ schema, systemInstruction }: GenerateContentParams) {
-    const model = this.#cacheService.getOrCreateModel({
+  private async getCachedModel({ schema, systemInstruction }: GenerateContentParams): Promise<GenerativeModel> {
+    const model = await this.#cacheService.getOrCreateModel({
       schema,
       systemInstruction,
     });
@@ -38,7 +38,7 @@ export class AiService {
    * Pre-warms and caches the on-device model configuration in the background.
    */
   async preWarmModel(params: GenerateContentParams, options: PreWarmOptions = {}): Promise<void> {
-    const model = this.getCachedModel(params);
+    const model = await this.getCachedModel(params);
     await this.downloadDeviceModel(model);
 
     if (options.runDummyQuery) {
@@ -87,7 +87,7 @@ export class AiService {
 
   async *generateContentStream<T>(params: GenerateContentParams): AsyncGenerator<PartialResponse<T>> {
     this.validateInputs(params.contents);
-    const model = this.getCachedModel(params);
+    const model = await this.getCachedModel(params);
     const request = this.constructRequest(params);
 
     await this.downloadDeviceModel(model);

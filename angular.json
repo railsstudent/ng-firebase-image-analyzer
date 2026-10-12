@@ -80,7 +80,8 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "buildTarget": "ng-firebase-image-analyzer:build:development",
-            "runner": "vitest"
+            "runner": "vitest",
+            "setupFiles": ["src/testing/firebase.mock.ts"]
           }
         },
         "lint": {

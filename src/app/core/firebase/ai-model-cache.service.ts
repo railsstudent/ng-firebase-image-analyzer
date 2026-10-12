@@ -8,7 +8,6 @@ import {
   HybridParams,
   InferenceMode,
 } from 'firebase/ai';
-import { FIREBASE_AI } from './ai.const';
 import { ConfigService } from './config.service';
 import { isOnline } from './host.util';
 import { ModelConfigParams } from './model-config-params.interface';
@@ -34,7 +33,6 @@ const SAFETY_SETTINGS = [
 
 @Service()
 export class AiModelCacheService {
-  #ai = inject(FIREBASE_AI);
   #configService = inject(ConfigService);
   #modelCache = new Map<string, GenerativeModel>();
   #win = inject(WINDOW);
@@ -43,7 +41,7 @@ export class AiModelCacheService {
    * Retrieves an existing cached model, or creates a new one and caches it.
    * Only accepts static configuration parameters.
    */
-  getOrCreateModel(config: ModelConfigParams): GenerativeModel {
+  async getOrCreateModel(config: ModelConfigParams): Promise<GenerativeModel> {
     const cacheKey = this.getCacheKey(config);
     const cachedModel = this.#modelCache.get(cacheKey);
     if (cachedModel) {
@@ -51,7 +49,8 @@ export class AiModelCacheService {
     }
 
     const modelParams = this.constructModelParams(config);
-    const model = getGenerativeModel(this.#ai, modelParams);
+    const ai = await this.#configService.getAiBackend();
+    const model = getGenerativeModel(ai, modelParams);
     this.#modelCache.set(cacheKey, model);
     return model;
   }
