@@ -2,24 +2,10 @@ import { WINDOW } from '@/core/constants/navigator.const';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { getGenerativeModel, InferenceMode, ThinkingLevel } from 'firebase/ai';
-import { getValue } from 'firebase/remote-config';
 import { AiModelCacheService } from './ai-model-cache.service';
 import { FIREBASE_AI } from './ai.const';
+import { AppRemoteConfig } from './app-remote-config.interface';
 import { ConfigService } from './config.service';
-
-vi.mock('firebase/remote-config', () => ({
-  getValue: vi.fn((_config, key) => ({
-    asString: () => {
-      if (key === 'geminiModelName') {
-        return 'mock-gemini-model';
-      }
-      if (key === 'thinkingLevel') {
-        return 'LOW';
-      }
-      return '';
-    },
-  })),
-}));
 
 vi.mock('firebase/ai', () => ({
   getGenerativeModel: vi.fn((_ai, params) => ({
@@ -54,7 +40,13 @@ describe('AiModelCacheService', () => {
 
   beforeEach(() => {
     mockConfigService = {
-      RemoteConfig: {} as any,
+      appConfig: {
+        geminiModelName: 'mock-gemini-model',
+        thinkingLevel: ThinkingLevel.LOW,
+        vertexAILocation: 'us-central1',
+        geminiTTSModelName: 'mock-gemini-tts-model',
+        useLimitedUseAppCheckTokens: false,
+      } satisfies AppRemoteConfig,
     };
     mockWindow = { navigator: { onLine: true } };
 
@@ -147,9 +139,13 @@ describe('AiModelCacheService', () => {
   });
 
   it('should fall back to default models when remote-config values are undefined', () => {
-    vi.mocked(getValue).mockReturnValue({
-      asString: () => '',
-    } as any);
+    mockConfigService.appConfig = {
+      geminiModelName: '',
+      thinkingLevel: ThinkingLevel.LOW,
+      vertexAILocation: 'us-central1',
+      geminiTTSModelName: '',
+      useLimitedUseAppCheckTokens: false,
+    };
 
     const config = { systemInstruction: 'default-testing-prompt' };
     const model = service.getOrCreateModel(config);

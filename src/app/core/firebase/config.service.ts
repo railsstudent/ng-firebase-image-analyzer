@@ -2,14 +2,14 @@ import { WINDOW } from '@/core/constants/navigator.const';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';
-import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
-import { AppCheck, initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
-import { fetchAndActivate, getRemoteConfig, RemoteConfig } from 'firebase/remote-config';
+import type { AI, ThinkingLevel } from 'firebase/ai';
+import type { FirebaseApp } from 'firebase/app';
+import { AppRemoteConfig } from './app-remote-config.interface';
 import { isLocalhost, isOnline } from './host.util';
 
 const SECONDS = 60;
 const MILLISECONDS = 1000;
-const FETCH_INTERVAL = SECONDS * SECONDS * MILLISECONDS;
+const ONE_HOUR_IN_MILLISECONDS = SECONDS * SECONDS * MILLISECONDS;
 const DEV_TIMEOUT = 1000;
 const PROD_TIMEOUT = 2000;
 
@@ -17,82 +17,122 @@ const PROD_TIMEOUT = 2000;
 export class ConfigService {
   readonly #win = inject(WINDOW);
   #app: FirebaseApp | undefined = undefined;
-  #remoteConfig: RemoteConfig | undefined = undefined;
+  #ai: AI | null = null;
+  #appReady: Promise<void> | null = null;
+  #appCheck: Promise<void> | null = null;
 
-  get firebaseApp(): FirebaseApp {
+  #appConfig: AppRemoteConfig = {
+    useLimitedUseAppCheckTokens: remoteConfigDefaults.useLimitedUseAppCheckTokens === 'true',
+    vertexAILocation: remoteConfigDefaults.vertexAILocation,
+    geminiModelName: remoteConfigDefaults.geminiModelName,
+    geminiTTSModelName: remoteConfigDefaults.geminiTTSModelName,
+    thinkingLevel: remoteConfigDefaults.thinkingLevel as ThinkingLevel,
+  };
+
+  get appConfig(): AppRemoteConfig {
+    return this.#appConfig;
+  }
+
+  private configureAppCheckDebugToken(isLocalhost: boolean): void {
+    (globalThis as Record<string, unknown>)['FIREBASE_APPCHECK_DEBUG_TOKEN'] = isLocalhost
+      ? firebaseConfig.appCheckDebugToken || true
+      : false;
+  }
+
+  private loadAppCheck(isLocalhost: boolean, key: string): Promise<void> {
+    const appCheck = import('firebase/app-check');
+    return appCheck.then(({ initializeAppCheck, ReCaptchaEnterpriseProvider }) => {
+      this.configureAppCheckDebugToken(isLocalhost);
+      initializeAppCheck(this.#app, {
+        provider: new ReCaptchaEnterpriseProvider(key),
+        isTokenAutoRefreshEnabled: true,
+      });
+    });
+  }
+
+  private ensureAppCheck(isLocalhost: boolean): Promise<void> {
+    if (!this.#appCheck) {
+      this.#appCheck = this.loadAppCheck(isLocalhost, firebaseConfig.recaptchaEnterpriseKey);
+    }
+    return this.#appCheck;
+  }
+
+  async getApp(): Promise<FirebaseApp> {
+    this.initialize();
+
+    if (this.#appReady) {
+      await this.#appReady;
+    }
+
     if (!this.#app) {
-      throw new Error('Firebase app has not been initialized yet.');
+      throw new Error('Firebase App initialization failed');
     }
     return this.#app;
   }
 
-  get RemoteConfig() {
-    if (!this.#remoteConfig) {
-      throw new Error('Firebase remote config has not been initialized yet.');
+  async getAiBackend(): Promise<AI> {
+    if (this.#ai) {
+      return this.#ai;
     }
-    return this.#remoteConfig;
-  }
 
-  // Testable helper methods to allow mocking of read-only ESM imports
-  protected initializeFirebaseApp(config: FirebaseOptions): FirebaseApp {
-    return initializeApp(config);
-  }
+    const app = await this.getApp();
 
-  protected initializeAppCheckInstance(app: FirebaseApp, key: string): AppCheck {
-    return initializeAppCheck(app, {
-      provider: new ReCaptchaEnterpriseProvider(key),
-      isTokenAutoRefreshEnabled: true,
+    if (isOnline(this.#win) && firebaseConfig.recaptchaEnterpriseKey) {
+      await this.ensureAppCheck(isLocalhost(this.#win));
+    }
+
+    const { getAI, AgentPlatformBackend } = await import('firebase/ai');
+    this.#ai = getAI(app, {
+      backend: new AgentPlatformBackend(this.#appConfig.vertexAILocation),
+      useLimitedUseAppCheckTokens: this.#appConfig.useLimitedUseAppCheckTokens,
     });
+
+    return this.#ai;
   }
 
-  protected setupRemoteConfig(app: FirebaseApp): RemoteConfig {
-    const rc = getRemoteConfig(app);
+  private loadFirebase(): Promise<void> {
+    return Promise.all([import('firebase/app'), import('firebase/remote-config')])
+      .then(([{ initializeApp }, remoteConfigSdk]) => {
+        this.#app = initializeApp(firebaseConfig.app);
+        this.fetchRemoteConfig(remoteConfigSdk);
+      })
+      .catch((error) => {
+        console.warn('Firebase initialization failed:', error);
+        this.#appReady = null;
+        this.#app = undefined;
+        this.#ai = null;
+      });
+  }
+
+  private fetchRemoteConfig({
+    getRemoteConfig,
+    fetchAndActivate,
+    getValue,
+  }: Pick<typeof import('firebase/remote-config'), 'getRemoteConfig' | 'fetchAndActivate' | 'getValue'>) {
+    const rc = getRemoteConfig(this.#app);
     rc.defaultConfig = remoteConfigDefaults;
-    rc.settings.minimumFetchIntervalMillis = isDevMode() ? 0 : FETCH_INTERVAL;
-    rc.settings.fetchTimeoutMillis = isDevMode() ? DEV_TIMEOUT : PROD_TIMEOUT;
-    return rc;
-  }
-
-  protected fetchRemoteConfig(rc: RemoteConfig): Promise<boolean> {
-    return fetchAndActivate(rc);
-  }
-
-  /**
-   * Configures the Firebase App Check debug token on the global scope.
-   * App Check uses this global variable to determine if it should run in debug/sandbox mode.
-   *
-   * @param configToken A custom persistent debug token supplied from the firebase configuration.
-   * @param isLocalhost Whether the application is currently running on a local development domain.
-   * @param isDevContext Whether the application is in development mode (defaults to isDevMode()).
-   */
-  protected configureAppCheckDebugToken(configToken?: string, isLocalhost?: boolean, isDevContext = isDevMode()): void {
-    const isLocalContext = isDevContext || !!isLocalhost;
-
-    // STRICT PROTECTION: If we are in production on a live server,
-    // we completely disable the App Check debug token, ignoring any accidental values in the config.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = isLocalContext ? configToken || true : false;
-  }
-
-  async initialize(): Promise<void> {
-    this.#app = this.initializeFirebaseApp(firebaseConfig.app);
-
-    const isOnlineStatus = isOnline();
-
-    if (isOnlineStatus && firebaseConfig.recaptchaEnterpriseKey) {
-      this.configureAppCheckDebugToken(firebaseConfig.appCheckDebugToken, isLocalhost(this.#win));
-      this.initializeAppCheckInstance(this.#app, firebaseConfig.recaptchaEnterpriseKey);
+    const dev = isDevMode();
+    rc.settings.minimumFetchIntervalMillis = dev ? 0 : ONE_HOUR_IN_MILLISECONDS;
+    rc.settings.fetchTimeoutMillis = dev ? DEV_TIMEOUT : PROD_TIMEOUT;
+    if (isOnline(this.#win)) {
+      fetchAndActivate(rc)
+        .then(() => {
+          this.#appConfig = {
+            vertexAILocation: getValue(rc, 'vertexAILocation').asString(),
+            useLimitedUseAppCheckTokens: getValue(rc, 'useLimitedUseAppCheckTokens').asBoolean(),
+            geminiModelName: getValue(rc, 'geminiModelName').asString(),
+            thinkingLevel: getValue(rc, 'thinkingLevel').asString() as ThinkingLevel,
+            geminiTTSModelName: getValue(rc, 'geminiTTSModelName').asString(),
+          };
+          this.#ai = null;
+        })
+        .catch((error) => console.warn('Remote Config fetch timed out or failed. Using defaults:', error));
     }
+  }
 
-    this.#remoteConfig = this.setupRemoteConfig(this.#app);
-
-    if (isOnlineStatus) {
-      try {
-        const activated = await this.fetchRemoteConfig(this.#remoteConfig);
-        console.log('Remote Config initialized. Activated new values:', activated);
-      } catch (error) {
-        console.warn('Remote Config fetch timed out or failed. Using defaults:', error);
-      }
+  initialize(): void {
+    if (!this.#appReady) {
+      this.#appReady = this.loadFirebase();
     }
   }
 }

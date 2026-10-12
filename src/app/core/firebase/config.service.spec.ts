@@ -1,21 +1,88 @@
 import { WINDOW } from '@/core/constants/navigator.const';
 import firebaseConfig from '@/public/firebase.config.json';
+import '@angular/compiler';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { initializeApp } from 'firebase/app';
+import { initializeAppCheck } from 'firebase/app-check';
+import { fetchAndActivate, getRemoteConfig } from 'firebase/remote-config';
 import { ConfigService } from './config.service';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+vi.mock('firebase/app', () => ({
+  initializeApp: vi.fn().mockReturnValue({
+    name: '[DEFAULT]',
+    options: {
+      projectId: 'demo-test-project',
+      apiKey: 'test-api-key',
+      appId: 'test-app-id',
+    },
+  }),
+}));
+
+vi.mock('firebase/app-check', () => ({
+  initializeAppCheck: vi.fn(),
+  ReCaptchaEnterpriseProvider: vi.fn(),
+}));
+
+function resolveRemoteConfigString(key: string): string {
+  switch (key) {
+    case 'vertexAILocation':
+      return 'us-central1';
+    case 'geminiModelName':
+      return 'gemini-1.5-flash';
+    case 'geminiTTSModelName':
+      return 'gemini-1.5-flash-tts';
+    case 'thinkingLevel':
+      return 'LOW';
+    default:
+      return '';
+  }
+}
+
+vi.mock('firebase/remote-config', () => ({
+  getRemoteConfig: vi.fn().mockReturnValue({
+    defaultConfig: {},
+    settings: {},
+  }),
+  fetchAndActivate: vi.fn().mockResolvedValue(true),
+  getValue: vi.fn((_rc: unknown, key: string) => ({
+    asString: () => resolveRemoteConfigString(key),
+    asBoolean: () => key === 'useLimitedUseAppCheckTokens',
+    asNumber: () => 0,
+  })),
+}));
+
+vi.mock('firebase/ai', () => ({
+  getAI: vi.fn().mockImplementation((app: unknown, options?: { backend?: unknown }) => ({
+    backend: options?.backend ?? {
+      backendType: 'VERTEX',
+      _getModelPath: vi.fn().mockReturnValue('projects/demo/models/mock'),
+    },
+    backendType: 'VERTEX',
+    app: app ?? {
+      options: { projectId: 'demo-test-project' },
+    },
+  })),
+  AgentPlatformBackend: vi.fn().mockImplementation(function (location?: unknown) {
+    return {
+      backendType: 'VERTEX',
+      location,
+      _getModelPath: vi.fn().mockReturnValue('projects/demo/models/mock'),
+    };
+  }),
+}));
+
 describe('ConfigService', () => {
-  let service: ConfigService;
-  let mockWindow: { location: { hostname: string }; navigator: { onLine: boolean } };
-  let originalAppCheckDebugToken: string;
+  let windowMock: { location: { hostname: string }; navigator: { onLine: boolean } } | null;
 
   beforeEach(() => {
-    // Store original token to restore after each test
-    originalAppCheckDebugToken = firebaseConfig.appCheckDebugToken;
+    vi.mocked(initializeApp).mockClear();
+    vi.mocked(initializeAppCheck).mockClear();
+    vi.mocked(getRemoteConfig).mockClear();
+    vi.mocked(fetchAndActivate).mockClear();
+    vi.mocked(fetchAndActivate).mockResolvedValue(true);
 
-    // Create mocks for injected services using Vitest mocks
-    mockWindow = {
+    windowMock = {
       location: {
         hostname: 'localhost',
       },
@@ -23,56 +90,236 @@ describe('ConfigService', () => {
         onLine: true,
       },
     };
+    // Cleanly reset global token before each test
+    const globalObj = globalThis as Record<string, unknown>;
+    globalObj['FIREBASE_APPCHECK_DEBUG_TOKEN'] = undefined;
+  });
 
+  function configureTestBed(): ConfigService {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [provideZonelessChangeDetection(), ConfigService, { provide: WINDOW, useValue: mockWindow }],
+      providers: [provideZonelessChangeDetection(), ConfigService, { provide: WINDOW, useValue: windowMock }],
+    });
+    return TestBed.inject(ConfigService);
+  }
+
+  it('should initialize app, setup remote-config, and fetch in background when online', async () => {
+    const service = configureTestBed();
+    if (windowMock) {
+      windowMock.navigator.onLine = true;
+    }
+
+    // initialize() is non-blocking (returns void immediately)
+    const result = service.initialize();
+    expect(result).toBeUndefined();
+
+    await vi.waitFor(() => {
+      expect(initializeApp).toHaveBeenCalledWith(firebaseConfig.app);
+      expect(getRemoteConfig).toHaveBeenCalled();
+      expect(fetchAndActivate).toHaveBeenCalled();
     });
 
-    service = TestBed.inject(ConfigService);
+    // App Check is deliberately NOT called at startup (protects FCP/LCP)
+    expect(initializeAppCheck).not.toHaveBeenCalled();
 
-    // Spy on protected helper methods on the service instance to prevent actual Firebase SDK network calls
-    vi.spyOn(service as any, 'initializeFirebaseApp').mockReturnValue({} as any);
-    vi.spyOn(service as any, 'initializeAppCheckInstance').mockReturnValue({} as any);
-    vi.spyOn(service as any, 'setupRemoteConfig').mockReturnValue({} as any);
-    vi.spyOn(service as any, 'fetchRemoteConfig').mockResolvedValue(true);
+    // Verify that background fetched values are updated in appConfig
+    await vi.waitFor(() => {
+      expect(service.appConfig).toEqual({
+        vertexAILocation: 'us-central1',
+        useLimitedUseAppCheckTokens: true,
+        geminiModelName: 'gemini-1.5-flash',
+        thinkingLevel: 'LOW',
+        geminiTTSModelName: 'gemini-1.5-flash-tts',
+      });
+    });
   });
 
-  afterEach(() => {
-    // Restore original config value to prevent cross-test leakage
-    firebaseConfig.appCheckDebugToken = originalAppCheckDebugToken;
-    delete (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN;
-    vi.restoreAllMocks();
+  it('should skip App Check and dynamic remote-config fetching when offline', async () => {
+    if (windowMock) {
+      windowMock.navigator.onLine = false;
+    }
+    const service = configureTestBed();
+
+    service.initialize();
+
+    await vi.waitFor(() => {
+      expect(initializeApp).toHaveBeenCalledWith(firebaseConfig.app);
+      expect(getRemoteConfig).toHaveBeenCalled();
+    });
+    expect(initializeAppCheck).not.toHaveBeenCalled();
+    expect(fetchAndActivate).not.toHaveBeenCalled();
+
+    // Even when getAiBackend() is called, App Check should not be initialized offline
+    await service.getAiBackend();
+    expect(initializeAppCheck).not.toHaveBeenCalled();
+
+    // Verify global debug token remains unconfigured
+    const globalObj = globalThis as Record<string, unknown>;
+    expect(globalObj['FIREBASE_APPCHECK_DEBUG_TOKEN']).toBeUndefined();
+
+    // When offline, it should use the default initialized value
+    expect(service.appConfig).toEqual({
+      useLimitedUseAppCheckTokens: false,
+      vertexAILocation: 'global',
+      geminiModelName: 'gemini-3.8-flash',
+      geminiTTSModelName: 'gemini-3.1-flash-tts-preview',
+      thinkingLevel: 'LOW',
+    });
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  it('should skip App Check when online but recaptchaEnterpriseKey is missing from config', async () => {
+    interface WritableConfig {
+      app: typeof firebaseConfig.app;
+      recaptchaEnterpriseKey: string;
+      appCheckDebugToken: string;
+    }
+
+    const config = firebaseConfig as WritableConfig;
+    const originalKey = config.recaptchaEnterpriseKey;
+    config.recaptchaEnterpriseKey = '';
+
+    try {
+      const service = configureTestBed();
+      if (windowMock) {
+        windowMock.navigator.onLine = true;
+      }
+
+      service.initialize();
+      await vi.waitFor(() => {
+        expect(getRemoteConfig).toHaveBeenCalled();
+        expect(fetchAndActivate).toHaveBeenCalled();
+      });
+
+      await service.getAiBackend();
+      expect(initializeAppCheck).not.toHaveBeenCalled();
+    } finally {
+      config.recaptchaEnterpriseKey = originalKey;
+    }
   });
 
-  describe('App Check Sandbox Mode Verification', () => {
-    it('should assign custom App Check debug token in Locked Mode when it is defined', async () => {
-      // Arrange
-      firebaseConfig.appCheckDebugToken = 'my-custom-persistent-token';
-      mockWindow.navigator.onLine = true;
+  it('should catch remote config fetch errors and retain defaults gracefully', async () => {
+    const service = configureTestBed();
+    if (windowMock) {
+      windowMock.navigator.onLine = true;
+    }
+    vi.mocked(fetchAndActivate).mockRejectedValueOnce(new Error('Fetch timed out'));
 
-      // Act
-      await service.initialize();
+    // Non-blocking call should not throw or reject
+    expect(() => service.initialize()).not.toThrow();
 
-      // Assert
-      expect((globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN).toBe('my-custom-persistent-token');
+    await vi.waitFor(() => {
+      expect(initializeApp).toHaveBeenCalledWith(firebaseConfig.app);
+      expect(getRemoteConfig).toHaveBeenCalled();
+      expect(fetchAndActivate).toHaveBeenCalled();
     });
 
-    it('should fallback to Transient Mode (isDevMode() or isLocalhost) when appCheckDebugToken is empty', async () => {
-      // Arrange
-      firebaseConfig.appCheckDebugToken = '';
-      mockWindow.navigator.onLine = true;
-      mockWindow.location.hostname = 'localhost'; // Guarantees isLocalhost is true
-
-      // Act
-      await service.initialize();
-
-      // Assert
-      // Since isLocalhost is true, FIREBASE_APPCHECK_DEBUG_TOKEN should evaluate to true
-      expect((globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN).toBe(true);
+    // When fetch fails in the background, signal retains default values
+    await vi.waitFor(() => {
+      expect(service.appConfig).toEqual({
+        useLimitedUseAppCheckTokens: false,
+        vertexAILocation: 'global',
+        geminiModelName: 'gemini-3.8-flash',
+        geminiTTSModelName: 'gemini-3.1-flash-tts-preview',
+        thinkingLevel: 'LOW',
+      });
     });
+  });
+
+  it('should resolve getApp() and self-initialize if called before initialize()', async () => {
+    const service = configureTestBed();
+    const app = await service.getApp();
+
+    expect(initializeApp).toHaveBeenCalledWith(firebaseConfig.app);
+    expect(app).toBeDefined();
+    expect(app.name).toBe('[DEFAULT]');
+  });
+
+  it('should deduplicate concurrent getApp() calls and return the same FirebaseApp instance', async () => {
+    const service = configureTestBed();
+    const [app1, app2] = await Promise.all([service.getApp(), service.getApp()]);
+
+    expect(initializeApp).toHaveBeenCalledTimes(1);
+    expect(app1).toBe(app2);
+  });
+
+  it('should reject getApp() if Firebase initialization fails', async () => {
+    vi.mocked(initializeApp).mockImplementationOnce(() => {
+      throw new Error('Initialization error');
+    });
+
+    const service = configureTestBed();
+    await expect(service.getApp()).rejects.toThrow('Firebase App initialization failed');
+  });
+
+  it('should return valid ai instance and initialize App Check JIT with concurrency lock', async () => {
+    const service = configureTestBed();
+    if (windowMock) {
+      windowMock.navigator.onLine = true;
+    }
+    service.initialize();
+
+    expect(initializeAppCheck).not.toHaveBeenCalled();
+
+    const ai1 = await service.getAiBackend();
+    const ai2 = await service.getAiBackend();
+
+    expect(ai1).toBeDefined();
+    expect(ai1).toBe(ai2);
+    // Verified App Check is called exactly once despite concurrent getAiBackend() calls
+    expect(initializeAppCheck).toHaveBeenCalledTimes(1);
+
+    // Verify global debug token gets configured on localhost
+    const globalObj = globalThis as Record<string, unknown>;
+    expect(globalObj['FIREBASE_APPCHECK_DEBUG_TOKEN']).toBeDefined();
+  });
+
+  it('should expose bundled defaults in appConfig even before initialize() is executed', () => {
+    const service = configureTestBed();
+    expect(service.appConfig).toEqual({
+      useLimitedUseAppCheckTokens: false,
+      vertexAILocation: 'global',
+      geminiModelName: 'gemini-3.8-flash',
+      geminiTTSModelName: 'gemini-3.1-flash-tts-preview',
+      thinkingLevel: 'LOW',
+    });
+  });
+
+  it('should invalidate cached aiBackend when remote config activates new values', async () => {
+    const service = configureTestBed();
+    if (windowMock) {
+      windowMock.navigator.onLine = true;
+    }
+
+    service.initialize();
+
+    await vi.waitFor(() => {
+      expect(service.appConfig.vertexAILocation).toBe('us-central1');
+    });
+
+    const ai = await service.getAiBackend();
+    expect(ai).toBeDefined();
+  });
+
+  it('should not configure debug token when online on a production host', async () => {
+    if (windowMock) {
+      windowMock.location.hostname = 'tts-demo.web.app';
+      windowMock.navigator.onLine = true;
+    }
+    const service = configureTestBed();
+
+    service.initialize();
+    expect(initializeAppCheck).not.toHaveBeenCalled();
+
+    await service.getAiBackend();
+    expect(initializeAppCheck).toHaveBeenCalled();
+
+    const globalObj = globalThis as Record<string, unknown>;
+    expect(globalObj['FIREBASE_APPCHECK_DEBUG_TOKEN']).toBe(false);
+  });
+
+  it('should handle SSR gracefully when WINDOW is null', () => {
+    windowMock = null;
+    const service = configureTestBed();
+    expect(() => service.initialize()).not.toThrow();
   });
 });

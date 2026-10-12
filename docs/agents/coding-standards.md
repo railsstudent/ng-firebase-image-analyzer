@@ -35,7 +35,6 @@ This document outlines project-specific coding standards and architectural conve
 
 ## 6. Asynchronous & Fire-and-Forget Operations
 
-- **Explicit Async Signatures**: Methods performing asynchronous tasks must be declared with `async` and return `Promise<void>`, encapsulating failure handling within internal `try/catch` blocks.
 - **Floating Promises Handling**: At caller sites requiring non-blocking / fire-and-forget execution, handle the returned Promise with `.catch(...)` to satisfy `@typescript-eslint/no-floating-promises`.
 - **Ban `void` Operator Keyword**: Never use the `void` expression operator keyword (e.g. `void this.method()`) at call sites.
 

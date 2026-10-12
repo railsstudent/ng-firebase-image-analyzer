@@ -7,13 +7,11 @@ import {
   HarmCategory,
   HybridParams,
   InferenceMode,
-  ThinkingLevel,
 } from 'firebase/ai';
-import { getValue } from 'firebase/remote-config';
 import { FIREBASE_AI } from './ai.const';
 import { ConfigService } from './config.service';
-import { ModelConfigParams } from './model-config-params.interface';
 import { isOnline } from './host.util';
+import { ModelConfigParams } from './model-config-params.interface';
 
 const SAFETY_SETTINGS = [
   {
@@ -59,20 +57,16 @@ export class AiModelCacheService {
   }
 
   private getCacheKey(config: ModelConfigParams): string {
-    const remoteConfig = this.#configService.RemoteConfig;
-    const model = getValue(remoteConfig, 'geminiModelName').asString() || 'gemini-3.5-flash';
-    const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString() || 'LOW';
+    const remoteConfig = this.#configService.appConfig;
+    const model = remoteConfig.geminiModelName || 'gemini-3.5-flash';
     const systemInstruction = config.systemInstruction || '';
     const schemaKey = config.schema ? JSON.stringify(config.schema) : 'no-schema';
 
-    return `${model}_${rawThinkingLevel}_${systemInstruction}_${schemaKey}`;
+    return `${model}_${remoteConfig.thinkingLevel}_${systemInstruction}_${schemaKey}`;
   }
 
   private constructModelParams({ schema, systemInstruction }: ModelConfigParams): HybridParams {
-    const remoteConfig = this.#configService.RemoteConfig;
-    const model = getValue(remoteConfig, 'geminiModelName').asString() || 'gemini-3.5-flash';
-    const rawThinkingLevel = getValue(remoteConfig, 'thinkingLevel').asString() || 'LOW';
-    const thinkingLevel = ThinkingLevel[rawThinkingLevel as keyof typeof ThinkingLevel];
+    const remoteConfig = this.#configService.appConfig;
     const isOnlineStatus = isOnline(this.#win);
     const mode = isOnlineStatus ? InferenceMode.PREFER_ON_DEVICE : InferenceMode.ONLY_ON_DEVICE;
 
@@ -84,12 +78,12 @@ export class AiModelCacheService {
         },
       },
       inCloudParams: {
-        model,
+        model: remoteConfig.geminiModelName || 'gemini-3.5-flash',
         generationConfig: {
           responseMimeType: schema ? 'application/json' : undefined,
           responseSchema: schema,
           thinkingConfig: {
-            thinkingLevel,
+            thinkingLevel: remoteConfig.thinkingLevel,
             includeThoughts: true,
           },
         },
