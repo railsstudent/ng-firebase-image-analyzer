@@ -19,18 +19,30 @@
       </app-tab>
 
       <!-- 3.2: Recommendations -->
-      <app-tab id="detailed" label="Recommendations">
-        <app-image-recommendation [recommendations]="recommendations" />
+      <app-tab #recTab id="detailed" label="Recommendations">
+        @defer (when recTab.isActive()) {
+          <app-image-recommendation [recommendations]="recommendations" />
+        } @placeholder {
+          <app-image-recommendation-skeleton />
+        }
       </app-tab>
 
       <!-- 3.3: Token Usage -->
-      <app-tab id="tokens" label="Token Usage">
-        <app-token-analytics [tokenSummary]="tokenSummary" [tokenModalityBreakdown]="tokenModalityBreakdown" />
+      <app-tab #tokensTab id="tokens" label="Token Usage">
+        @defer (when tokensTab.isActive()) {
+          <app-token-analytics [tokenSummary]="tokenSummary" [tokenModalityBreakdown]="tokenModalityBreakdown" />
+        } @placeholder {
+          <app-token-analytics-skeleton />
+        }
       </app-tab>
 
       <!-- 3.4: Image Improvement -->
-      <app-tab id="improvement" label="Image Improvement">
-        <app-image-improvement [analysis]="innerAnalysis" [imageUrl]="imageUrl()" />
+      <app-tab #improveTab id="improvement" label="Image Improvement">
+        @defer (when improveTab.isActive()) {
+          <app-image-improvement [analysis]="innerAnalysis" [imageUrl]="imageUrl()" />
+        } @placeholder {
+          <app-image-improvement-skeleton />
+        }
       </app-tab>
     </app-tab-group>
   </div>

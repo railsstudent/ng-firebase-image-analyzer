@@ -8,6 +8,9 @@ import { TabGroupComponent } from '@/shared/ui/components/tab-group/tab-group.co
 import { TabComponent } from '@/shared/ui/components/tab/tab.component';
 import { Component, computed, input } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
+import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton.component';
+import { ImageRecommendationSkeletonComponent } from '@/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.component';
+import { TokenAnalyticsSkeletonComponent } from '@/features/image-analysis/token-analytics-skeleton/token-analytics-skeleton.component';
 
 @Component({
   selector: 'app-image-analysis-panel',
@@ -18,6 +21,9 @@ import { InferenceSource } from 'firebase/ai';
     ImageRecommendationComponent,
     ThoughtSummaryComponent,
     ImageImprovementComponent,
+    ImageImprovementSkeletonComponent,
+    ImageRecommendationSkeletonComponent,
+    TokenAnalyticsSkeletonComponent,
   ],
   templateUrl: './image-analysis-panel.component.html',
   styleUrls: [

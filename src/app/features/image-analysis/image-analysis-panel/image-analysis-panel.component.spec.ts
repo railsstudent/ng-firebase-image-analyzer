@@ -1,13 +1,29 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton.component';
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
+import { ImageRecommendationSkeletonComponent } from '@/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.component';
+import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
+import { TokenAnalyticsSkeletonComponent } from '@/features/image-analysis/token-analytics-skeleton/token-analytics-skeleton.component';
 import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
+import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel.component';
 
 describe('ImageAnalysisPanelComponent', () => {
   let component: ImageAnalysisPanelComponent;
   let fixture: ComponentFixture<ImageAnalysisPanelComponent>;
+
+  const mockAnalysisData = {
+    analysis: {
+      tags: [{ name: 'Test', sentence: 'Test description' }],
+      alternativeTexts: [{ title: 'Alt 1', description: 'Alt description' }],
+      recommendations: [{ category: 'Contrast', suggestions: ['Increase brightness'] }],
+    },
+    thoughtSummary: 'Model reasoning summary',
+    tokenSummary: { inputTokens: 100, outputTokens: 50, totalTokens: 150 },
+    tokenModalityBreakdown: { imageTokens: 80, textTokens: 20 },
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -37,22 +53,27 @@ describe('ImageAnalysisPanelComponent', () => {
   });
 
   it('should render analysis panel container when data is provided', async () => {
-    fixture.componentRef.setInput('data', {
-      analysis: {
-        tags: [{ name: 'Test', sentence: 'Test description' }],
-        alternativeTexts: [{ title: 'Alt 1', description: 'Alt description' }],
-        recommendations: [{ category: 'Contrast', suggestions: ['Increase brightness'] }],
-      },
-      thoughtSummary: 'Model reasoning summary',
-      tokenSummary: { inputTokens: 100, outputTokens: 50, totalTokens: 150 },
-      tokenModalityBreakdown: { imageTokens: 80, textTokens: 20 },
-    });
+    fixture.componentRef.setInput('data', mockAnalysisData);
     fixture.detectChanges();
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.analysis-panel-container')).toBeTruthy();
     expect(compiled.querySelector('.empty-state-text')).toBeNull();
+  });
+
+  it('should discover all 4 tab headers immediately on initial render', async () => {
+    fixture.componentRef.setInput('data', mockAnalysisData);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const tabButtons = compiled.querySelectorAll('.tab-header-btn');
+    expect(tabButtons.length).toBe(4);
+    expect(tabButtons[0].textContent).toContain('Thought Summary');
+    expect(tabButtons[1].textContent).toContain('Recommendations');
+    expect(tabButtons[2].textContent).toContain('Token Usage');
+    expect(tabButtons[3].textContent).toContain('Image Improvement');
   });
 
   it('should map source correctly to displaySource', () => {
@@ -65,35 +86,83 @@ describe('ImageAnalysisPanelComponent', () => {
     expect(component.displaySource()).toBe('Cloud AI');
   });
 
-  it('should pass data, imageUrl, and default thoughtSummary fallback to child components', async () => {
-    const mockAnalysis = {
-      tags: [{ name: 'Test', sentence: 'Test' }],
-      alternativeTexts: [{ title: 'Alt 1', description: 'Desc 1' }],
-      recommendations: [{ category: 'Quality', suggestions: ['Sharpen'] }],
-    };
-
+  it('should immediately render default active ThoughtSummaryComponent and skeleton placeholders for secondary tabs', async () => {
     fixture.componentRef.setInput('data', {
-      analysis: mockAnalysis,
+      ...mockAnalysisData,
       thoughtSummary: '',
-      tokenSummary: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
-      tokenModalityBreakdown: { imageTokens: 10, textTokens: 0 },
     });
     fixture.componentRef.setInput('imageUrl', 'https://example.com/test.jpg');
     fixture.componentRef.setInput('source', 'on_device');
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const thoughtSummaryDebugEl = fixture.debugElement.query(By.directive(ThoughtSummaryComponent));
-    expect(thoughtSummaryDebugEl).toBeTruthy();
-    const thoughtSummaryComp = thoughtSummaryDebugEl.componentInstance as ThoughtSummaryComponent;
+    // Default active tab is rendered immediately without deferral
+    const thoughtSummaryEl = fixture.debugElement.query(By.directive(ThoughtSummaryComponent));
+    expect(thoughtSummaryEl).toBeTruthy();
+    const thoughtSummaryComp = thoughtSummaryEl.componentInstance as ThoughtSummaryComponent;
     expect(thoughtSummaryComp.thoughtSummary()).toBe('No technical logs provided.');
     expect(thoughtSummaryComp.displaySource()).toBe('Gemini Nano');
-    expect(thoughtSummaryComp.remarks()).toEqual(mockAnalysis.alternativeTexts);
+    expect(thoughtSummaryComp.remarks()).toEqual(mockAnalysisData.analysis.alternativeTexts);
 
-    const imageImprovementDebugEl = fixture.debugElement.query(By.directive(ImageImprovementComponent));
-    expect(imageImprovementDebugEl).toBeTruthy();
-    const imageImprovementComp = imageImprovementDebugEl.componentInstance as ImageImprovementComponent;
-    expect(imageImprovementComp.analysis()).toEqual(mockAnalysis);
-    expect(imageImprovementComp.imageUrl()).toBe('https://example.com/test.jpg');
+    // Inactive tabs render skeleton placeholders initially
+    expect(fixture.debugElement.query(By.directive(ImageRecommendationSkeletonComponent))).toBeTruthy();
+    expect(fixture.debugElement.query(By.directive(TokenAnalyticsSkeletonComponent))).toBeTruthy();
+    expect(fixture.debugElement.query(By.directive(ImageImprovementSkeletonComponent))).toBeTruthy();
+
+    // Deferred components are not yet rendered
+    expect(fixture.debugElement.query(By.directive(ImageRecommendationComponent))).toBeNull();
+    expect(fixture.debugElement.query(By.directive(TokenAnalyticsComponent))).toBeNull();
+    expect(fixture.debugElement.query(By.directive(ImageImprovementComponent))).toBeNull();
+  });
+
+  it('should hydrate ImageRecommendationComponent when Recommendations tab is selected', async () => {
+    fixture.componentRef.setInput('data', mockAnalysisData);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const tabButtons = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.tab-header-btn');
+    tabButtons[1].click(); // Click "Recommendations" tab
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const recDebugEl = fixture.debugElement.query(By.directive(ImageRecommendationComponent));
+    expect(recDebugEl).toBeTruthy();
+    const recComp = recDebugEl.componentInstance as ImageRecommendationComponent;
+    expect(recComp.recommendations()).toEqual(mockAnalysisData.analysis.recommendations);
+  });
+
+  it('should hydrate TokenAnalyticsComponent when Token Usage tab is selected', async () => {
+    fixture.componentRef.setInput('data', mockAnalysisData);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const tabButtons = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.tab-header-btn');
+    tabButtons[2].click(); // Click "Token Usage" tab
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const tokenDebugEl = fixture.debugElement.query(By.directive(TokenAnalyticsComponent));
+    expect(tokenDebugEl).toBeTruthy();
+    const tokenComp = tokenDebugEl.componentInstance as TokenAnalyticsComponent;
+    expect(tokenComp.tokenSummary()).toEqual(mockAnalysisData.tokenSummary);
+    expect(tokenComp.tokenModalityBreakdown()).toEqual(mockAnalysisData.tokenModalityBreakdown);
+  });
+
+  it('should hydrate ImageImprovementComponent when Image Improvement tab is selected', async () => {
+    fixture.componentRef.setInput('data', mockAnalysisData);
+    fixture.componentRef.setInput('imageUrl', 'https://example.com/test.jpg');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const tabButtons = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.tab-header-btn');
+    tabButtons[3].click(); // Click "Image Improvement" tab
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const improveDebugEl = fixture.debugElement.query(By.directive(ImageImprovementComponent));
+    expect(improveDebugEl).toBeTruthy();
+    const improveComp = improveDebugEl.componentInstance as ImageImprovementComponent;
+    expect(improveComp.analysis()).toEqual(mockAnalysisData.analysis);
+    expect(improveComp.imageUrl()).toBe('https://example.com/test.jpg');
   });
 });
