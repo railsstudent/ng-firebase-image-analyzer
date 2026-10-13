@@ -301,4 +301,82 @@ describe('ImageDownloadService', () => {
     });
     expect(mockAnchor.download).toBe('landscape-view.png');
   });
+
+  it('should quantize floating-point crop coordinates and canvas dimensions to integer pixels', async () => {
+    const mockDrawImage = vi.fn();
+    const mockCtx = {
+      filter: '',
+      drawImage: mockDrawImage,
+    } as unknown as CanvasRenderingContext2D;
+
+    const mockCanvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn().mockReturnValue(mockCtx),
+      toBlob: vi.fn((callback: (blob: Blob | null) => void) => {
+        callback(new Blob(['fake-png-content'], { type: 'image/png' }));
+      }),
+    } as unknown as HTMLCanvasElement;
+
+    const originalCreateElement = documentMock.createElement.bind(documentMock);
+    vi.spyOn(documentMock, 'createElement').mockImplementation((tagName: string) => {
+      if (tagName === 'img') {
+        const img = originalCreateElement('img');
+        Object.defineProperty(img, 'naturalWidth', { value: 500, configurable: true });
+        Object.defineProperty(img, 'naturalHeight', { value: 300, configurable: true });
+        let srcValue = '';
+        Object.defineProperty(img, 'src', {
+          get: () => srcValue,
+          set: (val: string) => {
+            srcValue = val;
+            setTimeout(() => {
+              if (img.onload) {
+                img.onload(new Event('load'));
+              }
+            }, 0);
+          },
+          configurable: true,
+        });
+        return img;
+      }
+      if (tagName === 'canvas') {
+        return mockCanvas;
+      }
+      if (tagName === 'a') {
+        return {
+          href: '',
+          download: '',
+          click: vi.fn(),
+        } as unknown as HTMLAnchorElement;
+      }
+      return originalCreateElement(tagName);
+    });
+
+    const options: ImageDownloadOptions = {
+      url: 'data:image/png;base64,validbase64image',
+      // (0.8 - 0.2) * 500 = 300.00000000000006 in standard IEEE-754 arithmetic
+      crop: { xMin: 0.2, yMin: 0.1, xMax: 0.8, yMax: 0.7 },
+      filter: undefined,
+      filename: 'quantized-test.png',
+    };
+
+    await service.downloadFilteredCrop(options);
+
+    // Verify canvas dimensions are exact integer numbers
+    expect(mockCanvas.width).toBe(300);
+    expect(mockCanvas.height).toBe(180);
+
+    // Verify source offsets and destination dimensions in drawImage call
+    expect(mockDrawImage).toHaveBeenCalledWith(
+      expect.any(Object),
+      100, // sx: Math.round(0.2 * 500)
+      30, // sy: Math.round(0.1 * 300)
+      300, // cropWidth
+      180, // cropHeight
+      0,
+      0,
+      300, // cropWidth
+      180, // cropHeight
+    );
+  });
 });

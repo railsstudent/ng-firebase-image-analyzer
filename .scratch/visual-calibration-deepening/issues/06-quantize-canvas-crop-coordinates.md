@@ -4,14 +4,14 @@
 
 **Blocked by:** 04 (Refactor Image Download Service to Direct In-Memory Decoding)
 
-**Status:** todo
+**Status:** done
 
-- [ ] In `src/app/features/image-analysis/services/image-download.service.ts`:
+- [x] In `src/app/features/image-analysis/services/image-download.service.ts`:
   - Calculate `cropWidth` and `cropHeight` with `Math.round()`.
   - Calculate source offsets `sx = Math.round(crop.xMin * img.naturalWidth)` and `sy = Math.round(crop.yMin * img.naturalHeight)`.
   - Assign integer `cropWidth` and `cropHeight` to `canvas.width` and `canvas.height`.
   - Pass integer coordinates (`sx`, `sy`, `cropWidth`, `cropHeight`) into `ctx.drawImage()`.
-- [ ] In `src/app/features/image-analysis/services/image-download.service.spec.ts`:
+- [x] In `src/app/features/image-analysis/services/image-download.service.spec.ts`:
   - Add a dedicated unit test for floating-point crop coordinates that trigger IEEE-754 precision drift (e.g., `xMin: 0.2, xMax: 0.8` on `500px` natural width).
   - Verify exact integer assertions for `mockCanvas.width`, `mockCanvas.height`, and `mockDrawImage` parameters.
-- [ ] Run `npm run lint` and `npm run test:once` to verify zero violations and all tests passing.
+- [x] Run `npm run lint` and `npm run test:once` to verify zero violations and all tests passing.

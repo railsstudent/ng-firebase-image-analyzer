@@ -23,8 +23,10 @@ export class ImageDownloadService {
 
   private renderCroppedCanvas(img: HTMLImageElement, crop: Crop, filterStyle: string): HTMLCanvasElement {
     const canvas = this.#document.createElement('canvas');
-    const cropWidth = (crop.xMax - crop.xMin) * img.naturalWidth;
-    const cropHeight = (crop.yMax - crop.yMin) * img.naturalHeight;
+    const cropWidth = Math.round((crop.xMax - crop.xMin) * img.naturalWidth);
+    const cropHeight = Math.round((crop.yMax - crop.yMin) * img.naturalHeight);
+    const sx = Math.round(crop.xMin * img.naturalWidth);
+    const sy = Math.round(crop.yMin * img.naturalHeight);
 
     canvas.width = cropWidth;
     canvas.height = cropHeight;
@@ -35,17 +37,7 @@ export class ImageDownloadService {
     }
 
     ctx.filter = filterStyle || 'none';
-    ctx.drawImage(
-      img,
-      crop.xMin * img.naturalWidth,
-      crop.yMin * img.naturalHeight,
-      cropWidth,
-      cropHeight,
-      0,
-      0,
-      cropWidth,
-      cropHeight,
-    );
+    ctx.drawImage(img, sx, sy, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
 
     return canvas;
   }

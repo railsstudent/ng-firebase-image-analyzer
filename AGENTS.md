@@ -18,7 +18,8 @@ This file provides context, rules, and guidance for AI assistants working on thi
 - **Domain Modeling**: [docs/agents/domain.md](docs/agents/domain.md) — Project glossary (`GLOSSARY.md`) and domain decisions.
 - **Document Boundaries**: [docs/agents/document-boundaries.md](docs/agents/document-boundaries.md) — Scope separation across PRDs (`spec.md`), ADRs (`docs/adr/`), and implementation tickets (`.scratch/`).
 
-## Verification & Pre-Commit Loop
+## Verification Loop & Git Boundaries
 
 1. **Targeted Testing during Development**: Use `angular-cli` MCP `run_target` with `target: "test"` against modified files or directories.
-2. **End-of-Task Validation**: Run `npm run lint` and `npm run test:once` before declaring work complete to ensure zero violations and pass `lint-staged` pre-commit checks.
+2. **End-of-Task Validation**: Run `npm run lint` and `npm run test:once` before declaring work complete to ensure zero violations.
+3. **No Automatic Git Commits**: Never run `git add` or `git commit`. Leave all staging and commits to the developer after validation passes.
