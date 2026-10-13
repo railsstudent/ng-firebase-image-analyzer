@@ -5,7 +5,7 @@ import { MarkdownModules } from './culinary-guide.interface';
 export class MarkdownFormatterService {
   #modulesPromise: Promise<MarkdownModules> | null = null;
 
-  private loadModules() {
+  private loadModules(): Promise<MarkdownModules> {
     if (!this.#modulesPromise) {
       this.#modulesPromise = Promise.all([import('snarkdown'), import('dompurify')]).then(
         ([snarkdownModule, dompurifyModule]) => ({
@@ -64,13 +64,13 @@ export class MarkdownFormatterService {
     return result.join('\n');
   }
 
-  async format(markdown: string) {
+  async format(markdown: string): Promise<string> {
     if (!markdown.trim()) {
       return '';
     }
 
     const { snarkdown, dompurify } = await this.loadModules();
-    const tableToList = this.convertTableToList(markdown);
-    return dompurify.sanitize(snarkdown(tableToList));
+    const normalizedMarkdown = this.convertTableToList(markdown);
+    return dompurify.sanitize(snarkdown(normalizedMarkdown));
   }
 }

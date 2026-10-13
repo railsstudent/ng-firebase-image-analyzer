@@ -31,7 +31,7 @@ export class MarkdownFormatterService {
   #modulesPromise: Promise<MarkdownModules> | null = null;
 
   async format(markdown: string): Promise<string> {
-    if (!markdown) {
+    if (!markdown.trim()) {
       return '';
     }
     const { snarkdown, DOMPurify } = await this.loadModules();
