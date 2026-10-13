@@ -1,5 +1,5 @@
 import { MAX_FILE_SIZE_MB, ONE_MB } from '@/core/firebase';
-import { readFileAsDataURL } from '@/shared/utils/file-reader.util';
+import { readFileAsDataURL } from '@/core/image-analysis';
 import { CloudUploadIconComponent } from '@/shared/ui/icons/cloud-upload-icon/cloud-upload-icon.component';
 import { DeleteIconComponent } from '@/shared/ui/icons/delete-icon/delete-icon.component';
 import { Component, input, model, output, signal } from '@angular/core';

@@ -5,7 +5,7 @@ import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/ima
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
 import { ImageRecommendationSkeletonComponent } from '@/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.component';
 import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
-import { TokenAnalyticsSkeletonComponent } from '@/features/image-analysis/token-analytics-skeleton/token-analytics-skeleton.component';
+import { TokenAnalyticsSkeletonComponent } from '@/shared/ui/components/token-analytics-skeleton/token-analytics-skeleton.component';
 import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
 import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel.component';

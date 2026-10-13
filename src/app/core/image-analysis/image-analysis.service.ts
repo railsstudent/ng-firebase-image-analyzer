@@ -6,13 +6,12 @@ import {
   TokenSummary,
   ZERO_TOKEN_SUMMARY,
 } from '@/core/firebase';
-import { readFileAsDataURL } from '@/shared/utils/file-reader.util';
 import { inject, Service } from '@angular/core';
 import { InferenceSource, Part } from 'firebase/ai';
 import { ImageAnalysisResponse, StreamingAnalysisWithMetadata } from './image-analysis.interface';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from './image-analysis.prompt';
 import { ImageAnalysisSchema } from './image-analysis.schema';
-import { resizeToFixedDimensions, validateImageInput, validatePrompt } from './image.util';
+import { readFileAsDataURL, resizeToFixedDimensions, validateImageInput, validatePrompt } from './image.util';
 
 @Service()
 export class ImageAnalysisService {

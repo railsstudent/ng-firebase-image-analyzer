@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TokenAnalyticsSkeletonComponent } from '@/features/image-analysis/token-analytics-skeleton/token-analytics-skeleton.component';
+import { TokenAnalyticsSkeletonComponent } from '@/shared/ui/components/token-analytics-skeleton/token-analytics-skeleton.component';
 import { TokenAnalyticsComponent } from './token-analytics.component';
 
 describe('TokenAnalyticsComponent', () => {

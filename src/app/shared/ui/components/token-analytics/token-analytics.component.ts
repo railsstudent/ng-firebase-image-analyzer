@@ -1,5 +1,5 @@
 import { TokenModalityBreakdown, TokenSummary } from '@/core/firebase';
-import { TokenAnalyticsSkeletonComponent } from '@/features/image-analysis/token-analytics-skeleton/token-analytics-skeleton.component';
+import { TokenAnalyticsSkeletonComponent } from '@/shared/ui/components/token-analytics-skeleton/token-analytics-skeleton.component';
 import { TokenUsageBarComponent } from '@/shared/ui/components/token-usage-bar/token-usage-bar.component';
 import { BarChartIconComponent } from '@/shared/ui/icons/bar-chart-icon/bar-chart-icon.component';
 import { Component, computed, input } from '@angular/core';

@@ -100,6 +100,90 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/app/shared/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/../*', '**/./../*'],
+              message:
+                'Parent relative imports (..) are forbidden. Use sibling relative imports (./) for files in the same directory or absolute aliases (@/) for cross-directory imports.',
+            },
+            {
+              group: ['@/features/**', '**/features/**'],
+              message: 'Layer violation: Shared layer cannot import from Feature layer.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/app/core/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/../*', '**/./../*'],
+              message:
+                'Parent relative imports (..) are forbidden. Use sibling relative imports (./) for files in the same directory or absolute aliases (@/) for cross-directory imports.',
+            },
+            {
+              group: ['@/features/**', '@/shared/**', '**/features/**', '**/shared/**'],
+              message: 'Layer violation: Core layer cannot import from Feature or Shared layers.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/app/features/home/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/../*', '**/./../*'],
+              message:
+                'Parent relative imports (..) are forbidden. Use sibling relative imports (./) for files in the same directory or absolute aliases (@/) for cross-directory imports.',
+            },
+            {
+              group: ['@/features/!(home)/**', '**/features/!(home)/**'],
+              message: 'Cross-feature violation: Features cannot directly import other sibling features.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/app/features/image-analysis/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/../*', '**/./../*'],
+              message:
+                'Parent relative imports (..) are forbidden. Use sibling relative imports (./) for files in the same directory or absolute aliases (@/) for cross-directory imports.',
+            },
+            {
+              group: ['@/features/!(image-analysis)/**', '**/features/!(image-analysis)/**'],
+              message: 'Cross-feature violation: Features cannot directly import other sibling features.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.spec.ts'],
     rules: {
       'max-lines-per-function': 'off',
