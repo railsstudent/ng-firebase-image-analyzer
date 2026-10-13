@@ -1,9 +1,5 @@
 import { FALLBACK_IMAGE_SIZE, MAX_FILE_SIZE_MB, ONE_MB } from '@/core/firebase';
 
-function formatFileSizeMbs(fileSize: number) {
-  return `${(fileSize / ONE_MB).toFixed(2)}MB`;
-}
-
 /**
  * Validates that the file is an image and under the 20MB size limit for inline data.
  *
@@ -22,7 +18,7 @@ export function validateImageInput(file: File | Blob): void {
 
   // Validate size (Gemini inline data limit is 20MB)
   if (file.size > MAX_FILE_SIZE_MB) {
-    const strFileSize = formatFileSizeMbs(file.size);
+    const strFileSize = `${(file.size / ONE_MB).toFixed(2)}MB`;
     throw new Error(`File size (${strFileSize} exceeds the ${MAX_FILE_SIZE_MB}MB limit for inline analysis.`);
   }
 }

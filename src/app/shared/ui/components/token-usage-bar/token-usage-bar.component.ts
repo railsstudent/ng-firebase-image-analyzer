@@ -1,6 +1,5 @@
 import { Component, input } from '@angular/core';
-import { TokenSegment } from './token-segment.type';
-import { TokenLegendItem } from './token-legend-item.type';
+import { TokenLegendItem, TokenSegment } from './token-segment.type';
 
 @Component({
   selector: 'app-token-usage-bar',

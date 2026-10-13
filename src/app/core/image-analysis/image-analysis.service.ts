@@ -92,7 +92,7 @@ export class ImageAnalysisService {
     }
   }
 
-  private constructAnalysis(update: PartialResponse<ImageAnalysisResponse>) {
+  private constructAnalysis(update: PartialResponse<ImageAnalysisResponse>): Partial<ImageAnalysisResponse> {
     const partialData = update.partialData || {};
     return {
       alternativeTexts: partialData.alternativeTexts,

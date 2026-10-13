@@ -20,13 +20,13 @@ export class ImageUploaderComponent {
   isDragging = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
 
-  onDragOver(event: DragEvent) {
+  onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(true);
   }
 
-  onDragLeave(event: DragEvent) {
+  onDragLeave(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.isDragging.set(false);
@@ -43,7 +43,7 @@ export class ImageUploaderComponent {
     }
   }
 
-  openFilePicker(fileInput: HTMLInputElement) {
+  openFilePicker(fileInput: HTMLInputElement): void {
     this.filePickerOpened.emit();
     fileInput.click();
   }
@@ -77,7 +77,7 @@ export class ImageUploaderComponent {
     }
   }
 
-  removeImage(event: Event, fileInput?: HTMLInputElement) {
+  removeImage(event: Event, fileInput?: HTMLInputElement): void {
     event.stopPropagation();
     if (fileInput) {
       fileInput.value = '';

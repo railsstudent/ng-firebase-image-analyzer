@@ -127,7 +127,7 @@ export class AiService {
     };
   }
 
-  private parseStreamJSONResponse<T>(text: string, schema?: TypedSchema | SchemaRequest) {
+  private parseStreamJSONResponse<T>(text: string, schema?: TypedSchema | SchemaRequest): Partial<T> {
     if (schema) {
       try {
         return JSON.parse(text) as Partial<T>;
@@ -165,7 +165,7 @@ export class AiService {
     return undefined;
   }
 
-  private async downloadDeviceModel(model: GenerativeModel) {
+  private async downloadDeviceModel(model: GenerativeModel): Promise<void> {
     // `initializeDeviceModel` must be called:
     // (1) after or on an end-user page interaction such as a button click
     // and
@@ -246,7 +246,7 @@ export class AiService {
     }
   }
 
-  private constructRequest(params: GenerateContentParams) {
+  private constructRequest(params: GenerateContentParams): string | (string | Part)[] {
     return typeof params.contents === 'string' || Array.isArray(params.contents) ? params.contents : [params.contents];
   }
 }

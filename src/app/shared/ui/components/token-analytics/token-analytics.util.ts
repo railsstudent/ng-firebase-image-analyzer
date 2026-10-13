@@ -1,6 +1,9 @@
 import { TokenSummary } from '@/core/firebase';
-import { TokenLegendItem } from '@/shared/ui/components/token-usage-bar/token-legend-item.type';
-import { TokenSegment } from '@/shared/ui/components/token-usage-bar/token-segment.type';
+import {
+  TokenSegment,
+  TokenLegendItem,
+  ModalitySegmentsLegend,
+} from '@/shared/ui/components/token-usage-bar/token-segment.type';
 import { Modality, ModalityTokenCount } from 'firebase/ai';
 import { ModalitySegments } from './modality-segments.type';
 import { BaseModalityTokens, TokenUsageMetadata } from './token-analytics.interface';
@@ -59,7 +62,10 @@ function buildModalityLegend({ textTokens, imageTokens }: BaseModalityTokens): T
   ];
 }
 
-export function parseModalityDetails(details: ModalityTokenCount[] | undefined, totalTokens: number) {
+export function parseModalityDetails(
+  details: ModalityTokenCount[] | undefined,
+  totalTokens: number,
+): ModalitySegmentsLegend {
   const textTokens = findModalityTokenCount(details, Modality.TEXT);
   const imageTokens = findModalityTokenCount(details, Modality.IMAGE);
 
@@ -69,7 +75,10 @@ export function parseModalityDetails(details: ModalityTokenCount[] | undefined, 
   };
 }
 
-export function parseTokenDetails(tokenSummary: TokenSummary | undefined, totalTokenCount: number) {
+export function parseTokenDetails(
+  tokenSummary: TokenSummary | undefined,
+  totalTokenCount: number,
+): ModalitySegmentsLegend {
   const promptTokens = tokenSummary?.promptTokenCount ?? 0;
   const candidatesTokens = tokenSummary?.outputTokenCount ?? 0;
   const cachedTokens = tokenSummary?.cachedContentTokenCount ?? 0;
@@ -125,7 +134,7 @@ function getTokenUsageSegments({
   candidatesTokens,
   cachedTokens,
   thoughtTokens,
-}: TokenUsageMetadata) {
+}: TokenUsageMetadata): TokenSegment[] {
   const promptTokensPercentage = calculatePercentage(promptTokens, totalTokenCount);
   const outputTokensPercentage = calculatePercentage(candidatesTokens, totalTokenCount);
   const cachedTokensPercentage = calculatePercentage(cachedTokens, totalTokenCount);

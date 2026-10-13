@@ -14,7 +14,7 @@ export class DownloadEnhancedDirective {
 
   #downloadImageService = inject(ImageDownloadService);
 
-  async onClick() {
+  async onClick(): Promise<void> {
     const url = this.imageUrl();
     if (url) {
       try {

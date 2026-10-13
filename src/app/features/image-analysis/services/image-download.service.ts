@@ -78,7 +78,7 @@ export class ImageDownloadService {
     }
   }
 
-  async downloadFilteredCrop(options: ImageDownloadOptions) {
+  async downloadFilteredCrop(options: ImageDownloadOptions): Promise<void> {
     const { url, crop, filterStyle, filename } = options;
     const imageElement = await this.loadImage(url);
 

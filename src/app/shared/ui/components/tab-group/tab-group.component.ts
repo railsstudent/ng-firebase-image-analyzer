@@ -26,7 +26,7 @@ export class TabGroupComponent {
     return this.tabs()[0].id();
   });
 
-  selectTab(id: string) {
+  selectTab(id: string): void {
     this.#userSelectedTabId.set(id);
   }
 }

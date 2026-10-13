@@ -17,7 +17,7 @@ export class EnhancedCanvasComponent {
 
   imageAspectRatio = signal<number | null>(null);
 
-  onImageLoad(event: Event) {
+  onImageLoad(event: Event): void {
     const img = event.target as HTMLImageElement;
     if (img && img.naturalWidth && img.naturalHeight) {
       this.imageAspectRatio.set(img.naturalWidth / img.naturalHeight);

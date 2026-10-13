@@ -16,7 +16,7 @@ describe('image.util', () => {
       const originalFileReader = window.FileReader;
       class MockFileReader {
         onerror: ((err: unknown) => void) | null = null;
-        readAsDataURL() {
+        readAsDataURL(): void {
           setTimeout(() => {
             if (this.onerror) {
               this.onerror(error);

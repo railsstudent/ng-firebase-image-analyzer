@@ -69,7 +69,7 @@ export default class ImageAnalysisComponent {
     }
   }
 
-  onFileSelected(file: File | null) {
+  onFileSelected(file: File | null): void {
     if (file) {
       this.preWarm().catch((err: unknown) => console.warn('Pre-warm failed on file selection:', err));
     }
@@ -78,7 +78,7 @@ export default class ImageAnalysisComponent {
     this.errorMessage.set('');
   }
 
-  async triggerAnalysis() {
+  async triggerAnalysis(): Promise<void> {
     const file = this.selectedFile();
     if (!file) {
       return;
