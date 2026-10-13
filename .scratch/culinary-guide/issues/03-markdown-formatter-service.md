@@ -1,8 +1,8 @@
 # Ticket 03: Implement MarkdownFormatterService
 
-## Status
+**Blocked by:** Ticket 02
 
-Ready
+**Status:** done
 
 ## Context & Purpose
 
@@ -21,14 +21,12 @@ Ready
 ```typescript
 interface MarkdownModules {
   snarkdown: (markdown: string) => string;
-  DOMPurify: {
+  dompurify: {
     sanitize: (html: string) => string;
   };
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MarkdownFormatterService {
   #modulesPromise: Promise<MarkdownModules> | null = null;
 
@@ -38,8 +36,7 @@ export class MarkdownFormatterService {
     }
     const { snarkdown, DOMPurify } = await this.loadModules();
     const normalized = this.convertTableToList(markdown);
-    const rawHtml = snarkdown(normalized);
-    return DOMPurify.sanitize(rawHtml);
+    return dompurify.sanitize(snarkdown(normalized));
   }
 
   private loadModules(): Promise<MarkdownModules> {
@@ -47,7 +44,7 @@ export class MarkdownFormatterService {
       this.#modulesPromise = Promise.all([import('snarkdown'), import('dompurify')]).then(
         ([snarkdownModule, dompurifyModule]) => ({
           snarkdown: snarkdownModule.default ?? snarkdownModule,
-          DOMPurify: dompurifyModule.default ?? dompurifyModule,
+          dompurify: dompurifyModule.default ?? dompurifyModule,
         }),
       );
     }
@@ -99,11 +96,81 @@ export class MarkdownFormatterService {
 }
 ```
 
+### Unit Test Reference (`src/app/core/culinary-guide/markdown-formatter.service.spec.ts`)
+
+```typescript
+import { TestBed } from '@angular/core/testing';
+import { MarkdownFormatterService } from './markdown-formatter.service';
+
+describe('MarkdownFormatterService', () => {
+  let service: MarkdownFormatterService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [MarkdownFormatterService],
+    });
+    service = TestBed.inject(MarkdownFormatterService);
+  });
+
+  describe('format', () => {
+    it('returns empty string when input is empty or falsy', async () => {
+      expect(await service.format('')).toBe('');
+    });
+
+    it('formats standard markdown syntax into sanitized HTML', async () => {
+      const markdown = '# Culinary Highlight\n\nTry the **authentic** ramen with *chashu*.';
+      const result = await service.format(markdown);
+
+      expect(result).toContain('<h1>Culinary Highlight</h1>');
+      expect(result).toContain('<strong>authentic</strong>');
+      expect(result).toContain('<em>chashu</em>');
+    });
+
+    it('converts markdown table syntax into structured bullet list items', async () => {
+      const markdown = [
+        '| Dish | City | Profile |',
+        '| --- | --- | --- |',
+        '| Pho Bo | Hanoi | Savory broth |',
+        '| Banh Mi | Saigon | Crispy baguette |',
+      ].join('\n');
+
+      const result = await service.format(markdown);
+
+      expect(result).toContain(
+        '<strong>Dish:</strong> Pho Bo - <strong>City:</strong> Hanoi - <strong>Profile:</strong> Savory broth',
+      );
+      expect(result).toContain(
+        '<strong>Dish:</strong> Banh Mi - <strong>City:</strong> Saigon - <strong>Profile:</strong> Crispy baguette',
+      );
+      expect(result).not.toContain('| Dish | City |');
+    });
+
+    it('sanitizes dangerous HTML and malicious script injections', async () => {
+      const maliciousMarkdown =
+        '<script>alert("xss")</script><img src="invalid" onerror="alert(1)">Authentic Street Food';
+      const result = await service.format(maliciousMarkdown);
+
+      expect(result).not.toContain('<script>');
+      expect(result).not.toContain('onerror');
+      expect(result).toContain('Authentic Street Food');
+    });
+
+    it('memoizes dynamic module imports across multiple consecutive format calls', async () => {
+      const firstResult = await service.format('First **pass**');
+      const secondResult = await service.format('Second **pass**');
+
+      expect(firstResult).toContain('<strong>pass</strong>');
+      expect(secondResult).toContain('<strong>pass</strong>');
+    });
+  });
+});
+```
+
 ## Acceptance Criteria
 
-- [ ] `MarkdownFormatterService` is provided in root.
-- [ ] `snarkdown` and `dompurify` are dynamically imported only upon first call to `format()`.
-- [ ] Module loader is memoized with `#modulesPromise`.
-- [ ] Markdown tables are converted into bullet lists via `convertTableToList()`.
-- [ ] Output HTML is sanitized via `DOMPurify.sanitize()`.
-- [ ] Unit tests pass with 100% coverage across markdown transformation, table conversion, and sanitization.
+- [x] `MarkdownFormatterService` is provided in root.
+- [x] `snarkdown` and `dompurify` are dynamically imported only upon first call to `format()`.
+- [x] Module loader is memoized with `#modulesPromise`.
+- [x] Markdown tables are converted into bullet lists via `convertTableToList()`.
+- [x] Output HTML is sanitized via `dompurify.sanitize()`.
+- [x] Unit tests pass with 100% coverage across markdown transformation, table conversion, and sanitization (`src/app/core/culinary-guide/markdown-formatter.service.spec.ts`).

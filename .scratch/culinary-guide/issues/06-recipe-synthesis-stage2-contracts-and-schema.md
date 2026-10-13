@@ -1,8 +1,8 @@
 # Ticket 06: Recipe Synthesis (Stage 2) Contracts, Schema, and Prompt
 
-## Status
+**Blocked by:** Ticket 04
 
-Ready
+**Status:** ready
 
 ## Context & Purpose
 

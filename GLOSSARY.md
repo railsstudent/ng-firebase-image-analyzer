@@ -35,3 +35,19 @@ _Avoid_: Eager AI bootstrap, root initialization
 **Staged Firebase Loading**:
 The stepwise asynchronous import sequence where Firebase App, Remote Config, App Check, and Vertex AI Logic dependencies load in independent chunks on demand to eliminate network bottlenecks and prevent race conditions with remote configurations.
 _Avoid_: Monolithic Firebase import, sync SDK loading
+
+**Culinary Discovery**:
+The Stage 1 generative query retrieving the top 6 iconic dishes and 1–2 honorable mentions for a destination.
+_Avoid_: Food search, dish finder, recipe search
+
+**Recipe Synthesis**:
+The Stage 2 generative streaming of ingredients and markdown recipe for a selected dish.
+_Avoid_: Recipe generation, cook instructions, dish prompt
+
+**Honorable Mention Dishes**:
+1–2 runner-up dishes returned during Culinary Discovery.
+_Avoid_: Bonus dishes, alternative food, extra recommendations
+
+**Destination Dataset**:
+The static curated collection of countries and culinary cities loaded on-demand.
+_Avoid_: Country list, city dropdown data, static geo data

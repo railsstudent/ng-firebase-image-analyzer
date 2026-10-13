@@ -1,8 +1,8 @@
 # Ticket 05: CulinaryGuideService Discovery Stream (Stage 1)
 
-## Status
+**Blocked by:** Ticket 04
 
-Ready
+**Status:** ready
 
 ## Context & Purpose
 

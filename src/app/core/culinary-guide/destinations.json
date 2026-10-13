@@ -1,0 +1,355 @@
+{
+  "data": [
+    {
+      "country": "Argentina",
+      "cities": [
+        "Buenos Aires",
+        "Cordoba",
+        "Mar del Plata",
+        "Mendoza",
+        "Posadas",
+        "Puerto Madryn",
+        "Rosario",
+        "Salta",
+        "San Carlos de Bariloche",
+        "Ushuaia"
+      ]
+    },
+    {
+      "country": "Australia",
+      "cities": [
+        "Adelaide",
+        "Brisbane",
+        "Cairns",
+        "Canberra",
+        "Darwin",
+        "Hobart",
+        "Melbourne",
+        "Newcastle",
+        "Perth",
+        "Sydney"
+      ]
+    },
+    {
+      "country": "Brazil",
+      "cities": [
+        "Belo Horizonte",
+        "Brasilia",
+        "Curitiba",
+        "Florianopolis",
+        "Fortaleza",
+        "Manaus",
+        "Porto Alegre",
+        "Recife",
+        "Rio de Janeiro",
+        "Salvador"
+      ]
+    },
+    {
+      "country": "Canada",
+      "cities": [
+        "Calgary",
+        "Halifax",
+        "Montreal",
+        "Ottawa",
+        "Quebec City",
+        "St. John's",
+        "Toronto",
+        "Vancouver",
+        "Victoria",
+        "Winnipeg"
+      ]
+    },
+    {
+      "country": "Chile",
+      "cities": [
+        "Antofagasta",
+        "Concepcion",
+        "Iquique",
+        "La Serena",
+        "Puerto Montt",
+        "Punta Arenas",
+        "San Pedro de Atacama",
+        "Santiago",
+        "Valparaiso",
+        "Vina del Mar"
+      ]
+    },
+    {
+      "country": "China",
+      "cities": [
+        "Beijing",
+        "Chengdu",
+        "Chongqing",
+        "Guangzhou",
+        "Hangzhou",
+        "Hong Kong",
+        "Shanghai",
+        "Shunde",
+        "Wuhan",
+        "Xian"
+      ]
+    },
+    {
+      "country": "Colombia",
+      "cities": [
+        "Barranquilla",
+        "Bogota",
+        "Bucaramanga",
+        "Cali",
+        "Cartagena",
+        "Cucuta",
+        "Medellin",
+        "Pasto",
+        "Pereira",
+        "Santa Marta"
+      ]
+    },
+    {
+      "country": "France",
+      "cities": ["Bordeaux", "Dijon", "Lille", "Lyon", "Marseille", "Nantes", "Nice", "Paris", "Strasbourg", "Toulouse"]
+    },
+    {
+      "country": "Germany",
+      "cities": [
+        "Berlin",
+        "Cologne",
+        "Dresden",
+        "Dusseldorf",
+        "Frankfurt",
+        "Hamburg",
+        "Leipzig",
+        "Munich",
+        "Nuremberg",
+        "Stuttgart"
+      ]
+    },
+    {
+      "country": "Greece",
+      "cities": [
+        "Athens",
+        "Chania",
+        "Heraklion",
+        "Kalamata",
+        "Kavala",
+        "Larissa",
+        "Nafplio",
+        "Patras",
+        "Rhodes",
+        "Thessaloniki"
+      ]
+    },
+    {
+      "country": "India",
+      "cities": ["Amritsar", "Chennai", "Delhi", "Goa", "Hyderabad", "Jaipur", "Kochi", "Kolkata", "Lucknow", "Mumbai"]
+    },
+    {
+      "country": "Indonesia",
+      "cities": [
+        "Bandung",
+        "Denpasar",
+        "Jakarta",
+        "Makassar",
+        "Medan",
+        "Padang",
+        "Palembang",
+        "Semarang",
+        "Surabaya",
+        "Yogyakarta"
+      ]
+    },
+    {
+      "country": "Italy",
+      "cities": ["Bologna", "Florence", "Genoa", "Milan", "Naples", "Palermo", "Rome", "Turin", "Venice", "Verona"]
+    },
+    {
+      "country": "Japan",
+      "cities": [
+        "Fukuoka",
+        "Hiroshima",
+        "Kanazawa",
+        "Kyoto",
+        "Nagoya",
+        "Osaka",
+        "Sapporo",
+        "Sendai",
+        "Tokyo",
+        "Yokohama"
+      ]
+    },
+    {
+      "country": "Korea",
+      "cities": ["Busan", "Daegu", "Daejeon", "Gangneung", "Gwangju", "Incheon", "Jeonju", "Seogwipo", "Seoul", "Suwon"]
+    },
+    {
+      "country": "Lebanon",
+      "cities": ["Baalbek", "Batroun", "Beirut", "Byblos", "Jounieh", "Sidon", "Tripoli", "Tyre", "Zahle", "Zgharta"]
+    },
+    {
+      "country": "Malaysia",
+      "cities": [
+        "George Town",
+        "Ipoh",
+        "Johor Bahru",
+        "Kota Kinabalu",
+        "Kuala Lumpur",
+        "Kuantan",
+        "Kuching",
+        "Malacca",
+        "Petaling Jaya",
+        "Taiping"
+      ]
+    },
+    {
+      "country": "Mexico",
+      "cities": [
+        "Guadalajara",
+        "Merida",
+        "Mexico City",
+        "Monterrey",
+        "Morelia",
+        "Oaxaca",
+        "Puebla",
+        "Puerto Vallarta",
+        "San Cristobal",
+        "Veracruz"
+      ]
+    },
+    {
+      "country": "Morocco",
+      "cities": [
+        "Agadir",
+        "Casablanca",
+        "Essaouira",
+        "Fes",
+        "Marrakech",
+        "Meknes",
+        "Ouarzazate",
+        "Rabat",
+        "Tangier",
+        "Tetouan"
+      ]
+    },
+    {
+      "country": "Peru",
+      "cities": ["Arequipa", "Chiclayo", "Cusco", "Huancayo", "Ica", "Iquitos", "Lima", "Piura", "Puno", "Trujillo"]
+    },
+    {
+      "country": "Philippines",
+      "cities": ["Bacolod", "Baguio", "Cebu", "Davao", "Iloilo", "Makati", "Manila", "Pampanga", "Pasig", "Quezon City"]
+    },
+    {
+      "country": "Portugal",
+      "cities": ["Aveiro", "Braga", "Coimbra", "Evora", "Faro", "Funchal", "Guimaraes", "Lisbon", "Porto", "Sintra"]
+    },
+    {
+      "country": "Singapore",
+      "cities": [
+        "Changi",
+        "Chinatown",
+        "Geylang",
+        "Joo Chiat",
+        "Katong",
+        "Little India",
+        "Marina Bay",
+        "Newton",
+        "Tampines",
+        "Tiong Bahru"
+      ]
+    },
+    {
+      "country": "Spain",
+      "cities": [
+        "Barcelona",
+        "Bilbao",
+        "Granada",
+        "Madrid",
+        "San Sebastian",
+        "Santiago de Compostela",
+        "Seville",
+        "Valencia",
+        "Valladolid",
+        "Zaragoza"
+      ]
+    },
+    {
+      "country": "Taiwan",
+      "cities": [
+        "Changhua",
+        "Chiayi",
+        "Hsinchu",
+        "Hualien",
+        "Kaohsiung",
+        "Keelung",
+        "Taichung",
+        "Tainan",
+        "Taipei",
+        "Taitung"
+      ]
+    },
+    {
+      "country": "Thailand",
+      "cities": [
+        "Bangkok",
+        "Chiang Mai",
+        "Chiang Rai",
+        "Hat Yai",
+        "Hua Hin",
+        "Krabi",
+        "Pattaya",
+        "Phuket",
+        "Sukhothai",
+        "Surat Thani"
+      ]
+    },
+    {
+      "country": "Turkey",
+      "cities": ["Adana", "Ankara", "Antalya", "Bursa", "Gaziantep", "Hatay", "Istanbul", "Izmir", "Konya", "Trabzon"]
+    },
+    {
+      "country": "United Kingdom",
+      "cities": [
+        "Belfast",
+        "Birmingham",
+        "Bristol",
+        "Cardiff",
+        "Edinburgh",
+        "Glasgow",
+        "Leeds",
+        "Liverpool",
+        "London",
+        "Manchester"
+      ]
+    },
+    {
+      "country": "USA",
+      "cities": [
+        "Austin",
+        "Charleston",
+        "Chicago",
+        "Houston",
+        "Los Angeles",
+        "New Orleans",
+        "New York",
+        "Portland",
+        "San Francisco",
+        "Seattle"
+      ]
+    },
+    {
+      "country": "Vietnam",
+      "cities": [
+        "Da Lat",
+        "Da Nang",
+        "Hai Phong",
+        "Hanoi",
+        "Hoi An",
+        "Hue",
+        "Nha Trang",
+        "Phu Quoc",
+        "Saigon",
+        "Vung Tau"
+      ]
+    }
+  ]
+}

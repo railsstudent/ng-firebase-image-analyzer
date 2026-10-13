@@ -1,8 +1,8 @@
 # Ticket 07: CulinaryGuideService Recipe Stream (Stage 2)
 
-## Status
+**Blocked by:** Ticket 06
 
-Ready
+**Status:** ready
 
 ## Context & Purpose
 

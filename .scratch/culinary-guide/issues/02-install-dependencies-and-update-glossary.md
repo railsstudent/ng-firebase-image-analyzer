@@ -1,8 +1,8 @@
 # Ticket 02: Install Dependencies and Update Glossary
 
-## Status
+**Blocked by:** None (can start immediately)
 
-Ready
+**Status:** done
 
 ## Context & Purpose
 
@@ -19,6 +19,6 @@ The Culinary Guide feature requires markdown formatting (`snarkdown`) and HTML s
 
 ## Acceptance Criteria
 
-- [ ] `snarkdown` and `dompurify` installed in `package.json`.
-- [ ] No `@types/dompurify` added.
-- [ ] `GLOSSARY.md` updated with the 4 canonical domain terms.
+- [x] `snarkdown` and `dompurify` installed in `package.json`.
+- [x] No `@types/dompurify` added.
+- [x] `GLOSSARY.md` updated with the 4 canonical domain terms.

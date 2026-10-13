@@ -1,8 +1,8 @@
 # Ticket 04: Culinary Discovery (Stage 1) Contracts and Schema
 
-## Status
+**Blocked by:** Ticket 01
 
-Ready
+**Status:** ready
 
 ## Context & Purpose
 

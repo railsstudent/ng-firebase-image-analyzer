@@ -1,8 +1,8 @@
 # Ticket 08: CulinaryGuideStateService, Barrel Exports, and Verification
 
-## Status
+**Blocked by:** Ticket 03, Ticket 05, Ticket 07
 
-Ready
+**Status:** ready
 
 ## Context & Purpose
 
