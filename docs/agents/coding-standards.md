@@ -52,3 +52,15 @@ $$\text{Features} \longrightarrow \text{Shared} \longrightarrow \text{Core}$$
 - **Shared Layer (`src/app/shared/`)**: Reusable UI components, pipes, directives, icons, and styles. Zero dependencies on `features`.
 - **Feature Layer (`src/app/features/<feature>/`)**: Route-level and feature-specific components and view models. Features may depend on `core` and `shared`, but direct cross-feature imports between sibling features are strictly forbidden.
 - **Companion Skeletons**: Loading and placeholder skeletons must always reside in the exact same layer as their primary component (e.g. shared component skeletons reside in `src/app/shared/ui/components/`, feature skeletons in `src/app/features/<feature>/`).
+
+## 9. Generative AI Schema & Contract Equivalence
+
+- **1:1 Contract Mirroring**: Every structured generative AI schema (`TypedSchema` or `SchemaRequest`) MUST have an exact 1:1 TypeScript domain interface mirroring its JSON shape (e.g., `TopFoodsResponse` strictly matches `TopFoodsSchema`).
+- **Streaming Wrapper Types**: Every streaming generator method returning metadata (inference source, thought summaries, token analytics) MUST declare and export an explicit streaming wrapper interface (e.g., `StreamingCulinaryDiscoveryWithMetadata`).
+
+## 10. Micro-Library Capability Audits & Fallbacks
+
+- **Typing Verification**: Before proposing external `@types/*` dependencies, verify whether the target package already ships built-in TypeScript declarations.
+- **Micro-Library Boundaries**: When selecting lightweight parsers over full-featured engines (e.g. `snarkdown` for bundle isolation), audit syntax limitations upfront and implement a two-tier defense:
+  1. **Prompt Guardrail**: Direct the model explicitly against unsupported syntax (e.g., "Use bulleted lists; never output tables").
+  2. **Client Fallback Normalizer**: Provide defensive client-side parsing/transformation to normalize non-conforming content before passing it to the micro-library.
