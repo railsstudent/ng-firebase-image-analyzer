@@ -7,6 +7,7 @@ This document defines testing conventions, DI mocking contracts, and verificatio
 1. **TestBed Boundary Mocking**:
    - Always mock external dependencies and services at the Angular `TestBed` DI boundary.
    - Type mocks with `Partial<ServiceName>` and verify them with `satisfies Partial<ServiceName>`:
+
      ```typescript
      const mockImageAnalysisService = {
        isAnalyzing: signal(false),
@@ -29,6 +30,7 @@ This document defines testing conventions, DI mocking contracts, and verificatio
 
 4. **Testing Zoneless `@defer` Hydration**:
    - In Zoneless Angular (`provideZonelessChangeDetection()`), hydrate `@defer (when condition)` blocks by triggering the condition (setting input signal or dispatching DOM event like `button.click()`), followed by change detection and fixture stability:
+
      ```typescript
      // 1. Trigger the deferral condition
      tabButtons[1].click();
@@ -38,6 +40,7 @@ This document defines testing conventions, DI mocking contracts, and verificatio
      // 3. Assert on hydrated component presence
      expect(fixture.debugElement.query(By.directive(HydratedComponent))).toBeTruthy();
      ```
+
    - Never use deprecated APIs like `deferBlock.render()`, `fakeAsync`, or `tick()`.
 
 5. **Shared Test Helpers & Mock Factories (`src/testing/`)**:
@@ -50,11 +53,13 @@ This document defines testing conventions, DI mocking contracts, and verificatio
 
 1. **Targeted Testing during Iterations**:
    - Use the `angular-cli` MCP server `run_target` tool with `target: "test"` to run tests against specific files:
+
      ```json
      {
        "coverage": true,
        "include": ["src/app/features/image-analysis/image-analysis.component.spec.ts"]
      }
      ```
+
 2. **End-of-Task Verification**:
    - Run `npm run test:once` and `npm run lint` at task completion to ensure all tests pass and `lint-staged` pre-commit checks succeed.
