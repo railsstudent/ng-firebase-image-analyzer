@@ -129,3 +129,4 @@ XSSI
 wgsl
 actioned
 Contentful
+httpclient

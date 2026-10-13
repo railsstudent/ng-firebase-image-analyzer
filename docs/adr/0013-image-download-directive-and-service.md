@@ -2,6 +2,9 @@
 
 We decided to refactor the image download functionality to make `EnhancedCanvas` a pure presentation (dumb) component. We will delegate image loading, offscreen canvas filtering/cropping, and downloading to a dedicated `ImageDownloadService` and trigger it on-demand via a reusable `DownloadEnhancedDirective` attached to the download button, using a cohesive Parameter Object pattern (Options Bag) for robust extensibility.
 
+> [!NOTE]
+> **Amended by [ADR-0027](0027-in-memory-image-export-and-httpclient-removal.md)**: Supersedes the decision to use Angular's `HttpClient` for downloading images. Since images in the application originate from in-memory Base64 data URLs produced by `FileReader`, `HttpClient` is redundant and is eliminated to evict `@angular/common/http` from the application bundle.
+
 ## Context
 
 The current `EnhancedCanvas` component contains a local `downloadEnhancedImage` helper that uses raw `fetch` to retrieve the image and download it. This has several drawbacks:

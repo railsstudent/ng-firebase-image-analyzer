@@ -1,13 +1,35 @@
-import { ColorAdjustment, Crop } from '@/core/image-analysis';
+import { ColorAdjustment, Crop, ImageAnalysisResponse } from '@/core/image-analysis';
 import { ClampOptions } from '@/features/image-analysis/interfaces/clamp-option.interface';
-import { CropImageStyles } from '@/features/image-analysis/interfaces/crop-image.interface';
+import {
+  CropImageStyles,
+  VisualCalibrationResult,
+} from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { Service } from '@angular/core';
 
-export const DEFAULT_IMAGE_WIDTH = 100;
+const DEFAULT_IMAGE_WIDTH = 100;
 const PERCENT = 100;
 
 @Service()
 export class VisualCalibrationService {
+  calibrate(analysis?: Partial<ImageAnalysisResponse> | null, width = DEFAULT_IMAGE_WIDTH): VisualCalibrationResult {
+    const safeCrop = this.sanitizeCrop(analysis?.crop);
+    const safeColorAdjustment = this.sanitizeColorAdjustments(analysis?.colorAdjustment);
+    const cropImage = this.cropImage(safeCrop, width);
+    const filterStyle = this.getCssFilter(safeColorAdjustment);
+    const cropPosition = safeCrop
+      ? `X: ${safeCrop.xMin}–${safeCrop.xMax} | Y: ${safeCrop.yMin}–${safeCrop.yMax}`
+      : 'N/A';
+
+    return {
+      safeCrop,
+      safeColorAdjustment,
+      cropImage,
+      aspectRatio: cropImage.containerStyle.aspectRatio,
+      cropPosition,
+      filterStyle,
+    };
+  }
+
   private clamp({ value, min, max, fallback }: ClampOptions): number {
     if (value === undefined || value === null || isNaN(value)) {
       return fallback;
