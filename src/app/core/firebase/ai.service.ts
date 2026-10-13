@@ -4,6 +4,7 @@ import {
   EnhancedGenerateContentResponse,
   GenerateContentResponse,
   GenerativeModel,
+  Part,
   SchemaRequest,
   TypedSchema,
   UsageMetadata,
@@ -64,7 +65,7 @@ export class AiService {
     }
   }
 
-  private makeDummyImagePart(size: number) {
+  private makeDummyImagePart(size: number): Part {
     const canvas = this.#document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
@@ -77,12 +78,10 @@ export class AiService {
     const dummyBase64 = canvas.toDataURL('image/jpeg', imageQuality).split(',')[1];
 
     const dummyImagePart = {
-      inlineData: {
-        data: dummyBase64,
-        mimeType: 'image/jpeg',
-      },
+      data: dummyBase64,
+      mimeType: 'image/jpeg',
     };
-    return dummyImagePart;
+    return { type: 'inlineData', inlineData: dummyImagePart };
   }
 
   async *generateContentStream<T>(params: GenerateContentParams): AsyncGenerator<PartialResponse<T>> {

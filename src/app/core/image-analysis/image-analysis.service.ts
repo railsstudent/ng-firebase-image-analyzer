@@ -113,6 +113,7 @@ export class ImageAnalysisService {
     const base64Data = dataUrl.split(',')[1];
 
     return {
+      type: 'inlineData',
       inlineData: {
         data: base64Data,
         mimeType: resolvedMimeType,
