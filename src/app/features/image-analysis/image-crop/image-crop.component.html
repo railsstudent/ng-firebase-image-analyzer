@@ -1,9 +1,12 @@
+@let aspectRatio = calibration().aspectRatio;
+@let cropPosition = calibration().cropPosition;
+
 <div class="specs-sidebar">
   <div class="specs-box">
     <p class="specs-title">Crop Metadata</p>
     <ul class="specs-list">
-      <li class="specs-item"><span class="specs-item-name">Crop Bounds:</span> {{ cropPosition() }}</li>
-      <li class="specs-item"><span class="specs-item-name">Aspect Ratio:</span> {{ aspectRatio() }}</li>
+      <li class="specs-item"><span class="specs-item-name">Crop Bounds:</span> {{ cropPosition }}</li>
+      <li class="specs-item"><span class="specs-item-name">Aspect Ratio:</span> {{ aspectRatio }}</li>
     </ul>
   </div>
 

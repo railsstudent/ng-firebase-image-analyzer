@@ -8,19 +8,10 @@
     <app-image-improvement-skeleton />
   } @else {
     <div class="improvement-grid">
-      <app-image-crop
-        [colorAdjustment]="calibration().safeColorAdjustment"
-        [aspectRatio]="calibration().aspectRatio"
-        [cropPosition]="calibration().cropPosition"
-      />
+      <app-image-crop [calibration]="calibration()" />
 
       <!-- Enhanced Canvas -->
-      <app-enhanced-canvas
-        [imageUrl]="imageUrl()"
-        [cropImage]="calibration().cropImage"
-        [colorAdjustment]="calibration().safeColorAdjustment"
-        [filterStyle]="calibration().filterStyle"
-      />
+      <app-enhanced-canvas [imageUrl]="imageUrl()" [calibration]="calibration()" />
     </div>
   }
 </div>

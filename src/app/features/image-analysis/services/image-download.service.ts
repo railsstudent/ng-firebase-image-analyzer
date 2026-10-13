@@ -1,29 +1,21 @@
 import { Crop } from '@/core/image-analysis';
 import { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
-import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, inject, Service } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
 import { VisualCalibrationService } from './visual-calibration.service';
 
 @Service()
 export class ImageDownloadService {
-  readonly #httpService = inject(HttpClient);
   readonly #document = inject(DOCUMENT);
   readonly #imageEffect = inject(VisualCalibrationService);
 
-  private fetchImageBlob(url: string): Promise<Blob> {
-    return firstValueFrom(this.#httpService.get(url, { responseType: 'blob' }));
-  }
-
-  private loadImage(blob: Blob): Promise<HTMLImageElement> {
+  private loadImage(url: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const img = this.#document.createElement('img');
-      const objectUrl = URL.createObjectURL(blob);
-      img.src = objectUrl;
+      img.src = url;
 
       img.onload = () => resolve(img);
       img.onerror = (err) => {
-        URL.revokeObjectURL(objectUrl);
+        URL.revokeObjectURL(url);
         reject(new Error('Failed to load image element: ' + err));
       };
     });
@@ -99,8 +91,7 @@ export class ImageDownloadService {
   async downloadFilteredCrop(options: ImageDownloadOptions) {
     const { url, crop, filter, filename } = options;
     console.log('[ImageDownloadService] Downloading with options:', { crop, filter, filename });
-    const rawBlob = await this.fetchImageBlob(url);
-    const imageElement = await this.loadImage(rawBlob);
+    const imageElement = await this.loadImage(url);
 
     try {
       const filterStyle = this.#imageEffect.getCssFilter(filter);

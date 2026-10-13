@@ -65,7 +65,7 @@ export class VisualCalibrationService {
     return styles;
   }
 
-  cropImage(crop?: Crop, width = DEFAULT_IMAGE_WIDTH): CropImageStyles {
+  private cropImage(crop?: Crop, width = DEFAULT_IMAGE_WIDTH): CropImageStyles {
     // 1. Define the safe default crop (representing the full 100% image)
     const safeCrop = crop || { xMin: 0.0, yMin: 0.0, xMax: 1.0, yMax: 1.0 };
 
@@ -104,7 +104,7 @@ export class VisualCalibrationService {
    * @param customPrompt Optional custom prompt to guide the AI model's analysis.
    * @returns A structured ImageAnalysisResponse object.
    */
-  sanitizeColorAdjustments(adjustment?: ColorAdjustment): ColorAdjustment | undefined {
+  private sanitizeColorAdjustments(adjustment?: ColorAdjustment): ColorAdjustment | undefined {
     if (!adjustment) {
       return undefined;
     }
@@ -117,7 +117,7 @@ export class VisualCalibrationService {
     };
   }
 
-  sanitizeCrop(crop?: Crop): Crop | undefined {
+  private sanitizeCrop(crop?: Crop): Crop | undefined {
     if (!crop) {
       return undefined;
     }

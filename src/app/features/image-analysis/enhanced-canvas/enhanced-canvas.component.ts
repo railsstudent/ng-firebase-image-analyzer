@@ -1,6 +1,5 @@
 import { DownloadEnhancedDirective } from '@/features/image-analysis/directives/download-enhanced.directive';
-import { ColorAdjustment } from '@/core/image-analysis';
-import { CropImageStyles } from '@/features/image-analysis/interfaces/crop-image.interface';
+import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { DownloadIconComponent } from '@/shared/ui/icons/download-icon/download-icon.component';
 import { Component, computed, input, signal } from '@angular/core';
 
@@ -14,9 +13,11 @@ const DECIMAL_PLACES = 4;
 })
 export class EnhancedCanvasComponent {
   imageUrl = input<string | null>(null);
-  cropImage = input.required<CropImageStyles>();
-  colorAdjustment = input<ColorAdjustment | undefined>(undefined);
-  filterStyle = input.required();
+  calibration = input.required<VisualCalibrationResult>();
+
+  cropImage = computed(() => this.calibration().cropImage);
+  colorAdjustment = computed(() => this.calibration().safeColorAdjustment);
+  filterStyle = computed(() => this.calibration().filterStyle);
 
   imageAspectRatio = signal<number | null>(null);
 
