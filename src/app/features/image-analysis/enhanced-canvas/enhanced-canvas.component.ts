@@ -15,10 +15,6 @@ export class EnhancedCanvasComponent {
   imageUrl = input<string | null>(null);
   calibration = input.required<VisualCalibrationResult>();
 
-  cropImage = computed(() => this.calibration().cropImage);
-  colorAdjustment = computed(() => this.calibration().safeColorAdjustment);
-  filterStyle = computed(() => this.calibration().filterStyle);
-
   imageAspectRatio = signal<number | null>(null);
 
   onImageLoad(event: Event) {
@@ -28,8 +24,10 @@ export class EnhancedCanvasComponent {
     }
   }
 
+  cropImage = computed(() => this.calibration().cropImage);
+
   containerAspectRatio = computed(() => {
-    const crop = this.cropImage().crop;
+    const { crop } = this.cropImage();
     const aspect = this.imageAspectRatio();
 
     if (crop && aspect) {
@@ -41,8 +39,7 @@ export class EnhancedCanvasComponent {
   });
 
   containerCss = computed(() => {
-    const baseStyle = this.cropImage().containerStyle;
-    const crop = this.cropImage().crop;
+    const { containerStyle: baseStyle, crop } = this.cropImage();
     const aspect = this.imageAspectRatio();
 
     if (crop && aspect) {
@@ -56,7 +53,4 @@ export class EnhancedCanvasComponent {
     }
     return baseStyle;
   });
-
-  imageCss = computed(() => this.cropImage().imageStyle);
-  crop = computed(() => this.cropImage().crop);
 }

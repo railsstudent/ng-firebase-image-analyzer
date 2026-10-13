@@ -81,13 +81,6 @@ describe('EnhancedCanvasComponent', () => {
     expect(component.containerCss().overflow).toBe('hidden');
   });
 
-  it('should properly derive filterStyle, imageCss, and crop from calibration input', () => {
-    expect(component.filterStyle()).toBe(mockCalibration.filterStyle);
-    expect(component.imageCss()).toEqual(mockCalibration.cropImage.imageStyle);
-    expect(component.crop()).toEqual(mockCalibration.cropImage.crop);
-    expect(component.colorAdjustment()).toEqual(mockCalibration.safeColorAdjustment);
-  });
-
   it('should display placeholder when imageUrl is null', () => {
     fixture.componentRef.setInput('imageUrl', null);
     fixture.detectChanges();

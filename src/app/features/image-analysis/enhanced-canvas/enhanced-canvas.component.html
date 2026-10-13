@@ -2,27 +2,21 @@
   <div class="canvas-container" [style.aspect-ratio]="containerAspectRatio()">
     @if (imageUrl(); as url) {
       @let wrapperStyle = containerCss();
-      @let imageStyle = imageCss();
+      @let imageStyle = cropImage().imageStyle;
       @if (wrapperStyle && imageStyle) {
         <div [style]="wrapperStyle">
           <img
             style="display: block"
             [src]="url"
             (load)="onImageLoad($event)"
-            [style.filter]="filterStyle()"
+            [style.filter]="calibration().filterStyle"
             alt="Cropped subject"
             [style]="imageStyle"
           />
         </div>
 
         <!-- Download button floating hover -->
-        <button
-          type="button"
-          class="download-enhanced-btn"
-          [appDownloadEnhanced]="url"
-          [crop]="crop()"
-          [filter]="colorAdjustment()"
-        >
+        <button type="button" class="download-enhanced-btn" [appDownloadEnhanced]="url" [calibration]="calibration()">
           <app-download-icon />
           Download PNG
         </button>

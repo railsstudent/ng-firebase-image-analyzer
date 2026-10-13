@@ -1,4 +1,4 @@
-import { ColorAdjustment, Crop } from '@/core/image-analysis';
+import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
 import { Directive, inject, input } from '@angular/core';
 
@@ -10,8 +10,7 @@ import { Directive, inject, input } from '@angular/core';
 })
 export class DownloadEnhancedDirective {
   imageUrl = input.required<string | null>({ alias: 'appDownloadEnhanced' });
-  crop = input.required<Crop>();
-  filter = input.required<ColorAdjustment | undefined>();
+  calibration = input.required<VisualCalibrationResult>();
 
   #downloadImageService = inject(ImageDownloadService);
 
@@ -21,8 +20,8 @@ export class DownloadEnhancedDirective {
       try {
         await this.#downloadImageService.downloadFilteredCrop({
           url,
-          crop: this.crop(),
-          filter: this.filter(),
+          crop: this.calibration().cropImage.crop,
+          filterStyle: this.calibration().filterStyle,
           filename: 'enhanced-image.png',
         });
       } catch (err) {

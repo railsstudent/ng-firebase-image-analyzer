@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
 import { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
 import { ImageDownloadService } from './image-download.service';
-import { VisualCalibrationService } from './visual-calibration.service';
 
 describe('ImageDownloadService', () => {
   let service: ImageDownloadService;
@@ -13,7 +12,7 @@ describe('ImageDownloadService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideZonelessChangeDetection(), ImageDownloadService, VisualCalibrationService],
+      providers: [provideZonelessChangeDetection(), ImageDownloadService],
     });
 
     service = TestBed.inject(ImageDownloadService);
@@ -87,7 +86,7 @@ describe('ImageDownloadService', () => {
     const options: ImageDownloadOptions = {
       url: 'data:image/png;base64,validbase64image',
       crop: { xMin: 0.125, yMin: 0.25, xMax: 0.875, yMax: 0.75 },
-      filter: { brightness: 1.2, saturation: 1.5, contrast: 1.1, warmth: 0.5 },
+      filterStyle: 'brightness(1.2) saturate(1.5)',
       filename: 'sample-photo.jpeg',
     };
 
@@ -100,8 +99,7 @@ describe('ImageDownloadService', () => {
     expect(mockCanvas.height).toBe(250);
 
     // Verify CSS filter string applied to context
-    expect(mockCtx.filter).toContain('brightness(1.2)');
-    expect(mockCtx.filter).toContain('saturate(1.5)');
+    expect(mockCtx.filter).toBe('brightness(1.2) saturate(1.5)');
 
     // Verify drawImage parameters: (img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
     expect(mockDrawImage).toHaveBeenCalledWith(
@@ -148,7 +146,7 @@ describe('ImageDownloadService', () => {
     const options: ImageDownloadOptions = {
       url: 'data:image/png;base64,invalid',
       crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
-      filter: undefined,
+      filterStyle: 'none',
       filename: 'test.png',
     };
 
@@ -189,7 +187,7 @@ describe('ImageDownloadService', () => {
     const options: ImageDownloadOptions = {
       url: 'data:image/png;base64,valid',
       crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
-      filter: undefined,
+      filterStyle: 'none',
       filename: 'test.png',
     };
 
@@ -233,7 +231,7 @@ describe('ImageDownloadService', () => {
     const options: ImageDownloadOptions = {
       url: 'data:image/png;base64,valid',
       crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
-      filter: undefined,
+      filterStyle: 'none',
       filename: 'test.png',
     };
 
@@ -287,7 +285,7 @@ describe('ImageDownloadService', () => {
     await service.downloadFilteredCrop({
       url: 'data:image/png;base64,valid',
       crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
-      filter: undefined,
+      filterStyle: 'none',
       filename: '測試圖片.jpeg',
     });
     expect(mockAnchor.download).toBe('enhanced-image.png');
@@ -296,7 +294,7 @@ describe('ImageDownloadService', () => {
     await service.downloadFilteredCrop({
       url: 'data:image/png;base64,valid',
       crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
-      filter: undefined,
+      filterStyle: 'none',
       filename: 'landscape-view',
     });
     expect(mockAnchor.download).toBe('landscape-view.png');
@@ -356,7 +354,7 @@ describe('ImageDownloadService', () => {
       url: 'data:image/png;base64,validbase64image',
       // (0.8 - 0.2) * 500 = 300.00000000000006 in standard IEEE-754 arithmetic
       crop: { xMin: 0.2, yMin: 0.1, xMax: 0.8, yMax: 0.7 },
-      filter: undefined,
+      filterStyle: 'none',
       filename: 'quantized-test.png',
     };
 
@@ -378,5 +376,64 @@ describe('ImageDownloadService', () => {
       300, // cropWidth
       180, // cropHeight
     );
+  });
+
+  it('should apply "none" filter when filterStyle is empty', async () => {
+    const mockCtx = {
+      filter: '',
+      drawImage: vi.fn(),
+    } as unknown as CanvasRenderingContext2D;
+
+    const mockCanvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn().mockReturnValue(mockCtx),
+      toBlob: vi.fn((callback: (blob: Blob | null) => void) => {
+        callback(new Blob(['fake-png-content'], { type: 'image/png' }));
+      }),
+    } as unknown as HTMLCanvasElement;
+
+    const originalCreateElement = documentMock.createElement.bind(documentMock);
+    vi.spyOn(documentMock, 'createElement').mockImplementation((tagName: string) => {
+      if (tagName === 'img') {
+        const img = originalCreateElement('img');
+        Object.defineProperty(img, 'naturalWidth', { value: 100, configurable: true });
+        Object.defineProperty(img, 'naturalHeight', { value: 100, configurable: true });
+        let srcValue = '';
+        Object.defineProperty(img, 'src', {
+          get: () => srcValue,
+          set: (val: string) => {
+            srcValue = val;
+            setTimeout(() => {
+              if (img.onload) {
+                img.onload(new Event('load'));
+              }
+            }, 0);
+          },
+          configurable: true,
+        });
+        return img;
+      }
+      if (tagName === 'canvas') {
+        return mockCanvas;
+      }
+      if (tagName === 'a') {
+        return {
+          href: '',
+          download: '',
+          click: vi.fn(),
+        } as unknown as HTMLAnchorElement;
+      }
+      return originalCreateElement(tagName);
+    });
+
+    await service.downloadFilteredCrop({
+      url: 'data:image/png;base64,valid',
+      crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
+      filterStyle: '',
+      filename: 'plain.png',
+    });
+
+    expect(mockCtx.filter).toBe('none');
   });
 });

@@ -1,12 +1,10 @@
 import { Crop } from '@/core/image-analysis';
 import { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
 import { DOCUMENT, inject, Service } from '@angular/core';
-import { VisualCalibrationService } from './visual-calibration.service';
 
 @Service()
 export class ImageDownloadService {
   readonly #document = inject(DOCUMENT);
-  readonly #imageEffect = inject(VisualCalibrationService);
 
   private loadImage(url: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
@@ -81,12 +79,10 @@ export class ImageDownloadService {
   }
 
   async downloadFilteredCrop(options: ImageDownloadOptions) {
-    const { url, crop, filter, filename } = options;
-    console.log('[ImageDownloadService] Downloading with options:', { crop, filter, filename });
+    const { url, crop, filterStyle, filename } = options;
     const imageElement = await this.loadImage(url);
 
     try {
-      const filterStyle = this.#imageEffect.getCssFilter(filter);
       console.log('[ImageDownloadService] Calculated filterStyle:', filterStyle);
       const canvasElement = this.renderCroppedCanvas(imageElement, crop, filterStyle);
       const exportedBlob = await this.exportCanvasBlob(canvasElement);
