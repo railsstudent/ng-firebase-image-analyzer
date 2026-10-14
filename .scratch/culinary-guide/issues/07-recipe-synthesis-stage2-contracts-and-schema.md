@@ -11,7 +11,7 @@ Define domain interfaces, prompt templates, and structured JSON schema for Stage
 ## Scope of Work
 
 1. Update `src/app/core/culinary-guide/culinary-guide.interface.ts`:
-   - `CulinaryRecipeResponse` (package-internal wire model): `{ ingredients: string[]; recipe: string }`
+   - `CulinaryRecipeResponse`: `{ ingredients: string[]; recipe: string }`
    - `StreamingCulinaryRecipeWithMetadata extends CulinaryRecipeResponse, InferenceMetadata`: `{}`
 2. Update `src/app/core/culinary-guide/culinary-guide.prompt.ts`:
    - Declare `RECIPE_PROMPT_INSTRUCTION` constant containing formatting instructions (format recipe steps as clear numbered lists, ingredients as bulleted lists; strictly prohibit markdown tables).
@@ -21,7 +21,7 @@ Define domain interfaces, prompt templates, and structured JSON schema for Stage
 
 ## Acceptance Criteria
 
-- [x] `CulinaryRecipeResponse` (package-internal) and `StreamingCulinaryRecipeWithMetadata` interfaces are declared.
+- [x] `CulinaryRecipeResponse` and `StreamingCulinaryRecipeWithMetadata` interfaces are declared.
 - [x] `StreamingCulinaryRecipeWithMetadata` extends both `CulinaryRecipeResponse` and `InferenceMetadata`.
 - [x] Constant `RECIPE_PROMPT_INSTRUCTION` declared and utilized in `createRecipePrompt()`.
 - [x] `createRecipePrompt()` includes clear directives to output lists and strictly prohibits markdown tables.

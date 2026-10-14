@@ -22,14 +22,14 @@ export interface CulinaryFoodItem {
   description: string;
 }
 
-interface TopFoodsResponse {
+export interface TopFoodsResponse {
   foods: CulinaryFoodItem[];
   honorableMentions: string[];
 }
 
 export interface StreamingCulinaryDiscoveryWithMetadata extends TopFoodsResponse, InferenceMetadata {}
 
-interface CulinaryRecipeResponse {
+export interface CulinaryRecipeResponse {
   ingredients: string[];
   recipe: string;
 }

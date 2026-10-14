@@ -13,7 +13,7 @@ Define domain interfaces, prompt templates, and structured JSON schemas for Stag
 1. Create `src/app/core/culinary-guide/culinary-guide.interface.ts`:
    - `CulinaryFoodItem`: `{ name: string; nativeName?: string; description: string; }`
    - `TopFoodsResponse`: `{ foods: CulinaryFoodItem[]; honorableMentions: string[]; }`
-   - `StreamingCulinaryDiscoveryWithMetadata`: `{ foods: CulinaryFoodItem[]; honorableMentions: string[]; source: InferenceSource; thoughtSummary: string; tokenSummary?: TokenSummary; tokenModalityBreakdown?: TokenModalityBreakdown }`
+   - `StreamingCulinaryDiscoveryWithMetadata extends TopFoodsResponse, InferenceMetadata`: `{}`
 2. Create `src/app/core/culinary-guide/culinary-guide.prompt.ts`:
    - `CULINARY_GUIDE_SYSTEM_INSTRUCTION`
    - `createTopFoodsPrompt(country: string, city: string): string`
@@ -22,7 +22,7 @@ Define domain interfaces, prompt templates, and structured JSON schemas for Stag
 
 ## Acceptance Criteria
 
-- [x] `CulinaryFoodItem`, `TopFoodsResponse` (package-internal), and `StreamingCulinaryDiscoveryWithMetadata` interfaces are declared.
+- [x] `CulinaryFoodItem`, `TopFoodsResponse`, and `StreamingCulinaryDiscoveryWithMetadata` interfaces are declared.
 - [x] `StreamingCulinaryDiscoveryWithMetadata` extends both `TopFoodsResponse` and `InferenceMetadata`.
 - [x] `TopFoodsSchema` strictly models 6 food items and 1–2 honorable mentions.
 - [x] Prompt explicitly instructs the model to return native names, concise descriptions, and 1–2 honorable mention runner-up dishes.
