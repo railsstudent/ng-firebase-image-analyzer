@@ -62,4 +62,8 @@ This document defines testing conventions, DI mocking contracts, and verificatio
      ```
 
 2. **End-of-Task Verification**:
-   - Run `npm run test:once` and `npm run lint` at task completion to ensure all tests pass and `lint-staged` pre-commit checks succeed.
+   - **Intermediate Domain Tickets** (work-in-progress core packages prior to UI/route wiring):
+     - Run `ng lint && npm run check:cycles && npm run test:once`.
+     - _Knip Caveat_: `knip --production` analyzes reachable production code from `src/main.ts`. For intermediate core domain tickets (services, schemas, contracts) not yet imported by UI components or routes, `knip --production` will report false positives for unused files/exports. Do not create fake imports or pollute production code to satisfy Knip during intermediate tickets.
+   - **Full Integration Tickets** (once wired into UI components, routes, or production entrypoints):
+     - Run `npm run lint` (`ng lint && npm run check:cycles && knip --production && npm run cspell`) and `npm run test:once`. All checks including Knip production analysis must pass with zero violations.

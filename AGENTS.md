@@ -21,5 +21,5 @@ This file provides context, rules, and guidance for AI assistants working on thi
 ## Verification Loop & Git Boundaries
 
 1. **Targeted Testing during Development**: Use `angular-cli` MCP `run_target` with `target: "test"` against modified files or directories.
-2. **End-of-Task Validation**: Run `npm run lint` and `npm run test:once` before declaring work complete to ensure zero violations.
+2. **End-of-Task Validation**: Run intermediate vs. integration checks as defined in [docs/agents/testing-guide.md](docs/agents/testing-guide.md) before declaring work complete.
 3. **No Automatic Git Commits**: Never run `git add` or `git commit`. Leave all staging and commits to the developer after validation passes.
