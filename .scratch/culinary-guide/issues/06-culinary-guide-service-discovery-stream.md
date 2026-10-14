@@ -11,7 +11,7 @@ Implement the core service method for generating the Stage 1 Culinary Discovery 
 ## Scope of Work
 
 1. Create `src/app/core/culinary-guide/culinary-guide.service.ts`:
-   - `getTopFoodsStream(country: string, city: string): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata>`
+   - `getTopFoodsStream({ country, city }: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata>`
    - Delegate streaming and model caching to `AiService`.
    - Parse partial updates and accumulate `foods` and `honorableMentions`.
    - Extract thought summary and token summaries from responses.

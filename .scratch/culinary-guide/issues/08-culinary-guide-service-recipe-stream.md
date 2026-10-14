@@ -11,8 +11,8 @@ Implement the core service method for generating the Stage 2 Recipe Synthesis st
 ## Scope of Work
 
 1. Update `src/app/core/culinary-guide/culinary-guide.service.ts`:
-   - `getRecipeStream(country: string, city: string, foodName: string): AsyncGenerator<StreamingCulinaryRecipeWithMetadata>`
-   - Use `createRecipePrompt()` and `RecipeDetailSchema`.
+   - `getRecipeStream({ country, city, dishName }: CulinaryRecipeTarget): AsyncGenerator<StreamingCulinaryRecipeWithMetadata>`
+   - Use `createRecipePrompt()` and `CulinaryRecipeSchema`.
    - Parse partial recipe text and ingredients array from streaming chunks.
    - Extract thought summary and token summaries from final responses.
 2. Update unit tests in `src/app/core/culinary-guide/culinary-guide.service.spec.ts`.

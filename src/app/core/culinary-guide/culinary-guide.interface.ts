@@ -35,3 +35,12 @@ interface CulinaryRecipeResponse {
 }
 
 export interface StreamingCulinaryRecipeWithMetadata extends CulinaryRecipeResponse, InferenceMetadata {}
+
+export interface CulinaryLocation {
+  country: string;
+  city: string;
+}
+
+export interface CulinaryRecipeTarget extends CulinaryLocation {
+  dishName: string;
+}

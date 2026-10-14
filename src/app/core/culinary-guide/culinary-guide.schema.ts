@@ -40,7 +40,7 @@ export const TopFoodsSchema = Schema.object({
   description: 'Structured output foods and honorable mentions.',
 });
 
-export const RecipeDetailSchema = Schema.object({
+export const CulinaryRecipeSchema = Schema.object({
   properties: {
     ingredients: Schema.array({
       items: Schema.string({

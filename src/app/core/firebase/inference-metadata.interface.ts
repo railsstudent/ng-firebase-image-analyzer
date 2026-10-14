@@ -1,5 +1,5 @@
 import type { InferenceSource } from 'firebase/ai';
-import { TokenModalityBreakdown, TokenSummary } from './token-usage.interface';
+import type { TokenModalityBreakdown, TokenSummary } from './token-usage.interface';
 
 export interface InferenceMetadata {
   source?: InferenceSource;

@@ -15,7 +15,7 @@ describe('culinary-guide prompts', () => {
 
   describe('createTopFoodsPrompt', () => {
     it('interpolates country and city into prompt', () => {
-      const prompt = createTopFoodsPrompt('Japan', 'Kyoto');
+      const prompt = createTopFoodsPrompt({ country: 'Japan', city: 'Kyoto' });
 
       expect(prompt).toContain('Kyoto, Japan');
       expect(prompt).toContain('top 6 iconic local foods');
@@ -26,7 +26,7 @@ describe('culinary-guide prompts', () => {
 
   describe('createRecipePrompt', () => {
     it('interpolates country, city, and dish name into prompt', () => {
-      const prompt = createRecipePrompt('Italy', 'Naples', 'Pizza Margherita');
+      const prompt = createRecipePrompt({ country: 'Italy', city: 'Naples', dishName: 'Pizza Margherita' });
 
       expect(prompt).toContain('"Pizza Margherita"');
       expect(prompt).toContain('Naples, Italy');
