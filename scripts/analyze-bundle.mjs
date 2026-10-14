@@ -101,14 +101,6 @@ function categorizeInput(inputPath) {
  * Triggers npm run build if missing, stale, or forced via --rebuild.
  */
 function ensureFreshStats(forceRebuild) {
-  const isPostbuild = process.env.npm_lifecycle_event === 'postbuild';
-  const isAnalyzing = process.env.ANALYZING_BUNDLE === '1';
-
-  // In postbuild or recursive analysis, skip rebuild checks to prevent infinite loops
-  if (isPostbuild || isAnalyzing) {
-    return;
-  }
-
   let shouldBuild = forceRebuild;
   let reason = 'Forced rebuild requested (--rebuild).';
 
@@ -127,19 +119,13 @@ function ensureFreshStats(forceRebuild) {
 
   if (shouldBuild) {
     console.log(`\n[analyze-bundle] ${reason}`);
-    console.log('[analyze-bundle] Executing "npm run build" to generate fresh stats...\n');
+    console.log('[analyze-bundle] Executing "npm run build:stats" to generate fresh stats...\n');
     try {
-      execSync('npm run build', {
+      execSync('npm run build:stats', {
         cwd: rootDir,
         stdio: 'inherit',
-        env: {
-          ...process.env,
-          ANALYZING_BUNDLE: '1',
-        },
+        env: process.env,
       });
-      // The child 'npm run build' will invoke the 'postbuild' lifecycle hook which
-      // automatically runs this script. We can terminate cleanly here.
-      process.exit(0);
     } catch (error) {
       console.error('\n[analyze-bundle] Build failed:', error.message);
       process.exit(1);
@@ -163,16 +149,16 @@ function loadStats() {
 }
 
 const CHUNK_DISPLAY_LIMIT = 8;
-
 const defaultGetBytes = ([, val]) => (typeof val === 'number' ? val : (val.bytes ?? val.bytesInOutput));
 
 /**
  * Generic helper to print top items with a remainder summary.
  */
-function printLimitedList({ items, label, getBytes = defaultGetBytes, formatRow, unitName }) {
+function printLimitedList({ items, label, getBytes = defaultGetBytes, formatRow, unitName = 'chunks' }) {
   if (items.length === 0) {
     return;
   }
+
   if (label) {
     console.log(`\n[${label}]`);
   }
@@ -196,7 +182,6 @@ function printChunkList(chunks, label) {
   printLimitedList({
     items: chunks,
     label,
-    unitName: 'chunks',
     formatRow: ([name], bytes) => {
       const sizeStr = formatBytes(bytes).padStart(10);
       const rawStr = `(${bytes.toLocaleString()} bytes)`.padStart(18);
@@ -219,6 +204,12 @@ function printOutputChunks(outputEntries) {
   printChunkList(cssChunks, 'CSS Chunks');
 }
 
+function formatPercentageRow([name], bytes, total) {
+  const sizeStr = formatBytes(bytes).padStart(10);
+  const pct = ((bytes / total) * 100).toFixed(1).padStart(5);
+  return `  ${sizeStr}  (${pct}%)  ${name}`;
+}
+
 function printMainTopInputs(mainName, mainBytes, sortedInputs) {
   console.log('\n------------------------------------------------------');
   console.log(`Main Bundle Breakdown: ${mainName} (${formatBytes(mainBytes)} / ${mainBytes.toLocaleString()} bytes)`);
@@ -228,11 +219,7 @@ function printMainTopInputs(mainName, mainBytes, sortedInputs) {
     items: sortedInputs,
     label: 'Top Input Contributors in Main',
     unitName: 'inputs',
-    formatRow: ([inputPath], bytes, total) => {
-      const sizeStr = formatBytes(bytes).padStart(10);
-      const pct = ((bytes / total) * 100).toFixed(1).padStart(5);
-      return `  ${sizeStr}  (${pct}%)  ${inputPath}`;
-    },
+    formatRow: formatPercentageRow,
   });
 }
 
@@ -250,13 +237,37 @@ function printGroupedBreakdown(sortedInputs) {
     items: sortedGroups,
     label: 'Grouped Package Breakdown in Main',
     unitName: 'packages',
-    formatRow: ([groupName], bytes, total) => {
-      const sizeStr = formatBytes(bytes).padStart(10);
-      const pct = ((bytes / total) * 100).toFixed(1).padStart(5);
-      return `  ${sizeStr}  (${pct}%)  ${groupName}`;
-    },
+    formatRow: formatPercentageRow,
   });
 }
+
+const LEAK_RULES = [
+  {
+    pattern: '@firebase/ai',
+    type: 'Firebase AI SDK (@firebase/ai)',
+    advice: 'Move inference logic behind lazy-loaded feature boundaries or defer loading.',
+  },
+  {
+    pattern: 'jsonrepair',
+    type: 'JSON Repair Utility (jsonrepair)',
+    advice: 'Ensure jsonrepair is only imported in features/services that parse AI outputs.',
+  },
+  {
+    pattern: 'snarkdown',
+    type: 'Snarkdown',
+    advice: 'Ensure snarkdown is only imported in features/services that generates markdown output.',
+  },
+  {
+    pattern: 'dompurify',
+    type: 'DOM Purify Utility (dompurify)',
+    advice: 'Ensure dompurify is only imported in features/services that generate markdown output.',
+  },
+  {
+    type: 'Feature Component in Main',
+    matcher: (path) => path.includes('src/app/features/') && !path.includes('src/app/features/home/'),
+    advice: 'Secondary feature components should be lazy loaded via loadComponent: () => import(...) in app.routes.ts.',
+  },
+];
 
 function detectLeakedDependencies(inputEntries) {
   const leakedDependencies = [];
@@ -266,27 +277,16 @@ function detectLeakedDependencies(inputEntries) {
       continue;
     }
 
-    if (inputPath.includes('@firebase/ai')) {
+    const matchedRule = LEAK_RULES.find((rule) =>
+      rule.matcher ? rule.matcher(inputPath) : inputPath.includes(rule.pattern),
+    );
+
+    if (matchedRule) {
       leakedDependencies.push({
-        type: 'Firebase AI SDK (@firebase/ai)',
+        type: matchedRule.type,
         path: inputPath,
         bytes: val.bytesInOutput,
-        advice: 'Move inference logic behind lazy-loaded feature boundaries or defer loading.',
-      });
-    } else if (inputPath.includes('jsonrepair')) {
-      leakedDependencies.push({
-        type: 'JSON Repair Utility (jsonrepair)',
-        path: inputPath,
-        bytes: val.bytesInOutput,
-        advice: 'Ensure jsonrepair is only imported in features/services that parse AI outputs.',
-      });
-    } else if (inputPath.includes('src/app/features/') && !inputPath.includes('src/app/features/home/')) {
-      leakedDependencies.push({
-        type: 'Feature Component in Main',
-        path: inputPath,
-        bytes: val.bytesInOutput,
-        advice:
-          'Secondary feature components should be lazy loaded via loadComponent: () => import(...) in app.routes.ts.',
+        advice: matchedRule.advice,
       });
     }
   }
