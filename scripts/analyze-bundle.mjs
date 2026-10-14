@@ -164,25 +164,45 @@ function loadStats() {
 
 const CHUNK_DISPLAY_LIMIT = 8;
 
-function printChunkList(chunks, label, nameWidth) {
-  if (chunks.length === 0) {
+const defaultGetBytes = ([, val]) => (typeof val === 'number' ? val : (val.bytes ?? val.bytesInOutput));
+
+/**
+ * Generic helper to print top items with a remainder summary.
+ */
+function printLimitedList({ items, label, getBytes = defaultGetBytes, formatRow, unitName }) {
+  if (items.length === 0) {
     return;
   }
-
-  console.log(`\n[${label}]`);
-  const topChunks = chunks.slice(0, CHUNK_DISPLAY_LIMIT);
-  for (const [name, data] of topChunks) {
-    const sizeStr = formatBytes(data.bytes).padStart(10);
-    const rawStr = `(${data.bytes.toLocaleString()} bytes)`.padStart(18);
-    console.log(`  ${name.padEnd(nameWidth)} ${sizeStr} ${rawStr}`);
+  if (label) {
+    console.log(`\n[${label}]`);
   }
 
-  if (chunks.length > CHUNK_DISPLAY_LIMIT) {
-    const remaining = chunks.slice(CHUNK_DISPLAY_LIMIT);
-    const remainingBytes = remaining.reduce((sum, [, d]) => sum + d.bytes, 0);
-    const count = remaining.length;
-    console.log(`  ... and ${count} smaller chunks (${formatBytes(remainingBytes)} total)`);
+  const totalBytes = items.reduce((sum, item) => sum + getBytes(item), 0);
+  const topItems = items.slice(0, CHUNK_DISPLAY_LIMIT);
+
+  for (const item of topItems) {
+    const bytes = getBytes(item);
+    console.log(formatRow(item, bytes, totalBytes));
   }
+
+  if (items.length > CHUNK_DISPLAY_LIMIT) {
+    const remaining = items.slice(CHUNK_DISPLAY_LIMIT);
+    const remBytes = remaining.reduce((sum, item) => sum + getBytes(item), 0);
+    console.log(`  ... and ${remaining.length} smaller ${unitName} (${formatBytes(remBytes)} total)`);
+  }
+}
+
+function printChunkList(chunks, label) {
+  printLimitedList({
+    items: chunks,
+    label,
+    unitName: 'chunks',
+    formatRow: ([name], bytes) => {
+      const sizeStr = formatBytes(bytes).padStart(10);
+      const rawStr = `(${bytes.toLocaleString()} bytes)`.padStart(18);
+      return `  ${sizeStr}  ${rawStr}  ${name}`;
+    },
+  });
 }
 
 function printOutputChunks(outputEntries) {
@@ -195,8 +215,8 @@ function printOutputChunks(outputEntries) {
   const jsChunks = sortedOutputs.filter(([name]) => name.endsWith('.js'));
   const cssChunks = sortedOutputs.filter(([name]) => name.endsWith('.css'));
 
-  printChunkList(jsChunks, 'JavaScript Chunks', 30);
-  printChunkList(cssChunks, 'CSS Chunks', 45);
+  printChunkList(jsChunks, 'JavaScript Chunks');
+  printChunkList(cssChunks, 'CSS Chunks');
 }
 
 function printMainTopInputs(mainName, mainBytes, sortedInputs) {
@@ -204,25 +224,19 @@ function printMainTopInputs(mainName, mainBytes, sortedInputs) {
   console.log(`Main Bundle Breakdown: ${mainName} (${formatBytes(mainBytes)} / ${mainBytes.toLocaleString()} bytes)`);
   console.log('------------------------------------------------------');
 
-  console.log('\n[Top Input Contributors in Main]');
-  const topChunks = sortedInputs.slice(0, CHUNK_DISPLAY_LIMIT);
-  for (const [inputPath, val] of topChunks) {
-    const bytes = val.bytesInOutput;
-    const pct = ((bytes / mainBytes) * 100).toFixed(1);
-    const sizeStr = formatBytes(bytes).padStart(10);
-    console.log(`  ${sizeStr} (${pct.padStart(4)}%)  ${inputPath}`);
-  }
-
-  if (sortedInputs.length > CHUNK_DISPLAY_LIMIT) {
-    const remaining = sortedInputs.slice(CHUNK_DISPLAY_LIMIT);
-    const remainingBytes = remaining.reduce((sum, [, d]) => sum + d.bytesInOutput, 0);
-    const count = remaining.length;
-    console.log(`  ... and ${count} smaller chunks (${formatBytes(remainingBytes)} total)`);
-  }
+  printLimitedList({
+    items: sortedInputs,
+    label: 'Top Input Contributors in Main',
+    unitName: 'inputs',
+    formatRow: ([inputPath], bytes, total) => {
+      const sizeStr = formatBytes(bytes).padStart(10);
+      const pct = ((bytes / total) * 100).toFixed(1).padStart(5);
+      return `  ${sizeStr}  (${pct}%)  ${inputPath}`;
+    },
+  });
 }
 
-function printGroupedBreakdown(mainBytes, sortedInputs) {
-  console.log('\n[Grouped Package Breakdown in Main]');
+function printGroupedBreakdown(sortedInputs) {
   const groups = new Map();
   for (const [inputPath, val] of sortedInputs) {
     const groupName = categorizeInput(inputPath);
@@ -231,19 +245,17 @@ function printGroupedBreakdown(mainBytes, sortedInputs) {
   }
 
   const sortedGroups = [...groups.entries()].sort((a, b) => b[1] - a[1]);
-  const topChunks = sortedGroups.slice(0, CHUNK_DISPLAY_LIMIT);
-  for (const [groupName, groupBytes] of topChunks) {
-    const pct = ((groupBytes / mainBytes) * 100).toFixed(1);
-    const sizeStr = formatBytes(groupBytes).padStart(10);
-    console.log(`  ${groupName.padEnd(25)} ${sizeStr} (${pct.padStart(4)}%)`);
-  }
 
-  if (sortedGroups.length > CHUNK_DISPLAY_LIMIT) {
-    const remaining = sortedGroups.slice(CHUNK_DISPLAY_LIMIT);
-    const remainingBytes = remaining.reduce((sum, [, groupBytes]) => sum + groupBytes, 0);
-    const count = remaining.length;
-    console.log(`  ... and ${count} smaller chunks (${formatBytes(remainingBytes)} total)`);
-  }
+  printLimitedList({
+    items: sortedGroups,
+    label: 'Grouped Package Breakdown in Main',
+    unitName: 'packages',
+    formatRow: ([groupName], bytes, total) => {
+      const sizeStr = formatBytes(bytes).padStart(10);
+      const pct = ((bytes / total) * 100).toFixed(1).padStart(5);
+      return `  ${sizeStr}  (${pct}%)  ${groupName}`;
+    },
+  });
 }
 
 function detectLeakedDependencies(inputEntries) {
@@ -328,7 +340,7 @@ function analyze() {
     .sort((a, b) => b[1].bytesInOutput - a[1].bytesInOutput);
 
   printMainTopInputs(mainName, mainData.bytes, sortedInputs);
-  printGroupedBreakdown(mainData.bytes, sortedInputs);
+  printGroupedBreakdown(sortedInputs);
   printLeakAudit(inputEntries);
 }
 
