@@ -2,7 +2,7 @@
 
 **Blocked by:** Ticket 05
 
-**Status:** ready
+**Status:** done
 
 ## Context & Purpose
 
@@ -22,9 +22,9 @@ Implement the core service method for generating the Stage 1 Culinary Discovery 
 
 ## Acceptance Criteria
 
-- [ ] `CulinaryGuideService.getTopFoodsStream()` yields `StreamingCulinaryDiscoveryWithMetadata` chunks.
-- [ ] Correctly processes partial stream chunks and maps token usage metadata via `AiService.processUsage()`.
-- [ ] Validates stream completion constraints (`foods.length === 6` and `1 <= honorableMentions.length <= 2`).
-- [ ] Automatically retries once on incomplete/invalid stream termination, emitting an empty reset chunk before re-requesting.
-- [ ] Throws a terminal `Error` if the retry attempt also fails validation or encounters an unrecoverable failure.
-- [ ] Unit tests verify stream emission, happy path completion, 1-time retry with reset chunk emission upon incomplete payload, and terminal error propagation with mock generators.
+- [x] `CulinaryGuideService.getTopFoodsStream()` yields `StreamingCulinaryDiscoveryWithMetadata` chunks.
+- [x] Correctly processes partial stream chunks and maps token usage metadata via `AiService.processUsage()`.
+- [x] Validates stream completion constraints (`foods.length === 6` and `1 <= honorableMentions.length <= 2`).
+- [x] Automatically retries once on incomplete/invalid stream termination, emitting an empty reset chunk before re-requesting.
+- [x] Throws a terminal `Error` if the retry attempt also fails validation or encounters an unrecoverable failure.
+- [x] Unit tests verify stream emission, happy path completion, 1-time retry with reset chunk emission upon incomplete payload, and terminal error propagation with mock generators.
