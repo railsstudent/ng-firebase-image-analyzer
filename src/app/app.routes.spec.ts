@@ -2,7 +2,7 @@ import { createEnvironmentInjector, EnvironmentInjector, provideZonelessChangeDe
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { routes } from './app.routes';
-import { ConfigService } from './core/firebase';
+import { ConfigService } from './core/firebase/config.service';
 import { ROUTE_PATHS } from './core/routing';
 import HomeComponent from './features/home/home.component';
 

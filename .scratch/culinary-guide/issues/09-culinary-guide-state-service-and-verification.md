@@ -1,6 +1,6 @@
-# Ticket 08: CulinaryGuideStateService, Barrel Exports, and Verification
+# Ticket 09: CulinaryGuideStateService, Barrel Exports, and Verification
 
-**Blocked by:** Ticket 03, Ticket 05, Ticket 07
+**Blocked by:** Ticket 03, Ticket 06, Ticket 08
 
 **Status:** ready
 
@@ -10,20 +10,23 @@ Implement the feature-level state management service (`CulinaryGuideStateService
 
 ## Scope of Work
 
-1. Create `src/app/core/culinary-guide/index.ts` exporting all domain contracts, services, schemas, and prompts.
-2. Create `src/app/features/culinary-guide/services/culinary-guide-state.service.ts`:
+1. Create `src/app/core/culinary-guide/index.ts` exporting all public core domain contracts (`CulinaryFoodItem`, `CulinaryDestination`, `DestinationDataset`, `StreamingCulinaryDiscoveryWithMetadata`, `StreamingCulinaryRecipeWithMetadata`), services, schemas, and prompts (keeping intermediate wire models `TopFoodsResponse` and `CulinaryRecipeResponse` package-internal).
+2. Create feature view model `src/app/features/culinary-guide/models/culinary-recipe-detail.interface.ts`:
+   - `export interface CulinaryRecipeDetail extends StreamingCulinaryRecipeWithMetadata { recipeHtml: string; }`
+3. Create `src/app/features/culinary-guide/services/culinary-guide-state.service.ts`:
    - Signals: `foods = signal<CulinaryFoodItem[]>([])`, `honorableMentions = signal<CulinaryFoodItem[]>([])`, `selectedFood = signal<string | null>(null)`, `isSearching = signal<boolean>(false)`, `isStreamingRecipe = signal<boolean>(false)`, `discoveryTokens = signal<TokenSummary | null>(null)`, `discoveryModality = signal<TokenModalityBreakdown | null>(null)`, `thoughtSummary = signal<string>('')`.
    - In-memory cache: `#recipeCache = new Map<string, CulinaryRecipeDetail>()`. Key format: `${country}:${city}:${dishName}` in lowercase.
    - `search(country: string, city: string)`: Clears `#recipeCache`, resets active signals, and streams Stage 1 discovery.
    - `loadRecipe(country: string, city: string, foodName: string)`: Checks `#recipeCache`; if found, sets active recipe signal immediately without calling AI. If not found, streams Stage 2, formats recipe markdown with `MarkdownFormatterService`, saves to `#recipeCache`, and updates signals.
-3. Create unit tests `src/app/features/culinary-guide/services/culinary-guide-state.service.spec.ts`.
-4. Run project verification: `npm run lint` and `npm run test:once`.
+4. Create unit tests `src/app/features/culinary-guide/services/culinary-guide-state.service.spec.ts`.
+5. Run project verification: `npm run lint` and `npm run test:once`.
 
 ## Acceptance Criteria
 
+- [ ] `CulinaryRecipeDetail` feature view model extends `StreamingCulinaryRecipeWithMetadata` and resides in `src/app/features/culinary-guide/models/`.
 - [ ] `CulinaryGuideStateService` coordinates state, streaming, caching, and markdown formatting.
 - [ ] Changing search criteria resets the cache and active dish state.
 - [ ] Expanding an already-loaded accordion item retrieves recipe immediately from cache without calling AI backend.
-- [ ] All public domain symbols exported from `src/app/core/culinary-guide/index.ts`.
-- [ ] Unit tests pass with 100% branch and statement coverage.
+- [ ] All public core domain symbols exported from `src/app/core/culinary-guide/index.ts` (excluding internal wire models and feature view models).
+- [ ] Unit tests verify discovery streaming, recipe caching (cache hit vs. cache miss), markdown formatting integration, and error state transitions.
 - [ ] `npm run lint` and `npm run test:once` pass with zero errors.

@@ -1,5 +1,4 @@
-import { TokenModalityBreakdown, TokenSummary } from '@/core/firebase';
-import { InferenceSource } from 'firebase/ai';
+import type { InferenceMetadata } from '@/core/firebase';
 
 interface Tag {
   name: string;
@@ -33,12 +32,8 @@ export interface ImageAnalysisResponse {
   crop?: Crop;
 }
 
-interface ImageAnalysisWithMetadata {
+interface ImageAnalysisWithMetadata extends InferenceMetadata {
   analysis: ImageAnalysisResponse;
-  source?: InferenceSource;
-  thoughtSummary?: string;
-  tokenSummary?: TokenSummary;
-  tokenModalityBreakdown?: TokenModalityBreakdown;
 }
 
 export type StreamingAnalysisWithMetadata = Omit<ImageAnalysisWithMetadata, 'analysis'> & {

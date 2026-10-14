@@ -1,6 +1,6 @@
-# Ticket 07: CulinaryGuideService Recipe Stream (Stage 2)
+# Ticket 08: CulinaryGuideService Recipe Stream (Stage 2)
 
-**Blocked by:** Ticket 06
+**Blocked by:** Ticket 07
 
 **Status:** ready
 

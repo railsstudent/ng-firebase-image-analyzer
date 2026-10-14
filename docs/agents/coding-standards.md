@@ -52,6 +52,9 @@ $$\text{Features} \longrightarrow \text{Shared} \longrightarrow \text{Core}$$
 - **Shared Layer (`src/app/shared/`)**: Reusable UI components, pipes, directives, icons, and styles. Zero dependencies on `features`.
 - **Feature Layer (`src/app/features/<feature>/`)**: Route-level and feature-specific components and view models. Features may depend on `core` and `shared`, but direct cross-feature imports between sibling features are strictly forbidden.
 - **Companion Skeletons**: Loading and placeholder skeletons must always reside in the exact same layer as their primary component (e.g. shared component skeletons reside in `src/app/shared/ui/components/`, feature skeletons in `src/app/features/<feature>/`).
+- **Platform Envelope vs. Domain Payload Separation**:
+  - **Canonical Platform Envelopes**: Cross-cutting runtime and infrastructure concerns (e.g., execution telemetry, token usage, inference source, streaming lifecycle, transport pagination/error wrappers) MUST be defined as canonical envelope contracts in their respective `src/app/core/<platform>/` package (e.g., `InferenceMetadata` in `src/app/core/firebase/`).
+  - **Zero Inline Redefinition**: Domain contracts (`src/app/core/<domain>/`) must only declare pure business payload attributes. Domain models MUST NEVER redefine platform envelope fields inline; they must compose or extend the canonical platform envelope (e.g., `StreamingXWithMetadata extends InferenceMetadata`). Sibling domains consuming the same core platform capabilities MUST share the identical underlying envelope contract.
 
 ## 9. Generative AI Schema & Contract Equivalence
 

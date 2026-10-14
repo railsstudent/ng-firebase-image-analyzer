@@ -1,3 +1,5 @@
+import type { InferenceMetadata } from '@/core/firebase';
+
 export interface CulinaryDestination {
   readonly country: string;
   readonly cities: readonly string[];
@@ -20,7 +22,16 @@ export interface CulinaryFoodItem {
   description: string;
 }
 
-export interface TopFoodsResponse {
+interface TopFoodsResponse {
   foods: CulinaryFoodItem[];
   honorableMentions: string[];
 }
+
+export interface StreamingCulinaryDiscoveryWithMetadata extends TopFoodsResponse, InferenceMetadata {}
+
+interface CulinaryRecipeResponse {
+  ingredients: string[];
+  recipe: string;
+}
+
+export interface StreamingCulinaryRecipeWithMetadata extends CulinaryRecipeResponse, InferenceMetadata {}

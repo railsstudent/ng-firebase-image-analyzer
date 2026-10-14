@@ -1,12 +1,12 @@
-# Ticket 04: Culinary Discovery (Stage 1) Contracts and Schema
+# Ticket 05: Culinary Discovery (Stage 1) Contracts and Schema
 
-**Blocked by:** Ticket 01
+**Blocked by:** Ticket 01, Ticket 04
 
-**Status:** ready
+**Status:** done
 
 ## Context & Purpose
 
-Define domain interfaces, prompt templates, and structured JSON schemas for Stage 1 (Culinary Discovery), constraining model output to exactly 6 iconic local foods and 1–2 honorable mentions.
+Define domain interfaces, prompt templates, and structured JSON schemas for Stage 1 (Culinary Discovery), constraining model output to exactly 6 iconic local foods and 1–2 honorable mentions. Reuses `InferenceMetadata` from `src/app/core/firebase`.
 
 ## Scope of Work
 
@@ -22,7 +22,7 @@ Define domain interfaces, prompt templates, and structured JSON schemas for Stag
 
 ## Acceptance Criteria
 
-- [ ] `CulinaryFoodItem`, `TopFoodsResponse`, and `StreamingCulinaryDiscoveryWithMetadata` interfaces are exported.
-- [ ] `TopFoodsSchema` strictly models 6 food items and 1–2 honorable mentions.
-- [ ] Prompt explicitly instructs the model to return native names, concise descriptions, and 1–2 honorable mention runner-up dishes.
-- [ ] `StreamingCulinaryDiscoveryWithMetadata` includes fields for `foods`, `honorableMentions`, `source`, `thoughtSummary`, `tokenSummary`, and `tokenModalityBreakdown`.
+- [x] `CulinaryFoodItem`, `TopFoodsResponse` (package-internal), and `StreamingCulinaryDiscoveryWithMetadata` interfaces are declared.
+- [x] `StreamingCulinaryDiscoveryWithMetadata` extends both `TopFoodsResponse` and `InferenceMetadata`.
+- [x] `TopFoodsSchema` strictly models 6 food items and 1–2 honorable mentions.
+- [x] Prompt explicitly instructs the model to return native names, concise descriptions, and 1–2 honorable mention runner-up dishes.

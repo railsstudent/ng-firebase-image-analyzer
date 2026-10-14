@@ -1,6 +1,6 @@
-# Ticket 05: CulinaryGuideService Discovery Stream (Stage 1)
+# Ticket 06: CulinaryGuideService Discovery Stream (Stage 1)
 
-**Blocked by:** Ticket 04
+**Blocked by:** Ticket 05
 
 **Status:** ready
 
