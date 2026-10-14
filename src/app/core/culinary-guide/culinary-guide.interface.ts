@@ -13,3 +13,18 @@ export interface MarkdownModules {
     sanitize: (html: string) => string;
   };
 }
+
+export interface CulinaryFoodItem {
+  name: string;
+  nativeName?: string;
+  description: string;
+}
+
+export interface TopFoodsResponse {
+  foods: CulinaryFoodItem[];
+  honorableMentions: string[];
+}
+
+export interface StreamingCulinaryDiscoveryWithMetadata extends TopFoodsResponse {
+
+}

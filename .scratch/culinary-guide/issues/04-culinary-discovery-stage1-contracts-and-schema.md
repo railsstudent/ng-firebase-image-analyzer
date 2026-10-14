@@ -12,7 +12,7 @@ Define domain interfaces, prompt templates, and structured JSON schemas for Stag
 
 1. Create `src/app/core/culinary-guide/culinary-guide.interface.ts`:
    - `CulinaryFoodItem`: `{ name: string; nativeName?: string; description: string; }`
-   - `TopFoodsResponse`: `{ foods: CulinaryFoodItem[]; honorableMentions: string[] }`
+   - `TopFoodsResponse`: `{ foods: CulinaryFoodItem[]; honorableMentions: string[]; }`
    - `StreamingCulinaryDiscoveryWithMetadata`: `{ foods: CulinaryFoodItem[]; honorableMentions: string[]; source: InferenceSource; thoughtSummary: string; tokenSummary?: TokenSummary; tokenModalityBreakdown?: TokenModalityBreakdown }`
 2. Create `src/app/core/culinary-guide/culinary-guide.prompt.ts`:
    - `CULINARY_GUIDE_SYSTEM_INSTRUCTION`

@@ -1,0 +1,24 @@
+# 01: Dedicated Bundle Analysis Script
+
+**What to build:** Implement a zero-dependency ESM CLI utility in `scripts/analyze-bundle.mjs` that parses `dist/ng-firebase-image-analyzer/browser-stats.json`, outputs chunk size breakdowns and top contributors, provides soft warnings for leaked dependencies in `main`, auto-rebuilds when stats are missing or stale, and integrates into `package.json` via `postbuild`. See [ADR 0029](../../../docs/adr/0029-zero-dependency-bundle-analysis-and-staleness-detection.md).
+
+**Blocked by:** None (can start immediately)
+
+**Status:** todo
+
+- [ ] Create `scripts/analyze-bundle.mjs` using native Node ESM (`node:fs`, `node:path`, `node:child_process`).
+- [ ] Implement stats verification & auto-rebuild handling:
+  - If `browser-stats.json` is missing: log notification and auto-invoke `npm run build` via child process with inherited stdio.
+  - If `browser-stats.json` exists but files in `src/` have a newer `mtime`: auto-invoke `npm run build` to refresh stats.
+  - Support `--rebuild` (or `-r`) flag to force a fresh `npm run build`.
+- [ ] Format terminal output:
+  - Output chunks sorted by byte size.
+  - Detailed breakdown of `main-*.js` sorted by input size.
+  - Grouped breakdown of `main-*.js` by package/directory (e.g. `@angular/*`, `firebase/*`, `app`).
+  - Soft leak detection warnings (non-blocking alert if `@firebase/ai`, `jsonrepair`, or `features/*` appear in `main-*.js`).
+- [ ] Update `package.json` scripts:
+  - Update `"build"`: `"ng build --stats-json"`.
+  - Add `"postbuild"`: `"node scripts/analyze-bundle.mjs"`.
+  - Add `"analyze:bundle"`: `"node scripts/analyze-bundle.mjs"`.
+  - Remove redundant `"build:stats"`.
+- [ ] Verify script runs successfully via `npm run build` (auto-running `postbuild`) and standalone via `npm run analyze:bundle`, passing all linting/formatting checks (`npm run lint`).
