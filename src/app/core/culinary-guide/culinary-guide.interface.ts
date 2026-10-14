@@ -24,7 +24,3 @@ export interface TopFoodsResponse {
   foods: CulinaryFoodItem[];
   honorableMentions: string[];
 }
-
-export interface StreamingCulinaryDiscoveryWithMetadata extends TopFoodsResponse {
-
-}

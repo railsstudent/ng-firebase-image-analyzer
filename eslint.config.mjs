@@ -6,6 +6,19 @@ import unicorn from 'eslint-plugin-unicorn';
 
 export default defineConfig([
   {
+    files: ['**/*.mjs'],
+    rules: {
+      'max-lines-per-function': [
+        'error',
+        {
+          max: 40,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.ts'],
     plugins: {
       unicorn,
