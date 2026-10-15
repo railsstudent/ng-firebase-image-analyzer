@@ -1,12 +1,6 @@
-import {
-  AiService,
-  InferenceMetadata,
-  TokenModalityBreakdown,
-  TokenSummary,
-  ZERO_TOKEN_SUMMARY,
-} from '@/core/firebase';
+import { AiService } from '@/core/firebase';
 import { inject, Service } from '@angular/core';
-import type { EnhancedGenerateContentResponse, InferenceSource } from 'firebase/ai';
+import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type {
   CulinaryFoodItem,
   CulinaryLocation,
@@ -23,7 +17,6 @@ import {
   RECIPE_PROMPT_INSTRUCTION,
 } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
-import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import { isValidDiscoveryResponse, isValidRecipeResponse } from './culinary-guide.validation';
 
 const MAX_ATTEMPTS = 2;
@@ -44,7 +37,10 @@ export class CulinaryGuideService {
       let honorableMentions: string[] = [];
 
       for await (const update of generator) {
-        const inferenceMetadata = this.buildInferenceMetadata(update.response);
+        const inferenceMetadata = update.inferenceMetadata || {
+          source: 'on_device',
+          thoughtSummary: '',
+        };
         foods = update.partialData.foods || [];
         honorableMentions = update.partialData.honorableMentions || [];
 
@@ -75,21 +71,6 @@ export class CulinaryGuideService {
     }
   }
 
-  private buildInferenceMetadata(response: EnhancedGenerateContentResponse | undefined): InferenceMetadata {
-    let source: InferenceSource = 'on_device';
-    let thoughtSummary = 'No thought summary';
-    let tokenSummary: TokenSummary | undefined = undefined;
-    let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
-    if (response) {
-      source = response.inferenceSource || 'on_device';
-      thoughtSummary = response.thoughtSummary() || 'No thought summary';
-      const usageGroup = this.#aiService.processUsage(response);
-      tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;
-      tokenModalityBreakdown = usageGroup?.tokenBreakdown;
-    }
-    return { source, thoughtSummary, tokenSummary, tokenModalityBreakdown };
-  }
-
   async *getRecipeStream(target: CulinaryRecipeTarget): AsyncGenerator<StreamingCulinaryRecipeWithMetadata> {
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
       const generator = await this.#aiService.generateContentStream<CulinaryRecipeResponse>({
@@ -102,7 +83,10 @@ export class CulinaryGuideService {
       let recipe = '';
 
       for await (const update of generator) {
-        const inferenceMetadata = this.buildInferenceMetadata(update.response);
+        const inferenceMetadata = update.inferenceMetadata || {
+          source: 'on_device',
+          thoughtSummary: '',
+        };
         ingredients = update.partialData.ingredients || [];
         recipe = update.partialData.recipe || '';
 

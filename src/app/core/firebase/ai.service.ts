@@ -143,7 +143,7 @@ export class AiService {
     return { alternativeTexts: [text] } as unknown as Partial<T>;
   }
 
-  processUsage(response: EnhancedGenerateContentResponse): TokenUsage | undefined {
+  private processUsage(response: EnhancedGenerateContentResponse): TokenUsage | undefined {
     if (response.usageMetadata) {
       const usageMetadata = response.usageMetadata;
       const tokenSummary: TokenSummary = {

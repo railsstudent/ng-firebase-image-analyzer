@@ -41,9 +41,9 @@ Refactor both `CulinaryGuideService` and `ImageAnalysisService` to consume `upda
 
 ## Acceptance Criteria
 
-- [ ] `CulinaryGuideService` consumes `update.inferenceMetadata` directly from the stream update and deletes private `buildInferenceMetadata`.
-- [ ] `ImageAnalysisService` consumes `update.inferenceMetadata` directly from the stream update and deletes inline metadata extraction boilerplate.
-- [ ] `AiService.processUsage` is made `private` now that zero external callers reference it.
-- [ ] Unused platform envelope types, SDK types, and token constants are removed from both domain service imports.
+- [x] `CulinaryGuideService` consumes `update.inferenceMetadata` directly from the stream update and deletes private `buildInferenceMetadata`.
+- [x] `ImageAnalysisService` consumes `update.inferenceMetadata` directly from the stream update and deletes inline metadata extraction boilerplate.
+- [x] `AiService.processUsage` is made `private` now that zero external callers reference it.
+- [x] Unused platform envelope types, SDK types, and token constants are removed from both domain service imports.
 - [ ] TestBed mocks in `culinary-guide.service.spec.ts` and `image-analysis.service.spec.ts` provide `inferenceMetadata` on streamed chunks.
 - [ ] All unit test suites and intermediate checks (`ng lint`, `check:cycles`, `cspell`) pass cleanly.

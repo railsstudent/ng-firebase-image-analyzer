@@ -1,13 +1,6 @@
-import {
-  AiService,
-  FALLBACK_IMAGE_SIZE,
-  PartialResponse,
-  TokenModalityBreakdown,
-  TokenSummary,
-  ZERO_TOKEN_SUMMARY,
-} from '@/core/firebase';
+import { AiService, FALLBACK_IMAGE_SIZE, type PartialResponse } from '@/core/firebase';
 import { inject, Service } from '@angular/core';
-import { InferenceSource, Part } from 'firebase/ai';
+import { Part } from 'firebase/ai';
 import { ImageAnalysisResponse, StreamingAnalysisWithMetadata } from './image-analysis.interface';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from './image-analysis.prompt';
 import { ImageAnalysisSchema } from './image-analysis.schema';
@@ -67,27 +60,15 @@ export class ImageAnalysisService {
     });
 
     for await (const update of generator) {
-      const response = update.response;
+      const inferenceMetadata = update.inferenceMetadata || {
+        source: 'on_device',
+        thoughtSummary: 'No thought summary',
+      };
       const analysis = this.constructAnalysis(update);
 
-      let source: InferenceSource = 'on_device';
-      let thoughtSummary = 'No thought summary';
-      let tokenSummary: TokenSummary | undefined = undefined;
-      let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
-      if (response) {
-        source = response.inferenceSource || 'on_device';
-        thoughtSummary = response.thoughtSummary() || 'No thought summary';
-        const usageGroup = this.#aiService.processUsage(response);
-        tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;
-        tokenModalityBreakdown = usageGroup?.tokenBreakdown;
-      }
-
       yield {
+        ...inferenceMetadata,
         analysis,
-        source,
-        thoughtSummary,
-        tokenSummary,
-        tokenModalityBreakdown,
       };
     }
   }

@@ -1,6 +1,6 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import type { EnhancedGenerateContentResponse, GenerativeModel } from 'firebase/ai';
+import type { GenerativeModel } from 'firebase/ai';
 import { AiModelCacheService } from './ai-model-cache.service';
 import { AiService } from './ai.service';
 
@@ -146,33 +146,6 @@ describe('AiService', () => {
         expect(mockGenerativeModel.generateContent).toHaveBeenCalled();
         expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('pre-compiled successfully'));
       });
-    });
-  });
-
-  describe('processUsage', () => {
-    it('should parse usage metadata correctly', () => {
-      const responseMock = {
-        usageMetadata: {
-          totalTokenCount: 150,
-          promptTokenCount: 90,
-          thoughtsTokenCount: 10,
-          candidatesTokenCount: 50,
-        },
-      } as unknown as EnhancedGenerateContentResponse;
-
-      const usage = service.processUsage(responseMock);
-
-      expect(usage).toBeDefined();
-      expect(usage?.tokenSummary.totalTokenCount).toBe(150);
-      expect(usage?.tokenSummary.promptTokenCount).toBe(90);
-      expect(usage?.tokenSummary.thoughtsTokenCount).toBe(10);
-      expect(usage?.tokenSummary.outputTokenCount).toBe(50);
-    });
-
-    it('should return undefined if usageMetadata is missing', () => {
-      const responseMock = {} as unknown as EnhancedGenerateContentResponse;
-      const usage = service.processUsage(responseMock);
-      expect(usage).toBeUndefined();
     });
   });
 });
