@@ -1,3 +1,4 @@
+import { MIN_HONORABLE_MENTIONS, MAX_HONORABLE_MENTIONS, EXPECTED_FOOD_COUNT } from './culinary-guide.const';
 import type { CulinaryLocation, CulinaryRecipeTarget } from './culinary-guide.interface';
 
 export const CULINARY_GUIDE_SYSTEM_INSTRUCTION = `You are an expert culinary and travel guide specializing in regional gastronomy and authentic local dishes.
@@ -5,11 +6,11 @@ Always adhere strictly to the requested JSON schema.
 Ensure dish descriptions are concise and informative.`;
 
 export function createTopFoodsPrompt({ country, city }: CulinaryLocation): string {
-  return `Identify the top 6 iconic local foods and culinary staples for ${city}, ${country}.
+  return `Identify the top ${EXPECTED_FOOD_COUNT} iconic local foods and culinary staples for ${city}, ${country}.
 
 For each dish, provide its popular name, its native name in the local script or language (if different), and a concise description of what makes it special.
 
-Additionally, provide between 1 and 2 honorable mentions: notable runner-up dishes that represent the local culture but just missed the top 6 list.`.trim();
+Additionally, provide between ${MIN_HONORABLE_MENTIONS} and ${MAX_HONORABLE_MENTIONS} honorable mentions: notable runner-up dishes that represent the local culture but just missed the top 6 list.`.trim();
 }
 
 export const RECIPE_PROMPT_INSTRUCTION =

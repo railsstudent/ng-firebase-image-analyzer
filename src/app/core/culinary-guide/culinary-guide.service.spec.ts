@@ -3,6 +3,7 @@ import { collectStream, createMockStream } from '@/testing/ai-stream.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import type { EnhancedGenerateContentResponse } from 'firebase/ai';
+import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type { CulinaryFoodItem, CulinaryLocation, CulinaryRecipeTarget } from './culinary-guide.interface';
 import { CULINARY_GUIDE_SYSTEM_INSTRUCTION, RECIPE_PROMPT_INSTRUCTION } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
@@ -206,7 +207,7 @@ describe('CulinaryGuideService', () => {
         );
 
       await expect(collectStream(service.getTopFoodsStream(mockLocation))).rejects.toThrow(
-        /Incomplete culinary discovery stream: expected 6 foods and 1-2 honorable mentions, but received 1 foods and 1 honorable mentions/,
+        `Incomplete culinary discovery stream: expected ${EXPECTED_FOOD_COUNT} foods and ${MIN_HONORABLE_MENTIONS}-${MAX_HONORABLE_MENTIONS} honorable mentions, but received 1 foods and 1 honorable mentions`,
       );
 
       expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(2);

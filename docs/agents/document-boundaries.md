@@ -16,3 +16,25 @@ This document defines the separation of roles and scope boundaries across the th
 3. **Implementation Tickets (`.scratch/<feature>/issues/NN-<slug>.md`)**:
    - **Role**: Concrete engineering execution breakdown.
    - **Content**: Specific public API contracts, internal module structure, test matrices, and step-by-step implementation tasks. See [issue-tracker.md](issue-tracker.md).
+   - **Call-Site Blast Radius in Refactoring Tickets**: When authoring refactoring or extraction tickets, never specify the extracted utility in isolation. Always audit existing call sites and include the consumer services/callers that need updating in the ticket's _Scope of Work_ and _Acceptance Criteria_.
+
+## Pre-Flight Just-In-Time (JIT) Ticket Audit Protocol (for AI Assistants)
+
+Batch ticket generation (e.g. via `/to-tickets`) creates speculative downstream tickets that can drift as upstream implementation progresses. Before moving any downstream ticket to `in_progress` or beginning implementation, the AI coding assistant must perform a **Pre-Flight JIT Audit** against the active codebase and upstream changes using four generalized architectural pillars:
+
+1. **Single Source of Truth & Boundary DRY**:
+   - Audit domain thresholds, limits, magic literals, and schemas across system layers (prompts, network payloads, validators, error strings).
+   - Ensure these boundaries import and reference unified domain constants or configuration types rather than duplicating raw values.
+
+2. **Functional Core, Imperative Shell (Pure Logic Separation)**:
+   - Identify deterministic computations (domain validations, parsing, transformations, calculations, filtering).
+   - Ensure pure logic is decoupled into standalone, side-effect-free functions (enabling exhaustive zero-mock unit testing), while keeping services and orchestrators focused strictly on I/O coordination, lifecycle, and delivery.
+
+3. **Composite Contracts & Data Cohesion**:
+   - Audit method signatures and event payloads for primitive obsession or data clumps (multiple arguments traveling together, e.g. `country: string, city: string`).
+   - Group cohesive data into structured domain interfaces (e.g. `CulinaryLocation`) to insulate callers from future contract expansion.
+
+4. **Context-Aware Caller Ergonomics & Failure Semantics ("It Depends")**:
+   - **Reactivity Placement**: Keep shared domain services and coordinators free of UI reactivity (e.g. Signals) unless intentionally acting as a shared presentation store; default UI state to consuming components/view-models (Coding Standard § 3).
+   - **Delivery Abstraction**: Choose return types intentionally. Stream tokens/events when callers render progressively; aggregate internally and return discrete promises/values when downstream consumers require complete, valid payloads (e.g. markdown parsers, strict JSON decoders per ADR-0029).
+   - **Resilience & State Preservation**: Explicitly audit cache invalidation and error fallback policies (e.g. preserving cached data on transient network errors vs. eager cache clearing) to prevent disruptive user experiences.

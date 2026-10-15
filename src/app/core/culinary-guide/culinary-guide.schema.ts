@@ -1,4 +1,5 @@
 import { Schema } from 'firebase/ai';
+import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 
 const FoodItemSchema = Schema.object({
   properties: {
@@ -18,18 +19,18 @@ const FoodItemSchema = Schema.object({
 
 const FoodsSchema = Schema.array({
   items: FoodItemSchema,
-  minItems: 6,
-  maxItems: 6,
-  description: 'Top 6 foods for the selected country and city.',
+  minItems: EXPECTED_FOOD_COUNT,
+  maxItems: EXPECTED_FOOD_COUNT,
+  description: `Top ${EXPECTED_FOOD_COUNT} foods for the selected country and city.`,
 });
 
 const HonorableMentionsSchema = Schema.array({
   items: Schema.string({
     description: 'A dish that does not make into the top foods.',
   }),
-  minItems: 1,
-  maxItems: 2,
-  description: 'Between 1 and 2 honorable mention runner-up dishes.',
+  minItems: MIN_HONORABLE_MENTIONS,
+  maxItems: MAX_HONORABLE_MENTIONS,
+  description: `Between ${MIN_HONORABLE_MENTIONS} and ${MAX_HONORABLE_MENTIONS} honorable mention runner-up dishes.`,
 });
 
 export const TopFoodsSchema = Schema.object({

@@ -49,3 +49,20 @@ If the concept you need isn't in the glossary yet, that's a signal — either yo
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
 > _Contradicts ADR-0007 (event-sourced orders) — but worth reopening because…_
+
+## ADR Formatting & Metadata Standard
+
+Every Architecture Decision Record in `docs/adr/` must include a standardized metadata header to preserve provenance, traceability, and temporal ordering:
+
+```markdown
+# NNNN. Title
+
+Date: YYYY-MM-DD
+Status: Accepted | Proposed | Deprecated | Superseded
+Relates to: [ADR-NNNN](path/to/adr.md)
+```
+
+- **Numbering**: Four-digit zero-padded sequence (`0001`, `0029`, etc.).
+- **Status Lifecycle**: Always indicate whether the decision is `Accepted`, `Proposed`, `Deprecated`, or `Superseded`.
+- **Relates to**: Explicit cross-references to precursor, related, or superseded ADRs.
+- **Reference Example**: See [ADR-0029](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/docs/adr/0029-internal-stream-aggregation-for-structured-generative-output.md).

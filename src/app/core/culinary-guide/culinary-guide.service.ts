@@ -23,45 +23,39 @@ import {
   RECIPE_PROMPT_INSTRUCTION,
 } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
+import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
+import { isValidDiscoveryResponse, isValidRecipeResponse } from './culinary-guide.validation';
 
 const MAX_ATTEMPTS = 2;
-const EXPECTED_FOOD_COUNT = 6;
-const MIN_HONORABLE_MENTIONS = 1;
-const MAX_HONORABLE_MENTIONS = 2;
 
 @Service()
 export class CulinaryGuideService {
   readonly #aiService = inject(AiService);
 
-  async *getTopFoodsStream(location: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
+  async *getTopFoodsStream(destination: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
       const generator = await this.#aiService.generateContentStream<TopFoodsResponse>({
         systemInstruction: CULINARY_GUIDE_SYSTEM_INSTRUCTION,
-        contents: createTopFoodsPrompt(location),
+        contents: createTopFoodsPrompt(destination),
         schema: TopFoodsSchema,
       });
 
-      let latestFoods: CulinaryFoodItem[] = [];
-      let latestHonorableMentions: string[] = [];
+      let foods: CulinaryFoodItem[] = [];
+      let honorableMentions: string[] = [];
 
       for await (const update of generator) {
         const inferenceMetadata = this.buildInferenceMetadata(update.response);
-        latestFoods = update.partialData.foods || [];
-        latestHonorableMentions = update.partialData.honorableMentions || [];
+        foods = update.partialData.foods || [];
+        honorableMentions = update.partialData.honorableMentions || [];
 
         yield {
           ...inferenceMetadata,
-          foods: latestFoods,
-          honorableMentions: latestHonorableMentions,
+          foods,
+          honorableMentions,
         };
       }
 
-      const isValid =
-        latestFoods.length === EXPECTED_FOOD_COUNT &&
-        latestHonorableMentions.length >= MIN_HONORABLE_MENTIONS &&
-        latestHonorableMentions.length <= MAX_HONORABLE_MENTIONS;
-
-      if (isValid) {
+      if (isValidDiscoveryResponse({ foods, honorableMentions })) {
         return;
       }
 
@@ -76,7 +70,7 @@ export class CulinaryGuideService {
       }
 
       throw new Error(
-        `Incomplete culinary discovery stream: expected 6 foods and 1-2 honorable mentions, but received ${latestFoods.length} foods and ${latestHonorableMentions.length} honorable mentions.`,
+        `Incomplete culinary discovery stream: expected ${EXPECTED_FOOD_COUNT} foods and ${MIN_HONORABLE_MENTIONS}-${MAX_HONORABLE_MENTIONS} honorable mentions, but received ${foods.length} foods and ${honorableMentions.length} honorable mentions.`,
       );
     }
   }
@@ -104,24 +98,22 @@ export class CulinaryGuideService {
         schema: CulinaryRecipeSchema,
       });
 
-      let latestIngredients: string[] = [];
-      let latestRecipe = '';
+      let ingredients: string[] = [];
+      let recipe = '';
 
       for await (const update of generator) {
         const inferenceMetadata = this.buildInferenceMetadata(update.response);
-        latestIngredients = update.partialData.ingredients || [];
-        latestRecipe = update.partialData.recipe || '';
+        ingredients = update.partialData.ingredients || [];
+        recipe = update.partialData.recipe || '';
 
         yield {
           ...inferenceMetadata,
-          ingredients: latestIngredients,
-          recipe: latestRecipe,
+          ingredients,
+          recipe,
         };
       }
 
-      const isValid = latestIngredients.length >= 1 && latestRecipe.trim().length > 0;
-
-      if (isValid) {
+      if (isValidRecipeResponse({ ingredients, recipe })) {
         return;
       }
 

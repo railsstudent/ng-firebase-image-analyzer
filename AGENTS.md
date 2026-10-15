@@ -17,6 +17,7 @@ This file provides context, rules, and guidance for AI assistants working on thi
 - **Testing & Mocking**: [docs/agents/testing-guide.md](docs/agents/testing-guide.md) — DI mocking at TestBed boundary via `satisfies Partial<T>`, mock factories, and targeted runner usage.
 - **Domain Modeling**: [docs/agents/domain.md](docs/agents/domain.md) — Project glossary (`GLOSSARY.md`) and domain decisions.
 - **Document Boundaries**: [docs/agents/document-boundaries.md](docs/agents/document-boundaries.md) — Scope separation across PRDs (`spec.md`), ADRs (`docs/adr/`), and implementation tickets (`.scratch/`).
+- **Code Review Protocols**: [docs/agents/code-review.md](docs/agents/code-review.md) — Single-commit diff pinning (`<sha>~1..<sha>`), four-tier baseline (Conversation/Ticket/Spec/ADR), and distinguishing opportunistic polish from scope creep.
 
 ## Verification Loop & Git Boundaries
 

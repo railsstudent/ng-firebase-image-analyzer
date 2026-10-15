@@ -7,10 +7,14 @@ This document outlines project-specific coding standards and architectural conve
 
 ## 1. Import Rules
 
-- **Sibling Relative Imports (`./`)**: Allowed and preferred for files within the same directory or child subdirectories.
-- **Absolute Path Aliases (`@/`)**: Required for cross-directory imports.
+- **Sibling Relative Imports (`./`)**: Allowed and preferred for files within the same directory.
+- **Absolute Path Aliases (`@/`)**: Required for all cross-directory imports.
 - **Parent Relative Imports (`../`)**: Strictly forbidden in all TypeScript files (`no-restricted-imports`).
 - **CSS Exception**: Component CSS files MUST use relative paths for `@reference` directives (e.g. `@reference "../../../../../styles.css";`), as CSS does not support TypeScript path aliases.
+- **Type-Only Imports (`import type`)**: Always use explicit `import type { ... }` when importing TypeScript interfaces, types, or type aliases to guarantee compile-time elision and prevent circular dependency false positives.
+- **Barrel (`index.ts`) Discipline**:
+  - `src/app/core/<domain>/`: Cross-domain consumers MUST import through `@/core/<domain>`. Package-internal helpers, schemas, or validators MUST NOT be re-exported in `index.ts`.
+  - `src/app/features/`: Barrel files are strictly forbidden to preserve `@defer` chunk boundaries and prevent bundle bloat.
 
 ## 2. Encapsulation & Private Members
 
@@ -60,6 +64,17 @@ $$\text{Features} \longrightarrow \text{Shared} \longrightarrow \text{Core}$$
 
 - **1:1 Contract Mirroring**: Every structured generative AI schema (`TypedSchema` or `SchemaRequest`) MUST have an exact 1:1 TypeScript domain interface mirroring its JSON shape (e.g., `TopFoodsResponse` strictly matches `TopFoodsSchema`).
 - **Streaming Wrapper Types**: Every streaming generator method returning metadata (inference source, thought summaries, token analytics) MUST declare and export an explicit streaming wrapper interface (e.g., `StreamingCulinaryDiscoveryWithMetadata`).
+- **Composite Contract Parameters & Destructuring**: Functions and service methods operating on multi-attribute domain data should type against the canonical domain contract rather than decomposing fields into loose positional arguments (avoiding primitive obsession and data clumps). Prefer parameter destructuring in the signature for concise, readable access:
+
+  ```typescript
+  // Recommended: Destructured canonical domain contract
+  export function isValidDiscoveryResponse({ foods, honorableMentions }: TopFoodsResponse): boolean { ... }
+  getRecipeStream({ country, city, dishName }: CulinaryRecipeTarget): AsyncGenerator<...> { ... }
+
+  // Avoid: Loose positional arguments (Data Clump)
+  export function isValidDiscoveryResponse(foods: CulinaryFoodItem[], mentions: string[]): boolean { ... }
+  getRecipeStream(country: string, city: string, dishName: string): AsyncGenerator<...> { ... }
+  ```
 
 ## 10. Micro-Library Capability Audits & Fallbacks
 

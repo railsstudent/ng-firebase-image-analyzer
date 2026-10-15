@@ -9,25 +9,25 @@ When exploring food cultures or planning travel, users want to discover authenti
 A responsive, two-stage **Culinary Guide** architecture optimized for fast hybrid execution on Gemini Nano and Vertex AI:
 
 1. **Destination Selection**: Users select a country to filter available cities, choose a city, and click Search.
-2. **Culinary Discovery (Stage 1)**: Submitting a search retrieves a structured list of the top **6 iconic local foods** and **between 1 and 2 honorable mention runner-up dishes**.
+2. **Culinary Discovery (Stage 1)**: Submitting a search progressively streams a structured list of iconic local foods and honorable mention runner-up dishes to provide immediate visual feedback on on-device models (Gemini Nano).
 3. **Master Analytics Tab Group (Stage 1)**: A dedicated two-tab panel displays Stage 1 model diagnostics:
    - **Tab 1 (Thought Summary)**: Displays the AI thought reasoning chain and the 1–2 honorable mention dishes as remarks.
    - **Tab 2 (Token Usage)**: Displays discovery token analytics for the overall city search.
-4. **Recipe Synthesis & Accordion Diagnostics (Stage 2)**: Users explore specific dishes on demand. Expanding an accordion item streams the major ingredients, formats the markdown recipe on the fly, and displays a per-dish token usage analytics bar at the bottom upon completion.
+4. **Recipe Synthesis & Accordion Diagnostics (Stage 2)**: Users explore specific dishes on demand. Expanding an accordion item progressively streams ingredients for immediate feedback, while rendering an animated skeleton for recipe instructions until completion; upon completion, it converts the full markdown recipe into sanitized HTML and displays a per-dish token usage analytics bar at the bottom.
 5. **Zero Main-Bundle Overhead**: Markdown parsing and sanitization utilities are dynamically loaded on demand only when a recipe is first formatted.
 6. **Session-Scoped Caching**: Completed recipes (including ingredients, formatted HTML, and per-dish token metrics) are cached in-memory, ensuring instant accordion re-expansion without re-triggering AI inference.
 
 ## User Stories
 
-1. As a traveler, I want to select a country to filter down the list of cities, pick a city, and press search, so that I can discover the top six representative local foods for that destination without long waiting times on on-device models.
+1. As a traveler, I want to select a country to filter down the list of cities, pick a city, and press search, so that I can discover representative local foods with progressive streaming without long waiting times on on-device models.
 2. As a user, I want the top six foods to be returned as a structured list with native dish names and concise descriptions, so that I can easily scan and compare options.
 3. As a user, I want Stage 1 to also return between one and two honorable mention dishes, so that I am always presented with notable runner-up foods that just missed the top six list.
 4. As a user, I want a two-tab master analytics group displaying the Thought Summary with honorable mentions in the first tab and Prompt 1 Token Usage in the second tab, so that I can clearly understand the model's high-level discovery reasoning and token cost.
 5. As a user, I want search requests to always retrieve fresh AI recommendations, so that repeated searches can surface varied or newly curated culinary suggestions.
 6. As a user, I want to view the list of foods initially with collapsed recipe details, so that I am not overwhelmed by massive text blocks.
 7. As a user, I want to click on a specific food item to load its ingredients and step-by-step recipe on demand, so that computing resources and network bandwidth are only spent on dishes I care about.
-8. As a user, I want to see the ingredients and recipe stream into the accordion progressively in real time, so that I don't have to wait for the entire generation to finish before I start reading.
-9. As a user, I want the streamed recipe to be cleanly formatted with bold text, lists, and headings, so that it is easy and enjoyable to read.
+8. As a user, I want expanding an accordion item to progressively stream ingredients immediately and show an animated loading skeleton for the recipe instructions until generation completes, without text flickering from partial markdown parsing.
+9. As a user, I want the generated recipe to be cleanly formatted with bold text, lists, and headings, so that it is easy and enjoyable to read.
 10. As a user, I want rich text formatting to be safely sanitized against malicious HTML/XSS injection, so that rendering generative AI output remains secure.
 11. As a user, I want to see the specific dish's token usage analytics rendered at the bottom of the accordion once generation completes, so that I have clear per-recipe inference transparency.
 12. As a user, I want already-loaded recipes (including ingredients, recipe HTML, and per-dish token analytics) to open instantaneously when toggling between accordion items, so that I don't experience redundant loading delays.
@@ -41,8 +41,8 @@ A responsive, two-stage **Culinary Guide** architecture optimized for fast hybri
   - Core domain package established in the core layer (`culinary-guide`), exposing domain contracts, JSON schemas, system prompt builders, and domain communication services.
   - Feature layer package established in the features layer (`culinary-guide`), encapsulating feature state management, Signal stores, dynamic markdown formatting, and in-memory recipe caching.
 - **Two-Stage Hybrid Inference Pipeline**:
-  - **Stage 1 (Culinary Discovery)**: Constrained by a structured JSON schema returning 6 food items and 1 to 2 honorable mentions. Explicit prompt directive enforces: _"Provide between 1 and 2 honorable mentions"_.
-  - **Stage 2 (Recipe Synthesis)**: On-demand generation triggered per food item, returning structured JSON with an ingredients array and a markdown recipe string.
+  - **Stage 1 (Culinary Discovery)**: Constrained by a structured JSON schema returning food items and 1 to 2 honorable mentions. Streams progressively to the UI with retry reset masking to minimize perceived latency on Gemini Nano without card flicker.
+  - **Stage 2 (Recipe Synthesis)**: On-demand generation triggered per food item, streaming ingredients progressively and deferring markdown-to-HTML conversion until the recipe stream completes to eliminate partial tag flicker.
 - **Two-Tier Analytics Architecture**:
   - **Prompt 1 Master Tab Group**: Tab 1 binds the thought summary and honorable mentions; Tab 2 binds the discovery token summary and modality breakdown.
   - **Prompt 2 Accordion Diagnostics**: Embedded token analytics rendered inside the accordion body beneath the recipe, bound to the active dish's token metrics upon stream completion.

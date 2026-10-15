@@ -1,3 +1,4 @@
+import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import {
   createRecipePrompt,
   createTopFoodsPrompt,
@@ -18,8 +19,8 @@ describe('culinary-guide prompts', () => {
       const prompt = createTopFoodsPrompt({ country: 'Japan', city: 'Kyoto' });
 
       expect(prompt).toContain('Kyoto, Japan');
-      expect(prompt).toContain('top 6 iconic local foods');
-      expect(prompt).toContain('between 1 and 2 honorable mentions');
+      expect(prompt).toContain(`top ${EXPECTED_FOOD_COUNT} iconic local foods`);
+      expect(prompt).toContain(`between ${MIN_HONORABLE_MENTIONS} and ${MAX_HONORABLE_MENTIONS} honorable mentions`);
       expect(prompt).toContain('native name');
     });
   });
