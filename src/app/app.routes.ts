@@ -15,6 +15,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/image-analysis/image-analysis.component'),
   },
   {
+    path: ROUTE_PATHS.CULINARY_GUIDE,
+    providers: [provideEnvironmentInitializer(() => inject(ConfigService).initialize())],
+    loadComponent: () => import('./features/culinary-guide/culinary-guide.component'),
+  },
+  {
     path: '',
     redirectTo: ROUTE_PATHS.HOME,
     pathMatch: 'full',
