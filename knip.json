@@ -7,5 +7,5 @@
   },
   "ignoreBinaries": ["ng"],
   "ignoreDependencies": ["@firebase/ai", "dompurify", "snarkdown"],
-  "ignore": ["src/app/features/culinary-guide/**"]
+  "ignore": ["src/app/features/culinary-guide/**", "src/app/core/culinary-guide/**"]
 }
