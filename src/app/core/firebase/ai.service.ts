@@ -1,20 +1,23 @@
 import { WINDOW } from '@/core/constants/navigator.const';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import {
-  EnhancedGenerateContentResponse,
-  GenerateContentResponse,
+  type EnhancedGenerateContentResponse,
+  type GenerateContentResponse,
   GenerativeModel,
-  Part,
-  SchemaRequest,
-  TypedSchema,
-  UsageMetadata,
+  type InferenceSource,
+  type Part,
+  type SchemaRequest,
+  type TypedSchema,
+  type UsageMetadata,
 } from 'firebase/ai';
 import { jsonrepair } from 'jsonrepair';
 import { AiModelCacheService } from './ai-model-cache.service';
-import { GenerateContentParams, PartialResponse } from './ai.interface';
+import type { GenerateContentParams, PartialResponse } from './ai.interface';
 import { FALLBACK_IMAGE_SIZE } from './image.const';
-import { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.interface';
-import { PreWarmOptions } from './model-config-params.interface';
+import type { InferenceMetadata } from './inference-metadata.interface';
+import type { PreWarmOptions } from './model-config-params.interface';
+import { ZERO_TOKEN_SUMMARY } from './token-usage.const';
+import type { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.interface';
 
 @Service()
 export class AiService {
@@ -121,9 +124,10 @@ export class AiService {
 
     // Parse the final finished output securely
     const finalParsed = this.parseStreamJSONResponse<T>(finalResponse.text(), params.schema);
+
     yield {
       partialData: finalParsed,
-      response: finalResponse,
+      inferenceMetadata: this.extractInferenceMetadata(finalResponse),
     };
   }
 
@@ -163,6 +167,21 @@ export class AiService {
     }
 
     return undefined;
+  }
+
+  private extractInferenceMetadata(response: EnhancedGenerateContentResponse | undefined): InferenceMetadata {
+    let source: InferenceSource = 'on_device';
+    let thoughtSummary = 'No thought summary';
+    let tokenSummary: TokenSummary | undefined = undefined;
+    let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
+    if (response) {
+      source = response.inferenceSource || 'on_device';
+      thoughtSummary = response.thoughtSummary() || 'No thought summary';
+      const usageGroup = this.processUsage(response);
+      tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;
+      tokenModalityBreakdown = usageGroup?.tokenBreakdown;
+    }
+    return { source, thoughtSummary, tokenSummary, tokenModalityBreakdown };
   }
 
   private async downloadDeviceModel(model: GenerativeModel): Promise<void> {
