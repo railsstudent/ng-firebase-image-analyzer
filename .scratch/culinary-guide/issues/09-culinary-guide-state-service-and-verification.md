@@ -10,7 +10,8 @@ Implement the feature-level coordinator service (`CulinaryGuideCoordinatorServic
 
 ## Scope of Work
 
-1. Create `src/app/core/culinary-guide/index.ts` exporting all public core domain contracts (`CulinaryFoodItem`, `CulinaryDestination`, `DestinationDataset`, `StreamingCulinaryDiscoveryWithMetadata`, `StreamingCulinaryRecipeWithMetadata`, `CulinaryLocation`, `CulinaryRecipeTarget`), services, schemas, and prompts (keeping intermediate wire models `TopFoodsResponse`, `CulinaryRecipeResponse` and validation functions package-internal).
+1. Create `src/app/core/culinary-guide/index.ts` exporting all public core domain contracts (`CulinaryFoodItem`, `CulinaryDestination`, `DestinationDataset`, `StreamingCulinaryDiscoveryWithMetadata`, `StreamingCulinaryRecipeWithMetadata`, `CulinaryLocation`, `CulinaryRecipeTarget`) and services (keeping schemas, prompts, intermediate wire models `TopFoodsResponse`, `CulinaryRecipeResponse`, and validation functions package-internal).
+
 2. Create feature view model `src/app/features/culinary-guide/interfaces/culinary-recipe-detail.interface.ts`:
    - `export interface CulinaryRecipeDetail extends StreamingCulinaryRecipeWithMetadata { recipeHtml: string; }`
 3. Create `src/app/features/culinary-guide/services/culinary-guide-coordinator.service.ts`:
@@ -21,7 +22,7 @@ Implement the feature-level coordinator service (`CulinaryGuideCoordinatorServic
      - Service owns zero Angular signals or reactive state flags (per ADR-0029 and Coding Standard § 3; signals are localized to consuming components).
    - 3.3. In-memory cache & key-builder helper:
      - Private cache map: `readonly #recipeCache = new Map<string, CulinaryRecipeDetail>()`
-     - Private helper method: `private buildRecipeCacheKey({ country, city, dishName }: CulinaryRecipeTarget): string` returning `${country.trim().toLowerCase()}:${city.trim().toLowerCase()}:${dishName.trim().toLowerCase()}`.
+     - Private helper method: `private buildRecipeCacheKey({ country, city, dishName }: CulinaryRecipeTarget): string` returning `${country.trim()}:${city.trim()}:${dishName.trim()}`.toLowerCase().
      - Public cache reset method: `clearCache(): void` clearing `#recipeCache`.
    - 3.4. `search(location: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata>`:
      - Accepts whole `CulinaryLocation` domain contract without parameter destructuring.
@@ -54,10 +55,10 @@ Implement the feature-level coordinator service (`CulinaryGuideCoordinatorServic
 - [x] Service is completely signal-free (no Angular signals; presentation signals localized to consuming components per ADR-0029).
 - [x] `search(location)` returns `AsyncGenerator` yielding progressive discovery chunks and clears `#recipeCache` only upon successful stream completion.
 - [x] `loadRecipe(target)` returns `AsyncGenerator` yielding progressive ingredients with `recipeHtml: ''`, deferring single-pass HTML formatting until full completion.
-- [ ] Coordinator suppresses empty reset chunks during on-device retry recovery.
+- [x] Coordinator suppresses empty reset chunks during on-device retry recovery.
 - [x] Expanding an already-loaded recipe retrieves it immediately from `#recipeCache` as a single-emission generator.
 - [x] Failed search preserves existing cache and propagates error.
 - [x] Exposes `clearCache(): void` for explicit cache invalidation.
 - [x] All public core domain symbols exported from `src/app/core/culinary-guide/index.ts` (excluding internal wire models and validation functions).
-- [ ] Unit tests verify progressive discovery streaming, retry masking, recipe caching (hit vs miss), deferred markdown formatting, transactional cache clearing, and error propagation.
-- [ ] Intermediate verification (`ng lint && npm run check:cycles && npm run cspell` and unit tests) passes cleanly.
+- [x] Unit tests verify progressive discovery streaming, retry masking, recipe caching (hit vs miss), deferred markdown formatting, transactional cache clearing, and error propagation.
+- [x] Intermediate verification (`ng lint && npm run check:cycles && npm run cspell` and unit tests) passes cleanly.

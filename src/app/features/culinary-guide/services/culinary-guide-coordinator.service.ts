@@ -1,34 +1,42 @@
 import {
   CulinaryGuideService,
-  CulinaryLocation,
-  CulinaryRecipeTarget,
   MarkdownFormatterService,
-  StreamingCulinaryDiscoveryWithMetadata,
-  StreamingCulinaryRecipeWithMetadata,
+  type CulinaryLocation,
+  type CulinaryRecipeTarget,
+  type StreamingCulinaryDiscoveryWithMetadata,
+  type StreamingCulinaryRecipeWithMetadata,
 } from '@/core/culinary-guide';
-import { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
+import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
 import { inject, Service } from '@angular/core';
 
 @Service()
-export class CulinaryGuideStateService {
+export class CulinaryGuideCoordinatorService {
   readonly #culinaryService = inject(CulinaryGuideService);
   readonly #markdownFormatter = inject(MarkdownFormatterService);
 
   readonly #recipeCache = new Map<string, CulinaryRecipeDetail>();
 
   private buildRecipeCacheKey({ country, city, dishName }: CulinaryRecipeTarget): string {
-    return `${country.trim()}:${city.trim()}:${dishName}`;
+    return `${country.trim()}:${city.trim()}:${dishName.trim()}`.toLowerCase();
   }
 
-  async *search(destination: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
+  async *search(location: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
     try {
-      const generator = this.#culinaryService.getTopFoodsStream(destination);
+      const generator = this.#culinaryService.getTopFoodsStream(location);
+      let hasYieldedFoods = false;
 
       for await (const chunk of generator) {
+        if (chunk.foods.length === 0 && hasYieldedFoods) {
+          continue;
+        }
+
+        if (chunk.foods.length > 0) {
+          hasYieldedFoods = true;
+        }
+
         yield chunk;
       }
 
-      // successful search, clear cache
       this.clearCache();
     } catch (err) {
       console.error(err);
@@ -36,28 +44,39 @@ export class CulinaryGuideStateService {
     }
   }
 
-  async *load(target: CulinaryRecipeTarget): AsyncGenerator<CulinaryRecipeDetail> {
+  async *loadRecipe(target: CulinaryRecipeTarget): AsyncGenerator<CulinaryRecipeDetail> {
     try {
       const key = this.buildRecipeCacheKey(target);
       const cachedRecipe = this.#recipeCache.get(key);
       if (cachedRecipe) {
         yield cachedRecipe;
+        return;
       }
 
       const generator = this.#culinaryService.getRecipeStream(target);
-      let recipeDetail: StreamingCulinaryRecipeWithMetadata | undefined = undefined;
+      let lastChunk: StreamingCulinaryRecipeWithMetadata | undefined;
+      let hasYieldedIngredients = false;
+
       for await (const chunk of generator) {
-        recipeDetail = chunk;
+        if (chunk.ingredients.length === 0 && hasYieldedIngredients) {
+          continue;
+        }
+
+        if (chunk.ingredients.length > 0) {
+          hasYieldedIngredients = true;
+        }
+
+        lastChunk = chunk;
         yield {
           ...chunk,
           recipeHtml: '',
         };
       }
 
-      if (recipeDetail) {
-        const recipeHtml = await this.#markdownFormatter.format(recipeDetail.recipe);
-        const successfulRecipe = {
-          ...recipeDetail,
+      if (lastChunk) {
+        const recipeHtml = await this.#markdownFormatter.format(lastChunk.recipe);
+        const successfulRecipe: CulinaryRecipeDetail = {
+          ...lastChunk,
           recipeHtml,
         };
         this.#recipeCache.set(key, successfulRecipe);

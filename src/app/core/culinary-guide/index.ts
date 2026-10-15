@@ -1,5 +1,6 @@
 export type {
   CulinaryDestination,
+  CulinaryFoodItem,
   CulinaryLocation,
   CulinaryRecipeTarget,
   DestinationDataset,
