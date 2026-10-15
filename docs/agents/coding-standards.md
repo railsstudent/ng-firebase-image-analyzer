@@ -58,7 +58,9 @@ $$\text{Features} \longrightarrow \text{Shared} \longrightarrow \text{Core}$$
 - **Companion Skeletons**: Loading and placeholder skeletons must always reside in the exact same layer as their primary component (e.g. shared component skeletons reside in `src/app/shared/ui/components/`, feature skeletons in `src/app/features/<feature>/`).
 - **Platform Envelope vs. Domain Payload Separation**:
   - **Canonical Platform Envelopes**: Cross-cutting runtime and infrastructure concerns (e.g., execution telemetry, token usage, inference source, streaming lifecycle, transport pagination/error wrappers) MUST be defined as canonical envelope contracts in their respective `src/app/core/<platform>/` package (e.g., `InferenceMetadata` in `src/app/core/firebase/`).
+  - **Canonical Platform Envelope Adapters**: Methods and adapter functions that extract or normalize raw SDK responses into platform envelopes (e.g. `AiService.extractInferenceMetadata(response)`) MUST reside directly on the platform service (`src/app/core/<platform>/`), NEVER duplicated as private helpers across consuming domain services.
   - **Zero Inline Redefinition**: Domain contracts (`src/app/core/<domain>/`) must only declare pure business payload attributes. Domain models MUST NEVER redefine platform envelope fields inline; they must compose or extend the canonical platform envelope (e.g., `StreamingXWithMetadata extends InferenceMetadata`). Sibling domains consuming the same core platform capabilities MUST share the identical underlying envelope contract.
+  - **Data-Seam over Control-Flow Abstraction**: When domain services exhibit similar looping or streaming patterns, push data/envelope extraction down into the platform service rather than introducing heavy generic control-flow wrappers or multi-field configuration objects.
 
 ## 9. Generative AI Schema & Contract Equivalence
 

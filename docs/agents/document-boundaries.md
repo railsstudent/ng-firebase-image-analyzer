@@ -13,9 +13,10 @@ This document defines the separation of roles and scope boundaries across the th
    - **Role**: Documents **how** the system is built, technology choices, and architectural trade-offs.
    - **Content**: Rationale for technical decisions, evaluation of alternatives, performance and bundle considerations, data storage or persistence strategies, and overarching system patterns.
 
-3. **Implementation Tickets (`.scratch/<feature>/issues/NN-<slug>.md`)**:
+3. **Implementation Tickets (`.scratch/<feature>/issues/NN-<slug>.md` & `.scratch/platform/issues/NN-<slug>.md`)**:
    - **Role**: Concrete engineering execution breakdown.
    - **Content**: Specific public API contracts, internal module structure, test matrices, and step-by-step implementation tasks. See [issue-tracker.md](issue-tracker.md).
+   - **Platform & Cross-Domain Issues**: Cross-cutting infrastructure and core platform refactoring tickets belong in `.scratch/platform/issues/` rather than proliferating ad-hoc scratch folders.
    - **Call-Site Blast Radius in Refactoring Tickets**: When authoring refactoring or extraction tickets, never specify the extracted utility in isolation. Always audit existing call sites and include the consumer services/callers that need updating in the ticket's _Scope of Work_ and _Acceptance Criteria_.
 
 ## Pre-Flight Just-In-Time (JIT) Ticket Audit Protocol (for AI Assistants)
