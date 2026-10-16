@@ -19,11 +19,11 @@ Work from whatever is already in the conversation context. If the user passes a 
 **The Reconciliation Checkpoint Gate:**
 Before drafting tickets, audit all code smells, bugs, edge cases, and design opportunities explicitly identified earlier in the conversation (or in the source plan/spec).
 
-Perform a 1-time check matching discovered findings against the proposed ticket scope:
-- **Happy Path:** Every finding maps directly to an acceptance criterion in a proposed ticket, or was explicitly marked deferred/out-of-scope by user agreement. Proceed to Step 2/3.
+Perform a 1-time check matching discovered findings against the proposed ticket scope. **You MUST always output the Reconciliation Checkpoint Report table to the user before drafting or presenting tickets:**
+- **Happy Path:** Every finding maps directly to an acceptance criterion in a proposed ticket, or was explicitly marked deferred/out-of-scope by user agreement. Output the full **Reconciliation Checkpoint Report** table showing all covered and deferred findings mapped to tickets, then proceed to Step 2/3.
 - **Failed Path (Stop-the-Line Block):** If any finding is unmapped, orphaned, or unresolved (e.g. raised earlier but dropped during subsequent technical debate):
   1. **Do not draft or publish tickets.**
-  2. Output a brief **Reconciliation Exception Report** showing:
+  2. Output the **Reconciliation Exception Report** showing:
      - `Covered`: findings mapped to proposed tickets.
      - `Orphaned / Unresolved`: findings identified earlier but lacking an agreed solution or absent from scope.
   3. Prompt the user for resolution (whether to include them, assign a solution, or explicitly defer them) before proceeding.
