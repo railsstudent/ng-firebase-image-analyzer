@@ -1,5 +1,4 @@
-import { PERCENT_FACTOR } from '@/core/constants/math.const';
-import { WINDOW } from '@/core/constants/navigator.const';
+import { PERCENT_FACTOR, WINDOW } from '@/core/constants';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import {
   type EnhancedGenerateContentResponse,

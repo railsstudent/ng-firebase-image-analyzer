@@ -1,4 +1,4 @@
-import { WINDOW } from '@/core/constants/navigator.const';
+import { WINDOW } from '@/core/constants';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { getGenerativeModel, InferenceMode, SchemaRequest, SchemaType, ThinkingLevel } from 'firebase/ai';

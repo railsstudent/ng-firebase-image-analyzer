@@ -1,5 +1,4 @@
-import { WINDOW } from '@/core/constants/navigator.const';
-import { ONE_HOUR_MS } from '@/core/constants/time.const';
+import { ONE_HOUR_MS, WINDOW } from '@/core/constants';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';

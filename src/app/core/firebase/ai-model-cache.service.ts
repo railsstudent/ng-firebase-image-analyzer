@@ -1,4 +1,4 @@
-import { WINDOW } from '@/core/constants/navigator.const';
+import { WINDOW } from '@/core/constants';
 import { inject, Service } from '@angular/core';
 import {
   GenerativeModel,

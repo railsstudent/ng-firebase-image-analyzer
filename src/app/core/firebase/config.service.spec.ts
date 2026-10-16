@@ -1,4 +1,4 @@
-import { WINDOW } from '@/core/constants/navigator.const';
+import { WINDOW } from '@/core/constants';
 import firebaseConfig from '@/public/firebase.config.json';
 import '@angular/compiler';
 import { provideZonelessChangeDetection } from '@angular/core';

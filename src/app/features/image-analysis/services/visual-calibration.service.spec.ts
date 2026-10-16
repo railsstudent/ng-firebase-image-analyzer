@@ -21,6 +21,14 @@ describe('VisualCalibrationService', () => {
       expect(resultNull.cropPosition).toBe('N/A');
       expect(resultNull.filterStyle).toBe('');
       expect(resultNull.aspectRatio).toBe('auto');
+      expect(resultNull.cropImage.imageStyle).toEqual({
+        position: 'static',
+        width: '100%',
+        left: 'auto',
+        top: 'auto',
+        maxWidth: 'none',
+        maxHeight: 'none',
+      });
 
       const resultUndefined = service.calibrate(undefined);
       expect(resultUndefined.safeCrop).toBeUndefined();
@@ -46,6 +54,14 @@ describe('VisualCalibrationService', () => {
       expect(result.filterStyle).toContain('saturate(1.1)');
       expect(result.aspectRatio).toBe('0.8 / 0.6');
       expect(result.cropImage.containerStyle.overflow).toBe('hidden');
+      expect(result.cropImage.imageStyle).toEqual({
+        position: 'absolute',
+        width: '125.00%',
+        left: '-12.50%',
+        top: '-33.33%',
+        maxWidth: 'none',
+        maxHeight: 'none',
+      });
     });
 
     it('should fallback to safe default crop styles when crop delta is invalid (< 0.1)', () => {
@@ -57,6 +73,14 @@ describe('VisualCalibrationService', () => {
       expect(result.cropPosition).toBe('N/A');
       expect(result.aspectRatio).toBe('auto');
       expect(result.cropImage.containerStyle.position).toBe('static');
+      expect(result.cropImage.imageStyle).toEqual({
+        position: 'static',
+        width: '100%',
+        left: 'auto',
+        top: 'auto',
+        maxWidth: 'none',
+        maxHeight: 'none',
+      });
     });
   });
 });

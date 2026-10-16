@@ -66,6 +66,25 @@ describe('ImageAnalysisService', () => {
 
       expect(mockAiService.preWarmModel).toHaveBeenCalledTimes(1);
     });
+
+    it('handles preWarm failure gracefully and resets promise to allow retry', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const preWarmError = new Error('WebGPU compilation error');
+      mockAiService.preWarmModel.mockRejectedValueOnce(preWarmError);
+
+      await service.preWarm();
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        'Image analysis pre-warm sequence finished with warning/skip:',
+        preWarmError,
+      );
+
+      // Subsequent call should retry since promise was reset
+      mockAiService.preWarmModel.mockResolvedValueOnce(undefined);
+      await service.preWarm();
+
+      expect(mockAiService.preWarmModel).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('analyzeImageStream', () => {
@@ -176,6 +195,22 @@ describe('ImageAnalysisService', () => {
           contents: [customPrompt, expect.any(Object)],
         }),
       );
+    });
+
+    it('rejects with error when file is not an image before calling aiService', async () => {
+      const nonImageFile = new File(['content'], 'test.txt', { type: 'text/plain' });
+
+      await expect(collectStream(service.analyzeImageStream(nonImageFile))).rejects.toThrow(
+        'Invalid file type: text/plain. The file must be an image.',
+      );
+      expect(mockAiService.generateContentStream).not.toHaveBeenCalled();
+    });
+
+    it('rejects with error when custom prompt is empty whitespace before calling aiService', async () => {
+      await expect(collectStream(service.analyzeImageStream(mockFile, '   '))).rejects.toThrow(
+        'Prompt cannot be empty or whitespace.',
+      );
+      expect(mockAiService.generateContentStream).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,5 +1,4 @@
-import { PERCENT_FACTOR } from '@/core/constants/math.const';
-import { MS_PER_SECOND } from '@/core/constants/time.const';
+import { MS_PER_SECOND, PERCENT_FACTOR } from '@/core/constants';
 
 export function toPercentString(ratio: number, decimals = 2): string {
   return `${(ratio * PERCENT_FACTOR).toFixed(decimals)}%`;
