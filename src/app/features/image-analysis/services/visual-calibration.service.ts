@@ -4,10 +4,10 @@ import {
   CropImageStyles,
   VisualCalibrationResult,
 } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import { toPercentString } from '@/shared/utils/format.util';
 import { Service } from '@angular/core';
 
 const DEFAULT_IMAGE_WIDTH = 100;
-const PERCENT = 100;
 
 @Service()
 export class VisualCalibrationService {
@@ -74,9 +74,9 @@ export class VisualCalibrationService {
     const cropHeight = +(safeCrop.yMax - safeCrop.yMin).toFixed(2); // 1.0 - 0.0 = 1.0
 
     // 3. Apply ternary checks for the default "uncropped" state
-    const imgWidth = crop ? `${((1 / cropWidth) * PERCENT).toFixed(2)}%` : '100%';
-    const imgLeft = crop ? `${(-(safeCrop.xMin / cropWidth) * PERCENT).toFixed(2)}%` : 'auto';
-    const imgTop = crop ? `${(-(safeCrop.yMin / cropHeight) * PERCENT).toFixed(2)}%` : 'auto';
+    const imgWidth = crop ? toPercentString(1 / cropWidth) : '100%';
+    const imgLeft = crop ? toPercentString(-(safeCrop.xMin / cropWidth)) : 'auto';
+    const imgTop = crop ? toPercentString(-(safeCrop.yMin / cropHeight)) : 'auto';
 
     return {
       containerStyle: {

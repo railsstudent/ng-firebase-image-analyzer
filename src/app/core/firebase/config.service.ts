@@ -1,4 +1,5 @@
 import { WINDOW } from '@/core/constants/navigator.const';
+import { ONE_HOUR_MS } from '@/core/constants/time.const';
 import firebaseConfig from '@/public/firebase.config.json';
 import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';
@@ -7,9 +8,6 @@ import type { FirebaseApp } from 'firebase/app';
 import { AppRemoteConfig } from './app-remote-config.interface';
 import { isLocalhost, isOnline } from './host.util';
 
-const SECONDS = 60;
-const MILLISECONDS = 1000;
-const ONE_HOUR_IN_MILLISECONDS = SECONDS * SECONDS * MILLISECONDS;
 const DEV_TIMEOUT = 1000;
 const PROD_TIMEOUT = 2000;
 
@@ -112,7 +110,7 @@ export class ConfigService {
     const rc = getRemoteConfig(this.#app);
     rc.defaultConfig = remoteConfigDefaults;
     const dev = isDevMode();
-    rc.settings.minimumFetchIntervalMillis = dev ? 0 : ONE_HOUR_IN_MILLISECONDS;
+    rc.settings.minimumFetchIntervalMillis = dev ? 0 : ONE_HOUR_MS;
     rc.settings.fetchTimeoutMillis = dev ? DEV_TIMEOUT : PROD_TIMEOUT;
     if (isOnline(this.#win)) {
       fetchAndActivate(rc)

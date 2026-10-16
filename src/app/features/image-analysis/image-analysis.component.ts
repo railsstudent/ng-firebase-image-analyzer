@@ -4,13 +4,12 @@ import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psych
 import { SellIconComponent } from '@/shared/ui/icons/sell-icon/sell-icon.component';
 import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
 import { ImageUploaderComponent } from '@/shared/ui/image-uploader/image-uploader.component';
+import { formatDurationSeconds } from '@/shared/utils/format.util';
 import { Component, computed, injectAsync, signal } from '@angular/core';
 import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
 import { ImageTag } from './tag-list/interfaces/image-tag.interface';
 import { TagListComponent } from './tag-list/tag-list.component';
-
-const MILLISECONDS = 1000;
 
 @Component({
   selector: 'app-image-analysis',
@@ -43,7 +42,7 @@ export default class ImageAnalysisComponent {
   isLoading = signal(false);
   performance = signal(0);
   errorMessage = signal('');
-  seconds = computed(() => (this.performance() / MILLISECONDS).toFixed(1));
+  seconds = computed(() => formatDurationSeconds(this.performance()));
 
   // Computed derived states
   tags = computed<ImageTag[]>(() => {

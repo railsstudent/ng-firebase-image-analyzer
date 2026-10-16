@@ -91,3 +91,10 @@ $$\text{Features} \longrightarrow \text{Shared} \longrightarrow \text{Core}$$
 
 - **Immutable Behavioral Contracts**: During structural refactoring or delegation to internal utilities, all console logs, telemetry payloads, and thrown `Error` messages—including dynamic interpolation arguments (e.g., `${size}x${size}`)—are strictly immutable behavioral contracts.
 - **Zero Aggressive Pruning**: Never truncate, rephrase, or remove arguments from log or error messages unless explicitly mandated by the ticket's Acceptance Criteria. If a refactor removes an intermediate variable, calculate or pass the necessary argument to retain the exact diagnostic output format.
+
+## 12. Domain-Cohesive Constants & Behavioral Encapsulation
+
+- **Zero "Junk Drawer" Constants Files**: Never create grab-bag or generic constants files (e.g. `common.const.ts`, `metrics.const.ts`, `globals.const.ts`). Constants files must be cohesive and organized by strict domain or dimensional concepts (e.g., `time.const.ts`, `math.const.ts`, `image.const.ts`, `navigator.const.ts`).
+- **Domain Accuracy Over Syntax Appeasement**: Do not use "metrics" as a label for unit conversion scales or mathematical factors. In this codebase, "metrics" and "telemetry" are strictly reserved for runtime system measurements (tokens, latency, memory).
+- **Prefer Behavioral Utilities Over Naked Numbers**: When satisfying `@typescript-eslint/no-magic-numbers` for units of measurement (percentages, millisecond durations, byte sizes), prefer encapsulating the transformation in pure, testable utility functions (`toPercentString()`, `formatDurationSeconds()`, `calculatePercentage()`) rather than exporting raw numbers for callers to perform manual arithmetic and string concatenation.
+- **Dimensional Units in Time Constants**: Time constants must explicitly state their dimensional units in their names (e.g., `MS_PER_SECOND`, `SECONDS_PER_MINUTE`, `ONE_HOUR_MS`) rather than ambiguous names like `MILLISECONDS` or `SECONDS`.

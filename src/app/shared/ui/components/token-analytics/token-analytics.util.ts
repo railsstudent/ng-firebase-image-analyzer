@@ -1,21 +1,13 @@
-import { TokenSummary } from '@/core/firebase';
-import {
-  TokenSegment,
-  TokenLegendItem,
+import type { TokenSummary } from '@/core/firebase';
+import type {
   ModalitySegmentsLegend,
+  TokenLegendItem,
+  TokenSegment,
 } from '@/shared/ui/components/token-usage-bar/token-segment.type';
-import { Modality, ModalityTokenCount } from 'firebase/ai';
-import { ModalitySegments } from './modality-segments.type';
-import { BaseModalityTokens, TokenUsageMetadata } from './token-analytics.interface';
-
-function calculatePercentage(value: number, total: number): number {
-  const percent = 100;
-
-  if (total === 0) {
-    return 0;
-  }
-  return (value / total) * percent;
-}
+import { calculatePercentage } from '@/shared/utils/format.util';
+import { Modality, type ModalityTokenCount } from 'firebase/ai';
+import type { ModalitySegments } from './modality-segments.type';
+import type { BaseModalityTokens, TokenUsageMetadata } from './token-analytics.interface';
 
 function findModalityTokenCount(tokenDetails: ModalityTokenCount[] | undefined, modality: Modality): number {
   const textDetail = tokenDetails?.find((d) => d.modality === modality);

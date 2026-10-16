@@ -1,3 +1,4 @@
+import { PERCENT_FACTOR } from '@/core/constants/math.const';
 import { WINDOW } from '@/core/constants/navigator.const';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import {
@@ -173,10 +174,9 @@ export class AiService {
     // (2) before any queries to the model (such as `generateContent()`)
     // You may want to `await` this promise if using `ONLY_ON_DEVICE` (see note below).
     if (model) {
-      const percent = 100;
       const roundPercentage = 10000;
       await model.initializeDeviceModel((val) =>
-        console.log(`Download progress: ${Math.round(val * roundPercentage) / percent}%`),
+        console.log(`Download progress: ${Math.round(val * roundPercentage) / PERCENT_FACTOR}%`),
       );
     }
   }
