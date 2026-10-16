@@ -2,6 +2,14 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ImageUploaderComponent } from './image-uploader.component';
 
+function dispatchFileInput(fileInput: HTMLInputElement, ...files: File[]): void {
+  Object.defineProperty(fileInput, 'files', {
+    value: files,
+    configurable: true,
+  });
+  fileInput.dispatchEvent(new Event('change'));
+}
+
 describe('ImageUploaderComponent', () => {
   let component: ImageUploaderComponent;
   let fixture: ComponentFixture<ImageUploaderComponent>;
@@ -75,12 +83,15 @@ describe('ImageUploaderComponent', () => {
       const fileSelectedSpy = vi.fn();
       component.fileSelected.subscribe(fileSelectedSpy);
 
+      const fileInput = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['image-content'], 'sample.png', { type: 'image/png' });
-      await component.handleFile(file);
-      await fixture.whenStable();
 
-      expect(fileSelectedSpy).toHaveBeenCalledWith(file);
-      expect(component.imageUrl()).toContain('data:image/png;base64,');
+      dispatchFileInput(fileInput, file);
+
+      await vi.waitFor(() => {
+        expect(fileSelectedSpy).toHaveBeenCalledWith(file);
+        expect(component.imageUrl()).toContain('data:image/png;base64,');
+      });
       expect(component.errorMessage()).toBeNull();
     });
 
@@ -88,23 +99,56 @@ describe('ImageUploaderComponent', () => {
       const fileSelectedSpy = vi.fn();
       component.fileSelected.subscribe(fileSelectedSpy);
 
+      const fileInput = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
       // Create a 25MB file
       const largeFile = new File([new ArrayBuffer(25 * 1024 * 1024)], 'large.png', { type: 'image/png' });
-      await component.handleFile(largeFile);
-      await fixture.whenStable();
 
-      expect(fileSelectedSpy).not.toHaveBeenCalled();
-      expect(component.errorMessage()).toContain('File too large');
+      dispatchFileInput(fileInput, largeFile);
+
+      await vi.waitFor(() => {
+        expect(fileSelectedSpy).not.toHaveBeenCalled();
+        expect(component.errorMessage()).toContain('File too large');
+      });
     });
 
-    it('should toggle isDragging on dragover and dragleave', () => {
+    it('should toggle isDragging and prevent default on dragover and dragleave', () => {
       const panel = fixture.nativeElement.querySelector('.uploader-panel') as HTMLElement;
 
-      panel.dispatchEvent(new Event('dragover', { bubbles: true, cancelable: true }));
-      expect(component.isDragging()).toBe(true);
+      const dragOverEvent = new CustomEvent('dragover', { bubbles: true, cancelable: true });
+      const preventDefaultSpy = vi.spyOn(dragOverEvent, 'preventDefault');
+      const stopPropagationSpy = vi.spyOn(dragOverEvent, 'stopPropagation');
+      panel.dispatchEvent(dragOverEvent);
 
-      panel.dispatchEvent(new Event('dragleave', { bubbles: true, cancelable: true }));
+      expect(component.isDragging()).toBe(true);
+      expect(preventDefaultSpy).toHaveBeenCalledTimes(1);
+      expect(stopPropagationSpy).toHaveBeenCalledTimes(1);
+
+      const dragLeaveEvent = new CustomEvent('dragleave', { bubbles: true, cancelable: true });
+      panel.dispatchEvent(dragLeaveEvent);
       expect(component.isDragging()).toBe(false);
+    });
+
+    it('should handle drop event by resetting drag state, emitting fileSelected, and setting preview', async () => {
+      const fileSelectedSpy = vi.fn();
+      component.fileSelected.subscribe(fileSelectedSpy);
+      component.isDragging.set(true);
+
+      const file = new File(['image-content'], 'sample.png', { type: 'image/png' });
+      const dropEvent = {
+        preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
+        dataTransfer: {
+          files: [file] as unknown as FileList,
+        },
+      } as unknown as DragEvent;
+
+      await component.onDrop(dropEvent);
+      await fixture.whenStable();
+
+      expect(component.isDragging()).toBe(false);
+      expect(fileSelectedSpy).toHaveBeenCalledWith(file);
+      expect(component.imageUrl()).toContain('data:image/png;base64,');
+      expect(component.errorMessage()).toBeNull();
     });
   });
 

@@ -20,61 +20,49 @@ export class ImageUploaderComponent {
   isDragging = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
 
-  onDragOver(event: DragEvent): void {
+  onDragState(event: DragEvent, isDragging: boolean): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging.set(true);
+    this.isDragging.set(isDragging);
   }
 
-  onDragLeave(event: DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragging.set(false);
-  }
-
-  async onDrop(event: DragEvent): Promise<void> {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragging.set(false);
-
-    const files = event.dataTransfer?.files;
+  private async handleFile(files?: FileList | null): Promise<void> {
     if (files && files.length > 0) {
-      await this.handleFile(files[0]);
+      this.errorMessage.set(null);
+      const file = files[0];
+      if (file.size > this.maxSize()) {
+        const sizeInMb = (this.maxSize() / ONE_MB).toFixed(0);
+        this.errorMessage.set(`File too large (Max ${sizeInMb}MB)`);
+        return;
+      }
+
+      this.fileSelected.emit(file);
+
+      // Read file for preview using the shared helper
+      try {
+        const dataUrl = await readFileAsDataURL(file);
+        this.imageUrl.set(dataUrl);
+      } catch (error) {
+        console.error('Failed to read file as data URL', error);
+        this.errorMessage.set('Failed to read image preview.');
+      }
     }
   }
 
-  openFilePicker(fileInput: HTMLInputElement): void {
+  async onDrop(event: DragEvent): Promise<void> {
+    this.onDragState(event, false);
+    await this.handleFile(event.dataTransfer?.files);
+  }
+
+  openFilePicker(fileInput: HTMLInputElement, event?: Event): void {
+    event?.preventDefault();
     this.filePickerOpened.emit();
     fileInput.click();
   }
 
   async onFileSelected(event: Event): Promise<void> {
     const inputElement = event.target as HTMLInputElement;
-    const files = inputElement.files;
-    if (files && files.length > 0) {
-      await this.handleFile(files[0]);
-    }
-  }
-
-  async handleFile(file: File): Promise<void> {
-    this.errorMessage.set(null);
-
-    if (file.size > this.maxSize()) {
-      const sizeInMb = (this.maxSize() / ONE_MB).toFixed(0);
-      this.errorMessage.set(`File too large (Max ${sizeInMb}MB)`);
-      return;
-    }
-
-    this.fileSelected.emit(file);
-
-    // Read file for preview using the shared helper
-    try {
-      const dataUrl = await readFileAsDataURL(file);
-      this.imageUrl.set(dataUrl);
-    } catch (error) {
-      console.error('Failed to read file as data URL', error);
-      this.errorMessage.set('Failed to read image preview.');
-    }
+    await this.handleFile(inputElement.files);
   }
 
   removeImage(event: Event, fileInput?: HTMLInputElement): void {

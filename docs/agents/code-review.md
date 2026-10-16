@@ -6,12 +6,15 @@ This document outlines repository-specific standards for running `/code-review` 
 
 - **Single-Commit Reviews**:
   - When reviewing a specific commit (e.g. `<sha>` or `HEAD`), the comparison diff MUST be pinned strictly to:
+
     ```bash
     git diff <commit>~1..<commit>
     ```
+
   - **Prohibition on Speculative History Inspection**: Reviewers must never fall back to `git log -n 5` or compare against `HEAD~5`. The diff under review is strictly the specified commit.
 - **Branch / PR Reviews**:
   - When reviewing a feature branch or pull request, compare against the merge base:
+
     ```bash
     git diff <base-branch>...HEAD
     ```

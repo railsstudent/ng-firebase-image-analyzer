@@ -135,3 +135,5 @@ snarkdown
 dompurify
 Banh
 chashu
+dragleave
+dragover

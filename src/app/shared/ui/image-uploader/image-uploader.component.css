@@ -35,7 +35,7 @@
 }
 
 .preview-image {
-  @apply w-full h-auto max-h-[450px] object-contain transition-all duration-300;
+  @apply w-full h-auto max-h-[450px] object-contain transition-all duration-300 pointer-events-none;
 }
 
 .remove-btn {
@@ -51,7 +51,7 @@
 }
 
 .empty-state {
-  @apply flex flex-col items-center justify-center p-8 text-center space-y-4;
+  @apply flex flex-col items-center justify-center p-8 text-center space-y-4 pointer-events-none;
 }
 
 .upload-icon-wrapper {

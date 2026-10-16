@@ -15,12 +15,12 @@
     [class.has-image]="imageUrl()"
     tabindex="0"
     role="button"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave($event)"
+    (dragover)="onDragState($event, true)"
+    (dragleave)="onDragState($event, false)"
     (drop)="onDrop($event)"
     (click)="openFilePicker(fileInput)"
     (keydown.enter)="openFilePicker(fileInput)"
-    (keydown.space)="$event.preventDefault(); openFilePicker(fileInput)"
+    (keydown.space)="openFilePicker(fileInput, $event)"
   >
     <input
       #fileInput
