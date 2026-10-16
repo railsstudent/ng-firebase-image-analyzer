@@ -21,6 +21,7 @@ This document outlines repository-specific standards for running `/code-review` 
 The **Spec Reviewer** verifies the diff against whichever sources of truth are provided:
 
 - **Conversation History / Chat Directives**: When reviewing against the conversation, the user's explicit instructions, agreed implementation plans, and accepted proposals in the chat serve as the functional baseline.
+  - **Omission Audit Invariant**: When no ticket or PRD exists and the review relies on conversation history, the reviewer must not only verify what was modified, but actively check whether any bug, code smell, or agreed refactor identified in the conversation was omitted from the diff without an explicit user deferral statement. Flag omissions as **`Missing Agreed Scope`**.
 - **Implementation Tickets (`.scratch/**/NN-*.md`)**: Verifies discrete task checklists, API contracts, call-site blast radius updates, and acceptance criteria.
 - **Product Specs (`spec.md`)**: Verifies feature-level behavior, user journeys, and functional expectations.
 - **ADRs (`docs/adr/*.md`)**: Verifies architectural constraints, module depth, and system design patterns.

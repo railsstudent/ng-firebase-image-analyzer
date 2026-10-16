@@ -57,6 +57,18 @@ When designing an interface, ask:
 - Can I simplify the parameters?
 - Can I hide more complexity inside?
 
+## Findings Ledger (Discovery Discipline)
+
+When analyzing an existing module or proposing refactorings, explicitly number the discovered code smells, leaks, and deepening opportunities in the initial evaluation (e.g. `1. Leaky template plumbing`, `2. Encapsulation leak`, `3. Edge-case / UX bug`).
+
+Keep these numbered findings tracked across subsequent discussion turns so detailed problem-solving on one item does not cause other identified opportunities to be lost when transitioning downstream to `/to-tickets` or implementation.
+
+### Pre-Implementation Scope Gate (Ticketed or Direct)
+
+Before moving from design to coding—whether creating tickets via `/to-tickets`, delegating to an implementation agent, or writing code directly—the agent MUST output a consolidated **Scope Checklist** listing every numbered finding and its disposition (`[x] Included in scope` vs `[ ] Explicitly deferred`). 
+
+Never begin code modifications with unmapped or silent omissions. This ensures that even when working fast without tickets or PRDs, zero discoveries are dropped.
+
 ## Principles
 
 - **Depth is a property of the interface, not the implementation.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.

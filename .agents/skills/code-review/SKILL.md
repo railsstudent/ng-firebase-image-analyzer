@@ -29,7 +29,11 @@ Look for the originating spec, in this order:
 1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the workflow in the tracker doc.
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
-4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+4. **Active Conversation History / Session Transcript**: When the user implements changes directly in-chat without an issue or spec file, the conversation thread itself serves as the functional spec baseline.
+5. If nothing is found across any of these sources, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+
+**Conversation Omission Audit Invariant:**
+When reviewing against conversation history (e.g. following interactive design sessions like `/codebase-design`), the Spec sub-agent must perform an **Omission Audit**: audit all code smells, bugs, edge cases, and architectural opportunities identified in the chat against the diff. Flag any finding discussed and agreed upon that is absent from the diff without an explicit user deferral statement as a **Missing Agreed Scope** finding.
 
 ### 3. Identify the standards sources
 
