@@ -5,7 +5,7 @@ Extract the HTML5 canvas creation and black JPEG dummy image packaging logic fro
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Scope of Work
 
@@ -26,7 +26,7 @@ Extract the HTML5 canvas creation and black JPEG dummy image packaging logic fro
 
 ## Acceptance Criteria
 
-- [ ] `createDummyImagePart` generates a valid Gemini `inlineData` `Part` object containing a base64-encoded JPEG from a DOM canvas.
-- [ ] Uses default `FALLBACK_IMAGE_SIZE` when size is omitted.
-- [ ] Internal utility is not exposed via `src/app/core/firebase/index.ts`.
-- [ ] Unit tests pass with 100% branch and function coverage.
+- [x] `createDummyImagePart` generates a valid Gemini `inlineData` `Part` object containing a base64-encoded JPEG from a DOM canvas.
+- [x] Uses default `FALLBACK_IMAGE_SIZE` when size is omitted.
+- [x] Internal utility is not exposed via `src/app/core/firebase/index.ts`.
+- [x] Unit tests pass with 100% branch and function coverage.

@@ -2,7 +2,6 @@ import { WINDOW } from '@/core/constants/navigator.const';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import {
   type EnhancedGenerateContentResponse,
-  type GenerateContentResponse,
   GenerativeModel,
   type InferenceSource,
   type Part,
@@ -13,6 +12,8 @@ import {
 import { jsonrepair } from 'jsonrepair';
 import { AiModelCacheService } from './ai-model-cache.service';
 import type { GenerateContentParams, PartialResponse } from './ai.interface';
+import { validateAiInputs, validateAiResponse } from './ai.validation';
+import { createDummyImagePart } from './dummy-image.util';
 import { FALLBACK_IMAGE_SIZE } from './image.const';
 import type { InferenceMetadata } from './inference-metadata.interface';
 import type { PreWarmOptions } from './model-config-params.interface';
@@ -51,9 +52,9 @@ export class AiService {
         return;
       }
 
-      const size = options.dummySize || FALLBACK_IMAGE_SIZE;
       try {
-        const dummyImagePart = this.makeDummyImagePart(size);
+        const size = options.dummySize || FALLBACK_IMAGE_SIZE;
+        const dummyImagePart = createDummyImagePart(this.#document, size);
 
         const request = this.constructRequest({
           ...params,
@@ -68,27 +69,8 @@ export class AiService {
     }
   }
 
-  private makeDummyImagePart(size: number): Part {
-    const canvas = this.#document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, size, size);
-    }
-    const imageQuality = 0.1;
-    const dummyBase64 = canvas.toDataURL('image/jpeg', imageQuality).split(',')[1];
-
-    const dummyImagePart = {
-      data: dummyBase64,
-      mimeType: 'image/jpeg',
-    };
-    return { type: 'inlineData', inlineData: dummyImagePart };
-  }
-
   async *generateContentStream<T>(params: GenerateContentParams): AsyncGenerator<PartialResponse<T>> {
-    this.validateInputs(params.contents);
+    validateAiInputs(params.contents);
     const model = await this.getCachedModel(params);
     const request = this.constructRequest(params);
 
@@ -120,7 +102,7 @@ export class AiService {
     if (!finalResponse.usageMetadata && latestUsage) {
       finalResponse.usageMetadata = latestUsage;
     }
-    this.validateResponse(finalResponse);
+    validateAiResponse(finalResponse);
 
     // Parse the final finished output securely
     const finalParsed = this.parseStreamJSONResponse<T>(finalResponse.text(), params.schema);
@@ -196,72 +178,6 @@ export class AiService {
       await model.initializeDeviceModel((val) =>
         console.log(`Download progress: ${Math.round(val * roundPercentage) / percent}%`),
       );
-    }
-  }
-
-  private validateInputs(contents: unknown): void {
-    if (contents === null || contents === undefined) {
-      throw new Error('Input contents cannot be null or undefined.');
-    }
-
-    if (typeof contents === 'string') {
-      if (contents.trim() === '') {
-        throw new Error('Input string contents cannot be empty or whitespace.');
-      }
-      return;
-    }
-
-    if (Array.isArray(contents)) {
-      this.validateContentsArray(contents);
-      return;
-    }
-
-    if (typeof contents === 'object') {
-      this.validatePartObject(contents);
-      return;
-    }
-
-    throw new Error('Invalid input contents type.');
-  }
-
-  private validateContentsArray(contents: unknown[]): void {
-    if (contents.length === 0) {
-      throw new Error('Input contents array cannot be empty.');
-    }
-    for (const item of contents) {
-      this.validateArrayItem(item);
-    }
-  }
-
-  private validateArrayItem(item: unknown): void {
-    if (item === null || item === undefined) {
-      throw new Error('Input contents array cannot contain null or undefined elements.');
-    }
-    if (typeof item === 'string') {
-      if (item.trim() === '') {
-        throw new Error('Input contents array cannot contain empty or whitespace strings.');
-      }
-    } else {
-      // Check if single Part object has keys
-      if (Object.keys(item).length === 0) {
-        throw new Error('Input contents array cannot contain empty Part objects.');
-      }
-    }
-  }
-
-  private validatePartObject(contents: object): void {
-    if (Object.keys(contents).length === 0) {
-      throw new Error('Input Part object cannot be empty.');
-    }
-  }
-
-  private validateResponse(response: GenerateContentResponse): void {
-    if (!response.candidates || response.candidates.length === 0) {
-      throw new Error('Response candidates are empty or undefined.');
-    }
-    const firstCandidate = response.candidates[0];
-    if (firstCandidate.finishReason && firstCandidate.finishReason !== 'STOP') {
-      throw new Error(`Response generation did not finish normally. Reason: ${firstCandidate.finishReason}`);
     }
   }
 

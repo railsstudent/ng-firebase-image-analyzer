@@ -237,7 +237,7 @@ describe('AiService', () => {
         });
       });
 
-      it('should proceed and perform dummy shader pre-compilation', async () => {
+      it('should proceed and perform dummy shader pre-compilation with specified dummySize', async () => {
         const params = { contents: 'pre-warm prompt' };
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -250,7 +250,21 @@ describe('AiService', () => {
         });
         expect(mockGenerativeModel.initializeDeviceModel).toHaveBeenCalled();
         expect(mockGenerativeModel.generateContent).toHaveBeenCalled();
-        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('pre-compiled successfully'));
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining('pre-compiled successfully for shape 128x128!'),
+        );
+      });
+
+      it('should use FALLBACK_IMAGE_SIZE for shape log when dummySize is omitted', async () => {
+        const params = { contents: 'pre-warm prompt' };
+        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+        await service.preWarmModel(params, { runDummyQuery: true });
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+          expect.stringContaining('pre-compiled successfully for shape 512x512!'),
+        );
       });
     });
   });

@@ -86,3 +86,8 @@ $$\text{Features} \longrightarrow \text{Shared} \longrightarrow \text{Core}$$
 - **Micro-Library Boundaries**: When selecting lightweight parsers over full-featured engines (e.g. `snarkdown` for bundle isolation), audit syntax limitations upfront and implement a two-tier defense:
   1. **Prompt Guardrail**: Direct the model explicitly against unsupported syntax (e.g., "Use bulleted lists; never output tables").
   2. **Client Fallback Normalizer**: Provide defensive client-side parsing/transformation to normalize non-conforming content before passing it to the micro-library.
+
+## 11. Diagnostic, Telemetry & Error String Preservation
+
+- **Immutable Behavioral Contracts**: During structural refactoring or delegation to internal utilities, all console logs, telemetry payloads, and thrown `Error` messages—including dynamic interpolation arguments (e.g., `${size}x${size}`)—are strictly immutable behavioral contracts.
+- **Zero Aggressive Pruning**: Never truncate, rephrase, or remove arguments from log or error messages unless explicitly mandated by the ticket's Acceptance Criteria. If a refactor removes an intermediate variable, calculate or pass the necessary argument to retain the exact diagnostic output format.

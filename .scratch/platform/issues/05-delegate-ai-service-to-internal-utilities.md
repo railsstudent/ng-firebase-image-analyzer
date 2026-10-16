@@ -5,14 +5,14 @@ Refactor `AiService` to delegate canvas dummy-image creation and validation asse
 
 **Blocked by:** Ticket 03 (dummy image utility), Ticket 04 (consolidated AI validation)
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Scope of Work
 
 1. Update `src/app/core/firebase/ai.service.ts`:
    - Import `createDummyImagePart` from `./dummy-image.util`.
    - Import `validateAiInputs`, `validateAiResponse` from `./ai.validation`.
-   - In `preWarmModel`: replace `this.makeDummyImagePart(size)` with `createDummyImagePart(this.#document, size)`.
+   - In `preWarmModel`: retain size computation (`options.dummySize || FALLBACK_IMAGE_SIZE`), replace `this.makeDummyImagePart(size)` with `createDummyImagePart(this.#document, size)`, and preserve dimension log (`pre-compiled successfully for shape ${size}x${size}!`).
    - In `generateContentStream`: replace `this.validateInputs(...)` with `validateAiInputs(...)`.
    - In `generateContentStream`: replace `this.validateResponse(...)` with `validateAiResponse(...)`.
    - Delete private helper methods:
@@ -22,7 +22,7 @@ Refactor `AiService` to delegate canvas dummy-image creation and validation asse
      - `validateArrayItem`
      - `validatePartObject`
      - `validateResponse`
-   - Remove unused imports (e.g., `FALLBACK_IMAGE_SIZE` if no longer directly referenced).
+   - Retain `FALLBACK_IMAGE_SIZE` import from `./image.const` for size resolution in `preWarmModel`.
 2. Verify regressions against existing test suite:
    - Run `npx vitest run src/app/core/firebase/ai.service.spec.ts`
    - Run full project checks:
@@ -34,7 +34,8 @@ Refactor `AiService` to delegate canvas dummy-image creation and validation asse
 
 ## Acceptance Criteria
 
-- [ ] `AiService` delegates dummy image generation and validation checks to package-internal utilities.
-- [ ] 6 private micro-functions are removed from `AiService`.
-- [ ] `AiService` public API surface (`preWarmModel`, `generateContentStream`) remains unchanged and backward-compatible.
-- [ ] All unit and regression tests in `ai.service.spec.ts` pass cleanly.
+- [x] `AiService` delegates dummy image generation and validation checks to package-internal utilities.
+- [x] WebGPU pre-compilation log preserves dimension diagnostics (`for shape ${size}x${size}!`).
+- [x] 6 private micro-functions are removed from `AiService`.
+- [x] `AiService` public API surface (`preWarmModel`, `generateContentStream`) remains unchanged and backward-compatible.
+- [x] All unit and regression tests in `ai.service.spec.ts` pass cleanly.

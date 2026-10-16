@@ -49,6 +49,10 @@ This document defines testing conventions, DI mocking contracts, and verificatio
      - Keep helpers pure, synchronous/async explicit, and accepting generic `ComponentFixture<T>`.
      - Never mutate shared mock instances across tests; instantiate fresh mock objects per test run inside `beforeEach`.
 
+6. **Exact Assertions for Diagnostics & Thrown Errors**:
+   - When asserting console logs, telemetry events, or error messages containing dynamic arguments (e.g. shapes, dimensions, status codes, URLs), assert the full interpolated pattern or regex (e.g., `expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('pre-compiled successfully for shape 128x128!'))`).
+   - Ban overly broad substring matches (e.g., `expect.stringContaining('pre-compiled')`) that remain green if dynamic arguments are accidentally stripped during refactoring.
+
 ## Test Execution Workflow
 
 1. **Targeted Testing during Iterations**:
@@ -60,6 +64,8 @@ This document defines testing conventions, DI mocking contracts, and verificatio
        "include": ["src/app/features/image-analysis/image-analysis.component.spec.ts"]
      }
      ```
+
+   - When running from the terminal, always use `npx ng test --include="<path>/**/*.spec.ts" --no-watch` rather than bare `npx vitest run <file>` to ensure `@/` tsconfig path aliases are resolved through Angular CLI.
 
 2. **End-of-Task Verification**:
    - **Intermediate Domain Tickets** (work-in-progress core packages prior to UI/route wiring):

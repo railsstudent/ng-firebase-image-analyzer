@@ -5,7 +5,7 @@ Extract and consolidate the fragmented validation functions from `AiService` int
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Scope of Work
 
@@ -37,8 +37,8 @@ Extract and consolidate the fragmented validation functions from `AiService` int
 
 ## Acceptance Criteria
 
-- [ ] `validateAiInputs` merges all input assertions without micro-function fragmentation and with zero `return` statements.
-- [ ] `validateAiResponse` validates candidate list and normal completion finish reasons.
-- [ ] 100% preservation of error messages and guard semantics.
-- [ ] Internal utility is not exposed via `src/app/core/firebase/index.ts`.
-- [ ] Comprehensive unit tests pass.
+- [x] `validateAiInputs` merges all input assertions without micro-function fragmentation and with zero `return` statements.
+- [x] `validateAiResponse` validates candidate list and normal completion finish reasons.
+- [x] 100% preservation of error messages and guard semantics.
+- [x] Internal utility is not exposed via `src/app/core/firebase/index.ts`.
+- [x] Comprehensive unit tests pass.
