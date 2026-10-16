@@ -176,7 +176,7 @@ export class AiService {
     let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
     if (response) {
       source = response.inferenceSource || 'on_device';
-      thoughtSummary = response.thoughtSummary() || 'No thought summary';
+      thoughtSummary = response.thoughtSummary?.() || 'No thought summary';
       const usageGroup = this.processUsage(response);
       tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;
       tokenModalityBreakdown = usageGroup?.tokenBreakdown;

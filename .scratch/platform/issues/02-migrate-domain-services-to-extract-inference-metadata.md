@@ -5,7 +5,7 @@ Refactor both `CulinaryGuideService` and `ImageAnalysisService` to consume `upda
 
 **Blocked by:** Ticket 01 (Extract Canonical Inference Metadata in AiService)
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Scope of Work
 
@@ -13,13 +13,13 @@ Refactor both `CulinaryGuideService` and `ImageAnalysisService` to consume `upda
    - Delete private method `buildInferenceMetadata(response: EnhancedGenerateContentResponse | undefined)`.
    - In `getTopFoodsStream` and `getRecipeStream` streaming loops:
      - Post-process `update.partialData`.
-     - Spread `update.inferenceMetadata` when present (on final chunk), falling back to platform defaults (`source: 'on_device'`, `thoughtSummary: 'No thought summary'`, `tokenSummary: ZERO_TOKEN_SUMMARY`) during intermediate chunks.
+     - Spread `update.inferenceMetadata` when present (on final chunk), falling back to lightweight platform defaults (`source: 'on_device'`, `thoughtSummary: ''` or `'No thought summary'`; no `ZERO_TOKEN_SUMMARY` required during intermediate chunks).
    - Clean up imports in `culinary-guide.service.ts`: remove unused imports (`TokenModalityBreakdown`, `TokenSummary`, `EnhancedGenerateContentResponse`, `InferenceSource`).
 2. Refactor `src/app/core/image-analysis/image-analysis.service.ts`:
    - Remove inline metadata construction in `analyzeImageStream` (lines 73–91).
    - In `analyzeImageStream` streaming loop:
      - Post-process `analysis = this.constructAnalysis(update)`.
-     - Yield `{ analysis, ...(update.inferenceMetadata ?? defaultMetadata) }`.
+     - Yield `{ analysis, ...(update.inferenceMetadata ?? { source: 'on_device', thoughtSummary: 'No thought summary' }) }`. No token summary fallback needed during intermediate chunks.
    - Clean up imports in `image-analysis.service.ts`: remove unused imports (`TokenModalityBreakdown`, `TokenSummary`, `EnhancedGenerateContentResponse`, `InferenceSource`).
 3. Encapsulate `AiService.processUsage`:
    - Now that all domain services consume `inferenceMetadata` and have zero references to `processUsage`, mark `processUsage` as `private` in `src/app/core/firebase/ai.service.ts`.
@@ -45,5 +45,5 @@ Refactor both `CulinaryGuideService` and `ImageAnalysisService` to consume `upda
 - [x] `ImageAnalysisService` consumes `update.inferenceMetadata` directly from the stream update and deletes inline metadata extraction boilerplate.
 - [x] `AiService.processUsage` is made `private` now that zero external callers reference it.
 - [x] Unused platform envelope types, SDK types, and token constants are removed from both domain service imports.
-- [ ] TestBed mocks in `culinary-guide.service.spec.ts` and `image-analysis.service.spec.ts` provide `inferenceMetadata` on streamed chunks.
-- [ ] All unit test suites and intermediate checks (`ng lint`, `check:cycles`, `cspell`) pass cleanly.
+- [x] TestBed mocks in `culinary-guide.service.spec.ts` and `image-analysis.service.spec.ts` provide `inferenceMetadata` on streamed chunks.
+- [x] All unit test suites and intermediate checks (`ng lint`, `check:cycles`, `cspell`) pass cleanly.

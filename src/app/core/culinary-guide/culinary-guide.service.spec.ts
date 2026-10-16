@@ -2,7 +2,6 @@ import { AiService } from '@/core/firebase';
 import { collectStream, createMockStream } from '@/testing/ai-stream.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import type { EnhancedGenerateContentResponse } from 'firebase/ai';
 import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type { CulinaryFoodItem, CulinaryLocation, CulinaryRecipeTarget } from './culinary-guide.interface';
 import { CULINARY_GUIDE_SYSTEM_INSTRUCTION, RECIPE_PROMPT_INSTRUCTION } from './culinary-guide.prompt';
@@ -17,7 +16,6 @@ describe('CulinaryGuideService', () => {
   let service: CulinaryGuideService;
   let mockAiService: {
     generateContentStream: ReturnType<typeof vi.fn>;
-    processUsage: ReturnType<typeof vi.fn>;
   };
 
   const mockLocation: CulinaryLocation = { country: 'Japan', city: 'Tokyo' };
@@ -26,10 +24,6 @@ describe('CulinaryGuideService', () => {
   beforeEach(() => {
     mockAiService = {
       generateContentStream: vi.fn(),
-      processUsage: vi.fn().mockReturnValue({
-        tokenSummary: { promptTokens: 10, candidatesTokens: 20, totalTokens: 30 },
-        tokenBreakdown: undefined,
-      }),
     };
 
     TestBed.configureTestingModule({
@@ -45,10 +39,17 @@ describe('CulinaryGuideService', () => {
 
   describe('getTopFoodsStream', () => {
     it('yields streaming chunks and terminates cleanly when stream passes completion validation', async () => {
-      const mockResponse = {
-        inferenceSource: 'on_device' as const,
-        thoughtSummary: () => 'Curated 6 iconic Tokyo dishes',
-      } as EnhancedGenerateContentResponse;
+      const mockMetadata = {
+        source: 'on_device' as const,
+        thoughtSummary: 'Curated 6 iconic Tokyo dishes',
+        tokenSummary: {
+          promptTokenCount: 10,
+          outputTokenCount: 20,
+          totalTokenCount: 30,
+          thoughtsTokenCount: 0,
+          cachedContentTokenCount: 0,
+        },
+      };
 
       const foodsBatch: CulinaryFoodItem[] = [
         makeFood('Sushi'),
@@ -67,7 +68,7 @@ describe('CulinaryGuideService', () => {
               foods: foodsBatch,
               honorableMentions: ['Monjayaki'],
             },
-            response: mockResponse,
+            inferenceMetadata: mockMetadata,
           },
         ]),
       );
@@ -85,12 +86,18 @@ describe('CulinaryGuideService', () => {
       expect(chunks).toHaveLength(2);
       expect(chunks[0].foods).toHaveLength(3);
       expect(chunks[0].honorableMentions).toHaveLength(0);
-      expect(chunks[0].thoughtSummary).toBe('No thought summary');
+      expect(chunks[0].thoughtSummary).toBe('');
 
       expect(chunks[1].foods).toHaveLength(6);
       expect(chunks[1].honorableMentions).toEqual(['Monjayaki']);
       expect(chunks[1].thoughtSummary).toBe('Curated 6 iconic Tokyo dishes');
-      expect(chunks[1].tokenSummary).toEqual({ promptTokens: 10, candidatesTokens: 20, totalTokens: 30 });
+      expect(chunks[1].tokenSummary).toEqual({
+        promptTokenCount: 10,
+        outputTokenCount: 20,
+        totalTokenCount: 30,
+        thoughtsTokenCount: 0,
+        cachedContentTokenCount: 0,
+      });
     });
 
     it('emits reset chunk and retries once when initial attempt yields fewer than 6 foods', async () => {
@@ -222,10 +229,10 @@ describe('CulinaryGuideService', () => {
 
   describe('getRecipeStream', () => {
     it('yields streaming chunks and terminates cleanly when stream passes completion validation', async () => {
-      const mockResponse = {
-        inferenceSource: 'on_device' as const,
-        thoughtSummary: () => 'Synthesizing authentic broth',
-      } as EnhancedGenerateContentResponse;
+      const mockMetadata = {
+        source: 'on_device' as const,
+        thoughtSummary: 'Synthesizing authentic broth',
+      };
 
       mockAiService.generateContentStream.mockResolvedValue(
         createMockStream([
@@ -239,7 +246,7 @@ describe('CulinaryGuideService', () => {
               ingredients: ['Pork bones', 'Ramen noodles', 'Green onions'],
               recipe: '# Tonkotsu Ramen\n\n1. Simmer pork bones for 12 hours.',
             },
-            response: mockResponse,
+            inferenceMetadata: mockMetadata,
           },
         ]),
       );
@@ -257,6 +264,7 @@ describe('CulinaryGuideService', () => {
       expect(chunks).toHaveLength(2);
       expect(chunks[0].ingredients).toEqual(['Pork bones', 'Ramen noodles']);
       expect(chunks[0].recipe).toBe('');
+      expect(chunks[0].thoughtSummary).toBe('');
 
       expect(chunks[1].ingredients).toHaveLength(3);
       expect(chunks[1].recipe).toContain('Simmer pork bones');

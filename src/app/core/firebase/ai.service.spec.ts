@@ -61,7 +61,32 @@ describe('AiService', () => {
   });
 
   describe('generateContentStream', () => {
-    it('should stream generated content chunks and return final parsed result', async () => {
+    it('should stream generated content chunks and emit inferenceMetadata on final chunk', async () => {
+      const mockStreamResponse = {
+        text: () => '{"caption": "A test image"}',
+        candidates: [{ finishReason: 'STOP', content: {} }],
+        inferenceSource: 'on_device' as const,
+        thoughtSummary: () => 'Analyzed image composition',
+        usageMetadata: {
+          totalTokenCount: 150,
+          promptTokenCount: 90,
+          thoughtsTokenCount: 10,
+          candidatesTokenCount: 50,
+          promptTokensDetails: [{ modality: 'TEXT', tokenCount: 90 }],
+          candidatesTokensDetails: [{ modality: 'TEXT', tokenCount: 50 }],
+        },
+      };
+
+      mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+        stream: (async function* () {
+          yield {
+            text: () => '{"caption": "A partial caption"}',
+            usageMetadata: { totalTokenCount: 40, promptTokenCount: 20, candidatesTokenCount: 20 },
+          };
+        })(),
+        response: Promise.resolve(mockStreamResponse),
+      });
+
       const results = [];
       for await (const chunk of service.generateContentStream({ contents: 'test stream' })) {
         results.push(chunk);
@@ -73,7 +98,88 @@ describe('AiService', () => {
       });
       expect(mockGenerativeModel.initializeDeviceModel).toHaveBeenCalled();
       expect(mockGenerativeModel.generateContentStream).toHaveBeenCalled();
-      expect(results.length).toBeGreaterThan(0);
+      expect(results).toHaveLength(2);
+
+      // Intermediate chunk: partial data, no inferenceMetadata
+      expect(results[0].partialData).toBeDefined();
+      expect(results[0].inferenceMetadata).toBeUndefined();
+
+      // Final chunk: final parsed data and populated inferenceMetadata
+      expect(results[1].partialData).toBeDefined();
+      expect(results[1].inferenceMetadata).toEqual({
+        source: 'on_device',
+        thoughtSummary: 'Analyzed image composition',
+        tokenSummary: {
+          totalTokenCount: 150,
+          promptTokenCount: 90,
+          thoughtsTokenCount: 10,
+          cachedContentTokenCount: 0,
+          outputTokenCount: 50,
+        },
+        tokenModalityBreakdown: {
+          promptTokensDetails: [{ modality: 'TEXT', tokenCount: 90 }],
+          outputTokensDetails: [{ modality: 'TEXT', tokenCount: 50 }],
+          cacheTokensDetails: [],
+        },
+      });
+    });
+
+    it('should provide default inferenceMetadata on final chunk when response fields are omitted', async () => {
+      const minimalResponse = {
+        text: () => '{"caption": "Minimal test"}',
+        candidates: [{ finishReason: 'STOP', content: {} }],
+      };
+
+      mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+        stream: (async function* () {
+          yield { text: () => '{"caption": "Minimal"}' };
+        })(),
+        response: Promise.resolve(minimalResponse),
+      });
+
+      const results = [];
+      for await (const chunk of service.generateContentStream({ contents: 'test stream' })) {
+        results.push(chunk);
+      }
+
+      expect(results).toHaveLength(2);
+      expect(results[1].inferenceMetadata).toEqual({
+        source: 'on_device',
+        thoughtSummary: 'No thought summary',
+        tokenSummary: {
+          totalTokenCount: 0,
+          promptTokenCount: 0,
+          thoughtsTokenCount: 0,
+          cachedContentTokenCount: 0,
+          outputTokenCount: 0,
+        },
+        tokenModalityBreakdown: undefined,
+      });
+    });
+
+    it('should respect custom inferenceSource and thoughtSummary when provided', async () => {
+      const cloudResponse = {
+        text: () => '{"caption": "Cloud test"}',
+        candidates: [{ finishReason: 'STOP', content: {} }],
+        inferenceSource: 'cloud' as const,
+        thoughtSummary: () => 'Synthesized via cloud model',
+      };
+
+      mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+        stream: (async function* () {
+          yield { text: () => '{"caption": "Cloud"}' };
+        })(),
+        response: Promise.resolve(cloudResponse),
+      });
+
+      const results = [];
+      for await (const chunk of service.generateContentStream({ contents: 'test stream' })) {
+        results.push(chunk);
+      }
+
+      expect(results).toHaveLength(2);
+      expect(results[1].inferenceMetadata?.source).toBe('cloud');
+      expect(results[1].inferenceMetadata?.thoughtSummary).toBe('Synthesized via cloud model');
     });
   });
 

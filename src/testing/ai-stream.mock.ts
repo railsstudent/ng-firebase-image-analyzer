@@ -1,8 +1,10 @@
+import type { InferenceMetadata } from '@/core/firebase';
 import type { EnhancedGenerateContentResponse } from 'firebase/ai';
 
 interface MockStreamChunk<T = Record<string, unknown>> {
   readonly partialData: Partial<T> | Record<string, unknown>;
   readonly response?: EnhancedGenerateContentResponse;
+  readonly inferenceMetadata?: InferenceMetadata;
 }
 
 /**
