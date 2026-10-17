@@ -13,11 +13,11 @@
   - `culinary-dish-list.component.spec.ts`
 - [ ] Define reactive component signals:
   - `dishes = input.required<readonly CulinaryFoodItem[]>()`: array of discovered dishes.
-  - `activeDishes = model<readonly CulinaryFoodItem[]>([])`: two-way signal tracking currently expanded dishes.
+  - `expandedDishNames = model<string[]>([])`: two-way signal tracking currently expanded dish names (bound directly to accordion group).
   - `loadingDishNames = input<readonly string[]>([])`: array of dish names currently undergoing Stage 2 streaming synthesis.
   - `recipes = input<Record<string, CulinaryRecipeDetail>>({})`: dictionary of loaded/cached recipe details keyed by dish name.
   - `dishSelected = output<CulinaryFoodItem>()`: event emitted when a dish accordion expands to trigger recipe streaming.
-- [ ] Wrap dish collection in template with `<app-accordion-group [isMulti]="true" [(expandedIds)]="expandedDishNames">` (or configurable single/multi mode), mapping `activeDishes` to `expandedDishNames`.
+- [ ] Wrap dish collection in template with `<app-accordion-group [isMulti]="true" [(expandedIds)]="expandedDishNames">` (or configurable single/multi mode).
 - [ ] Populate the `[accordion-header]` slot (`<div accordion-header>`) for each dish:
   - English dish name (`text-on-surface font-semibold text-lg`).
   - Native script pill badge when `dish.nativeName` is defined, styled with secondary monospace typography (`--font-mono text-xs px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium`).
@@ -32,5 +32,5 @@
   - Expanding an item emits `dishSelected` with the complete `CulinaryFoodItem` object.
   - Display of progressive ingredients alongside the instructions skeleton while streaming.
   - Transition from instructions skeleton to sanitized recipe HTML and `<app-token-analytics>` on stream completion.
-  - Programmatic collapse of all dish accordions when `activeDishes.set([])` is called.
+  - Programmatic collapse of all dish accordions when `expandedDishNames.set([])` is called.
 - [ ] Follow repository invariants: zero `!`, zero `../`, native `#` for private state/deps, and TypeScript `private` for methods.
