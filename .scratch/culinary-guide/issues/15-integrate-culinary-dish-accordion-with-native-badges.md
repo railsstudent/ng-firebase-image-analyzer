@@ -1,8 +1,8 @@
 # Ticket 15: Build Culinary Dish List Component with Multi-Expansion and Native Badges
 
-**What to build:** A dedicated presentational feature component (`<app-culinary-dish-list>`) under `src/app/features/culinary-guide/culinary-dish-list/` that renders the list of discovered culinary dishes using the shared `<app-accordion-group>` and `<app-accordion-item>` system. Supports single and multi-expansion modes, surfaces native script pill badges in the header, uses clean `@if` control flow for progressive ingredients and inline instructions loading skeletons, and binds sanitized recipe markdown with token analytics in the body.
+**What to build:** A dedicated presentational feature component (`<app-culinary-dish-list>`) under `src/app/features/culinary-guide/culinary-dish-list/` that renders the list of discovered culinary dishes using the shared `<app-accordion-group>` and `<app-accordion-item>` system. Supports single and multi-expansion modes, surfaces native script pill badges in the header, uses clean `@if` control flow for progressive ingredients and composed `<app-skeleton>` instructions loading, and binds sanitized recipe markdown with token analytics in the body.
 
-**Blocked by:** Ticket 14: Build Shared Accessible Accordion Item Component with Integrated Chevron, and Ticket 09: Culinary Guide State Service and Verification
+**Blocked by:** Ticket 14: Build Shared Accessible Accordion Item Component with Integrated Chevron, Ticket 09: Culinary Guide State Service and Verification, and Ticket 02: Consolidate Shared Skeleton Components into Atomic AppSkeleton Primitive
 
 **Status:** ready-for-agent
 
@@ -24,13 +24,13 @@
   - Concise dish description with responsive line clamping (`text-sm text-on-surface-variant line-clamp-2 md:line-clamp-none mt-1`).
 - [ ] Populate the `[accordion-body]` slot (`<div accordion-body>`) using `@if` control flow:
   - **Ingredients Presentation**: Render streaming/cached ingredients as soon as available in `recipeDetail.ingredients`.
-  - **Inline Recipe Skeleton (No extra component)**: When `loadingDishNames().includes(dish.name) && !recipeDetail?.recipeHtml`, render inline `.skeleton-line` pulses from `skeleton.css` representing instructions loading.
+  - **Recipe Synthesis Skeleton**: When `loadingDishNames().includes(dish.name) && !recipeDetail?.recipeHtml`, compose `<app-skeleton>` primitive elements (`SkeletonComponent` from `@/shared/ui/components/skeleton`) representing instructions loading.
   - **Completed Recipe View**: When `recipeDetail?.recipeHtml` is available, render formatted sanitized HTML via `[innerHTML]` and pinned bottom diagnostics `<app-token-analytics>`.
   - Apply responsive styling and scroll boundaries: single-column on mobile, two-column on desktop, and vertical scroll containment (`max-h-[60vh] md:max-h-[70vh] overflow-y-auto overscroll-contain`).
 - [ ] Create unit tests in `culinary-dish-list.component.spec.ts` asserting:
   - Correct rendering of dishes list, titles, descriptions, and conditional native badges.
   - Expanding an item emits `dishSelected` with the complete `CulinaryFoodItem` object.
-  - Display of progressive ingredients alongside the instructions skeleton while streaming.
-  - Transition from instructions skeleton to sanitized recipe HTML and `<app-token-analytics>` on stream completion.
+  - Display of progressive ingredients alongside the composed `<app-skeleton>` instructions placeholder while streaming.
+  - Transition from `<app-skeleton>` instructions placeholder to sanitized recipe HTML and `<app-token-analytics>` on stream completion.
   - Programmatic collapse of all dish accordions when `expandedDishNames.set([])` is called.
 - [ ] Follow repository invariants: zero `!`, zero `../`, native `#` for private state/deps, and TypeScript `private` for methods.
