@@ -1,6 +1,29 @@
 import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type { CulinaryRecipeResponse, TopFoodsResponse } from './culinary-guide.interface';
 
+function normalizeKey(key: string): string {
+  return key.trim().toLowerCase();
+}
+
+function distinctBy<T>(items: readonly T[], keySelector: (item: T) => string, initialKeys?: Set<string>): T[] {
+  const seen = new Set(initialKeys);
+  return items.filter((item) => {
+    const key = keySelector(item);
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
+export function normalizeDiscoveryResponse({ foods, honorableMentions }: TopFoodsResponse): TopFoodsResponse {
+  const uniqueFoods = distinctBy(foods, (item) => normalizeKey(item.name));
+  const seenFoods = new Set<string>(uniqueFoods.map((item) => normalizeKey(item.name)));
+  const uniqueHonorableMentions = distinctBy(honorableMentions, (item) => normalizeKey(item), seenFoods);
+  return { foods: uniqueFoods, honorableMentions: uniqueHonorableMentions };
+}
+
 export function isValidDiscoveryResponse({ foods, honorableMentions }: TopFoodsResponse): boolean {
   return (
     foods.length === EXPECTED_FOOD_COUNT &&

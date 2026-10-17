@@ -1,4 +1,4 @@
-import { AiService } from '@/core/firebase';
+import { AiService, type PartialResponse } from '@/core/firebase';
 import { inject, Service } from '@angular/core';
 import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type {
@@ -17,7 +17,11 @@ import {
   RECIPE_PROMPT_INSTRUCTION,
 } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
-import { isValidDiscoveryResponse, isValidRecipeResponse } from './culinary-guide.validation';
+import {
+  isValidDiscoveryResponse,
+  isValidRecipeResponse,
+  normalizeDiscoveryResponse,
+} from './culinary-guide.validation';
 
 const MAX_ATTEMPTS = 2;
 
@@ -37,18 +41,11 @@ export class CulinaryGuideService {
       let honorableMentions: string[] = [];
 
       for await (const update of generator) {
-        const inferenceMetadata = update.inferenceMetadata || {
-          source: 'on_device',
-          thoughtSummary: '',
-        };
-        foods = update.partialData.foods || [];
-        honorableMentions = update.partialData.honorableMentions || [];
+        const chunkData = this.extractChunk(update);
+        foods = chunkData.foods;
+        honorableMentions = chunkData.honorableMentions;
 
-        yield {
-          ...inferenceMetadata,
-          foods,
-          honorableMentions,
-        };
+        yield chunkData;
       }
 
       if (isValidDiscoveryResponse({ foods, honorableMentions })) {
@@ -69,6 +66,18 @@ export class CulinaryGuideService {
         `Incomplete culinary discovery stream: expected ${EXPECTED_FOOD_COUNT} foods and ${MIN_HONORABLE_MENTIONS}-${MAX_HONORABLE_MENTIONS} honorable mentions, but received ${foods.length} foods and ${honorableMentions.length} honorable mentions.`,
       );
     }
+  }
+
+  private extractChunk(update: PartialResponse<TopFoodsResponse>): StreamingCulinaryDiscoveryWithMetadata {
+    const inferenceMetadata = update.inferenceMetadata || {
+      source: 'on_device',
+      thoughtSummary: '',
+    };
+    const { foods, honorableMentions } = normalizeDiscoveryResponse({
+      foods: update.partialData.foods || [],
+      honorableMentions: update.partialData.honorableMentions || [],
+    });
+    return { ...inferenceMetadata, foods, honorableMentions };
   }
 
   async *getRecipeStream(target: CulinaryRecipeTarget): AsyncGenerator<StreamingCulinaryRecipeWithMetadata> {

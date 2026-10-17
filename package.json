@@ -17,7 +17,7 @@
     "lint": "ng lint && npm run check:cycles && knip --production && npm run cspell",
     "format": "prettier --write \"{src,firebase}/**/*.{ts,js,html}\" \"*.{mjs,json,md}\"",
     "cspell": "cspell --no-must-find-files --config cspell.config.mjs .",
-    "cspell:collect": "cspell --config cspell.config.mjs --dot --words-only --unique \"{.,.scratch,.agents}/**/*.{ts,html,md,txt}\" | sort -u >> .cspell/project-words.txt",
+    "cspell:collect": "cspell --config cspell.config.mjs --dot --words-only --unique \"{.,.scratch,.agents,docs/agents}/**/*.{ts,html,md,txt}\" | sort -u >> .cspell/project-words.txt",
     "lint-staged": "lint-staged",
     "commitlint": "commitlint",
     "prepare": "husky",

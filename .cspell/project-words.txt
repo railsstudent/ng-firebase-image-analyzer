@@ -138,3 +138,4 @@ chashu
 dragleave
 dragover
 overscroll
+deduplicators

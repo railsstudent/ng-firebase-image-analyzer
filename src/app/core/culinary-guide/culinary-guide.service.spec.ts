@@ -188,6 +188,171 @@ describe('CulinaryGuideService', () => {
       expect(chunks[2].honorableMentions).toHaveLength(1);
     });
 
+    it('yields normalized chunks progressively during streaming to prevent duplicate keys in UI', async () => {
+      const duplicateBatch: CulinaryFoodItem[] = [makeFood('Tacos'), makeFood('Burrito'), makeFood('tacos')];
+
+      mockAiService.generateContentStream.mockResolvedValue(
+        createMockStream([
+          {
+            partialData: {
+              foods: duplicateBatch,
+              honorableMentions: ['Tacos', 'Guacamole', 'guacamole'],
+            },
+          },
+          {
+            partialData: {
+              foods: [
+                ...duplicateBatch,
+                makeFood('Enchiladas'),
+                makeFood('Tamales'),
+                makeFood('Quesadilla'),
+                makeFood('Fajitas'),
+              ],
+              honorableMentions: ['Tacos', 'Guacamole', 'guacamole'],
+            },
+          },
+        ]),
+      );
+
+      const chunks = await collectStream(service.getTopFoodsStream(mockLocation));
+
+      // In the first intermediate chunk:
+      // Foods: deduplicates 'Tacos' and 'tacos' -> 2 items ('Tacos', 'Burrito')
+      expect(chunks[0].foods).toHaveLength(2);
+      expect(chunks[0].foods[0].name).toBe('Tacos');
+      expect(chunks[0].foods[1].name).toBe('Burrito');
+      // Mentions: 'Tacos' excluded (collides with foods), 'guacamole' deduplicated -> ['Guacamole']
+      expect(chunks[0].honorableMentions).toEqual(['Guacamole']);
+
+      // In the terminal chunk: 6 unique foods, 1 honorable mention
+      expect(chunks[1].foods).toHaveLength(6);
+      expect(chunks[1].honorableMentions).toEqual(['Guacamole']);
+    });
+
+    it('emits reset chunk and retries when attempt 1 produces duplicate foods reducing unique count below 6', async () => {
+      const duplicateFoodsAttempt1: CulinaryFoodItem[] = [
+        makeFood('Ramen'),
+        makeFood('ramen'),
+        makeFood('Sushi'),
+        makeFood('Tempura'),
+        makeFood('Udon'),
+        makeFood('Soba'),
+      ];
+
+      const validFoodsAttempt2: CulinaryFoodItem[] = [
+        makeFood('Ramen'),
+        makeFood('Yakitori'),
+        makeFood('Sushi'),
+        makeFood('Tempura'),
+        makeFood('Udon'),
+        makeFood('Soba'),
+      ];
+
+      mockAiService.generateContentStream
+        .mockResolvedValueOnce(
+          createMockStream([
+            {
+              partialData: {
+                foods: duplicateFoodsAttempt1,
+                honorableMentions: ['Takoyaki'],
+              },
+            },
+          ]),
+        )
+        .mockResolvedValueOnce(
+          createMockStream([
+            {
+              partialData: {
+                foods: validFoodsAttempt2,
+                honorableMentions: ['Takoyaki'],
+              },
+            },
+          ]),
+        );
+
+      const chunks = await collectStream(service.getTopFoodsStream(mockLocation));
+
+      expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(2);
+      // Attempt 1 emitted deduplicated chunk (5 unique foods)
+      expect(chunks[0].foods).toHaveLength(5);
+      // Reset chunk emitted
+      expect(chunks[1].foods).toHaveLength(0);
+      expect(chunks[1].honorableMentions).toHaveLength(0);
+      // Attempt 2 succeeded with 6 foods
+      expect(chunks[2].foods).toHaveLength(6);
+    });
+
+    it('completes on attempt 1 without retry when duplicate mentions normalize to an acceptable count (1)', async () => {
+      const sixFoods: CulinaryFoodItem[] = [
+        makeFood('Sushi'),
+        makeFood('Ramen'),
+        makeFood('Tempura'),
+        makeFood('Soba'),
+        makeFood('Yakitori'),
+        makeFood('Tonkatsu'),
+      ];
+
+      mockAiService.generateContentStream.mockResolvedValue(
+        createMockStream([
+          {
+            partialData: {
+              foods: sixFoods,
+              honorableMentions: ['Takoyaki', 'takoyaki'],
+            },
+          },
+        ]),
+      );
+
+      const chunks = await collectStream(service.getTopFoodsStream(mockLocation));
+
+      expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(1);
+      expect(chunks[0].foods).toHaveLength(6);
+      expect(chunks[0].honorableMentions).toEqual(['Takoyaki']);
+    });
+
+    it('emits reset chunk and retries when honorable mentions collide with foods and starve mentions count to 0', async () => {
+      const sixFoods: CulinaryFoodItem[] = [
+        makeFood('Sushi'),
+        makeFood('Ramen'),
+        makeFood('Tempura'),
+        makeFood('Soba'),
+        makeFood('Yakitori'),
+        makeFood('Tonkatsu'),
+      ];
+
+      mockAiService.generateContentStream
+        .mockResolvedValueOnce(
+          createMockStream([
+            {
+              partialData: {
+                foods: sixFoods,
+                honorableMentions: ['Sushi', 'ramen'],
+              },
+            },
+          ]),
+        )
+        .mockResolvedValueOnce(
+          createMockStream([
+            {
+              partialData: {
+                foods: sixFoods,
+                honorableMentions: ['Takoyaki'],
+              },
+            },
+          ]),
+        );
+
+      const chunks = await collectStream(service.getTopFoodsStream(mockLocation));
+
+      expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(2);
+      // Attempt 1: mentions were dropped due to collision with foods, yielding 0 mentions
+      expect(chunks[0].honorableMentions).toHaveLength(0);
+      // Reset chunk emitted
+      expect(chunks[1].foods).toHaveLength(0);
+      // Attempt 2 succeeded with 1 mention
+      expect(chunks[2].honorableMentions).toEqual(['Takoyaki']);
+    });
+
     it('throws a terminal Error when retry attempt also fails validation', async () => {
       const incompleteFoods: CulinaryFoodItem[] = [makeFood('Sushi')];
 
