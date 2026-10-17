@@ -1,0 +1,36 @@
+@reference "../../../../../styles.css";
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+    background-color: var(--color-skeleton);
+  }
+  50% {
+    opacity: 0.75;
+    background-color: #94a3b8;
+  }
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-primitive {
+  animation: skeletonPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: var(--color-skeleton);
+}
+
+.skeleton-primitive.skeleton-line {
+  @apply h-4 w-full rounded;
+}
+
+.skeleton-primitive.skeleton-circle {
+  @apply rounded-full aspect-square;
+}
+
+.skeleton-primitive.skeleton-rect {
+  @apply rounded-lg w-full h-full;
+}

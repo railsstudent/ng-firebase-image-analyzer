@@ -1,6 +1,6 @@
 # Ticket 02: Consolidate Shared Skeleton Components into Atomic AppSkeleton Primitive
 
-**What to build:** Retire 3 redundant single-use skeleton components (`token-analytics-skeleton`, `image-recommendation-skeleton`, `image-improvement-skeleton`) and replace them with an atomic, layout-agnostic `<app-skeleton>` primitive under `src/app/shared/ui/components/skeleton/`. Consumers in `ImageAnalysisPanelComponent` and downstream `CulinaryDishListComponent` compose `<app-skeleton>` directly using standard inline Tailwind utility classes (`flex`, `grid`, `space-y-*`), eliminating component sprawl while keeping shared UI free of feature-specific layout presets.
+**What to build:** Retire 3 redundant single-use skeleton component folders (12 files), merge shared `@keyframes skeletonPulse` and skeleton styles from `src/app/shared/ui/styles/skeleton.css` directly into `src/app/shared/ui/components/skeleton/skeleton.component.css`, and create an atomic, layout-agnostic `<app-skeleton>` primitive under `src/app/shared/ui/components/skeleton/`. To ensure DRY across both loading seams (the parent `@defer` `@placeholder` in `ImageAnalysisPanelComponent` and child internal `@else` loading states), create a reusable generic 3-row skeleton (`ListSkeletonComponent`) under `src/app/shared/ui/components/skeleton/` shared by both `ImageRecommendationComponent` and `TokenAnalyticsComponent`, and a co-located 2-column image improvement skeleton (`image-improvement-skeleton.component.ts`) in `image-improvement/` composing `<app-skeleton>` with zero custom CSS. Also migrate `ThoughtSummaryComponent` to `<app-skeleton>`, allowing `src/app/shared/ui/styles/skeleton.css` to be completely deleted.
 
 **Blocked by:** None (can start immediately)
 
@@ -23,35 +23,54 @@ import { SkeletonVariant } from './skeleton-variant.type';
 @Component({
   selector: 'app-skeleton',
   template: `
-    @for (i of lineArray(); track i) {
-      <div [class]="getItemClasses(i)" aria-hidden="true"></div>
+    @for (itemClass of itemClasses(); track $index) {
+      <div [class]="itemClass" aria-hidden="true"></div>
     }
   `,
   styleUrl: './skeleton.component.css',
 })
 export class SkeletonComponent {
   variant = input<SkeletonVariant>('line');
-  lines = input<number>(1);
-  className = input<string>('', { alias: 'class' });
+  lines = input(1);
+  class = input('');
 
-  protected lineArray = computed(() => Array.from({ length: Math.max(1, this.lines()) }, (_, i) => i));
+  itemClasses = computed(() => {
+    const count = Math.max(1, this.lines());
+    const isMultiLine = this.variant() === 'line' && count > 1;
 
-  protected getItemClasses(index: number): string {
-    const isMultiLine = this.variant() === 'line' && this.lines() > 1;
-    const isLast = index === this.lines() - 1;
-    const base = 'skeleton-primitive';
-    const variantClass = `skeleton-${this.variant()}`;
-    const widthClass = isMultiLine && isLast ? 'w-3/4' : '';
-    const extra = this.className();
+    return Array.from({ length: count }, (_, index) => {
+      let widthClass = '';
+      if (isMultiLine) {
+        if (count === 2) {
+          widthClass = index === 0 ? 'w-3/4' : 'w-1/2';
+        } else if (index === count - 1) {
+          widthClass = 'w-3/4';
+        }
+      }
 
-    return `${base} ${variantClass} ${widthClass} ${extra}`.trim();
-  }
+      return `skeleton-primitive skeleton-${this.variant()} ${widthClass} ${this.class()}`.trim();
+    });
+  });
 }
 ```
 
 ### 3. Component Styles: `src/app/shared/ui/components/skeleton/skeleton.component.css`
 
 ```css
+@reference "../../../../../styles.css";
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+    background-color: var(--color-skeleton);
+  }
+  50% {
+    opacity: 0.75;
+    background-color: #94a3b8;
+  }
+}
+
 :host {
   display: flex;
   flex-direction: column;
@@ -81,91 +100,139 @@ export class SkeletonComponent {
 ```typescript
 export * from './skeleton.component';
 export * from './skeleton-variant.type';
+export * from './list-skeleton.component';
 ```
 
-### 5. Consumer Replacement in `src/app/features/image-analysis/image-analysis-panel/image-analysis-panel.component.html`
+### 5. Skeleton Compositions (Composing `<app-skeleton>`)
 
-```html
-<!-- Tab 3.2: Recommendations -->
-<app-tab #recTab id="detailed" label="Recommendations">
-  @defer (when recTab.isActive()) {
-  <app-image-recommendation [recommendations]="recommendations" />
-  } @placeholder {
-  <div class="space-y-4 rounded-xl border border-outline-variant/30 p-4" aria-hidden="true">
-    <div class="flex items-center gap-3">
-      <app-skeleton variant="circle" class="h-10 w-10 shrink-0" />
-      <div class="flex-1 space-y-2">
-        <app-skeleton variant="line" class="w-1/3" />
+To eliminate duplication between `@placeholder` blocks and internal feature loading states (DRY) without resurrecting 12 legacy files and separate CSS:
+
+#### 5.1 Generic 3-Row Skeleton: `src/app/shared/ui/components/skeleton/list-skeleton.component.ts`
+
+Reusable generic 3-row list skeleton shared by both `ImageRecommendationComponent` and `TokenAnalyticsComponent` (and their respective `@placeholder` blocks), composing `<app-skeleton>` with zero custom CSS:
+
+```typescript
+import { SkeletonComponent } from './skeleton.component';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-list-skeleton',
+  imports: [SkeletonComponent],
+  template: `
+    <div class="space-y-4 py-3" aria-hidden="true">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="flex gap-4">
+          <app-skeleton variant="circle" class="h-6 w-6 shrink-0" />
+          <div class="flex-1 space-y-2 py-1">
+            <app-skeleton variant="line" class="w-1/3" />
+            <app-skeleton variant="line" class="w-5/6" />
+          </div>
+        </div>
+      }
+    </div>
+  `,
+})
+export class ListSkeletonComponent {}
+```
+
+#### 5.2 Co-located Image Improvement Skeleton: `src/app/features/image-analysis/image-improvement/image-improvement-skeleton.component.ts`
+
+Matches legacy 2-column layout (`md:grid-cols-2`: canvas preview `h-48` on left, sidebar with `h-6 w-1/2` header + `w-5/6` and `w-2/3` lines on right):
+
+```typescript
+import { SkeletonComponent } from '@/shared/ui/components/skeleton';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-image-improvement-skeleton',
+  imports: [SkeletonComponent],
+  template: `
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-4" aria-hidden="true">
+      <app-skeleton variant="rect" class="h-48" />
+      <div class="space-y-4">
+        <app-skeleton variant="line" class="h-6 w-1/2" />
+        <app-skeleton variant="line" class="w-5/6" />
         <app-skeleton variant="line" class="w-2/3" />
       </div>
     </div>
-    <app-skeleton variant="line" [lines]="3" />
-  </div>
-  }
-</app-tab>
-
-<!-- Tab 3.3: Token Usage -->
-<app-tab #tokensTab id="tokens" label="Token Usage">
-  @defer (when tokensTab.isActive()) {
-  <app-token-analytics [tokenSummary]="tokenSummary" [tokenModalityBreakdown]="tokenModalityBreakdown" />
-  } @placeholder {
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4" aria-hidden="true">
-    <div class="space-y-3 rounded-xl border border-outline-variant/30 p-4">
-      <app-skeleton variant="line" class="w-1/2" />
-      <app-skeleton variant="rect" class="h-24" />
-      <app-skeleton variant="line" class="w-3/4" />
-    </div>
-    <div class="space-y-3 rounded-xl border border-outline-variant/30 p-4">
-      <app-skeleton variant="line" class="w-1/2" />
-      <app-skeleton variant="rect" class="h-24" />
-      <app-skeleton variant="line" class="w-3/4" />
-    </div>
-  </div>
-  }
-</app-tab>
-
-<!-- Tab 3.4: Image Improvement -->
-<app-tab #improveTab id="improvement" label="Image Improvement">
-  @defer (when improveTab.isActive()) {
-  <app-image-improvement [analysis]="innerAnalysis" [imageUrl]="imageUrl()" />
-  } @placeholder {
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-xl border border-outline-variant/30 p-4" aria-hidden="true">
-    <div class="md:col-span-2 space-y-3">
-      <app-skeleton variant="rect" class="h-64" />
-      <app-skeleton variant="line" [lines]="2" />
-    </div>
-    <div class="space-y-3">
-      <app-skeleton variant="line" class="w-3/4" />
-      <app-skeleton variant="rect" class="h-32" />
-      <app-skeleton variant="rect" class="h-24" />
-    </div>
-  </div>
-  }
-</app-tab>
+  `,
+})
+export class ImageImprovementSkeletonComponent {}
 ```
+
+#### 5.3 Consumer Call Sites
+
+1. **Child Feature Components**:
+   - `ImageRecommendationComponent`: import `ListSkeletonComponent` from `@/shared/ui/components/skeleton` and render `<app-list-skeleton />` in `@else` block.
+   - `TokenAnalyticsComponent`: import `ListSkeletonComponent` from `@/shared/ui/components/skeleton` and render `<app-list-skeleton />` in `@else` block.
+   - `ImageImprovementComponent`: import `ImageImprovementSkeletonComponent` from `./image-improvement-skeleton.component` and render `<app-image-improvement-skeleton />` in `@else` block.
+
+2. **Parent `@defer` `@placeholder` in `ImageAnalysisPanelComponent`**:
+   - Tab 3.2 (`#recTab`) `@placeholder`: `<app-list-skeleton />`
+   - Tab 3.3 (`#tokensTab`) `@placeholder`: `<app-list-skeleton />`
+   - Tab 3.4 (`#improveTab`) `@placeholder`: `<app-image-improvement-skeleton />`
+
+---
+
+### 6. Migrate `ThoughtSummaryComponent` & Retire `skeleton.css`
+
+#### `src/app/shared/ui/components/thought-summary/thought-summary.component.ts`
+
+- Import `SkeletonComponent` from `@/shared/ui/components/skeleton`.
+- Remove `../../styles/skeleton.css` from `styleUrls: ['../../styles/section-card.css', './thought-summary.component.css']`.
+
+#### `src/app/shared/ui/components/thought-summary/thought-summary.component.html`
+
+Replace legacy `.skeleton-line` block:
+
+```html
+} @else {
+<app-skeleton [lines]="2" class="py-3" />
+}
+```
+
+_Note on matching legacy behavior:_
+
+- The host element `<app-skeleton class="py-3">` acts as the wrapper container with `:host { display: flex; flex-direction: column; gap: 0.5rem; }` and receives `py-3` padding.
+- With `lines="2"`, Line 1 renders with `w-3/4` and Line 2 renders with `w-1/2`, exactly matching the previous `<div class="skeleton-line w-3/4">` and `<div class="skeleton-line w-1/2">`.
+- `class="py-3"` stays on the host container and does not leak inside the skeleton lines.
+
+#### Delete `src/app/shared/ui/styles/skeleton.css`
+
+Once `ThoughtSummaryComponent` is migrated, delete `src/app/shared/ui/styles/skeleton.css` as all styles are merged into `skeleton.component.css`.
 
 ---
 
 ## Acceptance Criteria & Checklist
 
-- [ ] Create `SkeletonVariant` type in `src/app/shared/ui/components/skeleton/skeleton-variant.type.ts`.
-- [ ] Create `SkeletonComponent` in `src/app/shared/ui/components/skeleton/skeleton.component.ts` with inline template and signal inputs (`variant`, `lines`, `className`).
-- [ ] Create component styles in `src/app/shared/ui/components/skeleton/skeleton.component.css` leveraging `skeletonPulse`, `--color-skeleton`, and vertical flex host layout.
-- [ ] Create public barrel `src/app/shared/ui/components/skeleton/index.ts` exporting `SkeletonComponent` and `SkeletonVariant`.
-- [ ] Write unit tests in `src/app/shared/ui/components/skeleton/skeleton.component.spec.ts`:
+- [x] Create `SkeletonVariant` type in `src/app/shared/ui/components/skeleton/skeleton-variant.type.ts`.
+- [x] Create `SkeletonComponent` in `src/app/shared/ui/components/skeleton/skeleton.component.ts` with inline template and signal inputs (`variant`, `lines`, `className`).
+- [x] Create component styles in `src/app/shared/ui/components/skeleton/skeleton.component.css` merging `@keyframes skeletonPulse` from `skeleton.css`, `--color-skeleton`, and vertical flex host layout.
+- [x] Create public barrel `src/app/shared/ui/components/skeleton/index.ts` exporting `SkeletonComponent` and `SkeletonVariant`.
+- [x] Write unit tests in `src/app/shared/ui/components/skeleton/skeleton.component.spec.ts`:
   - Default variant `'line'` renders with `skeleton-line` and `aria-hidden="true"`.
   - Custom variants `'circle'` and `'rect'` apply corresponding CSS classes.
   - Custom classes passed via `class` input/host are merged into computed class list.
   - Multi-line rendering (`[lines]="3"`) renders 3 elements with the final line having `w-3/4`.
+- [ ] Create generic 3-row skeleton component in `src/app/shared/ui/components/skeleton/list-skeleton.component.ts` and export from skeleton barrel `index.ts`.
+- [ ] Create co-located image improvement skeleton in `src/app/features/image-analysis/image-improvement/image-improvement-skeleton.component.ts`.
+- [ ] Update feature components to import and render skeletons:
+  - `ImageRecommendationComponent`: import `ListSkeletonComponent` from `@/shared/ui/components/skeleton` and use `<app-list-skeleton />`.
+  - `TokenAnalyticsComponent`: import `ListSkeletonComponent` from `@/shared/ui/components/skeleton` and use `<app-list-skeleton />`.
+  - `ImageImprovementComponent`: import `ImageImprovementSkeletonComponent` from `./image-improvement-skeleton.component` and use `<app-image-improvement-skeleton />`.
 - [ ] Update `ImageAnalysisPanelComponent` (`image-analysis-panel.component.ts` & `image-analysis-panel.component.html`):
-  - Replace imports of `TokenAnalyticsSkeletonComponent`, `ImageRecommendationSkeletonComponent`, and `ImageImprovementSkeletonComponent` with `SkeletonComponent` from `@/shared/ui/components/skeleton`.
-  - In Tab 3.2 (`#recTab`), replace `<app-image-recommendation-skeleton />` with inline Tailwind layout and `<app-skeleton>`.
-  - In Tab 3.3 (`#tokensTab`), replace `<app-token-analytics-skeleton />` with inline Tailwind layout and `<app-skeleton>`.
-  - In Tab 3.4 (`#improveTab`), replace `<app-image-improvement-skeleton />` with inline Tailwind layout and `<app-skeleton>`.
+  - Import `ListSkeletonComponent` and `ImageImprovementSkeletonComponent`.
+  - In Tab 3.2 (`#recTab`), use `<app-list-skeleton />` in `@placeholder`.
+  - In Tab 3.3 (`#tokensTab`), use `<app-list-skeleton />` in `@placeholder`.
+  - In Tab 3.4 (`#improveTab`), use `<app-image-improvement-skeleton />` in `@placeholder`.
   - Verify `image-analysis-panel.component.spec.ts` passes.
-- [ ] Delete obsolete legacy skeleton folders (12 files total):
+- [ ] Migrate `ThoughtSummaryComponent` and retire `skeleton.css`:
+  - Import `SkeletonComponent` in `thought-summary.component.ts` and remove `../../styles/skeleton.css` from `styleUrls`.
+  - Replace fallback `.skeleton-line` markup with `<app-skeleton [lines]="2" class="py-3" />` in `thought-summary.component.html`.
+  - Delete `src/app/shared/ui/styles/skeleton.css`.
+- [x] Delete obsolete legacy skeleton folders (12 files total):
   - `src/app/features/image-analysis/image-recommendation-skeleton/`
   - `src/app/features/image-analysis/image-improvement-skeleton/`
   - `src/app/shared/ui/components/token-analytics-skeleton/`
-- [ ] Repository invariants:
+- [x] Repository invariants:
   - Zero `!`, zero `../` escaping package boundary, native `#` for private state/deps, TypeScript `private` for methods, and no agent git commits.
