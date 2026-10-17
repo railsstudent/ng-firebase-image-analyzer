@@ -73,3 +73,16 @@ Downstream feature components (such as `CulinaryDishListComponent`) compose `<ap
 1. **Behavior Over State in Contexts**: Expose evaluation and mutation methods (`isItemExpanded`, `toggleItem`) rather than raw internal arrays (`expandedIds`) on the context token.
 2. **Reactivity Preservation**: Methods evaluated inside a child's `computed()` must read the parent's underlying signal so Angular tracks dependencies automatically.
 3. **No Direct Parent Imports in Children**: Child components must never import the parent component class.
+
+---
+
+## 5. Compound Component Package Topology
+
+Compound components (e.g., `AccordionGroup` / `AccordionItem`, `TabGroup` / `Tab`) are tightly coupled primitives designed to be consumed together as a coordinated unit.
+
+### Architectural Rules
+
+1. **Single Package Colocation**: Colocate parent coordinator, child item(s), context contracts, and unit tests in a single component folder under `src/app/shared/ui/components/<compound-name>/` (e.g. `src/app/shared/ui/components/accordion/`).
+2. **Flat File Layout**: Maintain a flat file structure at the package root without nested subdirectories.
+3. **Zero Cross-Directory Context Imports**: Child components reference the context token as a sibling file (`./*-context.const`), avoiding cross-component path aliases and prohibited `../` traversal.
+4. **Unified Barrel Export (`index.ts`)**: Expose the parent component, child item(s), and context token through a public `index.ts` so consumers import the entire compound suite from a single entry point (e.g., `@/shared/ui/components/accordion`).
