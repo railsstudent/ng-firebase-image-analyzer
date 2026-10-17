@@ -7,5 +7,10 @@
   },
   "ignoreBinaries": ["ng"],
   "ignoreDependencies": ["@firebase/ai", "dompurify", "snarkdown"],
-  "ignore": ["src/app/features/culinary-guide/**", "src/app/core/culinary-guide/**"]
+  "ignore": [
+    "src/app/features/culinary-guide/**",
+    "src/app/core/culinary-guide/**",
+    "src/app/shared/ui/components/accordion/**",
+    "src/app/shared/ui/icons/expand-more-icon/**"
+  ]
 }
