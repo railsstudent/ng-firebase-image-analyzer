@@ -1,8 +1,10 @@
+import { ExpandMoreIconComponent } from '@/shared/ui/icons/expand-more-icon/expand-more-icon.component';
 import { Component, computed, inject, input } from '@angular/core';
 import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 
 @Component({
   selector: 'app-accordion-item',
+  imports: [ExpandMoreIconComponent],
   templateUrl: './accordion-item.component.html',
   styleUrl: './accordion-item.component.css',
 })

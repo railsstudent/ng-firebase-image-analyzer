@@ -3,7 +3,9 @@ import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 
 @Component({
   selector: 'app-accordion-group',
-  templateUrl: './accordion-group.component.html',
+  template: ` <div class="accordion-content">
+    <ng-content />
+  </div>`,
   styleUrl: './accordion-group.component.css',
   providers: [{ provide: ACCORDION_GROUP_CONTEXT, useExisting: AccordionGroupComponent }],
 })
