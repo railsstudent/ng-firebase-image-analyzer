@@ -51,3 +51,7 @@ _Avoid_: Bonus dishes, alternative food, extra recommendations
 **Destination Dataset**:
 The static curated collection of countries and culinary cities loaded on-demand.
 _Avoid_: Country list, city dropdown data, static geo data
+
+**Recipe Accordion**:
+The single-expansion disclosure container displaying a culinary dish, responsible for lazy-triggering Stage 2 Recipe Synthesis on expansion and presenting ingredients, instructions, and per-dish token diagnostics.
+_Avoid_: Collapsible card, dropdown recipe, food toggle

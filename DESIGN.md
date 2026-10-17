@@ -223,3 +223,40 @@ The results section employs a 4-tab control system allowing users to deep-dive i
 4. **Image Improvement (AI Enhanced Preview)**:
    - **Metadata Sidebar**: Column displaying crop coordinates/aspect ratios and precise filtering metadata (brightness, saturation, contrast adjustments).
    - **Enhanced Canvas**: Interactive high-fidelity preview showing the filtered/cropped output with download capability.
+
+---
+
+## 7. Accordion Component System
+
+The Accordion Component System defines the structural layout, interactive behavior, and visual tokens for the single-expansion disclosure pattern displaying culinary dishes and recipe synthesis details.
+
+### 7.1 Visual Tokens & Glassmorphic Container
+
+- **Styling Tokens & Classes**: `glass-card`, `surface-glass`, `surface-glass-border`, `rounded-2xl`
+- **Surface Elevation**: Semi-transparent background (`var(--color-surface-glass)`) with subtle outline border (`var(--color-surface-glass-border)`) and `16px` rounded corners (`rounded-2xl`).
+- **Interactive Transitions**: Smooth transition on focus and hover, maintaining elevation without breaking the ambient dot grid background.
+
+### 7.2 Responsive Header Typography & Indicators
+
+The accordion header provides instant scannability for dishes in both collapsed and expanded states:
+
+- **English Title**: Primary headline styled with `font-semibold text-lg text-on-surface`.
+- **Native Script Pill Badge**: Secondary cultural context badge styled with `font-mono text-xs px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant`.
+- **Line-Clamped Description**: Supporting description clamping to 2 lines on mobile screens and expanding on desktop: `text-sm text-on-surface-variant line-clamp-2 md:line-clamp-none`.
+- **Right-Aligned Rotating Chevron**: State indicator with `transition-transform duration-200` (e.g., `rotate-180` when expanded).
+
+### 7.3 Responsive Panel Body Layout & Scroll Boundaries
+
+The expanded disclosure body contains synthesis details, markdown recipe content, and telemetry diagnostics:
+
+- **Mobile Layout**: Single-column vertical stack sequentially displaying ingredients, instructions, and diagnostics.
+- **Desktop Layout**: Two-column grid separating the ingredients sidebar and cooking instructions.
+- **Scroll Boundary & Overscroll**: Pinned max-height boundary preventing excessive page elongation: `max-h-[60vh] md:max-h-[70vh] overflow-y-auto overscroll-contain`.
+- **Diagnostics Divider**: Pinned bottom separator for per-dish token counts and latency metrics.
+
+### 7.4 Semantic Content Projection Slots
+
+To decouple accordion wrapper state from specific recipe rendering logic, the component exposes distinct semantic projection slots:
+
+- `<accordion-header>` (or `<ng-content select="accordion-header" />` / `select="[accordion-header]"`): Header trigger slot for dish title, native script pill badge, and rotating chevron.
+- `<accordion-body>` (or `<ng-content select="accordion-body" />` / `select="[accordion-body]"`): Collapsible disclosure panel containing streamed recipe synthesis content, ingredients sidebar, and token diagnostics.
