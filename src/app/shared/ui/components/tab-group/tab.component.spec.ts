@@ -1,6 +1,6 @@
-import { TAB_GROUP_CONTEXT } from '@/shared/ui/components/tab-group/tab-group-context.const';
 import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TAB_GROUP_CONTEXT } from './tab-group-context.const';
 import { TabComponent } from './tab.component';
 
 describe('TabComponent', () => {

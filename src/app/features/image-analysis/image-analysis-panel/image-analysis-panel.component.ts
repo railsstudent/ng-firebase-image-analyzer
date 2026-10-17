@@ -1,16 +1,15 @@
-import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
-import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
-import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
-import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
-import { DisplaySource } from '@/features/image-analysis/types/display-source.type';
-import { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
-import { TabGroupComponent } from '@/shared/ui/components/tab-group/tab-group.component';
-import { TabComponent } from '@/shared/ui/components/tab/tab.component';
-import { Component, computed, input } from '@angular/core';
-import { InferenceSource } from 'firebase/ai';
+import type { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton.component';
+import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
 import { ImageRecommendationSkeletonComponent } from '@/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.component';
+import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
+import type { DisplaySource } from '@/features/image-analysis/types/display-source.type';
+import { TabComponent, TabGroupComponent } from '@/shared/ui/components/tab-group';
+import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
 import { TokenAnalyticsSkeletonComponent } from '@/shared/ui/components/token-analytics-skeleton/token-analytics-skeleton.component';
+import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
+import { Component, computed, input } from '@angular/core';
+import type { InferenceSource } from 'firebase/ai';
 
 @Component({
   selector: 'app-image-analysis-panel',
