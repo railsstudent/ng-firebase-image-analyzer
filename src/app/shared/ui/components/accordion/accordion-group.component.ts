@@ -1,4 +1,4 @@
-import { Component, model, signal } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 
 @Component({
@@ -8,7 +8,7 @@ import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
   providers: [{ provide: ACCORDION_GROUP_CONTEXT, useExisting: AccordionGroupComponent }],
 })
 export class AccordionGroupComponent {
-  readonly isMulti = signal(false);
+  readonly isMulti = input(false);
   readonly expandedIds = model<string[]>([]);
 
   isItemExpanded(id: string): boolean {

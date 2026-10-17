@@ -4,7 +4,7 @@
 
 **Blocked by:** Ticket 12: Define Recipe Accordion Domain and Design Specifications
 
-**Status:** in-progress
+**Status:** done
 
 - [x] Create `ACCORDION_GROUP_CONTEXT` injection token and interface in `src/app/shared/ui/components/accordion/accordion-context.const.ts`:
   - `isItemExpanded(id: string): boolean`
@@ -19,8 +19,8 @@
     - Single mode: uses `this.expandedIds.set(...)` directly setting `[]` (if already expanded) or `[id]` (if not).
   - Method: `collapseAll(): void` setting `this.expandedIds.set([])`.
 - [x] Provide `ACCORDION_GROUP_CONTEXT` from `AccordionGroupComponent` using `useExisting: AccordionGroupComponent`.
-- [ ] Render container template with un-slotted `<ng-content />`.
-- [ ] Create comprehensive unit tests in `accordion-group.component.spec.ts` testing:
+- [x] Render container template with un-slotted `<ng-content />`.
+- [x] Create comprehensive unit tests in `accordion-group.component.spec.ts` testing:
   - Initial collapsed state (`expandedIds` is empty).
   - Single-expansion mode (`isMulti = false`): expanding one item closes any previously open item.
   - Toggling an open item collapses it in single mode.

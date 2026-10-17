@@ -12,9 +12,9 @@
   - `culinary-dish-list.component.css`
   - `culinary-dish-list.component.spec.ts`
 - [ ] Define reactive component signals:
-  - `dishes = input.required<readonly CulinaryFoodItem[]>()`: array of discovered dishes.
+  - `dishes = input.required<CulinaryFoodItem[]>()`: array of discovered dishes.
   - `expandedDishNames = model<string[]>([])`: two-way signal tracking currently expanded dish names (bound directly to accordion group).
-  - `loadingDishNames = input<readonly string[]>([])`: array of dish names currently undergoing Stage 2 streaming synthesis.
+  - `loadingDishNames = input<string[]>([])`: array of dish names currently undergoing Stage 2 streaming synthesis.
   - `recipes = input<Record<string, CulinaryRecipeDetail>>({})`: dictionary of loaded/cached recipe details keyed by dish name.
   - `dishSelected = output<CulinaryFoodItem>()`: event emitted when a dish accordion expands to trigger recipe streaming.
 - [ ] Wrap dish collection in template with `<app-accordion-group [isMulti]="true" [(expandedIds)]="expandedDishNames">` (or configurable single/multi mode).

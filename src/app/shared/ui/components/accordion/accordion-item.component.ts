@@ -11,4 +11,8 @@ export class AccordionItemComponent {
 
   id = input.required<string>();
   isExpanded = computed(() => this.#accordionGroup.isItemExpanded(this.id()));
+
+  toggle(): void {
+    this.#accordionGroup.toggleItem(this.id());
+  }
 }

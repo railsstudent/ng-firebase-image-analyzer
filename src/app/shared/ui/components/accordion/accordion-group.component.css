@@ -1,1 +1,9 @@
 @reference "../../../../../styles.css";
+
+:host {
+  @apply block;
+}
+
+.accordion-content {
+  @apply flex flex-col gap-3;
+}
