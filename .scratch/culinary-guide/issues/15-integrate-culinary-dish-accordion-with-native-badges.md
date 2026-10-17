@@ -18,11 +18,11 @@
   - `recipes = input<Record<string, CulinaryRecipeDetail>>({})`: dictionary of loaded/cached recipe details keyed by dish name.
   - `dishSelected = output<CulinaryFoodItem>()`: event emitted when a dish accordion expands to trigger recipe streaming.
 - [ ] Wrap dish collection in template with `<app-accordion-group [isMulti]="true" [(expandedIds)]="expandedDishNames">` (or configurable single/multi mode), mapping `activeDishes` to `expandedDishNames`.
-- [ ] Populate the `<accordion-header>` slot for each dish:
+- [ ] Populate the `[accordion-header]` slot (`<div accordion-header>`) for each dish:
   - English dish name (`text-on-surface font-semibold text-lg`).
   - Native script pill badge when `dish.nativeName` is defined, styled with secondary monospace typography (`--font-mono text-xs px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium`).
   - Concise dish description with responsive line clamping (`text-sm text-on-surface-variant line-clamp-2 md:line-clamp-none mt-1`).
-- [ ] Populate the `<accordion-body>` slot using `@if` control flow:
+- [ ] Populate the `[accordion-body]` slot (`<div accordion-body>`) using `@if` control flow:
   - **Ingredients Presentation**: Render streaming/cached ingredients as soon as available in `recipeDetail.ingredients`.
   - **Inline Recipe Skeleton (No extra component)**: When `loadingDishNames().includes(dish.name) && !recipeDetail?.recipeHtml`, render inline `.skeleton-line` pulses from `skeleton.css` representing instructions loading.
   - **Completed Recipe View**: When `recipeDetail?.recipeHtml` is available, render formatted sanitized HTML via `[innerHTML]` and pinned bottom diagnostics `<app-token-analytics>`.
