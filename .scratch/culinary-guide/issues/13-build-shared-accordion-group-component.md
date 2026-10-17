@@ -7,11 +7,10 @@
 **Status:** ready-for-agent
 
 - [ ] Create `ACCORDION_GROUP_CONTEXT` injection token and interface in `src/app/shared/ui/components/accordion/accordion-context.const.ts`:
-  - `readonly isMulti: Signal<boolean>`
-  - `readonly expandedIds: Signal<readonly string[]>`
   - `isItemExpanded(id: string): boolean`
   - `toggleItem(id: string): void`
-- [ ] Implement `AccordionGroupComponent` (`<app-accordion-group>`):
+  - _Encapsulation design_: Exposes strictly behavioral methods; state signals (`isMulti`, `expandedIds`) remain encapsulated in `AccordionGroupComponent` and are not revealed to child items.
+- [ ] Implement `AccordionGroupComponent` (`<app-accordion-group>`) satisfying `AccordionGroupContext`:
   - Input: `readonly isMulti = input<boolean>(false)` to control single vs. multi-expansion mode (defaulting to single-expansion `false`).
   - Two-way state model: `readonly expandedIds = model<readonly string[]>([])` tracking all currently expanded item IDs.
   - Computed convenience: `readonly activeId = computed(() => this.expandedIds()[0] ?? null)` for single-mode callers.
