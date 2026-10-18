@@ -1,7 +1,7 @@
+import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TokenAnalyticsSkeletonComponent } from '@/shared/ui/components/token-analytics-skeleton/token-analytics-skeleton.component';
 import { TokenAnalyticsComponent } from './token-analytics.component';
 
 describe('TokenAnalyticsComponent', () => {
@@ -27,7 +27,7 @@ describe('TokenAnalyticsComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const skeletonEl = fixture.debugElement.query(By.directive(TokenAnalyticsSkeletonComponent));
+    const skeletonEl = fixture.debugElement.query(By.directive(ListSkeletonComponent));
     expect(skeletonEl).toBeTruthy();
     expect(fixture.nativeElement.querySelector('.token-header')).toBeNull();
   });
@@ -51,7 +51,7 @@ describe('TokenAnalyticsComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const skeletonEl = fixture.debugElement.query(By.directive(TokenAnalyticsSkeletonComponent));
+    const skeletonEl = fixture.debugElement.query(By.directive(ListSkeletonComponent));
     expect(skeletonEl).toBeNull();
 
     const compiled = fixture.nativeElement as HTMLElement;

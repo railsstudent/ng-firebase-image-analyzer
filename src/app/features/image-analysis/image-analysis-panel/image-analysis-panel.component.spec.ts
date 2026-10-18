@@ -1,13 +1,12 @@
+import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement/image-improvement-skeleton.component';
+import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
+import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
+import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
+import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
+import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton.component';
-import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
-import { ImageRecommendationSkeletonComponent } from '@/features/image-analysis/image-recommendation-skeleton/image-recommendation-skeleton.component';
-import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
-import { TokenAnalyticsSkeletonComponent } from '@/shared/ui/components/token-analytics-skeleton/token-analytics-skeleton.component';
-import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
-import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel.component';
 
 describe('ImageAnalysisPanelComponent', () => {
@@ -105,8 +104,7 @@ describe('ImageAnalysisPanelComponent', () => {
     expect(thoughtSummaryComp.remarks()).toEqual(mockAnalysisData.analysis.alternativeTexts);
 
     // Inactive tabs render skeleton placeholders initially
-    expect(fixture.debugElement.query(By.directive(ImageRecommendationSkeletonComponent))).toBeTruthy();
-    expect(fixture.debugElement.query(By.directive(TokenAnalyticsSkeletonComponent))).toBeTruthy();
+    expect(fixture.debugElement.query(By.directive(ListSkeletonComponent))).toBeTruthy();
     expect(fixture.debugElement.query(By.directive(ImageImprovementSkeletonComponent))).toBeTruthy();
 
     // Deferred components are not yet rendered

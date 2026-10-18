@@ -1,6 +1,6 @@
 # Ticket 02: Consolidate Shared Skeleton Components into Atomic AppSkeleton Primitive
 
-**What to build:** Retire 3 redundant single-use skeleton component folders (12 files), merge shared `@keyframes skeletonPulse` and skeleton styles from `src/app/shared/ui/styles/skeleton.css` directly into `src/app/shared/ui/components/skeleton/skeleton.component.css`, and create an atomic, layout-agnostic `<app-skeleton>` primitive under `src/app/shared/ui/components/skeleton/`. To ensure DRY across both loading seams (the parent `@defer` `@placeholder` in `ImageAnalysisPanelComponent` and child internal `@else` loading states), create a reusable generic 3-row skeleton (`ListSkeletonComponent`) under `src/app/shared/ui/components/skeleton/` shared by both `ImageRecommendationComponent` and `TokenAnalyticsComponent`, and a co-located 2-column image improvement skeleton (`image-improvement-skeleton.component.ts`) in `image-improvement/` composing `<app-skeleton>` with zero custom CSS. Also migrate `ThoughtSummaryComponent` to `<app-skeleton>`, allowing `src/app/shared/ui/styles/skeleton.css` to be completely deleted.
+**What to build:** Retire 3 redundant single-use skeleton component folders (12 files), merge shared `@keyframes skeletonPulse` and skeleton styles from `src/app/shared/ui/styles/skeleton.css` directly into `src/app/shared/ui/components/skeleton/skeleton.component.css`, and create an atomic, layout-agnostic `<app-skeleton>` primitive under `src/app/shared/ui/components/skeleton/`. To ensure DRY across both loading seams (the parent `@defer` `@placeholder` in `ImageAnalysisPanelComponent` and child internal `@else` loading states), create a reusable generic 3-row skeleton (`ListSkeletonComponent`) under `src/app/shared/ui/components/skeleton/` shared by both `ImageRecommendationComponent` and `TokenAnalyticsComponent`, and a co-located 2-column image improvement skeleton (`image-improvement-skeleton.component.ts`) in `image-improvement/` composing `<app-skeleton>` with zero custom CSS. Also migrate `ThoughtSummaryComponent` to `<app-list-skeleton>`, allowing `src/app/shared/ui/styles/skeleton.css` to be completely deleted.
 
 **Blocked by:** None (can start immediately)
 
@@ -99,7 +99,6 @@ export class SkeletonComponent {
 
 ```typescript
 export * from './skeleton.component';
-export * from './skeleton-variant.type';
 export * from './list-skeleton.component';
 ```
 
@@ -172,13 +171,34 @@ export class ImageImprovementSkeletonComponent {}
    - Tab 3.3 (`#tokensTab`) `@placeholder`: `<app-list-skeleton />`
    - Tab 3.4 (`#improveTab`) `@placeholder`: `<app-image-improvement-skeleton />`
 
+#### 5.4 Test Specifications for New & Consuming Components
+
+1. **`ListSkeletonComponent` (`list-skeleton.component.spec.ts`)**:
+   - Verify it creates and renders 3 rows of circle and line `<app-skeleton>` primitives.
+   - Verify `aria-hidden="true"` is applied to container.
+
+2. **`ImageImprovementSkeletonComponent` (`image-improvement-skeleton.component.spec.ts`)**:
+   - Verify it creates and renders 2-column layout with `rect` and `line` primitives.
+   - Verify `aria-hidden="true"` is applied to container.
+
+3. **`ImageRecommendationComponent` (`image-recommendation.component.spec.ts`)**:
+   - Verify it renders `<app-list-skeleton />` when `recommendations` input is undefined.
+   - Verify it renders `<app-recommendation-list>` and items when `recommendations` are populated.
+
+4. **`ImageImprovementComponent` (`image-improvement.component.spec.ts`)**:
+   - Verify it renders `<app-image-improvement-skeleton />` in the DOM when `showSkeleton()` is true.
+   - Verify it hides `<app-image-improvement-skeleton />` and displays calibration results when inputs are valid.
+
+5. **`TokenAnalyticsComponent` (`token-analytics.component.spec.ts`)**:
+   - Verify `<app-list-skeleton />` renders in fallback state when `tokenSummary` is undefined.
+
 ---
 
 ### 6. Migrate `ThoughtSummaryComponent` & Retire `skeleton.css`
 
 #### `src/app/shared/ui/components/thought-summary/thought-summary.component.ts`
 
-- Import `SkeletonComponent` from `@/shared/ui/components/skeleton`.
+- Import `ListSkeletonComponent` from `@/shared/ui/components/skeleton`.
 - Remove `../../styles/skeleton.css` from `styleUrls: ['../../styles/section-card.css', './thought-summary.component.css']`.
 
 #### `src/app/shared/ui/components/thought-summary/thought-summary.component.html`
@@ -187,15 +207,16 @@ Replace legacy `.skeleton-line` block:
 
 ```html
 } @else {
-<app-skeleton [lines]="2" class="py-3" />
+<app-list-skeleton />
 }
 ```
 
-_Note on matching legacy behavior:_
+#### `src/app/shared/ui/components/thought-summary/thought-summary.component.spec.ts`
 
-- The host element `<app-skeleton class="py-3">` acts as the wrapper container with `:host { display: flex; flex-direction: column; gap: 0.5rem; }` and receives `py-3` padding.
-- With `lines="2"`, Line 1 renders with `w-3/4` and Line 2 renders with `w-1/2`, exactly matching the previous `<div class="skeleton-line w-3/4">` and `<div class="skeleton-line w-1/2">`.
-- `class="py-3"` stays on the host container and does not leak inside the skeleton lines.
+Update unit test cases:
+
+- Verify `<app-list-skeleton>` renders in the DOM when `remarks` input is `undefined`.
+- Verify `<app-recommendation-list>` and items render when `remarks` are provided.
 
 #### Delete `src/app/shared/ui/styles/skeleton.css`
 
@@ -214,21 +235,26 @@ Once `ThoughtSummaryComponent` is migrated, delete `src/app/shared/ui/styles/ske
   - Custom variants `'circle'` and `'rect'` apply corresponding CSS classes.
   - Custom classes passed via `class` input/host are merged into computed class list.
   - Multi-line rendering (`[lines]="3"`) renders 3 elements with the final line having `w-3/4`.
-- [ ] Create generic 3-row skeleton component in `src/app/shared/ui/components/skeleton/list-skeleton.component.ts` and export from skeleton barrel `index.ts`.
-- [ ] Create co-located image improvement skeleton in `src/app/features/image-analysis/image-improvement/image-improvement-skeleton.component.ts`.
-- [ ] Update feature components to import and render skeletons:
+- [x] Create generic 3-row skeleton component in `src/app/shared/ui/components/skeleton/list-skeleton.component.ts` and export from skeleton barrel `index.ts`.
+- [x] Create co-located image improvement skeleton in `src/app/features/image-analysis/image-improvement/image-improvement-skeleton.component.ts`.
+- [x] Update feature components to import and render skeletons:
   - `ImageRecommendationComponent`: import `ListSkeletonComponent` from `@/shared/ui/components/skeleton` and use `<app-list-skeleton />`.
   - `TokenAnalyticsComponent`: import `ListSkeletonComponent` from `@/shared/ui/components/skeleton` and use `<app-list-skeleton />`.
   - `ImageImprovementComponent`: import `ImageImprovementSkeletonComponent` from `./image-improvement-skeleton.component` and use `<app-image-improvement-skeleton />`.
-- [ ] Update `ImageAnalysisPanelComponent` (`image-analysis-panel.component.ts` & `image-analysis-panel.component.html`):
+- [x] Update feature component unit tests to assert skeleton DOM rendering:
+  - `src/app/features/image-analysis/image-recommendation/image-recommendation.component.spec.ts`: assert `<app-list-skeleton />` fallback and populated list state.
+  - `src/app/features/image-analysis/image-improvement/image-improvement.component.spec.ts`: assert `<app-image-improvement-skeleton />` DOM rendering when loading vs calibrated.
+  - `src/app/shared/ui/components/token-analytics/token-analytics.component.spec.ts`: assert `<app-list-skeleton />` fallback (already passing).
+- [x] Update `ImageAnalysisPanelComponent` (`image-analysis-panel.component.ts` & `image-analysis-panel.component.html`):
   - Import `ListSkeletonComponent` and `ImageImprovementSkeletonComponent`.
   - In Tab 3.2 (`#recTab`), use `<app-list-skeleton />` in `@placeholder`.
   - In Tab 3.3 (`#tokensTab`), use `<app-list-skeleton />` in `@placeholder`.
   - In Tab 3.4 (`#improveTab`), use `<app-image-improvement-skeleton />` in `@placeholder`.
   - Verify `image-analysis-panel.component.spec.ts` passes.
-- [ ] Migrate `ThoughtSummaryComponent` and retire `skeleton.css`:
-  - Import `SkeletonComponent` in `thought-summary.component.ts` and remove `../../styles/skeleton.css` from `styleUrls`.
-  - Replace fallback `.skeleton-line` markup with `<app-skeleton [lines]="2" class="py-3" />` in `thought-summary.component.html`.
+- [x] Migrate `ThoughtSummaryComponent` to `ListSkeletonComponent`, retire `skeleton.css`, and update tests:
+  - Import `ListSkeletonComponent` in `thought-summary.component.ts` and remove `../../styles/skeleton.css` from `styleUrls`.
+  - Replace fallback markup with `<app-list-skeleton />` in `thought-summary.component.html`.
+  - Update unit tests in `thought-summary.component.spec.ts` to assert `<app-list-skeleton>` when `remarks` is undefined and `<app-recommendation-list>` when populated.
   - Delete `src/app/shared/ui/styles/skeleton.css`.
 - [x] Delete obsolete legacy skeleton folders (12 files total):
   - `src/app/features/image-analysis/image-recommendation-skeleton/`

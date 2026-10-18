@@ -1,2 +1,2 @@
-export type { SkeletonVariant } from './skeleton-variant.type';
+export * from './list-skeleton.component';
 export * from './skeleton.component';

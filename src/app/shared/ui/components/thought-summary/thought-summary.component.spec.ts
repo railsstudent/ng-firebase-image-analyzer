@@ -19,4 +19,24 @@ describe('ThoughtSummaryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should render ListSkeletonComponent when remarks is undefined', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('app-list-skeleton')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-recommendation-list')).toBeNull();
+  });
+
+  it('should render recommendation list when remarks are provided', async () => {
+    fixture.componentRef.setInput('remarks', ['Good lighting setup', 'High contrast captured nicely']);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('app-list-skeleton')).toBeNull();
+    const listEl = fixture.nativeElement.querySelector('app-recommendation-list');
+    expect(listEl).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('1. Good lighting setup');
+    expect(fixture.nativeElement.textContent).toContain('2. High contrast captured nicely');
+  });
 });

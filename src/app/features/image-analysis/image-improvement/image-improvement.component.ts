@@ -1,10 +1,10 @@
 import { ImageAnalysisResponse } from '@/core/image-analysis';
 import { EnhancedCanvasComponent } from '@/features/image-analysis/enhanced-canvas/enhanced-canvas.component';
 import { ImageCropComponent } from '@/features/image-analysis/image-crop/image-crop.component';
-import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement-skeleton/image-improvement-skeleton.component';
 import { VisualCalibrationService } from '@/features/image-analysis/services/visual-calibration.service';
 import { PhotoFilterIconComponent } from '@/shared/ui/icons/photo-filter-icon/photo-filter-icon.component';
 import { Component, computed, inject, input } from '@angular/core';
+import { ImageImprovementSkeletonComponent } from './image-improvement-skeleton.component';
 
 @Component({
   selector: 'app-image-improvement',
