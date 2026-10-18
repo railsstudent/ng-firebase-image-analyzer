@@ -51,3 +51,45 @@ describe('RecommendationItemComponent', () => {
     expect(reasonP.textContent).toContain('Apply rule of thirds for better balance.');
   });
 });
+
+@Component({
+  imports: [RecommendationItemComponent],
+  template: `
+    <app-recommendation-item>
+      <span title class="test-title-only">1. Alternative Suggestion</span>
+      High contrast recommendation without indicator.
+    </app-recommendation-item>
+  `,
+})
+class TestHostWithoutIndicatorComponent {}
+
+describe('RecommendationItemComponent without indicator', () => {
+  let fixture: ComponentFixture<TestHostWithoutIndicatorComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TestHostWithoutIndicatorComponent, RecommendationItemComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TestHostWithoutIndicatorComponent);
+    await fixture.whenStable();
+  });
+
+  it('should render title correctly when indicator is omitted', () => {
+    const titleP = fixture.nativeElement.querySelector('.recommendation-item-title');
+    expect(titleP).toBeTruthy();
+
+    const indicator = titleP.querySelector('.test-indicator');
+    expect(indicator).toBeNull();
+
+    const title = titleP.querySelector('.test-title-only');
+    expect(title?.textContent).toContain('1. Alternative Suggestion');
+  });
+
+  it('should render reason text correctly when indicator is omitted', () => {
+    const reasonP = fixture.nativeElement.querySelector('.recommendation-item-reason');
+    expect(reasonP).toBeTruthy();
+    expect(reasonP.textContent).toContain('High contrast recommendation without indicator.');
+  });
+});

@@ -1,5 +1,4 @@
-import { RecommendationItemComponent } from '@/shared/ui/components/recommendation-item/recommendation-item.component';
-import { RecommendationListComponent } from '@/shared/ui/components/recommendation-list/recommendation-list.component';
+import { RecommendationItemComponent, RecommendationListComponent } from '@/shared/ui/components/recommendation-list';
 import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
 import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psychology-icon.component';
 import { Component, input } from '@angular/core';
