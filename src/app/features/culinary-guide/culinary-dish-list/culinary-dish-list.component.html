@@ -1,0 +1,51 @@
+<app-accordion-group [isMulti]="isMulti()" [(expandedIds)]="expandedDishNames">
+  @for (dish of dishes(); track dish.name) {
+    <app-accordion-item [id]="dish.name" (click)="onDishToggle(dish)">
+      <div accordion-header class="dish-header">
+        <div class="dish-title-row">
+          <span class="dish-name">{{ dish.name }}</span>
+          @let nativeName = dish.nativeName?.trim();
+          @if (nativeName) {
+            <span class="dish-native-badge">
+              {{ nativeName }}
+            </span>
+          }
+        </div>
+        <p class="dish-description">
+          {{ dish.description }}
+        </p>
+      </div>
+      <div accordion-body class="dish-body">
+        @let recipeDetail = recipes()[dish.name];
+        <div class="space-y-2">
+          @if (!recipeDetail?.ingredients?.length) {
+            <app-skeleton variant="line" [lines]="2" class="w-48" />
+          } @else {
+            <ul class="list-disc pl-5 space-y-1 text-sm text-on-surface">
+              @for (ingredient of recipeDetail?.ingredients; track ingredient) {
+                <li>{{ ingredient }}</li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="dish-instructions">
+          @if (!recipeDetail?.recipeHtml) {
+            <div aria-busy="true">
+              <span class="sr-only">Generating recipe instructions...</span>
+              <app-skeleton variant="line" [lines]="4" class="w-full" />
+            </div>
+          } @else if (recipeDetail?.recipeHtml) {
+            <div [innerHTML]="recipeDetail?.recipeHtml"></div>
+            @if (recipeDetail?.tokenSummary; as summary) {
+              <app-token-analytics
+                [tokenSummary]="summary"
+                [tokenModalityBreakdown]="recipeDetail?.tokenModalityBreakdown"
+              />
+            }
+          }
+        </div>
+      </div>
+    </app-accordion-item>
+  }
+</app-accordion-group>
