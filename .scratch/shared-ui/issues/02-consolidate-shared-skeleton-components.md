@@ -23,8 +23,8 @@ import { SkeletonVariant } from './skeleton-variant.type';
 @Component({
   selector: 'app-skeleton',
   template: `
-    @for (itemClass of itemClasses(); track $index) {
-      <div [class]="itemClass" aria-hidden="true"></div>
+    @for (itemClass of itemClasses(); track itemClass.id) {
+      <div [class]="itemClass.itemClass" aria-hidden="true"></div>
     }
   `,
   styleUrl: './skeleton.component.css',
@@ -39,16 +39,9 @@ export class SkeletonComponent {
     const isMultiLine = this.variant() === 'line' && count > 1;
 
     return Array.from({ length: count }, (_, index) => {
-      let widthClass = '';
-      if (isMultiLine) {
-        if (count === 2) {
-          widthClass = index === 0 ? 'w-3/4' : 'w-1/2';
-        } else if (index === count - 1) {
-          widthClass = 'w-3/4';
-        }
-      }
-
-      return `skeleton-primitive skeleton-${this.variant()} ${widthClass} ${this.class()}`.trim();
+      const widthClass = isMultiLine && index === count - 1 ? 'w-3/4' : '';
+      const itemClass = `skeleton-primitive skeleton-${this.variant()} ${widthClass} ${this.class()}`.trim();
+      return { id: index, itemClass };
     });
   });
 }
@@ -227,7 +220,7 @@ Once `ThoughtSummaryComponent` is migrated, delete `src/app/shared/ui/styles/ske
 ## Acceptance Criteria & Checklist
 
 - [x] Create `SkeletonVariant` type in `src/app/shared/ui/components/skeleton/skeleton-variant.type.ts`.
-- [x] Create `SkeletonComponent` in `src/app/shared/ui/components/skeleton/skeleton.component.ts` with inline template and signal inputs (`variant`, `lines`, `className`).
+- [x] Create `SkeletonComponent` in `src/app/shared/ui/components/skeleton/skeleton.component.ts` with inline template and signal inputs (`variant`, `lines`, `class`).
 - [x] Create component styles in `src/app/shared/ui/components/skeleton/skeleton.component.css` merging `@keyframes skeletonPulse` from `skeleton.css`, `--color-skeleton`, and vertical flex host layout.
 - [x] Create public barrel `src/app/shared/ui/components/skeleton/index.ts` exporting `SkeletonComponent` and `SkeletonVariant`.
 - [x] Write unit tests in `src/app/shared/ui/components/skeleton/skeleton.component.spec.ts`:
