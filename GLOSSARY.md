@@ -59,3 +59,7 @@ _Avoid_: Collapsible card, dropdown recipe, food toggle
 **Culinary Discovery Panel**:
 The dual-tabbed interface presenting Stage 1 Culinary Discovery AI insights, consisting of the AI Reasoning Summary with Honorable Mention Dishes and Modality Tokens analytics.
 _Avoid_: Discovery tabs, culinary result panel, food info card.
+
+**Culinary Destination Selector**:
+The presentational search component allowing travelers to filter destinations by country and city with typeahead autocomplete to initiate Culinary Discovery.
+_Avoid_: Food search bar, city picker, country box.

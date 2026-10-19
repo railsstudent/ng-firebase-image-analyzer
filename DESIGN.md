@@ -260,3 +260,66 @@ To decouple accordion wrapper state from specific recipe rendering logic, the co
 
 - `<accordion-header>` (or `<ng-content select="accordion-header" />` / `select="[accordion-header]"`): Header trigger slot for dish title, native script pill badge, and rotating chevron.
 - `<accordion-body>` (or `<ng-content select="accordion-body" />` / `select="[accordion-body]"`): Collapsible disclosure panel containing streamed recipe synthesis content, ingredients sidebar, and token diagnostics.
+
+---
+
+## 8. Culinary Destination Selector & Autocomplete System
+
+The Culinary Destination Selector provides a responsive, accessible destination filter for initiating Stage 1 Culinary Discovery.
+
+### 8.1 Visual Architecture & Layout Tokens
+
+- **Responsive Container**: Mobile-first flex container (`flex flex-col sm:flex-row gap-3 items-center`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
+- **Glassmorphic Styling**: Card container styled with `glass-card`, `surface-glass`, `surface-glass-border`, and `rounded-2xl`.
+- **Form Controls & Component Stylesheet (`culinary-search-box.component.css`)**:
+  - `@reference "../../../../../styles.css";`
+  - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;`
+  - `.search-form`: `@apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full;`
+  - `.form-group`: `@apply flex flex-col gap-1.5 flex-1 relative;`
+  - `.form-label`: `@apply text-xs font-semibold tracking-wider uppercase text-on-surface-variant;`
+  - `.select-control`: `@apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all;`
+  - `.input-control`: `@apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-outline;`
+  - `.listbox-overlay`: `@apply absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-high shadow-lg z-50 p-1 list-none m-0;`
+  - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm text-on-surface cursor-pointer select-none transition-colors hover:bg-surface-container-highest;`
+  - `.listbox-option-active`: `@apply bg-primary/10 text-primary font-medium;`
+  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm transition-all shadow-md hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed sm:self-end;`
+
+### 8.2 WAI-ARIA 1.2 Combobox Pattern
+
+The city autocomplete combobox conforms to WAI-ARIA 1.2 specifications for typeahead listboxes:
+
+- **Combobox Container / Input**:
+  - `role="combobox"`: Declares the input as a combobox.
+  - `aria-autocomplete="list"`: Indicates that typing filters a list of suggested values.
+  - `aria-expanded="true | false"`: Reflects the open/closed state of the suggestions listbox overlay.
+  - `aria-controls="city-listbox-id"`: References the popup listbox element ID.
+  - `aria-activedescendant="city-option-{index}"`: Points to the currently highlighted item during keyboard navigation.
+- **Popup Listbox Overlay**:
+  - `role="listbox"`: Applied to the suggestions container.
+  - `id="city-listbox-id"`: Anchored target for `aria-controls`.
+  - `aria-label="Suggested cities"`: Accessible name for screen readers.
+- **Option Elements**:
+  - `role="option"`: Applied to each suggestion row.
+  - `id="city-option-{index}"`: Dynamic ID matching `aria-activedescendant`.
+  - `aria-selected="true | false"`: Indicates the currently active/selected suggestion.
+
+### 8.3 Keyboard Navigation Matrix
+
+| Key         | Trigger Context              | Interaction & State Response                                       |
+| :---------- | :--------------------------- | :----------------------------------------------------------------- |
+| `ArrowDown` | Input focused / Listbox open | Moves highlight to next option; opens listbox if closed            |
+| `ArrowUp`   | Listbox open                 | Moves highlight to previous option; wraps or clamps at top         |
+| `Enter`     | Highlighted option active    | Selects highlighted city, updates form model, and closes listbox   |
+| `Enter`     | No highlight / Valid form    | Submits form and emits `search` location payload                   |
+| `Escape`    | Listbox open                 | Closes suggestions listbox without modifying current input         |
+| `Tab`       | Any control                  | Advances focus to next element and closes open suggestions overlay |
+
+### 8.4 Strict Dataset Validation & Submission States
+
+To ensure generative AI discovery pipelines are never invoked with hallucinated or non-existent geographic destinations:
+
+- **Strict Dataset Guard**: The city value in the form model MUST match an exact entry within the selected country's destination dataset (`DestinationDataset.data.find(c => c.country === selectedCountry).cities`).
+- **Disabled State**: The Search submit button is strictly disabled (`disabled` attribute and `aria-disabled="true"`) whenever:
+  1. The dataset is empty or loading.
+  2. The typed city query does not match any valid city in the active country.
+- **Explicit Submission**: Selection changes never auto-trigger discovery; inference requests are dispatched exclusively on explicit form submission (`Enter` or Search button click).
