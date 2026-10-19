@@ -4,7 +4,7 @@
   @let recommendations = innerAnalysis?.recommendations;
   @let thoughtSummary = analysis.thoughtSummary || 'No technical logs provided.';
 
-  <div class="analysis-panel-container">
+  <div class="panel-container">
     <app-tab-group>
       <!-- 3.1: Thought Summary -->
       <app-tab id="thought" label="Thought Summary">
@@ -48,7 +48,7 @@
     </app-tab-group>
   </div>
 } @else {
-  <div class="analysis-section-card">
+  <div class="section-card">
     <p class="empty-state-text">
       No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.
     </p>

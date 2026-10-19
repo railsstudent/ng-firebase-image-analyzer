@@ -21,11 +21,12 @@ import { Component, input } from '@angular/core';
     ImageImprovementSkeletonComponent,
   ],
   templateUrl: './image-analysis-panel.component.html',
-  styleUrls: [
-    '../../../shared/ui/styles/section-card.css',
-    '../../../shared/ui/styles/empty-state.css',
-    './image-analysis-panel.component.css',
-  ],
+  styles: `
+    :host {
+      display: block;
+    }
+  `,
+  styleUrls: ['../../../shared/ui/styles/section-card.css', '../../../shared/ui/styles/empty-state.css'],
 })
 export class ImageAnalysisPanelComponent {
   data = input<StreamingAnalysisWithMetadata | null>(null);

@@ -121,7 +121,7 @@ describe('ImageAnalysisComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const analysisPlaceholder = compiled.querySelector('.analysis-section-card .empty-state-text');
+    const analysisPlaceholder = compiled.querySelector('.section-card .empty-state-text');
     expect(analysisPlaceholder?.textContent).toContain(
       "No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.",
     );
