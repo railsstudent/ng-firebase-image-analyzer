@@ -4,7 +4,7 @@
 
 **Blocked by:** 21: Build CulinaryDiscoveryPanelComponent with Dual Tabs and Update Glossary
 
-**Status:** in_progress
+**Status:** done
 
 - [x] In `DESIGN.md`, append **Section 8: Culinary Destination Selector & Autocomplete System**:
   - Document responsive flex layout using glassmorphic tokens (`glass-card`, `surface-glass`, `surface-glass-border`).
@@ -14,7 +14,7 @@
 - [x] In `GLOSSARY.md`, add **Culinary Destination Selector** to the `Language` section:
   - Definition: The presentational search component allowing travelers to filter destinations by country and city with typeahead autocomplete to initiate Culinary Discovery.
   - _Avoid_: Food search bar, city picker, country box.
-- [ ] Create `CulinarySearchBoxComponent` in `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.ts`:
+- [x] Create `CulinarySearchBoxComponent` in `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.ts`:
   - Selector: `app-culinary-search-box`.
   - Style: `styleUrl: './culinary-search-box.component.css'`.
   - Input: `dataset = input.required<DestinationDataset>()`.
@@ -43,8 +43,8 @@
       - Close suggestions overlay: `this.isDropdownOpen.set(false)`.
       - Emit location payload: `this.search.emit({ country: this.locationModel().country, city: this.locationModel().city })`.
   - Invariant: Do not create a barrel file (`index.ts`) in the feature directory.
-- [ ] Create component stylesheet `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.css`:
-  - Directive: `@reference "../../../../../styles.css";`
+- [x] Create component stylesheet `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.css`:
+  - Directive: `@reference "../../../../styles.css";`
   - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;`
   - `.search-form`: `@apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full;`
   - `.form-group`: `@apply flex flex-col gap-1.5 flex-1 relative;`
@@ -55,14 +55,14 @@
   - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm text-on-surface cursor-pointer select-none transition-colors hover:bg-surface-container-highest;`
   - `.listbox-option-active`: `@apply bg-primary/10 text-primary font-medium;`
   - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm transition-all shadow-md hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed sm:self-end;`
-- [ ] Create template `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html`:
+- [x] Create template `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html`:
   - Wrap in `<div class="search-box-card">`.
   - Accessible `<form class="search-form" (submit)="onSubmit($event)">` container.
   - Country `<select class="select-control">` paired with `<label class="form-label">`.
   - City typeahead combobox (`<input class="input-control" role="combobox" ...>`) paired with `<label class="form-label">`.
   - Suggestions dropdown `<ul class="listbox-overlay" role="listbox">` with `<li class="listbox-option" [class.listbox-option-active]="activeOptionIndex() === i" role="option">`.
   - Search submit button `<button class="submit-btn" type="submit" [disabled]="!isValidSelection()">`.
-- [ ] Create unit test suite in `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.spec.ts`:
+- [x] Create unit test suite in `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.spec.ts`:
   - Verify initial country and city match the first entry in `dataset()`.
   - Verify switching country cascades and resets city to the first city of the new country.
   - Verify typing in city input filters matching suggestions in real-time.
@@ -70,5 +70,5 @@
   - Verify selecting an option updates `locationState` and closes the dropdown listbox.
   - Verify submit button is disabled when city does not match any entry in the active country's dataset.
   - Verify form submit emits the `search` output with `{ country, city }` (`CulinaryLocation`).
-- [ ] Validate targeted intermediate test execution:
+- [x] Validate targeted intermediate test execution:
   - Run `npx ng test --watch=false --include src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.spec.ts`.

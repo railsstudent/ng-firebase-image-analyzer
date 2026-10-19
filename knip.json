@@ -6,7 +6,7 @@
     "cycles": "error"
   },
   "ignoreBinaries": ["ng"],
-  "ignoreDependencies": ["@firebase/ai", "dompurify", "snarkdown"],
+  "ignoreDependencies": ["@angular/forms", "@firebase/ai"],
   "ignore": [
     "src/app/features/culinary-guide/**",
     "src/app/core/culinary-guide/**",

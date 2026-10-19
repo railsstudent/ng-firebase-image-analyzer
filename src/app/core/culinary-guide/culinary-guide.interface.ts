@@ -9,11 +9,6 @@ export interface DestinationDataset {
   readonly data: readonly CulinaryDestination[];
 }
 
-export interface CulinaryLocation {
-  country: string;
-  city: string;
-}
-
 export interface MarkdownModules {
   snarkdown: (markdown: string) => string;
   dompurify: {

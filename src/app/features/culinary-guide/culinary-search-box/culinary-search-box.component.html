@@ -1,0 +1,63 @@
+<div class="search-box-card">
+  <form class="search-form" (submit)="onSubmit($event)">
+    <div class="form-group">
+      <label class="form-label" for="country-select">Country</label>
+      <select
+        id="country-select"
+        class="select-control"
+        [formField]="searchForm.country"
+        (change)="onCountryChange($event)"
+      >
+        @for (item of dataset().data; track item.country) {
+          <option [value]="item.country">{{ item.country }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="city-input">City</label>
+      <input
+        id="city-input"
+        type="text"
+        class="input-control"
+        placeholder="Enter city..."
+        role="combobox"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="isDropdownOpen()"
+        aria-controls="city-listbox"
+        [attr.aria-activedescendant]="activeOptionIndex() >= 0 ? 'city-option-' + activeOptionIndex() : null"
+        [formField]="searchForm.city"
+        (input)="onCityInput($event)"
+        (focus)="onCityFocus()"
+        (blur)="onCityBlur()"
+        (keydown)="onKeydown($event)"
+      />
+
+      @if (isDropdownOpen() && filteredCities().length > 0) {
+        <ul id="city-listbox" class="listbox-overlay" role="listbox" aria-label="Suggested cities">
+          @for (city of filteredCities(); track city; let i = $index) {
+            <li
+              [id]="'city-option-' + i"
+              class="listbox-option"
+              [class.listbox-option-active]="activeOptionIndex() === i"
+              role="option"
+              [attr.aria-selected]="activeOptionIndex() === i"
+              (mousedown)="selectCity(city)"
+            >
+              {{ city }}
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="submit-btn"
+      [disabled]="!isValidSelection()"
+      [attr.aria-disabled]="!isValidSelection()"
+    >
+      Search
+    </button>
+  </form>
+</div>
