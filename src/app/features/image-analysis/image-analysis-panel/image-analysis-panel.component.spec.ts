@@ -1,3 +1,4 @@
+import type { DisplaySource } from '@/core/firebase';
 import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement/image-improvement-skeleton.component';
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
 import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
@@ -22,6 +23,8 @@ describe('ImageAnalysisPanelComponent', () => {
     thoughtSummary: 'Model reasoning summary',
     tokenSummary: { inputTokens: 100, outputTokens: 50, totalTokens: 150 },
     tokenModalityBreakdown: { imageTokens: 80, textTokens: 20 },
+    source: 'on_device' as const,
+    displaySource: 'Gemini Nano' as DisplaySource,
   };
 
   beforeEach(async () => {
@@ -75,23 +78,12 @@ describe('ImageAnalysisPanelComponent', () => {
     expect(tabButtons[3].textContent).toContain('Image Improvement');
   });
 
-  it('should map source correctly to displaySource', () => {
-    expect(component.displaySource()).toBe('Unknown');
-
-    fixture.componentRef.setInput('source', 'on_device');
-    expect(component.displaySource()).toBe('Gemini Nano');
-
-    fixture.componentRef.setInput('source', 'in_cloud');
-    expect(component.displaySource()).toBe('Cloud AI');
-  });
-
   it('should immediately render default active ThoughtSummaryComponent and skeleton placeholders for secondary tabs', async () => {
     fixture.componentRef.setInput('data', {
       ...mockAnalysisData,
       thoughtSummary: '',
     });
     fixture.componentRef.setInput('imageUrl', 'https://example.com/test.jpg');
-    fixture.componentRef.setInput('source', 'on_device');
     fixture.detectChanges();
     await fixture.whenStable();
 

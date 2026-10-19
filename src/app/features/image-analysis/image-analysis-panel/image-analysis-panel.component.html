@@ -3,8 +3,6 @@
   @let alternativeTexts = innerAnalysis?.alternativeTexts;
   @let recommendations = innerAnalysis?.recommendations;
   @let thoughtSummary = analysis.thoughtSummary || 'No technical logs provided.';
-  @let tokenSummary = analysis.tokenSummary;
-  @let tokenModalityBreakdown = analysis.tokenModalityBreakdown;
 
   <div class="analysis-panel-container">
     <app-tab-group>
@@ -13,7 +11,7 @@
         <app-thought-summary
           [remarks]="alternativeTexts"
           remarksTitle="Suggested Alternative Texts"
-          [displaySource]="displaySource()"
+          [displaySource]="analysis.displaySource || 'Unknown'"
           [thoughtSummary]="thoughtSummary"
         />
       </app-tab>
@@ -30,7 +28,10 @@
       <!-- 3.3: Token Usage -->
       <app-tab #tokensTab id="tokens" label="Token Usage">
         @defer (when tokensTab.isActive()) {
-          <app-token-analytics [tokenSummary]="tokenSummary" [tokenModalityBreakdown]="tokenModalityBreakdown" />
+          <app-token-analytics
+            [tokenSummary]="analysis.tokenSummary"
+            [tokenModalityBreakdown]="analysis.tokenModalityBreakdown"
+          />
         } @placeholder {
           <app-list-skeleton />
         }

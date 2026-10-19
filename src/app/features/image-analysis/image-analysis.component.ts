@@ -6,9 +6,8 @@ import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.compone
 import { ImageUploaderComponent } from '@/shared/ui/image-uploader/image-uploader.component';
 import { formatDurationSeconds } from '@/shared/utils/format.util';
 import { Component, computed, injectAsync, signal } from '@angular/core';
-import { InferenceSource } from 'firebase/ai';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
-import { ImageTag } from './tag-list/interfaces/image-tag.interface';
+import type { ImageTag } from './tag-list/interfaces/image-tag.interface';
 import { TagListComponent } from './tag-list/tag-list.component';
 
 @Component({
@@ -55,8 +54,6 @@ export default class ImageAnalysisComponent {
       tooltip: t.sentence,
     }));
   });
-
-  source = computed<InferenceSource | undefined>(() => this.analysisData()?.source);
 
   async preWarm(): Promise<void> {
     try {

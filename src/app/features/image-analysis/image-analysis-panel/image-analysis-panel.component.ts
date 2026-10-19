@@ -1,4 +1,3 @@
-import type { DisplaySource } from '@/core/firebase';
 import type { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement/image-improvement-skeleton.component';
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
@@ -7,8 +6,7 @@ import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
 import { TabComponent, TabGroupComponent } from '@/shared/ui/components/tab-group';
 import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
 import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
-import { Component, computed, input } from '@angular/core';
-import type { InferenceSource } from 'firebase/ai';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-image-analysis-panel',
@@ -32,16 +30,4 @@ import type { InferenceSource } from 'firebase/ai';
 export class ImageAnalysisPanelComponent {
   data = input<StreamingAnalysisWithMetadata | null>(null);
   imageUrl = input<string | null>(null);
-  source = input<InferenceSource | undefined>(undefined);
-
-  displaySource = computed<DisplaySource>(() => {
-    if (this.source()) {
-      if (this.source() == 'on_device') {
-        return 'Gemini Nano';
-      } else if (this.source() === 'in_cloud') {
-        return 'Cloud AI';
-      }
-    }
-    return 'Unknown';
-  });
 }
