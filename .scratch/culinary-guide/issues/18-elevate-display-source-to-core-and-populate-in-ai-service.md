@@ -4,12 +4,12 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** in_progress
 
-- [ ] In `src/app/core/firebase/display-source.type.ts`, define and export `export type DisplaySource = 'Gemini Nano' | 'Cloud AI' | 'Unknown'`.
-- [ ] Add `displaySource?: DisplaySource` property to `InferenceMetadata` in `src/app/core/firebase/inference-metadata.interface.ts`.
-- [ ] Re-export `DisplaySource` and `InferenceMetadata` via `src/app/core/firebase/index.ts`.
-- [ ] In `AiService.extractInferenceMetadata()` (`src/app/core/firebase/ai.service.ts`), compute `displaySource: DisplaySource` based on `response?.inferenceSource` and assign it to the returned `InferenceMetadata`.
-- [ ] In `src/app/core/culinary-guide/culinary-guide.service.ts`, ensure `extractChunk()` sets `displaySource: 'Gemini Nano'` on default fallback `inferenceMetadata`.
-- [ ] Update `src/app/core/firebase/ai.service.spec.ts` to assert that `inferenceMetadata.displaySource` is populated as `'Gemini Nano'` for on-device inference and `'Cloud AI'` for in-cloud inference.
-- [ ] Maintain repository standards: zero `!`, zero `../`, native `#` for private state/dependencies, and ensure all tests pass with `npx ng test --watch=false`.
+- [x] In `src/app/core/firebase/display-source.type.ts`, define and export `export type DisplaySource = 'Gemini Nano' | 'Cloud AI' | 'Unknown'`.
+- [x] Add `displaySource?: DisplaySource` property to `InferenceMetadata` in `src/app/core/firebase/inference-metadata.interface.ts`.
+- [x] Re-export `DisplaySource` and `InferenceMetadata` via `src/app/core/firebase/index.ts`.
+- [x] In `AiService.extractInferenceMetadata()` (`src/app/core/firebase/ai.service.ts`), compute `displaySource: DisplaySource` based on `response?.inferenceSource` and assign it to the returned `InferenceMetadata`.
+- [x] In `src/app/core/culinary-guide/culinary-guide.service.ts`, ensure `extractChunk()` sets `displaySource: 'Unknown'` on default fallback `inferenceMetadata`.
+- [x] Update `src/app/core/firebase/ai.service.spec.ts` to assert that `inferenceMetadata.displaySource` is populated as `'Gemini Nano'` for on-device inference and `'Cloud AI'` for in-cloud inference.
+- [x] Maintain repository standards: zero `!`, zero `../`, native `#` for private state/dependencies, and ensure all tests pass with `npx ng test --watch=false`.

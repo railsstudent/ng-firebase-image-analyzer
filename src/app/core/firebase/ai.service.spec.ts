@@ -108,6 +108,7 @@ describe('AiService', () => {
       expect(results[1].partialData).toBeDefined();
       expect(results[1].inferenceMetadata).toEqual({
         source: 'on_device',
+        displaySource: 'Gemini Nano',
         thoughtSummary: 'Analyzed image composition',
         tokenSummary: {
           totalTokenCount: 150,
@@ -145,6 +146,7 @@ describe('AiService', () => {
       expect(results).toHaveLength(2);
       expect(results[1].inferenceMetadata).toEqual({
         source: 'on_device',
+        displaySource: 'Unknown',
         thoughtSummary: 'No thought summary',
         tokenSummary: {
           totalTokenCount: 0,
@@ -161,7 +163,7 @@ describe('AiService', () => {
       const cloudResponse = {
         text: () => '{"caption": "Cloud test"}',
         candidates: [{ finishReason: 'STOP', content: {} }],
-        inferenceSource: 'cloud' as const,
+        inferenceSource: 'in_cloud' as const,
         thoughtSummary: () => 'Synthesized via cloud model',
       };
 
@@ -178,7 +180,8 @@ describe('AiService', () => {
       }
 
       expect(results).toHaveLength(2);
-      expect(results[1].inferenceMetadata?.source).toBe('cloud');
+      expect(results[1].inferenceMetadata?.source).toBe('in_cloud');
+      expect(results[1].inferenceMetadata?.displaySource).toBe('Cloud AI');
       expect(results[1].inferenceMetadata?.thoughtSummary).toBe('Synthesized via cloud model');
     });
   });

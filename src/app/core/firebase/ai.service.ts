@@ -13,6 +13,7 @@ import { jsonrepair } from 'jsonrepair';
 import { AiModelCacheService } from './ai-model-cache.service';
 import type { GenerateContentParams, PartialResponse } from './ai.interface';
 import { validateAiInputs, validateAiResponse } from './ai.validation';
+import type { DisplaySource } from './display-source.type';
 import { createDummyImagePart } from './dummy-image.util';
 import { FALLBACK_IMAGE_SIZE } from './image.const';
 import type { InferenceMetadata } from './inference-metadata.interface';
@@ -153,17 +154,25 @@ export class AiService {
 
   private extractInferenceMetadata(response: EnhancedGenerateContentResponse | undefined): InferenceMetadata {
     let source: InferenceSource = 'on_device';
+    let displaySource: DisplaySource = 'Gemini Nano';
     let thoughtSummary = 'No thought summary';
     let tokenSummary: TokenSummary | undefined = undefined;
     let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
+
+    const displaySourceMap: Record<InferenceSource, DisplaySource> = {
+      on_device: 'Gemini Nano',
+      in_cloud: 'Cloud AI',
+    };
+
     if (response) {
       source = response.inferenceSource || 'on_device';
+      displaySource = response.inferenceSource ? displaySourceMap[response.inferenceSource] : 'Unknown';
       thoughtSummary = response.thoughtSummary?.() || 'No thought summary';
       const usageGroup = this.processUsage(response);
       tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;
       tokenModalityBreakdown = usageGroup?.tokenBreakdown;
     }
-    return { source, thoughtSummary, tokenSummary, tokenModalityBreakdown };
+    return { source, displaySource, thoughtSummary, tokenSummary, tokenModalityBreakdown };
   }
 
   private async downloadDeviceModel(model: GenerativeModel): Promise<void> {

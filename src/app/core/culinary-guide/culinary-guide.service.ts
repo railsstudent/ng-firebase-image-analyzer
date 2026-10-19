@@ -71,6 +71,7 @@ export class CulinaryGuideService {
   private extractChunk(update: PartialResponse<TopFoodsResponse>): StreamingCulinaryDiscoveryWithMetadata {
     const inferenceMetadata = update.inferenceMetadata || {
       source: 'on_device',
+      displaySource: 'Unknown',
       thoughtSummary: '',
     };
     const { foods, honorableMentions } = normalizeDiscoveryResponse({
@@ -94,6 +95,7 @@ export class CulinaryGuideService {
       for await (const update of generator) {
         const inferenceMetadata = update.inferenceMetadata || {
           source: 'on_device',
+          displaySource: 'Unknown',
           thoughtSummary: '',
         };
         ingredients = update.partialData.ingredients || [];

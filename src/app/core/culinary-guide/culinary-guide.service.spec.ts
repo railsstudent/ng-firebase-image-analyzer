@@ -1,4 +1,4 @@
-import { AiService } from '@/core/firebase';
+import { AiService, type DisplaySource } from '@/core/firebase';
 import { collectStream, createMockStream } from '@/testing/ai-stream.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -41,6 +41,7 @@ describe('CulinaryGuideService', () => {
     it('yields streaming chunks and terminates cleanly when stream passes completion validation', async () => {
       const mockMetadata = {
         source: 'on_device' as const,
+        displaySource: 'Gemini Nano' as DisplaySource,
         thoughtSummary: 'Curated 6 iconic Tokyo dishes',
         tokenSummary: {
           promptTokenCount: 10,
@@ -396,6 +397,7 @@ describe('CulinaryGuideService', () => {
     it('yields streaming chunks and terminates cleanly when stream passes completion validation', async () => {
       const mockMetadata = {
         source: 'on_device' as const,
+        displaySource: 'Gemini Nano' as DisplaySource,
         thoughtSummary: 'Synthesizing authentic broth',
       };
 

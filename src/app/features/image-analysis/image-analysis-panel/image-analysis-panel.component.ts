@@ -1,8 +1,8 @@
+import type { DisplaySource } from '@/core/firebase';
 import type { StreamingAnalysisWithMetadata } from '@/core/image-analysis';
 import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement/image-improvement-skeleton.component';
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
 import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
-import type { DisplaySource } from '@/features/image-analysis/types/display-source.type';
 import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
 import { TabComponent, TabGroupComponent } from '@/shared/ui/components/tab-group';
 import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
