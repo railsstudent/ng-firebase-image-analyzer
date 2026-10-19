@@ -52,11 +52,7 @@
 
   <!-- Advanced Analysis Results Panel -->
   @defer (when analysisData()) {
-    <app-image-analysis-panel
-      class="animate-fade-in block"
-      [data]="analysisData()"
-      [imageUrl]="imageUrl()"
-    ></app-image-analysis-panel>
+    <app-image-analysis-panel class="block" [data]="analysisData()" [imageUrl]="imageUrl()"></app-image-analysis-panel>
   } @placeholder {
     <div class="section-card">
       <p class="empty-state-text">

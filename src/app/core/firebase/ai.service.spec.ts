@@ -184,6 +184,23 @@ describe('AiService', () => {
       expect(results[1].inferenceMetadata?.displaySource).toBe('Cloud AI');
       expect(results[1].inferenceMetadata?.thoughtSummary).toBe('Synthesized via cloud model');
     });
+
+    it('should fallback displaySource to Unknown when response is undefined', async () => {
+      mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+        stream: (async function* () {
+          yield { text: () => '{"caption": "No response object"}' };
+        })(),
+        response: Promise.resolve(undefined),
+      });
+
+      const results = [];
+      for await (const chunk of service.generateContentStream({ contents: 'test stream' })) {
+        results.push(chunk);
+      }
+
+      expect(results).toHaveLength(2);
+      expect(results[1].inferenceMetadata?.displaySource).toBe('Unknown');
+    });
   });
 
   describe('preWarmModel', () => {

@@ -21,6 +21,11 @@ import type { PreWarmOptions } from './model-config-params.interface';
 import { ZERO_TOKEN_SUMMARY } from './token-usage.const';
 import type { TokenModalityBreakdown, TokenSummary, TokenUsage } from './token-usage.interface';
 
+const DISPLAY_SOURCE_MAP: Record<InferenceSource, DisplaySource> = {
+  on_device: 'Gemini Nano',
+  in_cloud: 'Cloud AI',
+};
+
 @Service()
 export class AiService {
   readonly #cacheService = inject(AiModelCacheService);
@@ -100,13 +105,17 @@ export class AiService {
 
     // The stream is 100%  completed. Resolve the final Response promise
     const finalResponse = await result.response;
-    if (!finalResponse.usageMetadata && latestUsage) {
+    if (finalResponse && !finalResponse.usageMetadata && latestUsage) {
       finalResponse.usageMetadata = latestUsage;
     }
-    validateAiResponse(finalResponse);
+    if (finalResponse) {
+      validateAiResponse(finalResponse);
+    }
 
     // Parse the final finished output securely
-    const finalParsed = this.parseStreamJSONResponse<T>(finalResponse.text(), params.schema);
+    const finalParsed = finalResponse
+      ? this.parseStreamJSONResponse<T>(finalResponse.text(), params.schema)
+      : ({} as Partial<T>);
 
     yield {
       partialData: finalParsed,
@@ -154,19 +163,14 @@ export class AiService {
 
   private extractInferenceMetadata(response: EnhancedGenerateContentResponse | undefined): InferenceMetadata {
     let source: InferenceSource = 'on_device';
-    let displaySource: DisplaySource = 'Gemini Nano';
+    let displaySource: DisplaySource = 'Unknown';
     let thoughtSummary = 'No thought summary';
     let tokenSummary: TokenSummary | undefined = undefined;
     let tokenModalityBreakdown: TokenModalityBreakdown | undefined = undefined;
 
-    const displaySourceMap: Record<InferenceSource, DisplaySource> = {
-      on_device: 'Gemini Nano',
-      in_cloud: 'Cloud AI',
-    };
-
     if (response) {
       source = response.inferenceSource || 'on_device';
-      displaySource = response.inferenceSource ? displaySourceMap[response.inferenceSource] : 'Unknown';
+      displaySource = response.inferenceSource ? DISPLAY_SOURCE_MAP[response.inferenceSource] : 'Unknown';
       thoughtSummary = response.thoughtSummary?.() || 'No thought summary';
       const usageGroup = this.processUsage(response);
       tokenSummary = usageGroup?.tokenSummary ?? ZERO_TOKEN_SUMMARY;

@@ -105,6 +105,34 @@ describe('ImageAnalysisPanelComponent', () => {
     expect(fixture.debugElement.query(By.directive(ImageImprovementComponent))).toBeNull();
   });
 
+  it('should pass displaySource from data to ThoughtSummaryComponent', async () => {
+    fixture.componentRef.setInput('data', {
+      ...mockAnalysisData,
+      displaySource: 'Cloud AI' as DisplaySource,
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const thoughtSummaryEl = fixture.debugElement.query(By.directive(ThoughtSummaryComponent));
+    expect(thoughtSummaryEl).toBeTruthy();
+    const thoughtSummaryComp = thoughtSummaryEl.componentInstance as ThoughtSummaryComponent;
+    expect(thoughtSummaryComp.displaySource()).toBe('Cloud AI');
+  });
+
+  it('should fallback displaySource to Unknown when data.displaySource is undefined', async () => {
+    fixture.componentRef.setInput('data', {
+      ...mockAnalysisData,
+      displaySource: undefined,
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const thoughtSummaryEl = fixture.debugElement.query(By.directive(ThoughtSummaryComponent));
+    expect(thoughtSummaryEl).toBeTruthy();
+    const thoughtSummaryComp = thoughtSummaryEl.componentInstance as ThoughtSummaryComponent;
+    expect(thoughtSummaryComp.displaySource()).toBe('Unknown');
+  });
+
   it('should hydrate ImageRecommendationComponent when Recommendations tab is selected', async () => {
     fixture.componentRef.setInput('data', mockAnalysisData);
     fixture.detectChanges();
