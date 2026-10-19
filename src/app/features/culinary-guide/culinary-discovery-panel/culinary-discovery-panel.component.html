@@ -1,0 +1,30 @@
+@if (discovery(); as d) {
+  <div class="panel-container">
+    <app-tab-group>
+      <!-- 3.1: Thought Summary -->
+      <app-tab id="thought" label="Thought Summary">
+        <app-thought-summary
+          [remarks]="d.honorableMentions?.length ? d.honorableMentions : undefined"
+          remarksTitle="Honorable Mention Dishes"
+          [displaySource]="d.displaySource || 'Unknown'"
+          [thoughtSummary]="d.thoughtSummary || 'No technical logs provided.'"
+        />
+      </app-tab>
+
+      <!-- 3.2: Token Usage -->
+      <app-tab #tokensTab id="tokens" label="Token Usage">
+        @defer (when tokensTab.isActive()) {
+          <app-token-analytics [tokenSummary]="d.tokenSummary" [tokenModalityBreakdown]="d.tokenModalityBreakdown" />
+        } @placeholder {
+          <app-list-skeleton />
+        }
+      </app-tab>
+    </app-tab-group>
+  </div>
+} @else {
+  <div class="section-card">
+    <p class="empty-state-text">
+      No culinary discovery results available yet. Select a destination to explore iconic dishes and AI insights.
+    </p>
+  </div>
+}

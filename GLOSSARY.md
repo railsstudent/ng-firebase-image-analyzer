@@ -55,3 +55,7 @@ _Avoid_: Country list, city dropdown data, static geo data
 **Recipe Accordion**:
 The single-expansion disclosure container displaying a culinary dish, responsible for lazy-triggering Stage 2 Recipe Synthesis on expansion and presenting ingredients, instructions, and per-dish token diagnostics.
 _Avoid_: Collapsible card, dropdown recipe, food toggle
+
+**Culinary Discovery Panel**:
+The dual-tabbed interface presenting Stage 1 Culinary Discovery AI insights, consisting of the AI Reasoning Summary with Honorable Mention Dishes and Modality Tokens analytics.
+_Avoid_: Discovery tabs, culinary result panel, food info card.
