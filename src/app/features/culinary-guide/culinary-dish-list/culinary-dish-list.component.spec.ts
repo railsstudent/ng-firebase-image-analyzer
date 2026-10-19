@@ -1,7 +1,9 @@
 import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.interface';
 import { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
+import { AccordionItemComponent } from '@/shared/ui/components/accordion';
 import { CulinaryDishListComponent } from './culinary-dish-list.component';
 
 const MOCK_DISHES: CulinaryFoodItem[] = [
@@ -201,6 +203,41 @@ describe('CulinaryDishListComponent - Slice 2: Expansion & dishSelected Output',
     const panels = fixture.nativeElement.querySelectorAll('.accordion-panel');
     expect(panels[0].getAttribute('hidden')).not.toBeNull();
     expect(panels[1].getAttribute('hidden')).not.toBeNull();
+  });
+
+  it('should emit dishSelected when an accordion item emits expandedChange with true', () => {
+    const dishListDebugEl = fixture.debugElement.query(By.directive(CulinaryDishListComponent));
+    const accordionItemDebugEls = dishListDebugEl.queryAll(By.directive(AccordionItemComponent));
+    expect(accordionItemDebugEls.length).toBe(2);
+
+    accordionItemDebugEls[0].triggerEventHandler('expandedChange', true);
+
+    expect(hostComponent.selectedDishes.length).toBe(1);
+    expect(hostComponent.selectedDishes[0]).toEqual(MOCK_DISHES[0]);
+  });
+
+  it('should not emit dishSelected when an accordion item emits expandedChange with false', () => {
+    const dishListDebugEl = fixture.debugElement.query(By.directive(CulinaryDishListComponent));
+    const accordionItemDebugEls = dishListDebugEl.queryAll(By.directive(AccordionItemComponent));
+
+    accordionItemDebugEls[0].triggerEventHandler('expandedChange', false);
+
+    expect(hostComponent.selectedDishes.length).toBe(0);
+  });
+
+  it('should not emit dishSelected when clicking inside the accordion dish body', async () => {
+    const triggerButtons = fixture.nativeElement.querySelectorAll('button.accordion-trigger');
+    triggerButtons[0].click();
+    await fixture.whenStable();
+    expect(hostComponent.selectedDishes.length).toBe(1);
+
+    const dishBody = fixture.nativeElement.querySelector('.dish-body') as HTMLElement;
+    expect(dishBody).toBeTruthy();
+
+    dishBody.click();
+    await fixture.whenStable();
+
+    expect(hostComponent.selectedDishes.length).toBe(1);
   });
 });
 

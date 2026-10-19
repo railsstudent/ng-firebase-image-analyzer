@@ -1,6 +1,6 @@
 <app-accordion-group [isMulti]="isMulti()" [(expandedIds)]="expandedDishNames">
   @for (dish of dishes(); track dish.name) {
-    <app-accordion-item [id]="dish.name" (click)="onDishToggle(dish, $event)">
+    <app-accordion-item [id]="dish.name" (expandedChange)="onDishToggle(dish, $event)">
       <div accordion-header class="dish-header">
         <div class="dish-title-row">
           <span class="dish-name">{{ dish.name }}</span>

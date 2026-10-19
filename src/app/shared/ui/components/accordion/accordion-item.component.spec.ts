@@ -1,4 +1,4 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 import type { AccordionGroupContext } from './accordion-context.interface';
@@ -105,6 +105,35 @@ describe('AccordionItemComponent', () => {
       button?.click();
 
       expect(mockContext.toggleItem).toHaveBeenCalledWith('item-click');
+    });
+
+    it('emits expandedChange with the updated expansion state when toggled', async () => {
+      const isItemExpandedSignal = signal(false);
+      mockContext.isItemExpanded = vi.fn(() => isItemExpandedSignal());
+      mockContext.toggleItem = vi.fn(() => {
+        isItemExpandedSignal.update((v) => !v);
+      });
+
+      fixture.componentRef.setInput('id', 'item-toggle-emit');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const emittedValues: boolean[] = [];
+      component.expandedChange.subscribe((val) => emittedValues.push(val));
+
+      const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.accordion-trigger');
+
+      // First click: expands
+      button?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      // Second click: collapses
+      button?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(emittedValues).toEqual([true, false]);
     });
   });
 

@@ -19,16 +19,8 @@ export class CulinaryDishListComponent {
 
   dishSelected = output<CulinaryFoodItem>();
 
-  private isDishExpanded(dishName: string): boolean {
-    return this.expandedDishNames().includes(dishName);
-  }
-
-  onDishToggle(dish: CulinaryFoodItem, event?: Event): void {
-    if (event?.target instanceof HTMLElement && event.target.closest('.dish-body')) {
-      return;
-    }
-
-    if (this.isDishExpanded(dish.name)) {
+  onDishToggle(dish: CulinaryFoodItem, isExpanded: boolean): void {
+    if (isExpanded) {
       this.dishSelected.emit(dish);
     }
   }

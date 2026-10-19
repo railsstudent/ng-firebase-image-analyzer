@@ -64,6 +64,7 @@ Downstream feature components (such as `CulinaryDishListComponent`) compose `<ap
 - Evaluates expansion inside a `computed` property:
   `readonly isExpanded = computed(() => this.#context?.isItemExpanded(this.id()) ?? false);`
 - Delegates user click interactions to `this.#context?.toggleItem(this.id())`.
+- Exposes `expandedChange = output<boolean>()` to allow consumers to observe granular item state transitions reactively without DOM event sniffing or bubbling side effects.
 - Exposes content projection slots for consumer templates.
 
 ---
