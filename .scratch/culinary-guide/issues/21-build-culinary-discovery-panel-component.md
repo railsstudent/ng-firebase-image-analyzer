@@ -11,7 +11,7 @@
   - _Avoid_: Discovery tabs, culinary result panel, food info card.
 - [x] Create `CulinaryDiscoveryPanelComponent` in `src/app/features/culinary-guide/culinary-discovery-panel/culinary-discovery-panel.component.ts`:
   - Selector: `app-culinary-discovery-panel`.
-  - Input: `discovery = input<StreamingCulinaryDiscoveryWithMetadata | undefined>(undefined)`.
+  - Input: `discovery = input<StreamingCulinaryDiscoveryWithMetadata | null>(null)`.
   - Imports: `TabGroupComponent`, `TabComponent`, `ThoughtSummaryComponent`, `TokenAnalyticsComponent`, `ListSkeletonComponent`.
   - Styles: Inline `styles: ':host { display: block; }'`, `src/app/shared/ui/styles/section-card.css`, and `src/app/shared/ui/styles/empty-state.css`.
   - Invariant: Do not create a barrel file (`index.ts`) in the feature directory.
@@ -26,7 +26,7 @@
   - Delete `culinary-discovery-panel.component.css`.
 - [x] Create unit test suite in `src/app/features/culinary-guide/culinary-discovery-panel/culinary-discovery-panel.component.spec.ts`:
   - Verify empty state card renders when `discovery` input is `undefined`.
-  - Verify `<app-tab-group>` renders with tabs `"Thought Summary"` and `"Token Analytics"` when discovery data is provided.
+  - Verify `<app-tab-group>` renders with tabs `"Thought Summary"` and `"Token Usage"` when discovery data is provided.
   - Verify Tab 1 binds `displaySource`, `thoughtSummary` fallback, and `honorableMentions` with `remarksTitle="Honorable Mention Dishes"`.
   - Verify Tab 1 renders skeleton when `honorableMentions` is empty `[]`.
   - Verify Tab 2 `@defer` activates on selection and renders `<app-token-analytics>` with token summaries.

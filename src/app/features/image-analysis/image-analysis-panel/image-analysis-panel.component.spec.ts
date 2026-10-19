@@ -1,4 +1,3 @@
-import type { DisplaySource } from '@/core/firebase';
 import { ImageImprovementSkeletonComponent } from '@/features/image-analysis/image-improvement/image-improvement-skeleton.component';
 import { ImageImprovementComponent } from '@/features/image-analysis/image-improvement/image-improvement.component';
 import { ImageRecommendationComponent } from '@/features/image-analysis/image-recommendation/image-recommendation.component';
@@ -24,7 +23,7 @@ describe('ImageAnalysisPanelComponent', () => {
     tokenSummary: { inputTokens: 100, outputTokens: 50, totalTokens: 150 },
     tokenModalityBreakdown: { imageTokens: 80, textTokens: 20 },
     source: 'on_device' as const,
-    displaySource: 'Gemini Nano' as DisplaySource,
+    displaySource: 'Gemini Nano' as const,
   };
 
   beforeEach(async () => {
@@ -108,7 +107,7 @@ describe('ImageAnalysisPanelComponent', () => {
   it('should pass displaySource from data to ThoughtSummaryComponent', async () => {
     fixture.componentRef.setInput('data', {
       ...mockAnalysisData,
-      displaySource: 'Cloud AI' as DisplaySource,
+      displaySource: 'Cloud AI' as const,
     });
     fixture.detectChanges();
     await fixture.whenStable();

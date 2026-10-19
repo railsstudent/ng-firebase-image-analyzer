@@ -1,5 +1,4 @@
 import type { StreamingCulinaryDiscoveryWithMetadata } from '@/core/culinary-guide';
-import type { DisplaySource } from '@/core/firebase';
 import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
 import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
 import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
@@ -110,7 +109,7 @@ describe('CulinaryDiscoveryPanelComponent', () => {
   it('should pass displaySource from discovery to ThoughtSummaryComponent', async () => {
     fixture.componentRef.setInput('discovery', {
       ...mockDiscoveryData,
-      displaySource: 'Cloud AI' as DisplaySource,
+      displaySource: 'Cloud AI' as const,
     });
     fixture.detectChanges();
     await fixture.whenStable();
