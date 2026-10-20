@@ -17,31 +17,29 @@
 - [x] Create `CulinarySearchBoxComponent` in `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.ts`:
   - Selector: `app-culinary-search-box`.
   - Style: `styleUrl: './culinary-search-box.component.css'`.
-  - Input: `dataset = input.required<DestinationDataset>()`.
-  - Output: `search = output<CulinaryLocation>()`.
-  - **Signal Form Model Construction**:
-    - Define `readonly locationModel = signal<CulinaryLocation>({ country: '', city: '' })` initialized from the first entry of `dataset().data` (`{ country: data[0]?.country ?? '', city: data[0]?.cities[0] ?? '' }`).
-    - Pass the model to Signal Forms: `readonly searchForm = form(this.locationModel)` from `@angular/forms/signals`.
+  - Input: `destinations = input.required<CulinaryDestination[]>();`.
+  - Output: `locationSelected = output<CulinaryLocation>()`.
+  - **Signal Form Model & Validation**:
+    - Define private `readonly #locationModel = linkedSignal<CulinaryDestination[], CulinaryLocation>({ source: this.destinations, computation: (destinations) => ({ country: destinations[0]?.country ?? '', city: destinations[0]?.cities[0] ?? '' }) })`.
+    - Pass the model to Signal Forms: `readonly searchForm = form(this.#locationModel, (schema) => { required(schema.country); required(schema.city); debounce(schema.city, BLUR_CLOSE_DELAY_MS); validate(schema.city, ({ value, valueOf }) => { const validCities = this.getCitiesForCountry(valueOf(schema.country)); const exists = validCities.some((c) => c.toLowerCase() === value().trim().toLowerCase()); return exists ? null : { kind: 'invalidCity', message: 'City is not in selected country' }; }); })`.
   - **Reactivity & Country Cascade**:
-    - When country `<select>` changes via `onCountryChange(country: string)`:
-      - Look up the new country's first city (`newCountry.cities[0] ?? ''`).
-      - Update the model: `this.locationModel.set({ country, city: firstCity })`.
-      - Reset `filterQuery` and close suggestions listbox.
+    - When country `<select>` changes via `onCountryChange(newCountryName: string)`:
+      - Look up the new country's first city via `getCitiesForCountry(newCountryName)?.[0] ?? ''`.
+      - Update the model: `this.#locationModel.set({ country: newCountryName, city: firstCity })`.
+      - Close suggestions listbox: `this.toggleDropdown(false)`.
   - **City Autocomplete & Filtered Options**:
-    - `filterQuery = signal<string>('')`.
-    - `isDropdownOpen = signal<boolean>(false)`.
-    - `activeOptionIndex = signal<number>(-1)`.
-    - `currentCountryCities = computed(() => this.dataset().data.find(d => d.country === this.locationModel().country)?.cities ?? [])`.
-    - `filteredCities = computed(() => { const q = this.filterQuery().toLowerCase().trim(); const cities = this.currentCountryCities(); return q ? cities.filter(c => c.toLowerCase().includes(q)) : cities; })`.
-    - `selectCity(city: string)`: updates `this.locationModel.update(m => ({ ...m, city }))`, syncs `filterQuery`, and closes the listbox.
-  - **Validation (`isValidSelection`)**:
-    - Computed boolean: `readonly isValidSelection = computed<boolean>(() => { const countryMatch = this.dataset().data.find(d => d.country === this.locationModel().country); const currentCity = this.locationModel().city.trim().toLowerCase(); return !!countryMatch && countryMatch.cities.some(c => c.toLowerCase() === currentCity); })`.
+    - `isDropdownOpen = signal(false)`.
+    - `activeOptionIndex = signal(-1)`.
+    - `#lowercaseCity = computed(() => this.#locationModel().city.trim().toLowerCase())`.
+    - `filteredCities = computed(() => { const query = this.#lowercaseCity(); const cities = this.getCitiesForCountry(this.#locationModel().country); return query ? cities.filter((city) => city.toLowerCase().includes(query)) : cities; })`.
+    - `cityOptionId = computed(() => this.activeOptionIndex() >= 0 ? \`city-option-\${this.activeOptionIndex()}\` : null)`.
+    - `selectCity(city: string, event?: Event)`: updates `#locationModel` with selected city and delegates closure to `toggleDropdown(false, event)`.
+    - `navigateOptions(direction: 'up' | 'down')`: updates `activeOptionIndex` with wrap-around across filtered options.
+    - `onEnter(event: Event)`: selects currently active option from keyboard navigation.
   - **Submission (`onSubmit`)**:
     - `onSubmit(event?: Event): void`:
       - Call `event?.preventDefault()`.
-      - Guard: `if (!this.isValidSelection()) return;`.
-      - Close suggestions overlay: `this.isDropdownOpen.set(false)`.
-      - Emit location payload: `this.search.emit({ country: this.locationModel().country, city: this.locationModel().city })`.
+      - Guard: `if (this.searchForm().valid()) { this.isDropdownOpen.set(false); this.locationSelected.emit(this.#locationModel()); }`.
   - Invariant: Do not create a barrel file (`index.ts`) in the feature directory.
 - [x] Create component stylesheet `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.css`:
   - Directive: `@reference "../../../../styles.css";`
@@ -58,17 +56,17 @@
 - [x] Create template `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html`:
   - Wrap in `<div class="search-box-card">`.
   - Accessible `<form class="search-form" (submit)="onSubmit($event)">` container.
-  - Country `<select class="select-control">` paired with `<label class="form-label">`.
-  - City typeahead combobox (`<input class="input-control" role="combobox" ...>`) paired with `<label class="form-label">`.
+  - Country `<select class="select-control" [formField]="searchForm.country" #countrySelect (change)="onCountryChange(countrySelect.value)">` iterating `@for (item of destinations(); track item.country)`.
+  - City typeahead combobox (`<input class="input-control" role="combobox" aria-haspopup="listbox" aria-autocomplete="list" [attr.aria-expanded]="isDropdownOpen()" aria-controls="city-listbox" [attr.aria-activedescendant]="cityOptionId()" [formField]="searchForm.city" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" ...>`).
   - Suggestions dropdown `<ul class="listbox-overlay" role="listbox">` with `<li class="listbox-option" [class.listbox-option-active]="activeOptionIndex() === i" role="option">`.
-  - Search submit button `<button class="submit-btn" type="submit" [disabled]="!isValidSelection()">`.
+  - Search submit button `<button class="submit-btn" type="submit" [disabled]="searchForm().invalid()" [attr.aria-disabled]="searchForm().invalid()">`.
 - [x] Create unit test suite in `src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.spec.ts`:
-  - Verify initial country and city match the first entry in `dataset()`.
+  - Verify initial country and city match the first entry in `destinations()`.
   - Verify switching country cascades and resets city to the first city of the new country.
-  - Verify typing in city input filters matching suggestions in real-time.
+  - Verify typing/selecting city filters matching suggestions in real-time.
   - Verify keyboard navigation (`ArrowDown`, `ArrowUp`, `Enter`, `Escape`) cycles and selects suggestions.
-  - Verify selecting an option updates `locationState` and closes the dropdown listbox.
-  - Verify submit button is disabled when city does not match any entry in the active country's dataset.
-  - Verify form submit emits the `search` output with `{ country, city }` (`CulinaryLocation`).
+  - Verify selecting an option updates `#locationModel` and closes the dropdown listbox.
+  - Verify submit button is disabled and form is invalid when city does not match any entry in active country.
+  - Verify form submit emits the `locationSelected` output with `{ country, city }` (`CulinaryLocation`).
 - [x] Validate targeted intermediate test execution:
-  - Run `npx ng test --watch=false --include src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.spec.ts`.
+  - Run `npm run test:spec src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.spec.ts` (8/8 tests passing).

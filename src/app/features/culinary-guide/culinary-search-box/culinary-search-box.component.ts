@@ -1,9 +1,9 @@
-import type { CulinaryLocation, DestinationDataset } from '@/core/culinary-guide';
+import type { CulinaryDestination, CulinaryLocation } from '@/core/culinary-guide';
 import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
-import { form, FormField } from '@angular/forms/signals';
+import { debounce, form, FormField, required, validate } from '@angular/forms/signals';
 
 const NO_SELECTION_INDEX = -1;
-const BLUR_CLOSE_DELAY_MS = 200;
+const CITY_DEBOUNCE_MS = 200;
 
 @Component({
   selector: 'app-culinary-search-box',
@@ -12,103 +12,93 @@ const BLUR_CLOSE_DELAY_MS = 200;
   styleUrl: './culinary-search-box.component.css',
 })
 export class CulinarySearchBoxComponent {
-  readonly dataset = input.required<DestinationDataset>();
+  readonly destinations = input.required<CulinaryDestination[]>();
 
-  readonly locationModel = linkedSignal<DestinationDataset, CulinaryLocation>({
-    source: this.dataset,
-    computation: (dataset) => {
-      const firstCountry = dataset.data[0]?.country ?? '';
-      const firstCity = dataset.data[0]?.cities[0] ?? '';
-      return { country: firstCountry, city: firstCity };
-    },
-  });
-  readonly searchForm = form(this.locationModel);
-
-  readonly filterQuery = signal<string>('');
-  readonly isDropdownOpen = signal<boolean>(false);
-  readonly activeOptionIndex = signal<number>(NO_SELECTION_INDEX);
-
-  readonly currentCountryCities = computed<string[]>(() => {
-    const activeCountry = this.locationModel().country;
-    return this.dataset().data.find((item) => item.country === activeCountry)?.cities ?? [];
+  readonly #locationModel = linkedSignal<CulinaryDestination[], CulinaryLocation>({
+    source: this.destinations,
+    computation: (destinations) => ({
+      country: destinations[0]?.country ?? '',
+      city: destinations[0]?.cities[0] ?? '',
+    }),
   });
 
-  readonly filteredCities = computed<string[]>(() => {
-    const query = this.filterQuery().toLowerCase().trim();
-    const cities = this.currentCountryCities();
-    if (!query) {
-      return cities;
-    }
-    return cities.filter((city) => city.toLowerCase().includes(query));
+  readonly searchForm = form(this.#locationModel, (schema) => {
+    required(schema.country);
+    required(schema.city);
+    debounce(schema.city, CITY_DEBOUNCE_MS);
+
+    validate(schema.city, ({ value, valueOf }) => {
+      const validCities = this.getCitiesForCountry(valueOf(schema.country));
+      const isExists = validCities.some((city) => city.toLowerCase() === value().trim().toLowerCase());
+      return isExists ? null : { kind: 'invalidCity', message: 'City is not in selected country' };
+    });
   });
 
-  readonly isValidSelection = computed(() => {
-    const selectedCountry = this.locationModel().country;
-    const countryMatch = this.dataset().data.find((item) => item.country === selectedCountry);
-    if (!countryMatch) {
-      return false;
-    }
-    const currentCity = this.locationModel().city.trim().toLowerCase();
-    return countryMatch.cities.some((city) => city.toLowerCase() === currentCity);
+  readonly isDropdownOpen = signal(false);
+  readonly activeOptionIndex = signal(NO_SELECTION_INDEX);
+
+  readonly #lowercaseCity = computed(() => this.#locationModel().city.trim().toLowerCase());
+
+  readonly filteredCities = computed(() => {
+    const query = this.#lowercaseCity();
+    const cities = this.getCitiesForCountry(this.#locationModel().country);
+    return query ? cities.filter((city) => city.toLowerCase().includes(query)) : cities;
   });
+
+  readonly cityOptionId = computed(() =>
+    this.activeOptionIndex() >= 0 ? `city-option-${this.activeOptionIndex()}` : null,
+  );
 
   readonly locationSelected = output<CulinaryLocation>();
 
-  onCountryChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const newCountryName = select.value;
-    const countryData = this.dataset().data.find((item) => item.country === newCountryName);
-    const firstCity = countryData?.cities[0] ?? '';
-
-    this.locationModel.set({ country: newCountryName, city: firstCity });
-    this.filterQuery.set('');
-    this.isDropdownOpen.set(false);
-    this.activeOptionIndex.set(NO_SELECTION_INDEX);
+  private getCitiesForCountry(countryName: string): readonly string[] {
+    const normalized = countryName.trim().toLowerCase();
+    const countryData = this.destinations().find((item) => item.country.trim().toLowerCase() === normalized);
+    return countryData?.cities || [];
   }
 
-  onCityInput(event: Event): void {
-    const inputEl = event.target as HTMLInputElement;
-    const value = inputEl.value;
-    this.locationModel.update((prev) => ({ ...prev, city: value }));
-    this.filterQuery.set(value);
-    this.isDropdownOpen.set(true);
-    this.activeOptionIndex.set(NO_SELECTION_INDEX);
+  onCountryChange(newCountryName: string): void {
+    const firstCity = this.getCitiesForCountry(newCountryName)?.[0] || '';
+    this.#locationModel.set({ country: newCountryName, city: firstCity });
+    this.toggleDropdown(false);
   }
 
-  onCityFocus(): void {
-    this.isDropdownOpen.set(true);
-  }
-
-  onCityBlur(): void {
-    setTimeout(() => {
-      this.isDropdownOpen.set(false);
+  toggleDropdown(isOpen: boolean, event?: Event): void {
+    event?.preventDefault();
+    this.isDropdownOpen.set(isOpen);
+    if (!isOpen) {
       this.activeOptionIndex.set(NO_SELECTION_INDEX);
-    }, BLUR_CLOSE_DELAY_MS);
+    }
   }
 
-  selectCity(city: string): void {
-    this.locationModel.update((prev) => ({ ...prev, city }));
-    this.filterQuery.set('');
-    this.isDropdownOpen.set(false);
-    this.activeOptionIndex.set(NO_SELECTION_INDEX);
+  selectCity(city: string, event?: Event): void {
+    this.#locationModel.update((prev) => ({ ...prev, city }));
+    this.toggleDropdown(false, event);
   }
 
-  private handleArrowNav(direction: 'up' | 'down', optionsCount: number): void {
+  navigateOptions(direction: 'up' | 'down'): void {
+    const optionsCount = this.filteredCities().length;
+    if (optionsCount <= 0) {
+      return;
+    }
+
     if (!this.isDropdownOpen()) {
       this.isDropdownOpen.set(true);
       this.activeOptionIndex.set(direction === 'down' ? 0 : optionsCount - 1);
-      return;
-    }
-    if (direction === 'down') {
-      this.activeOptionIndex.update((curr) => (curr + 1) % optionsCount);
     } else {
-      this.activeOptionIndex.update((curr) => (curr <= 0 ? optionsCount - 1 : curr - 1));
+      if (direction === 'down') {
+        this.activeOptionIndex.update((curr) => (curr + 1) % optionsCount);
+      } else {
+        this.activeOptionIndex.update((curr) => (curr <= 0 ? optionsCount - 1 : curr - 1));
+      }
     }
   }
 
-  private handleEnter(options: readonly string[]): void {
+  onEnter(event: Event): void {
     const index = this.activeOptionIndex();
+    const options = this.filteredCities();
     if (this.isDropdownOpen() && index >= 0 && index < options.length) {
+      event.preventDefault();
       const selected = options[index];
       if (selected) {
         this.selectCity(selected);
@@ -116,39 +106,11 @@ export class CulinarySearchBoxComponent {
     }
   }
 
-  onKeydown(event: KeyboardEvent): void {
-    const options = this.filteredCities();
-    if (options.length === 0) {
-      if (event.key === 'Escape') {
-        this.isDropdownOpen.set(false);
-      }
-      return;
-    }
-
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.handleArrowNav(event.key === 'ArrowDown' ? 'down' : 'up', options.length);
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      this.handleEnter(options);
-    } else if (event.key === 'Escape' || event.key === 'Tab') {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-      }
-      this.isDropdownOpen.set(false);
-      this.activeOptionIndex.set(NO_SELECTION_INDEX);
-    }
-  }
-
   onSubmit(event?: Event): void {
     event?.preventDefault();
-    if (!this.isValidSelection()) {
-      return;
+    if (this.searchForm().valid()) {
+      this.isDropdownOpen.set(false);
+      this.locationSelected.emit(this.#locationModel());
     }
-    this.isDropdownOpen.set(false);
-    this.locationSelected.emit({
-      country: this.locationModel().country,
-      city: this.locationModel().city,
-    });
   }
 }

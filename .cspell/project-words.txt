@@ -139,3 +139,5 @@ dragleave
 dragover
 overscroll
 deduplicators
+arrowup
+arrowdown
