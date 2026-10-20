@@ -1,1 +1,11 @@
-<app-culinary-discovery-panel [discovery]="data" />
+<div>
+  <app-culinary-search-box [destinations]="culinaryDestinations" (locationSelected)="search($event)" />
+  <app-culinary-dish-list
+    [dishes]="dishes()"
+    [(expandedDishNames)]="expandedDishNames"
+    [recipes]="recipes()"
+    [isMulti]="false"
+    (dishSelected)="loadRecipe($event)"
+  />
+  <app-culinary-discovery-panel [discovery]="discoveryData()" />
+</div>

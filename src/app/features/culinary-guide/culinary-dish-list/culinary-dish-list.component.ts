@@ -8,8 +8,8 @@ import { Component, input, model, output } from '@angular/core';
 @Component({
   selector: 'app-culinary-dish-list',
   imports: [AccordionGroupComponent, AccordionItemComponent, TokenAnalyticsComponent, SkeletonComponent],
-  styleUrl: './culinary-dish-list.component.css',
   templateUrl: './culinary-dish-list.component.html',
+  styleUrl: './culinary-dish-list.component.css',
 })
 export class CulinaryDishListComponent {
   dishes = input.required<CulinaryFoodItem[]>();

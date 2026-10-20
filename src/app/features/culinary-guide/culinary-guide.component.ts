@@ -1,37 +1,76 @@
-import { Component } from '@angular/core';
+import {
+  CulinaryDestination,
+  CulinaryFoodItem,
+  CulinaryLocation,
+  CulinaryRecipeTarget,
+  StreamingCulinaryDiscoveryWithMetadata,
+} from '@/core/culinary-guide';
+import destinations from '@/core/culinary-guide/destinations.json';
+import { Component, computed, injectAsync, signal } from '@angular/core';
+import { DEFAULT_DISCOVERY_DATA } from './constants/culinary-guide.const';
 import { CulinaryDiscoveryPanelComponent } from './culinary-discovery-panel/culinary-discovery-panel.component';
-import { StreamingCulinaryDiscoveryWithMetadata } from '@/core/culinary-guide';
+import { CulinaryDishListComponent } from './culinary-dish-list/culinary-dish-list.component';
+import { CulinarySearchBoxComponent } from './culinary-search-box/culinary-search-box.component';
+import { CulinaryRecipeDetail } from './interfaces/culinary-recipe-detail.interface';
 
 @Component({
   selector: 'app-culinary-guide',
-  imports: [CulinaryDiscoveryPanelComponent],
+  imports: [CulinaryDiscoveryPanelComponent, CulinarySearchBoxComponent, CulinaryDishListComponent],
   styleUrl: './culinary-guide.component.css',
   templateUrl: './culinary-guide.component.html',
 })
 export default class CulinaryGuideComponent {
-  data: StreamingCulinaryDiscoveryWithMetadata = {
-    foods: [
-      {
-        name: 'name 1',
-        nativeName: 'native name 1',
-        description: 'description 1',
-      },
-    ],
-    honorableMentions: ['hm 1', 'hm 2'],
-    thoughtSummary: 'hello',
-    displaySource: 'Gemini Nano',
-    source: 'on_device',
-    tokenSummary: {
-      totalTokenCount: 100,
-      promptTokenCount: 20,
-      thoughtsTokenCount: 0,
-      cachedContentTokenCount: 0,
-      outputTokenCount: 80,
-    },
-    tokenModalityBreakdown: {
-      promptTokensDetails: [],
-      outputTokensDetails: [],
-      cacheTokensDetails: [],
-    },
-  };
+  #asyncCoordinatorService = injectAsync(() =>
+    import('./services/culinary-guide-coordinator.service').then((m) => m.CulinaryGuideCoordinatorService),
+  );
+
+  discoveryData = signal<StreamingCulinaryDiscoveryWithMetadata | null>(null);
+  expandedDishNames = signal<string[]>([]);
+  recipes = signal<Record<string, CulinaryRecipeDetail>>({});
+  dishes = computed(() => this.discoveryData()?.foods || []);
+  currentLocation = signal<CulinaryLocation | undefined>(undefined);
+
+  culinaryDestinations: CulinaryDestination[] = destinations.data;
+
+  async search(location: CulinaryLocation): Promise<void> {
+    try {
+      this.currentLocation.set(location);
+      const coordinatorService = await this.#asyncCoordinatorService();
+      const generator = coordinatorService.search(location);
+
+      for await (const chunk of generator) {
+        // console.log('discovery chunk', chunk);
+        this.discoveryData.set(chunk);
+      }
+    } catch {
+      this.discoveryData.set(DEFAULT_DISCOVERY_DATA);
+    }
+  }
+
+  async loadRecipe(foodItem: CulinaryFoodItem): Promise<void> {
+    const coordinatorService = await this.#asyncCoordinatorService();
+
+    const location = this.currentLocation();
+    if (!location) {
+      return;
+    }
+
+    const recipeTarget: CulinaryRecipeTarget = { ...location, dishName: foodItem.name };
+    const generator = coordinatorService.loadRecipe(recipeTarget);
+
+    const dishName = foodItem.name.trim().toLowerCase();
+    const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
+
+    if (recipeDetail) {
+      return;
+    }
+
+    for await (const chunk of generator) {
+      console.log('chunk', chunk);
+      this.recipes.update((map) => ({
+        ...map,
+        [dishName]: chunk,
+      }));
+    }
+  }
 }

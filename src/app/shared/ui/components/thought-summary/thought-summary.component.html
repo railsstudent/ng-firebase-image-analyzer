@@ -10,7 +10,7 @@
 
     @if (remarks(); as remarkList) {
       <app-recommendation-list [listTitle]="remarksTitle()">
-        @for (remark of remarkList; track remark; let i = $index) {
+        @for (remark of remarkList; track $index; let i = $index) {
           <app-recommendation-item> {{ i + 1 }}. {{ remark }} </app-recommendation-item>
         }
       </app-recommendation-list>

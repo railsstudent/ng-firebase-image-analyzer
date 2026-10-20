@@ -16,13 +16,14 @@
         </p>
       </div>
       <div accordion-body class="dish-body">
-        @let recipeDetail = recipes()[dish.name];
+        @let dishName = dish.name.trim().toLowerCase();
+        @let recipeDetail = recipes()[dishName];
         <div class="space-y-2">
           @if (!recipeDetail?.ingredients?.length) {
             <app-skeleton variant="line" [lines]="2" class="w-48" />
           } @else {
             <ul class="list-disc pl-5 space-y-1 text-sm text-on-surface">
-              @for (ingredient of recipeDetail?.ingredients; track ingredient) {
+              @for (ingredient of recipeDetail?.ingredients; track $index) {
                 <li>{{ ingredient }}</li>
               }
             </ul>

@@ -30,10 +30,11 @@ export class CulinaryGuideService {
   readonly #aiService = inject(AiService);
 
   async *getTopFoodsStream(destination: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
+    const prompt = createTopFoodsPrompt(destination);
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
       const generator = await this.#aiService.generateContentStream<TopFoodsResponse>({
         systemInstruction: CULINARY_GUIDE_SYSTEM_INSTRUCTION,
-        contents: createTopFoodsPrompt(destination),
+        contents: prompt,
         schema: TopFoodsSchema,
       });
 
