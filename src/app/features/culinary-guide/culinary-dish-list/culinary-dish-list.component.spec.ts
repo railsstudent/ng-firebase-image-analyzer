@@ -278,7 +278,7 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
 
   it('should render progressive ingredients and replace ingredients skeleton while keeping instructions skeleton during active streaming', async () => {
     hostComponent.recipes.set({
-      Ramen: {
+      ramen: {
         ingredients: ['Fresh Ramen Noodles', 'Tonkotsu Broth', 'Chashu Pork'],
         recipe: '',
         recipeHtml: '',
@@ -318,7 +318,7 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnos
 
   it('should render recipe HTML and remove instructions skeleton when recipe is completed', async () => {
     hostComponent.recipes.set({
-      Ramen: {
+      ramen: {
         ingredients: ['Fresh Ramen Noodles'],
         recipe: '### Preparation\nBoil water.',
         recipeHtml: '<p class="recipe-step">Step 1: Boil water and add noodles.</p>',
@@ -338,7 +338,7 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnos
 
   it('should render token analytics when tokenSummary is present on completed recipe', async () => {
     hostComponent.recipes.set({
-      Ramen: {
+      ramen: {
         ingredients: ['Fresh Ramen Noodles'],
         recipe: 'Step 1: Boil water.',
         recipeHtml: '<p>Step 1: Boil water.</p>',
@@ -377,12 +377,12 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnos
 
   it('should correctly isolate recipe details for multiple expanded dishes by dish.name', async () => {
     hostComponent.recipes.set({
-      Ramen: {
+      ramen: {
         ingredients: ['Ramen Broth'],
         recipe: 'Ramen recipe text',
         recipeHtml: '<p class="ramen-instructions">Simmer ramen broth for 12 hours.</p>',
       },
-      Sushi: {
+      sushi: {
         ingredients: ['Sushi Rice', 'Nori'],
         recipe: 'Sushi recipe text',
         recipeHtml: '<p class="sushi-instructions">Slice tuna and season sushi rice.</p>',

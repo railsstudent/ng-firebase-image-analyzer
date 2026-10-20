@@ -14,7 +14,7 @@ This file provides context, rules, and guidance for AI assistants working on thi
 
 - **MCP Tools & Research**: [docs/agents/mcp-tools.md](docs/agents/mcp-tools.md) — Pre-flight discovery: MUST consult `modern-web-guidance` and `angular-cli`/`firebase-mcp-server` MCPs before drafting code. Never guess platform APIs.
 - **Coding Standards & Invariants**: [docs/agents/coding-standards.md](docs/agents/coding-standards.md) — Invariants enforced by `lint-staged` (zero `!`, zero `../`, native `#` for state/deps, TS `private` for methods, Signal Forms).
-- **Testing & Mocking**: [docs/agents/testing-guide.md](docs/agents/testing-guide.md) — DI mocking at TestBed boundary via `satisfies Partial<T>`, mock factories, and targeted runner usage.
+- **Testing & Mocking**: [docs/agents/testing-guide.md](docs/agents/testing-guide.md) — DI mocking at TestBed boundary via `satisfies Partial<T>`, mock factories, and targeted runner usage. When fixing failing tests, never alter production code without explicit permission; update test setups and expectations to match the authoritative production contract.
 - **Domain Modeling**: [docs/agents/domain.md](docs/agents/domain.md) — Project glossary (`GLOSSARY.md`) and domain decisions.
 - **Document Boundaries**: [docs/agents/document-boundaries.md](docs/agents/document-boundaries.md) — Scope separation across PRDs (`spec.md`), ADRs (`docs/adr/`), and implementation tickets (`.scratch/`).
 - **Code Review Protocols**: [docs/agents/code-review.md](docs/agents/code-review.md) — Single-commit diff pinning (`<sha>~1..<sha>`), four-tier baseline (Conversation/Ticket/Spec/ADR), and distinguishing opportunistic polish from scope creep.
