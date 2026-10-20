@@ -141,3 +141,5 @@ overscroll
 deduplicators
 arrowup
 arrowdown
+mousedown
+pointerdown
