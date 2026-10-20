@@ -39,8 +39,13 @@ export default class CulinaryGuideComponent {
       const generator = coordinatorService.search(location);
 
       for await (const chunk of generator) {
-        // console.log('discovery chunk', chunk);
         this.discoveryData.set(chunk);
+        if (this.expandedDishNames().length > 0) {
+          this.expandedDishNames.set([]);
+        }
+        if (Object.keys(this.recipes()).length > 0) {
+          this.recipes.set({});
+        }
       }
     } catch {
       this.discoveryData.set(DEFAULT_DISCOVERY_DATA);
@@ -48,8 +53,14 @@ export default class CulinaryGuideComponent {
   }
 
   async loadRecipe(foodItem: CulinaryFoodItem): Promise<void> {
-    const coordinatorService = await this.#asyncCoordinatorService();
+    const dishName = foodItem.name.trim().toLowerCase();
+    const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
 
+    if (recipeDetail) {
+      return;
+    }
+
+    const coordinatorService = await this.#asyncCoordinatorService();
     const location = this.currentLocation();
     if (!location) {
       return;
@@ -57,13 +68,6 @@ export default class CulinaryGuideComponent {
 
     const recipeTarget: CulinaryRecipeTarget = { ...location, dishName: foodItem.name };
     const generator = coordinatorService.loadRecipe(recipeTarget);
-
-    const dishName = foodItem.name.trim().toLowerCase();
-    const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
-
-    if (recipeDetail) {
-      return;
-    }
 
     for await (const chunk of generator) {
       console.log('chunk', chunk);
