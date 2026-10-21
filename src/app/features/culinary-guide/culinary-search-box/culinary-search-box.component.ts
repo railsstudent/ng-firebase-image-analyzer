@@ -1,4 +1,5 @@
-import { normalizeKeys, type CulinaryDestination, type CulinaryLocation } from '@/core/culinary-guide';
+import { normalizeKeys } from '@/core/culinary-guide/culinary-guide.normalization';
+import type { CulinaryDestination, CulinaryLocation } from '@/core/culinary-guide';
 import { SpinnerIconComponent } from '@/shared/ui/icons/spinner-icon/spinner-icon.component';
 import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { debounce, form, FormField, required, validate } from '@angular/forms/signals';

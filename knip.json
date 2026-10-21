@@ -7,10 +7,5 @@
   },
   "ignoreBinaries": ["ng"],
   "ignoreDependencies": ["@angular/forms", "@firebase/ai"],
-  "ignore": [
-    "src/app/features/culinary-guide/**",
-    "src/app/core/culinary-guide/**",
-    "src/app/shared/ui/components/accordion/**",
-    "src/app/shared/ui/icons/expand-more-icon/**"
-  ]
+  "ignore": []
 }

@@ -1,13 +1,13 @@
-import {
-  type CulinaryDestination,
-  type CulinaryFoodItem,
-  type CulinaryLocation,
-  type CulinaryRecipeTarget,
-  normalizeKeys,
-  type StreamingCulinaryDiscoveryWithMetadata,
+import type {
+  CulinaryDestination,
+  CulinaryFoodItem,
+  CulinaryLocation,
+  CulinaryRecipeTarget,
+  StreamingCulinaryDiscoveryWithMetadata,
+  DestinationDataset,
 } from '@/core/culinary-guide';
-import destinations from '@/core/culinary-guide/destinations.json';
-import { Component, computed, injectAsync, signal } from '@angular/core';
+import { normalizeKeys } from '@/core/culinary-guide/culinary-guide.normalization';
+import { Component, computed, injectAsync, resource, signal } from '@angular/core';
 import { DEFAULT_DISCOVERY_DATA, DEFAULT_RECIPE_DATA } from './constants/culinary-guide.const';
 import { CulinaryDiscoveryPanelComponent } from './culinary-discovery-panel/culinary-discovery-panel.component';
 import { CulinaryDishListComponent } from './culinary-dish-list/culinary-dish-list.component';
@@ -30,6 +30,11 @@ export default class CulinaryGuideComponent {
   );
   #searchId = 0;
 
+  culinaryDestinationsRes = resource<CulinaryDestination[], DestinationDataset>({
+    loader: () => import('@/core/culinary-guide/destinations.json').then((d) => d.data as CulinaryDestination[]),
+    defaultValue: [],
+  }).asReadonly();
+
   discoveryData = signal<StreamingCulinaryDiscoveryWithMetadata | null>(null);
   expandedDishNames = signal<string[]>([]);
   recipes = signal<Record<string, CulinaryRecipeDetail>>({});
@@ -38,7 +43,9 @@ export default class CulinaryGuideComponent {
 
   dishes = computed(() => this.discoveryData()?.foods || []);
 
-  culinaryDestinations: CulinaryDestination[] = destinations.data;
+  culinaryDestinations = computed(() =>
+    this.culinaryDestinationsRes.hasValue() ? this.culinaryDestinationsRes.value() : [],
+  );
 
   async search(location: CulinaryLocation): Promise<void> {
     this.#searchId = this.#searchId + 1;

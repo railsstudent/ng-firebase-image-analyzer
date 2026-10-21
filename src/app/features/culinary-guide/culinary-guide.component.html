@@ -1,9 +1,12 @@
 <div class="culinary-guide-container">
-  <app-culinary-search-box
-    [destinations]="culinaryDestinations"
-    [isLoading]="isDiscovering()"
-    (locationSelected)="search($event)"
-  />
+  @let culinaryDestinationList = culinaryDestinations();
+  @defer (when culinaryDestinationList.length > 0) {
+    <app-culinary-search-box
+      [destinations]="culinaryDestinationList"
+      [isLoading]="isDiscovering()"
+      (locationSelected)="search($event)"
+    />
+  }
 
   <div class="culinary-dish-section">
     @let dishList = dishes();
