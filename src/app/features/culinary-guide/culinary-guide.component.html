@@ -4,12 +4,14 @@
     [isLoading]="isDiscovering()"
     (locationSelected)="search($event)"
   />
-  <app-culinary-dish-list
-    [dishes]="dishes()"
-    [(expandedDishNames)]="expandedDishNames"
-    [recipes]="recipes()"
-    [isMulti]="false"
-    (dishSelected)="loadRecipe($event)"
-  />
+  <div class="culinary-dish-section">
+    <app-culinary-dish-list
+      [dishes]="dishes()"
+      [(expandedDishNames)]="expandedDishNames"
+      [recipes]="recipes()"
+      [isMulti]="false"
+      (dishSelected)="loadRecipe($event)"
+    />
+  </div>
   <app-culinary-discovery-panel [discovery]="discoveryData()" />
 </div>

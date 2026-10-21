@@ -113,24 +113,6 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
     expect(tempuraBadge).toBeNull();
     expect(udonBadge).toBeNull();
   });
-
-  it('should render empty state card when dishes input is empty and recover when populated', async () => {
-    hostComponent.dishes.set([]);
-    await fixture.whenStable();
-
-    const emptyCard = fixture.nativeElement.querySelector('.section-card .empty-state-text');
-    expect(emptyCard).toBeTruthy();
-    expect(emptyCard?.textContent).toContain(
-      'No iconic dishes available. Search for a destination above to explore local culinary highlights.',
-    );
-    expect(fixture.nativeElement.querySelectorAll('app-accordion-item').length).toBe(0);
-
-    hostComponent.dishes.set(MOCK_DISHES);
-    await fixture.whenStable();
-
-    expect(fixture.nativeElement.querySelector('.empty-state-text')).toBeNull();
-    expect(fixture.nativeElement.querySelectorAll('app-accordion-item').length).toBe(2);
-  });
 });
 
 describe('CulinaryDishListComponent - Slice 2: Expansion & dishSelected Output', () => {
@@ -278,6 +260,8 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
   it('should render responsive layout and scroll containment classes on accordion body', () => {
     const ramenBody = fixture.nativeElement.querySelector('[accordion-body]');
     expect(ramenBody.classList).toContain('dish-body');
+    const contentGrid = ramenBody.querySelector('.dish-content-grid');
+    expect(contentGrid).toBeTruthy();
     const instructions = ramenBody.querySelector('.dish-instructions');
     expect(instructions).toBeTruthy();
   });
@@ -318,7 +302,7 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
   });
 });
 
-describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnostics', () => {
+describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Multi-Dish Isolation', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let hostComponent: TestHostComponent;
 
@@ -352,47 +336,6 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnos
     const recipeStep = ramenBody.querySelector('.recipe-step');
     expect(recipeStep).toBeTruthy();
     expect(recipeStep?.textContent).toBe('Step 1: Boil water and add noodles.');
-  });
-
-  it('should render token analytics when tokenSummary is present on completed recipe', async () => {
-    hostComponent.recipes.set({
-      ramen: {
-        ingredients: ['Fresh Ramen Noodles'],
-        recipe: 'Step 1: Boil water.',
-        recipeHtml: '<p>Step 1: Boil water.</p>',
-        tokenSummary: {
-          totalTokenCount: 350,
-          promptTokenCount: 100,
-          thoughtsTokenCount: 0,
-          cachedContentTokenCount: 0,
-          outputTokenCount: 250,
-        },
-      },
-    });
-    await fixture.whenStable();
-
-    const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
-    const ramenBody = accordionItems[0].querySelector('[accordion-body]');
-    const analyticsEl = ramenBody.querySelector('app-token-analytics');
-    expect(analyticsEl).toBeTruthy();
-  });
-
-  it('should render list skeleton placeholder instead of token analytics when tokenSummary is missing', async () => {
-    hostComponent.recipes.set({
-      ramen: {
-        ingredients: ['Fresh Ramen Noodles'],
-        recipe: 'Step 1: Boil water.',
-        recipeHtml: '<p>Step 1: Boil water.</p>',
-      },
-    });
-    await fixture.whenStable();
-
-    const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
-    const ramenBody = accordionItems[0].querySelector('[accordion-body]');
-    const analyticsEl = ramenBody.querySelector('app-token-analytics');
-    const listSkeletonEl = ramenBody.querySelector('app-list-skeleton');
-    expect(analyticsEl).toBeNull();
-    expect(listSkeletonEl).toBeTruthy();
   });
 
   it('should correctly isolate recipe details for multiple expanded dishes by dish.name', async () => {

@@ -17,33 +17,29 @@
       </div>
       <div accordion-body class="dish-body">
         @let recipeDetail = getRecipeDetail(dish);
-        <div class="space-y-2">
-          @if (!recipeDetail?.ingredients?.length) {
-            <app-skeleton variant="line" [lines]="2" class="w-48" />
-          } @else {
-            <ul class="list-disc pl-5 space-y-1 text-sm text-on-surface">
-              @for (ingredient of recipeDetail?.ingredients; track $index) {
-                <li>{{ ingredient }}</li>
-              }
-            </ul>
-          }
-        </div>
-
-        <div class="dish-instructions">
-          @if (!recipeDetail?.recipeHtml) {
-            <div aria-busy="true">
-              <span class="sr-only">Generating recipe instructions...</span>
-              <app-skeleton variant="line" [lines]="4" class="w-full" />
-            </div>
-          } @else {
-            <div [innerHTML]="recipeDetail?.recipeHtml"></div>
-            @if (recipeDetail?.tokenSummary; as summary) {
-              <app-token-analytics
-                [tokenSummary]="summary"
-                [tokenModalityBreakdown]="recipeDetail?.tokenModalityBreakdown"
-              />
+        <div class="dish-content-grid">
+          <div class="space-y-2">
+            @if (!recipeDetail?.ingredients?.length) {
+              <app-skeleton variant="line" [lines]="2" class="w-48" />
+            } @else {
+              <ul class="list-disc pl-5 space-y-1 text-sm text-on-surface">
+                @for (ingredient of recipeDetail?.ingredients; track $index) {
+                  <li>{{ ingredient }}</li>
+                }
+              </ul>
             }
-          }
+          </div>
+
+          <div class="dish-instructions">
+            @if (!recipeDetail?.recipeHtml) {
+              <div aria-busy="true">
+                <span class="sr-only">Generating recipe instructions...</span>
+                <app-skeleton variant="line" [lines]="4" class="w-full" />
+              </div>
+            } @else {
+              <div [innerHTML]="recipeDetail?.recipeHtml"></div>
+            }
+          </div>
         </div>
       </div>
     </app-accordion-item>

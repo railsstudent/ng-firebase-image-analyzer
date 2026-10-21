@@ -3,12 +3,11 @@ import type { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.inte
 import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
 import { AccordionGroupComponent, AccordionItemComponent } from '@/shared/ui/components/accordion';
 import { SkeletonComponent } from '@/shared/ui/components/skeleton';
-import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { Component, input, model, output } from '@angular/core';
 
 @Component({
   selector: 'app-culinary-dish-list',
-  imports: [AccordionGroupComponent, AccordionItemComponent, TokenAnalyticsComponent, SkeletonComponent],
+  imports: [AccordionGroupComponent, AccordionItemComponent, SkeletonComponent],
   templateUrl: './culinary-dish-list.component.html',
   styleUrl: './culinary-dish-list.component.css',
 })

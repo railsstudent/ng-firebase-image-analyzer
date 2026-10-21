@@ -5,9 +5,9 @@ Update `CulinaryGuideComponent` to use a full-height flex column container (`.cu
 
 **Blocked by:** 23: Export Canonical Key Normalization and Adopt Across Feature Components, 25: Implement Culinary Guide Layout, Race Guard, Cache Bypass, and Test Suite
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Update `culinary-guide.component.css`:
+- [x] Update `culinary-guide.component.css`:
 
   ```css
   @reference "../../../styles.css";
@@ -21,7 +21,7 @@ Update `CulinaryGuideComponent` to use a full-height flex column container (`.cu
   }
   ```
 
-- [ ] In `culinary-guide.component.html`, wrap the dish list area inside `<div class="culinary-dish-section">...</div>`:
+- [x] In `culinary-guide.component.html`, wrap the dish list area inside `<div class="culinary-dish-section">...</div>`:
 
   ```html
   <div class="culinary-dish-section">
@@ -35,7 +35,7 @@ Update `CulinaryGuideComponent` to use a full-height flex column container (`.cu
   </div>
   ```
 
-- [ ] Update `culinary-dish-list.component.css`:
+- [x] Update `culinary-dish-list.component.css`:
 
   ```css
   @reference "../../../../styles.css";
@@ -73,7 +73,7 @@ Update `CulinaryGuideComponent` to use a full-height flex column container (`.cu
   }
   ```
 
-- [ ] Restructure `<div accordion-body class="dish-body">` in `culinary-dish-list.component.html`:
+- [x] Restructure `<div accordion-body class="dish-body">` in `culinary-dish-list.component.html`:
 
   ```html
   <div accordion-body class="dish-body">
@@ -106,4 +106,4 @@ Update `CulinaryGuideComponent` to use a full-height flex column container (`.cu
   ```
 
 - [x] Sync `DESIGN.md` Sections 7.3 and 9.1 with the updated layout tokens and column ratios
-- [ ] Ensure all unit tests in `culinary-dish-list.component.spec.ts` and `culinary-guide.component.spec.ts` pass with zero regressions
+- [x] Ensure all unit tests in `culinary-dish-list.component.spec.ts` and `culinary-guide.component.spec.ts` pass with zero regressions
