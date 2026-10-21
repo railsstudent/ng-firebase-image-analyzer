@@ -1,5 +1,9 @@
 <div>
-  <app-culinary-search-box [destinations]="culinaryDestinations" (locationSelected)="search($event)" />
+  <app-culinary-search-box
+    [destinations]="culinaryDestinations"
+    [isLoading]="isLoading()"
+    (locationSelected)="search($event)"
+  />
   <app-culinary-dish-list
     [dishes]="dishes()"
     [(expandedDishNames)]="expandedDishNames"

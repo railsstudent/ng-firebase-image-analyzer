@@ -1,4 +1,5 @@
 import { normalizeKeys, type CulinaryDestination, type CulinaryLocation } from '@/core/culinary-guide';
+import { SpinnerIconComponent } from '@/shared/ui/icons/spinner-icon/spinner-icon.component';
 import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { debounce, form, FormField, required, validate } from '@angular/forms/signals';
 
@@ -7,12 +8,13 @@ const CITY_DEBOUNCE_MS = 200;
 
 @Component({
   selector: 'app-culinary-search-box',
-  imports: [FormField],
+  imports: [FormField, SpinnerIconComponent],
   templateUrl: './culinary-search-box.component.html',
   styleUrl: './culinary-search-box.component.css',
 })
 export class CulinarySearchBoxComponent {
   readonly destinations = input.required<CulinaryDestination[]>();
+  readonly isLoading = input(false);
 
   readonly #locationModel = linkedSignal<CulinaryDestination[], CulinaryLocation>({
     source: this.destinations,
@@ -109,7 +111,9 @@ export class CulinarySearchBoxComponent {
     event?.preventDefault();
     if (this.searchForm().valid()) {
       this.isDropdownOpen.set(false);
-      this.locationSelected.emit(this.#locationModel());
+      if (!this.isLoading()) {
+        this.locationSelected.emit(this.#locationModel());
+      }
     }
   }
 }

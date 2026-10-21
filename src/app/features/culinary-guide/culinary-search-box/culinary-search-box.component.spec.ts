@@ -125,4 +125,38 @@ describe('CulinarySearchBoxComponent', () => {
       city: 'Tokyo',
     });
   });
+
+  describe('Loading State & Spinner (Ticket 24)', () => {
+    it('should disable submit button when isLoading is true even if form is valid', async () => {
+      fixture.componentRef.setInput('isLoading', true);
+      await fixture.whenStable();
+
+      const button = fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement;
+      expect(button.disabled).toBe(true);
+      expect(button.getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('should render spinner icon inside submit button when isLoading is true and omit it when false', async () => {
+      fixture.componentRef.setInput('isLoading', false);
+      await fixture.whenStable();
+      expect(fixture.nativeElement.querySelector('app-spinner-icon')).toBeNull();
+
+      fixture.componentRef.setInput('isLoading', true);
+      await fixture.whenStable();
+
+      const spinner = fixture.nativeElement.querySelector('button[type="submit"] app-spinner-icon');
+      expect(spinner).not.toBeNull();
+    });
+
+    it('should prevent form submission and not emit locationSelected when isLoading is true', async () => {
+      const emitSpy = vi.fn();
+      component.locationSelected.subscribe(emitSpy);
+
+      fixture.componentRef.setInput('isLoading', true);
+      await fixture.whenStable();
+
+      component.onSubmit();
+      expect(emitSpy).not.toHaveBeenCalled();
+    });
+  });
 });

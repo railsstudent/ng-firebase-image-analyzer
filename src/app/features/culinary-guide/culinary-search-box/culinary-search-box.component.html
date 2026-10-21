@@ -65,10 +65,13 @@
     <button
       type="submit"
       class="submit-btn"
-      [disabled]="searchForm().invalid()"
-      [attr.aria-disabled]="searchForm().invalid()"
+      [disabled]="searchForm().invalid() || isLoading()"
+      [attr.aria-disabled]="searchForm().invalid() || isLoading()"
     >
-      Search
+      @if (isLoading()) {
+        <app-spinner-icon class="loading-spinner" />
+      }
+      <span>Search</span>
     </button>
   </form>
 </div>

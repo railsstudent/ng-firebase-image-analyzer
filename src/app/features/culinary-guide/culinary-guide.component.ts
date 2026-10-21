@@ -28,13 +28,16 @@ export default class CulinaryGuideComponent {
   discoveryData = signal<StreamingCulinaryDiscoveryWithMetadata | null>(null);
   expandedDishNames = signal<string[]>([]);
   recipes = signal<Record<string, CulinaryRecipeDetail>>({});
-  dishes = computed(() => this.discoveryData()?.foods || []);
   currentLocation = signal<CulinaryLocation | undefined>(undefined);
+  isLoading = signal(false);
+
+  dishes = computed(() => this.discoveryData()?.foods || []);
 
   culinaryDestinations: CulinaryDestination[] = destinations.data;
 
   async search(location: CulinaryLocation): Promise<void> {
     try {
+      this.isLoading.set(true);
       this.currentLocation.set(location);
       const coordinatorService = await this.#asyncCoordinatorService();
       const generator = coordinatorService.search(location);
@@ -50,6 +53,8 @@ export default class CulinaryGuideComponent {
       }
     } catch {
       this.discoveryData.set(DEFAULT_DISCOVERY_DATA);
+    } finally {
+      this.isLoading.set(false);
     }
   }
 
