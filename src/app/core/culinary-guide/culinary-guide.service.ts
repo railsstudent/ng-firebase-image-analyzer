@@ -14,7 +14,7 @@ import {
   createRecipePrompt,
   createTopFoodsPrompt,
   CULINARY_GUIDE_SYSTEM_INSTRUCTION,
-  RECIPE_PROMPT_INSTRUCTION,
+  RECIPE_SYSTEM_INSTRUCTION,
 } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
 import { isValidDiscoveryResponse, isValidRecipeResponse } from './culinary-guide.validation';
@@ -82,7 +82,7 @@ export class CulinaryGuideService {
   async *getRecipeStream(target: CulinaryRecipeTarget): AsyncGenerator<StreamingCulinaryRecipeWithMetadata> {
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
       const generator = await this.#aiService.generateContentStream<CulinaryRecipeResponse>({
-        systemInstruction: RECIPE_PROMPT_INSTRUCTION,
+        systemInstruction: RECIPE_SYSTEM_INSTRUCTION,
         contents: createRecipePrompt(target),
         schema: CulinaryRecipeSchema,
       });

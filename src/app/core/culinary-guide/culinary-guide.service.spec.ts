@@ -4,7 +4,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type { CulinaryFoodItem, CulinaryLocation, CulinaryRecipeTarget } from './culinary-guide.interface';
-import { CULINARY_GUIDE_SYSTEM_INSTRUCTION, RECIPE_PROMPT_INSTRUCTION } from './culinary-guide.prompt';
+import { CULINARY_GUIDE_SYSTEM_INSTRUCTION, RECIPE_SYSTEM_INSTRUCTION } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
 import { CulinaryGuideService } from './culinary-guide.service';
 
@@ -423,7 +423,7 @@ describe('CulinaryGuideService', () => {
       expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(1);
       expect(mockAiService.generateContentStream).toHaveBeenCalledWith(
         expect.objectContaining({
-          systemInstruction: RECIPE_PROMPT_INSTRUCTION,
+          systemInstruction: RECIPE_SYSTEM_INSTRUCTION,
           schema: CulinaryRecipeSchema,
         }),
       );

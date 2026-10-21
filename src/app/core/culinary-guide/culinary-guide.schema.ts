@@ -1,5 +1,12 @@
 import { Schema } from 'firebase/ai';
-import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
+import {
+  EXPECTED_FOOD_COUNT,
+  MAX_HONORABLE_MENTIONS,
+  MAX_RECIPE_INGREDIENTS,
+  MAX_RECIPE_STEPS,
+  MIN_HONORABLE_MENTIONS,
+  MIN_RECIPE_STEPS,
+} from './culinary-guide.const';
 
 const FoodItemSchema = Schema.object({
   properties: {
@@ -45,13 +52,14 @@ export const CulinaryRecipeSchema = Schema.object({
   properties: {
     ingredients: Schema.array({
       items: Schema.string({
-        description: 'Ingredient of a dish with recommended quantity and notes.',
+        description: 'Core ingredient of a dish with recommended quantity.',
       }),
-      description: 'At least one ingredient of a dish.',
+      description: `Between 1 and ${MAX_RECIPE_INGREDIENTS} core ingredients of a dish.`,
       minItems: 1,
+      maxItems: MAX_RECIPE_INGREDIENTS,
     }),
     recipe: Schema.string({
-      description: 'Recipe in Markdown format with numbered steps and bulleted lists.',
+      description: `Concise step-by-step preparation and cooking instructions (${MIN_RECIPE_STEPS} to ${MAX_RECIPE_STEPS} numbered steps) in Markdown format, excluding the ingredients list.`,
     }),
   },
   description: 'Structured output of ingredients and recipe.',
