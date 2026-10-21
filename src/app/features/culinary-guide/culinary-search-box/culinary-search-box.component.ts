@@ -29,7 +29,7 @@ export class CulinarySearchBoxComponent {
 
     validate(schema.city, ({ value, valueOf }) => {
       const validCities = this.getCitiesForCountry(valueOf(schema.country));
-      const isExists = validCities.some((city) => city.toLowerCase() === normalizeKeys(value()));
+      const isExists = validCities.some((city) => normalizeKeys(city) === normalizeKeys(value()));
       return isExists ? null : { kind: 'invalidCity', message: 'City is not in selected country' };
     });
   });
@@ -42,7 +42,7 @@ export class CulinarySearchBoxComponent {
   readonly filteredCities = computed(() => {
     const query = this.#lowercaseCity();
     const cities = this.getCitiesForCountry(this.#locationModel().country);
-    return query ? cities.filter((city) => city.toLowerCase().includes(query)) : cities;
+    return query ? cities.filter((city) => normalizeKeys(city).includes(query)) : cities;
   });
 
   readonly cityOptionId = computed(() =>

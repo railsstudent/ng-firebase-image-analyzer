@@ -25,6 +25,6 @@ export function normalizeKeys(...parts: (string | undefined)[]): string {
 - [x] Adopt `normalizeKeys` in `CulinaryGuideCoordinatorService.buildRecipeCacheKey` for composite target properties
 - [x] Adopt `normalizeKeys` in `CulinaryGuideComponent` for `recipes` dictionary key access and storage in `loadRecipe`
 - [x] Adopt `normalizeKeys` in `CulinarySearchBoxComponent` for city filtering and validation matching
-- [x] Adopt `normalizeKeys` in `CulinaryDishListComponent` template for dish recipe lookup (`recipes()[buildCompositeKey(dish.name)]`)
+- [x] Adopt `normalizeKeys` in `CulinaryDishListComponent` template for dish recipe lookup (`recipes()[normalizeKeys(dish.name)]`)
 - [x] Add unit tests in `src/app/core/culinary-guide/culinary-guide.normalization.spec.ts`
 - [x] Verify core validation, normalization, and component unit tests pass cleanly

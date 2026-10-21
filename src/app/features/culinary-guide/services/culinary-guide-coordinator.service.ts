@@ -17,10 +17,6 @@ export class CulinaryGuideCoordinatorService {
 
   readonly #recipeCache = new Map<string, CulinaryRecipeDetail>();
 
-  private buildRecipeCacheKey({ country, city, dishName }: CulinaryRecipeTarget): string {
-    return normalizeKeys(country, city, dishName);
-  }
-
   async *search(location: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
     try {
       const generator = this.#culinaryService.getTopFoodsStream(location);
@@ -47,7 +43,7 @@ export class CulinaryGuideCoordinatorService {
 
   async *loadRecipe(target: CulinaryRecipeTarget): AsyncGenerator<CulinaryRecipeDetail> {
     try {
-      const key = this.buildRecipeCacheKey(target);
+      const key = normalizeKeys(target.country, target.city, target.dishName);
       const cachedRecipe = this.#recipeCache.get(key);
       if (cachedRecipe) {
         yield cachedRecipe;

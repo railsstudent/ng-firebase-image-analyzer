@@ -17,11 +17,8 @@ import {
   RECIPE_PROMPT_INSTRUCTION,
 } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
-import {
-  isValidDiscoveryResponse,
-  isValidRecipeResponse,
-  normalizeDiscoveryResponse,
-} from './culinary-guide.validation';
+import { isValidDiscoveryResponse, isValidRecipeResponse } from './culinary-guide.validation';
+import { normalizeDiscoveryResponse } from './culinary-guide.normalization';
 
 const MAX_ATTEMPTS = 2;
 
