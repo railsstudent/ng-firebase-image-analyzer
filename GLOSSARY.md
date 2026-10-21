@@ -63,3 +63,11 @@ _Avoid_: Discovery tabs, culinary result panel, food info card.
 **Culinary Destination Selector**:
 The presentational search component allowing travelers to filter destinations by country and city with typeahead autocomplete to initiate Culinary Discovery.
 _Avoid_: Food search bar, city picker, country box.
+
+**Canonical Key Normalization**:
+The deterministic mapping of destination locations and dish titles into lowercase, whitespace-trimmed composite keys (e.g. `country-city:dish`) for robust recipe caching and accordion state tracking across regional spelling variants.
+_Avoid_: Dish slug, cache key hash, recipe id.
+
+**Recipe Synthesis Failure**:
+The deterministic graceful fallback state returning `DEFAULT_RECIPE_DATA` during Stage 2 Recipe Synthesis errors or network interruptions, ensuring UI accordions recover cleanly without leaving permanent skeleton states.
+_Avoid_: Synthesis error, recipe crash, failed prompt.

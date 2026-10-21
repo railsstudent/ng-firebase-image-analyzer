@@ -24,6 +24,7 @@ export default class CulinaryGuideComponent {
   #asyncCoordinatorService = injectAsync(() =>
     import('./services/culinary-guide-coordinator.service').then((m) => m.CulinaryGuideCoordinatorService),
   );
+  #searchId = 0;
 
   discoveryData = signal<StreamingCulinaryDiscoveryWithMetadata | null>(null);
   expandedDishNames = signal<string[]>([]);
@@ -36,6 +37,8 @@ export default class CulinaryGuideComponent {
   culinaryDestinations: CulinaryDestination[] = destinations.data;
 
   async search(location: CulinaryLocation): Promise<void> {
+    this.#searchId = this.#searchId + 1;
+    const currentSearchId = this.#searchId;
     try {
       this.isDiscovering.set(true);
       this.currentLocation.set(location);
@@ -43,6 +46,9 @@ export default class CulinaryGuideComponent {
       const generator = coordinatorService.search(location);
 
       for await (const chunk of generator) {
+        if (this.#searchId !== currentSearchId) {
+          return;
+        }
         this.discoveryData.set(chunk);
         if (this.expandedDishNames().length > 0) {
           this.expandedDishNames.set([]);
@@ -52,9 +58,13 @@ export default class CulinaryGuideComponent {
         }
       }
     } catch {
-      this.discoveryData.set(DEFAULT_DISCOVERY_DATA);
+      if (this.#searchId === currentSearchId) {
+        this.discoveryData.set(DEFAULT_DISCOVERY_DATA);
+      }
     } finally {
-      this.isDiscovering.set(false);
+      if (this.#searchId === currentSearchId) {
+        this.isDiscovering.set(false);
+      }
     }
   }
 

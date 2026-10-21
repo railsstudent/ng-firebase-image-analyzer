@@ -323,3 +323,30 @@ To ensure generative AI discovery pipelines are never invoked with hallucinated 
   1. The dataset is empty or loading.
   2. The typed city query does not match any valid city in the active country.
 - **Explicit Submission**: Selection changes never auto-trigger discovery; inference requests are dispatched exclusively on explicit form submission (`Enter` or Search button click).
+
+---
+
+## 9. Culinary Guide Layout & Responsive State Architecture
+
+The Culinary Guide feature workspace orchestrates `CulinarySearchBoxComponent`, `CulinaryDishListComponent`, and `CulinaryDiscoveryPanelComponent` into a cohesive, responsive page with progressive AI discovery and recipe synthesis.
+
+### 9.1 Visual Architecture & Layout Tokens
+
+- **Responsive Container**:
+  - Container class: `.culinary-guide-container`
+  - Max width & auto-centering: `max-w-(--spacing-container-max) mx-auto`
+  - Responsive padding & spacing: `px-4 py-8 space-y-8`
+- **Component Stylesheet (`culinary-guide.component.css`)**:
+  - `@reference "../../../styles.css";`
+  - `.culinary-guide-container`: `@apply space-y-8 max-w-(--spacing-container-max) mx-auto px-4 py-8;`
+
+### 9.2 Search Loading State & Race Condition Prevention
+
+- **Search Loading Indicator**:
+  - `isDiscovering` signal tracks the active Stage 1 discovery stream in `CulinaryGuideComponent`.
+  - Passed via `[isLoading]="isDiscovering()"` into `CulinarySearchBoxComponent`.
+  - Displays `<app-spinner-icon class="animate-spin text-on-primary w-4 h-4 mr-2" />` inside the submit button while disabling interaction (`[disabled]="isSearchDisabled()"`).
+- **Sequential Race Condition Guard (`#searchId`)**:
+  - Native private counter `#searchId` ensures out-of-order or late chunks from previous destination searches are strictly ignored when a user submits a newer query before the older stream terminates.
+  - Reset of `expandedDishNames` and `recipes` occurs on the first chunk received for the current search.
+  - Error fallback to `DEFAULT_DISCOVERY_DATA` is guarded by `#searchId` to avoid overwriting a subsequent successful search.

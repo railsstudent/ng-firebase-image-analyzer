@@ -1,0 +1,5 @@
+@reference "../../../styles.css";
+
+.culinary-guide-container {
+  @apply space-y-8 max-w-(--spacing-container-max) mx-auto px-4 py-8;
+}

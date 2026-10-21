@@ -5,14 +5,14 @@ End-to-end integration and polish of the culinary guide feature with responsive 
 
 **Blocked by:** 24: Create Shared Spinner Icon and Integrate Loading State into Search Box and Guide Component
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Update `GLOSSARY.md` with "Canonical Key Normalization" and "Recipe Synthesis Failure"
-- [ ] Update `DESIGN.md` with Culinary Guide Layout Specification and search loading state
-- [ ] Implement layout container styles in `culinary-guide.component.css` using design system tokens
-- [ ] Add `#searchId` counter in `CulinaryGuideComponent.search()` to discard out-of-order chunks from older searches
-- [x] In `loadRecipe()`, wrap stream in `try / catch` to handle errors gracefully without permanent skeletons
-- [ ] Implement unit test suite in `culinary-guide.component.spec.ts` covering:
+- [x] Update `GLOSSARY.md` with "Canonical Key Normalization" and "Recipe Synthesis Failure"
+- [x] Update `DESIGN.md` with Culinary Guide Layout Specification and search loading state
+- [x] Implement layout container styles in `culinary-guide.component.css` using design system tokens
+- [x] Add `#searchId` counter in `CulinaryGuideComponent.search()` to discard out-of-order chunks from older searches
+- [x] In `loadRecipe()`, wrap stream in `try / catch` to handle errors gracefully with fallback to `DEFAULT_RECIPE_DATA` without permanent skeletons
+- [x] Implement unit test suite in `culinary-guide.component.spec.ts` covering:
   - Initial creation and signals
   - `search()` chunk streaming and state resets on first chunk
   - Search race condition discarding stale chunks
