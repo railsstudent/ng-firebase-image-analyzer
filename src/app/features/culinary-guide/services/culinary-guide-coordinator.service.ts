@@ -1,6 +1,7 @@
 import {
   CulinaryGuideService,
   MarkdownFormatterService,
+  normalizeKeys,
   type CulinaryLocation,
   type CulinaryRecipeTarget,
   type StreamingCulinaryDiscoveryWithMetadata,
@@ -17,7 +18,7 @@ export class CulinaryGuideCoordinatorService {
   readonly #recipeCache = new Map<string, CulinaryRecipeDetail>();
 
   private buildRecipeCacheKey({ country, city, dishName }: CulinaryRecipeTarget): string {
-    return `${country.trim()}:${city.trim()}:${dishName.trim()}`.toLowerCase();
+    return normalizeKeys(country, city, dishName);
   }
 
   async *search(location: CulinaryLocation): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {

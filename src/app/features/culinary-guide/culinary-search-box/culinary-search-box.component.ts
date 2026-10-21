@@ -1,4 +1,4 @@
-import type { CulinaryDestination, CulinaryLocation } from '@/core/culinary-guide';
+import { normalizeKeys, type CulinaryDestination, type CulinaryLocation } from '@/core/culinary-guide';
 import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
 import { debounce, form, FormField, required, validate } from '@angular/forms/signals';
 
@@ -29,7 +29,7 @@ export class CulinarySearchBoxComponent {
 
     validate(schema.city, ({ value, valueOf }) => {
       const validCities = this.getCitiesForCountry(valueOf(schema.country));
-      const isExists = validCities.some((city) => city.toLowerCase() === value().trim().toLowerCase());
+      const isExists = validCities.some((city) => city.toLowerCase() === normalizeKeys(value()));
       return isExists ? null : { kind: 'invalidCity', message: 'City is not in selected country' };
     });
   });
@@ -37,7 +37,7 @@ export class CulinarySearchBoxComponent {
   readonly isDropdownOpen = signal(false);
   readonly activeOptionIndex = signal(NO_SELECTION_INDEX);
 
-  readonly #lowercaseCity = computed(() => this.#locationModel().city.trim().toLowerCase());
+  readonly #lowercaseCity = computed(() => normalizeKeys(this.#locationModel().city));
 
   readonly filteredCities = computed(() => {
     const query = this.#lowercaseCity();
@@ -52,8 +52,7 @@ export class CulinarySearchBoxComponent {
   readonly locationSelected = output<CulinaryLocation>();
 
   private getCitiesForCountry(countryName: string): readonly string[] {
-    const normalized = countryName.trim().toLowerCase();
-    const countryData = this.destinations().find((item) => item.country.trim().toLowerCase() === normalized);
+    const countryData = this.destinations().find((item) => normalizeKeys(item.country) === normalizeKeys(countryName));
     return countryData?.cities || [];
   }
 

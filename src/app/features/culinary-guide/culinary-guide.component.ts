@@ -1,9 +1,10 @@
 import {
-  CulinaryDestination,
-  CulinaryFoodItem,
-  CulinaryLocation,
-  CulinaryRecipeTarget,
-  StreamingCulinaryDiscoveryWithMetadata,
+  type CulinaryDestination,
+  type CulinaryFoodItem,
+  type CulinaryLocation,
+  type CulinaryRecipeTarget,
+  normalizeKeys,
+  type StreamingCulinaryDiscoveryWithMetadata,
 } from '@/core/culinary-guide';
 import destinations from '@/core/culinary-guide/destinations.json';
 import { Component, computed, injectAsync, signal } from '@angular/core';
@@ -11,7 +12,7 @@ import { DEFAULT_DISCOVERY_DATA } from './constants/culinary-guide.const';
 import { CulinaryDiscoveryPanelComponent } from './culinary-discovery-panel/culinary-discovery-panel.component';
 import { CulinaryDishListComponent } from './culinary-dish-list/culinary-dish-list.component';
 import { CulinarySearchBoxComponent } from './culinary-search-box/culinary-search-box.component';
-import { CulinaryRecipeDetail } from './interfaces/culinary-recipe-detail.interface';
+import type { CulinaryRecipeDetail } from './interfaces/culinary-recipe-detail.interface';
 
 @Component({
   selector: 'app-culinary-guide',
@@ -53,7 +54,7 @@ export default class CulinaryGuideComponent {
   }
 
   async loadRecipe(foodItem: CulinaryFoodItem): Promise<void> {
-    const dishName = foodItem.name.trim().toLowerCase();
+    const dishName = normalizeKeys(foodItem.name);
     const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
 
     if (recipeDetail) {

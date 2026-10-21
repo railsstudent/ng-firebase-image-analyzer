@@ -16,8 +16,7 @@
         </p>
       </div>
       <div accordion-body class="dish-body">
-        @let dishName = dish.name.trim().toLowerCase();
-        @let recipeDetail = recipes()[dishName];
+        @let recipeDetail = getRecipeDetail(dish);
         <div class="space-y-2">
           @if (!recipeDetail?.ingredients?.length) {
             <app-skeleton variant="line" [lines]="2" class="w-48" />

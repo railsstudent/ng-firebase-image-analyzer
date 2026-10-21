@@ -1,9 +1,6 @@
 import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type { CulinaryRecipeResponse, TopFoodsResponse } from './culinary-guide.interface';
-
-function normalizeKey(key: string | undefined): string {
-  return key?.trim()?.toLowerCase() || '';
-}
+import { normalizeKeys } from './culinary-guide.normalization';
 
 function distinctBy<T>(items: readonly T[], keySelector: (item: T) => string, initialKeys?: Set<string>): T[] {
   const seen = new Set(initialKeys);
@@ -24,9 +21,9 @@ function distinctBy<T>(items: readonly T[], keySelector: (item: T) => string, in
 }
 
 export function normalizeDiscoveryResponse({ foods, honorableMentions }: TopFoodsResponse): TopFoodsResponse {
-  const uniqueFoods = distinctBy(foods, (item) => normalizeKey(item.name));
-  const seenFoods = new Set<string>(uniqueFoods.map((item) => normalizeKey(item.name)));
-  const uniqueHonorableMentions = distinctBy(honorableMentions, (item) => normalizeKey(item), seenFoods);
+  const uniqueFoods = distinctBy(foods, (item) => normalizeKeys(item.name));
+  const seenFoods = new Set<string>(uniqueFoods.map((item) => normalizeKeys(item.name)));
+  const uniqueHonorableMentions = distinctBy(honorableMentions, (item) => normalizeKeys(item), seenFoods);
   return { foods: uniqueFoods, honorableMentions: uniqueHonorableMentions };
 }
 

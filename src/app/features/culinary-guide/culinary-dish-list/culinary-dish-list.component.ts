@@ -1,3 +1,4 @@
+import { normalizeKeys } from '@/core/culinary-guide';
 import type { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.interface';
 import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
 import { AccordionGroupComponent, AccordionItemComponent } from '@/shared/ui/components/accordion';
@@ -18,6 +19,11 @@ export class CulinaryDishListComponent {
   isMulti = input(true);
 
   dishSelected = output<CulinaryFoodItem>();
+
+  getRecipeDetail(dish: CulinaryFoodItem): CulinaryRecipeDetail | undefined {
+    const dishName = normalizeKeys(dish.name);
+    return this.recipes()[dishName];
+  }
 
   onDishToggle(dish: CulinaryFoodItem, isExpanded: boolean): void {
     if (isExpanded) {
