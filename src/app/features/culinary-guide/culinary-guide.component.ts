@@ -8,7 +8,7 @@ import {
 } from '@/core/culinary-guide';
 import destinations from '@/core/culinary-guide/destinations.json';
 import { Component, computed, injectAsync, signal } from '@angular/core';
-import { DEFAULT_DISCOVERY_DATA } from './constants/culinary-guide.const';
+import { DEFAULT_DISCOVERY_DATA, DEFAULT_RECIPE_DATA } from './constants/culinary-guide.const';
 import { CulinaryDiscoveryPanelComponent } from './culinary-discovery-panel/culinary-discovery-panel.component';
 import { CulinaryDishListComponent } from './culinary-dish-list/culinary-dish-list.component';
 import { CulinarySearchBoxComponent } from './culinary-search-box/culinary-search-box.component';
@@ -60,26 +60,33 @@ export default class CulinaryGuideComponent {
 
   async loadRecipe(foodItem: CulinaryFoodItem): Promise<void> {
     const dishName = normalizeKeys(foodItem.name);
-    const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
+    try {
+      const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
 
-    if (recipeDetail) {
-      return;
-    }
+      if (recipeDetail) {
+        return;
+      }
 
-    const coordinatorService = await this.#asyncCoordinatorService();
-    const location = this.currentLocation();
-    if (!location) {
-      return;
-    }
+      const coordinatorService = await this.#asyncCoordinatorService();
+      const location = this.currentLocation();
+      if (!location) {
+        return;
+      }
 
-    const recipeTarget: CulinaryRecipeTarget = { ...location, dishName: foodItem.name };
-    const generator = coordinatorService.loadRecipe(recipeTarget);
+      const recipeTarget: CulinaryRecipeTarget = { ...location, dishName: foodItem.name };
+      const generator = coordinatorService.loadRecipe(recipeTarget);
 
-    for await (const chunk of generator) {
-      console.log('chunk', chunk);
-      this.recipes.update((map) => ({
-        ...map,
-        [dishName]: chunk,
+      for await (const chunk of generator) {
+        console.log('chunk', chunk);
+        this.recipes.update((map) => ({
+          ...map,
+          [dishName]: chunk,
+        }));
+      }
+    } catch {
+      this.recipes.update((recipeItems) => ({
+        ...recipeItems,
+        [dishName]: DEFAULT_RECIPE_DATA,
       }));
     }
   }
