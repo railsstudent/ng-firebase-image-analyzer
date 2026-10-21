@@ -1,7 +1,17 @@
 import { normalizeKeys } from '@/core/culinary-guide/culinary-guide.normalization';
 import type { CulinaryDestination, CulinaryLocation } from '@/core/culinary-guide';
 import { SpinnerIconComponent } from '@/shared/ui/icons/spinner-icon/spinner-icon.component';
-import { Component, computed, input, linkedSignal, output, signal } from '@angular/core';
+import {
+  afterRenderEffect,
+  Component,
+  computed,
+  ElementRef,
+  input,
+  linkedSignal,
+  output,
+  signal,
+  viewChildren,
+} from '@angular/core';
 import { debounce, form, FormField, required, validate } from '@angular/forms/signals';
 
 const NO_SELECTION_INDEX = -1;
@@ -53,7 +63,21 @@ export class CulinarySearchBoxComponent {
     this.activeOptionIndex() >= 0 ? `city-option-${this.activeOptionIndex()}` : null,
   );
 
+  readonly cityOptions = viewChildren<ElementRef<HTMLElement>>('cityOption');
+
   readonly locationSelected = output<CulinaryLocation>();
+
+  constructor() {
+    afterRenderEffect(() => {
+      const index = this.activeOptionIndex();
+      if (this.isDropdownOpen() && index >= 0) {
+        this.cityOptions()[index]?.nativeElement.scrollIntoView?.({
+          block: 'nearest',
+          inline: 'nearest',
+        });
+      }
+    });
+  }
 
   private getCitiesForCountry(countryName: string): readonly string[] {
     const countryData = this.destinations().find((item) => normalizeKeys(item.country) === normalizeKeys(countryName));
@@ -79,11 +103,13 @@ export class CulinarySearchBoxComponent {
     this.toggleDropdown(false, event);
   }
 
-  navigateOptions(direction: 'up' | 'down'): void {
+  navigateOptions(direction: 'up' | 'down', event?: Event): void {
     const optionsCount = this.filteredCities().length;
     if (optionsCount <= 0) {
       return;
     }
+
+    event?.preventDefault();
 
     if (!this.isDropdownOpen()) {
       this.isDropdownOpen.set(true);

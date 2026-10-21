@@ -310,14 +310,14 @@ The city autocomplete combobox conforms to WAI-ARIA 1.2 specifications for typea
 
 ### 8.3 Keyboard Navigation Matrix
 
-| Key         | Trigger Context              | Interaction & State Response                                       |
-| :---------- | :--------------------------- | :----------------------------------------------------------------- |
-| `ArrowDown` | Input focused / Listbox open | Moves highlight to next option; opens listbox if closed            |
-| `ArrowUp`   | Listbox open                 | Moves highlight to previous option; wraps or clamps at top         |
-| `Enter`     | Highlighted option active    | Selects highlighted city, updates form model, and closes listbox   |
-| `Enter`     | No highlight / Valid form    | Submits form and emits `search` location payload                   |
-| `Escape`    | Listbox open                 | Closes suggestions listbox without modifying current input         |
-| `Tab`       | Any control                  | Advances focus to next element and closes open suggestions overlay |
+| Key         | Trigger Context              | Interaction & State Response                                                                                                                  |
+| :---------- | :--------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ArrowDown` | Input focused / Listbox open | Prevents input caret jump, moves highlight to next option (opens listbox if closed), and scrolls active option into view (`block: 'nearest'`) |
+| `ArrowUp`   | Input focused / Listbox open | Prevents input caret jump, moves highlight to previous option (wraps at top), and scrolls active option into view (`block: 'nearest'`)        |
+| `Enter`     | Highlighted option active    | Selects highlighted city, updates form model, and closes listbox                                                                              |
+| `Enter`     | No highlight / Valid form    | Submits form and emits `search` location payload                                                                                              |
+| `Escape`    | Listbox open                 | Closes suggestions listbox without modifying current input                                                                                    |
+| `Tab`       | Any control                  | Advances focus to next element and closes open suggestions overlay                                                                            |
 
 ### 8.4 Strict Dataset Validation & Submission States
 

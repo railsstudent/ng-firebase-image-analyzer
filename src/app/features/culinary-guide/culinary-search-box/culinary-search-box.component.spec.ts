@@ -76,21 +76,37 @@ describe('CulinarySearchBoxComponent', () => {
     expect(component.isDropdownOpen()).toBe(false);
   });
 
-  it('should handle keyboard navigation (ArrowDown, ArrowUp, Enter, Escape)', () => {
+  it('should handle keyboard navigation (ArrowDown, ArrowUp, Enter, Escape) and scroll active option into view', async () => {
     // Clear city query so all 3 cities are available for navigation
     component.selectCity('');
     component.toggleDropdown(true);
+    await fixture.whenStable();
 
-    // ArrowDown should move active index down
-    component.navigateOptions('down');
+    const options = fixture.nativeElement.querySelectorAll('li[role="option"]') as NodeListOf<HTMLElement>;
+    const scrollSpies = Array.from(options).map((el) => {
+      el.scrollIntoView = vi.fn();
+      return el.scrollIntoView;
+    });
+
+    // ArrowDown should preventDefault, move active index down, and scroll option into view
+    const downEvent = new KeyboardEvent('keydown', { key: 'ArrowDown', cancelable: true });
+    const preventDefaultSpy = vi.spyOn(downEvent, 'preventDefault');
+    component.navigateOptions('down', downEvent);
+    expect(preventDefaultSpy).toHaveBeenCalled();
     expect(component.activeOptionIndex()).toBe(0);
+    await fixture.whenStable();
+    expect(scrollSpies[0]).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' });
 
     component.navigateOptions('down');
     expect(component.activeOptionIndex()).toBe(1);
+    await fixture.whenStable();
+    expect(scrollSpies[1]).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' });
 
-    // ArrowUp should move active index up
+    // ArrowUp should move active index up and scroll option into view
     component.navigateOptions('up');
     expect(component.activeOptionIndex()).toBe(0);
+    await fixture.whenStable();
+    expect(scrollSpies[0]).toHaveBeenCalledTimes(2);
 
     // Enter should select active option
     component.onEnter(new Event('keydown'));

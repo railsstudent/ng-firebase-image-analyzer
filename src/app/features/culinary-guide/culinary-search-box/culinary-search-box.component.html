@@ -36,8 +36,8 @@
         enterkeyhint="search"
         (focus)="toggleDropdown(true)"
         (blur)="toggleDropdown(false)"
-        (keydown.arrowup)="navigateOptions('up')"
-        (keydown.arrowdown)="navigateOptions('down')"
+        (keydown.arrowup)="navigateOptions('up', $event)"
+        (keydown.arrowdown)="navigateOptions('down', $event)"
         (keydown.enter)="onEnter($event)"
         (keydown.escape)="toggleDropdown(false, $event)"
         (keydown.tab)="toggleDropdown(false)"
@@ -48,6 +48,7 @@
           @for (city of filteredCities(); track city; let i = $index) {
             @let isSelected = activeOptionIndex() === i;
             <li
+              #cityOption
               [id]="`city-option-${i}`"
               class="listbox-option"
               [class.listbox-option-active]="isSelected"
