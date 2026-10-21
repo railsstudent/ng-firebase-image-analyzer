@@ -1,8 +1,10 @@
 # 0028. Culinary Guide Two-Stage Hybrid Inference, Lazy Markdown Isolation, and Dynamic Destinations
 
 Date: 2026-10-13
-Status: Accepted
+Status: Superseded by [ADR-0030](0030-culinary-guide-deferral-boundaries-and-accordion-diagnostics.md)
 Relates to: [ADR-0026](0026-deferred-firebase-and-ai-initialization.md), [ADR-0027](0027-in-memory-image-export-and-httpclient-removal.md)
+
+> **Superseded by [ADR-0030](0030-culinary-guide-deferral-boundaries-and-accordion-diagnostics.md)**: Refines the Culinary Guide deferral architecture and Stage 2 per-dish accordion diagnostics layout, establishing 3-tier `@defer` boundaries at the page/tab level and deferred full-width token analytics below the ingredients and recipe grid.
 
 ## Context
 

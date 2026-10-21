@@ -1,7 +1,11 @@
 @reference "../../../../styles.css";
 
+:host {
+  @apply relative z-20 block;
+}
+
 .search-box-card {
-  @apply p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;
+  @apply relative z-20 p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;
 }
 
 .search-form {

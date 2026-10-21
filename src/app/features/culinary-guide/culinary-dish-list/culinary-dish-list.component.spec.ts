@@ -113,6 +113,24 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
     expect(tempuraBadge).toBeNull();
     expect(udonBadge).toBeNull();
   });
+
+  it('should render empty state card when dishes input is empty and recover when populated', async () => {
+    hostComponent.dishes.set([]);
+    await fixture.whenStable();
+
+    const emptyCard = fixture.nativeElement.querySelector('.section-card .empty-state-text');
+    expect(emptyCard).toBeTruthy();
+    expect(emptyCard?.textContent).toContain(
+      'No iconic dishes available. Search for a destination above to explore local culinary highlights.',
+    );
+    expect(fixture.nativeElement.querySelectorAll('app-accordion-item').length).toBe(0);
+
+    hostComponent.dishes.set(MOCK_DISHES);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.empty-state-text')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('app-accordion-item').length).toBe(2);
+  });
 });
 
 describe('CulinaryDishListComponent - Slice 2: Expansion & dishSelected Output', () => {
@@ -359,9 +377,9 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnos
     expect(analyticsEl).toBeTruthy();
   });
 
-  it('should not render token analytics when tokenSummary is missing', async () => {
+  it('should render list skeleton placeholder instead of token analytics when tokenSummary is missing', async () => {
     hostComponent.recipes.set({
-      Ramen: {
+      ramen: {
         ingredients: ['Fresh Ramen Noodles'],
         recipe: 'Step 1: Boil water.',
         recipeHtml: '<p>Step 1: Boil water.</p>',
@@ -372,7 +390,9 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Token Diagnos
     const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
     const ramenBody = accordionItems[0].querySelector('[accordion-body]');
     const analyticsEl = ramenBody.querySelector('app-token-analytics');
+    const listSkeletonEl = ramenBody.querySelector('app-list-skeleton');
     expect(analyticsEl).toBeNull();
+    expect(listSkeletonEl).toBeTruthy();
   });
 
   it('should correctly isolate recipe details for multiple expanded dishes by dish.name', async () => {

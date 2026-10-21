@@ -247,12 +247,16 @@ The accordion header provides instant scannability for dishes in both collapsed 
 
 ### 7.3 Responsive Panel Body Layout & Scroll Boundaries
 
-The expanded disclosure body contains synthesis details, markdown recipe content, and telemetry diagnostics:
+The expanded disclosure body (`.dish-body` in `culinary-dish-list.component.css`) arranges synthesis details, markdown recipe content, and telemetry diagnostics in a vertical flex stack:
 
-- **Mobile Layout**: Single-column vertical stack sequentially displaying ingredients, instructions, and diagnostics.
-- **Desktop Layout**: Two-column grid separating the ingredients sidebar and cooking instructions.
-- **Scroll Boundary & Overscroll**: Pinned max-height boundary preventing excessive page elongation: `max-h-[60vh] md:max-h-[70vh] overflow-y-auto overscroll-contain`.
-- **Diagnostics Divider**: Pinned bottom separator for per-dish token counts and latency metrics.
+- **Outer Disclosure Body (`.dish-body`)**: `@apply flex flex-col gap-6 pt-4 max-h-[60vh] md:max-h-[70vh] overflow-y-auto overscroll-contain;`
+- **Top 2-Column Content Grid (`.dish-content-grid`)**:
+  - **Mobile Layout**: Single-column vertical stack (`grid-cols-1`) displaying ingredients followed by cooking instructions.
+  - **Desktop Layout**: Two-column grid (`md:grid-cols-[2fr_3fr]`, a **2:3 / 40% : 60% ratio**) separating the left ingredients column (`40%`) and right cooking instructions column (`60%`): `@apply grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 items-start;`
+- **Recipe Instructions Wrapping (`.dish-instructions`)**:
+  - `@apply space-y-4 min-h-[160px] min-w-0 wrap-break-word [&_pre]:whitespace-pre-wrap [&_pre]:font-sans [&_code]:whitespace-pre-wrap [&_code]:font-sans;` ensuring markdown blocks and code elements wrap properly without horizontal clipping.
+- **Full-Width Bottom Diagnostics Row**:
+  - `<app-token-analytics>` is wrapped in `@defer (when recipeDetail?.tokenSummary)` with `<app-skeleton variant="line" [lines]="2" class="w-full" />` inside `@placeholder`. It is placed outside and below `.dish-content-grid` so it spans the full width (`100%`) of `.dish-body` beneath both the Ingredients and Recipe columns.
 
 ### 7.4 Semantic Content Projection Slots
 
@@ -272,8 +276,9 @@ The Culinary Destination Selector provides a responsive, accessible destination 
 - **Responsive Container**: Mobile-first flex container (`flex flex-col sm:flex-row gap-3 items-center`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
 - **Glassmorphic Styling**: Card container styled with `glass-card`, `surface-glass`, `surface-glass-border`, and `rounded-2xl`.
 - **Form Controls & Component Stylesheet (`culinary-search-box.component.css`)**:
-  - `@reference "../../../../../styles.css";`
-  - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;`
+  - `@reference "../../../../styles.css";`
+  - `:host`: `@apply relative z-20 block;`
+  - `.search-box-card`: `@apply relative z-20 p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;`
   - `.search-form`: `@apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full;`
   - `.form-group`: `@apply flex flex-col gap-1.5 flex-1 relative;`
   - `.form-label`: `@apply text-xs font-semibold tracking-wider uppercase text-on-surface-variant;`
@@ -332,13 +337,15 @@ The Culinary Guide feature workspace orchestrates `CulinarySearchBoxComponent`, 
 
 ### 9.1 Visual Architecture & Layout Tokens
 
-- **Responsive Container**:
+- **Responsive Full-Height Flex Container**:
   - Container class: `.culinary-guide-container`
   - Max width & auto-centering: `max-w-(--spacing-container-max) mx-auto`
-  - Responsive padding & spacing: `px-4 py-8 space-y-8`
+  - Vertical flex column & minimum viewport height: `flex flex-col gap-8 min-h-[calc(100vh-8rem)] px-4 py-8`
+  - Middle dish-list section wrapper uses `flex-1` so the bottom discovery panel is anchored toward the bottom of the workspace even when the dish list is collapsed or displaying a placeholder card.
 - **Component Stylesheet (`culinary-guide.component.css`)**:
   - `@reference "../../../styles.css";`
-  - `.culinary-guide-container`: `@apply space-y-8 max-w-(--spacing-container-max) mx-auto px-4 py-8;`
+  - `.culinary-guide-container`: `@apply flex flex-col gap-8 min-h-[calc(100vh-8rem)] max-w-(--spacing-container-max) mx-auto px-4 py-8;`
+  - `.culinary-dish-section`: `@apply flex-1;`
 
 ### 9.2 Search Loading State & Race Condition Prevention
 

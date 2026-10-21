@@ -294,4 +294,52 @@ describe('CulinaryGuideComponent', () => {
       expect(component.recipes()['unagi']).toEqual(DEFAULT_RECIPE_DATA);
     });
   });
+
+  describe('deferred middle & bottom panels (@defer and @placeholder)', () => {
+    it('should render middle and bottom placeholder cards prior to search without hydrating child panels', () => {
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-culinary-dish-list')).toBeNull();
+      expect(compiled.querySelector('app-culinary-discovery-panel')).toBeNull();
+
+      const placeholders = Array.from(compiled.querySelectorAll('.section-card .empty-state-text')).map((el) =>
+        el.textContent?.trim(),
+      );
+      expect(placeholders).toContain('Iconic dishes will appear here once you search for a destination.');
+      expect(placeholders).toContain(
+        'Culinary discovery insights and token analytics will appear here after a destination is selected.',
+      );
+    });
+
+    it('should hydrate middle dish list and bottom discovery panel when search streams discovery data with dishes', async () => {
+      await component.search(mockLocation);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-culinary-dish-list')).toBeTruthy();
+      expect(compiled.querySelector('app-culinary-discovery-panel')).toBeTruthy();
+    });
+
+    it('should hydrate bottom discovery panel while keeping middle dish list on placeholder when search fails with DEFAULT_DISCOVERY_DATA', async () => {
+      mockCoordinatorService.search = vi.fn().mockReturnValue({
+        // eslint-disable-next-line require-yield
+        async *[Symbol.asyncIterator]() {
+          throw new Error('Network error');
+        },
+      });
+
+      await component.search(mockLocation);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-culinary-dish-list')).toBeNull();
+      expect(compiled.querySelector('app-culinary-discovery-panel')).toBeTruthy();
+
+      const placeholders = Array.from(compiled.querySelectorAll('.section-card .empty-state-text')).map((el) =>
+        el.textContent?.trim(),
+      );
+      expect(placeholders).toContain('Iconic dishes will appear here once you search for a destination.');
+    });
+  });
 });
