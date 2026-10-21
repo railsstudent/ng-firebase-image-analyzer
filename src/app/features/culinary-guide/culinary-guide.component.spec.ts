@@ -295,15 +295,38 @@ describe('CulinaryGuideComponent', () => {
     });
   });
 
-  describe('layout boundaries (.culinary-guide-container and .culinary-dish-section)', () => {
-    it('should render culinary guide container and flex-1 dish section', () => {
+  describe('3-tier @defer boundaries and layout (.culinary-guide-container and .culinary-dish-section)', () => {
+    it('should render placeholder cards inside .culinary-dish-section and bottom panel prior to search without instantiating deferred child components', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       const containerEl = compiled.querySelector('.culinary-guide-container');
       expect(containerEl).toBeTruthy();
 
       const dishSectionEl = compiled.querySelector('.culinary-dish-section');
       expect(dishSectionEl).toBeTruthy();
+      expect(dishSectionEl?.querySelector('app-culinary-dish-list')).toBeNull();
+      expect(dishSectionEl?.querySelector('.section-card .empty-state-text')?.textContent?.trim()).toBe(
+        'Iconic dishes will appear here once you search for a destination.',
+      );
+
+      expect(compiled.querySelector('app-culinary-discovery-panel')).toBeNull();
+      const emptyStateTexts = Array.from(compiled.querySelectorAll('.section-card .empty-state-text')).map((el) =>
+        el.textContent?.trim(),
+      );
+      expect(emptyStateTexts).toContain(
+        'Culinary discovery insights and token analytics will appear here after a destination is selected.',
+      );
+    });
+
+    it('should hydrate app-culinary-dish-list and app-culinary-discovery-panel when search streams discoveryData with dishes', async () => {
+      await component.search(mockLocation);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      const dishSectionEl = compiled.querySelector('.culinary-dish-section');
       expect(dishSectionEl?.querySelector('app-culinary-dish-list')).toBeTruthy();
+      expect(compiled.querySelector('app-culinary-discovery-panel')).toBeTruthy();
+      expect(compiled.querySelectorAll('.empty-state-text').length).toBe(0);
     });
   });
 });

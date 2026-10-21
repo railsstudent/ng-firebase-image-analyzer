@@ -3,13 +3,18 @@ import type { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.inte
 import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
 import { AccordionGroupComponent, AccordionItemComponent } from '@/shared/ui/components/accordion';
 import { SkeletonComponent } from '@/shared/ui/components/skeleton';
+import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { Component, input, model, output } from '@angular/core';
 
 @Component({
   selector: 'app-culinary-dish-list',
-  imports: [AccordionGroupComponent, AccordionItemComponent, SkeletonComponent],
+  imports: [AccordionGroupComponent, AccordionItemComponent, TokenAnalyticsComponent, SkeletonComponent],
   templateUrl: './culinary-dish-list.component.html',
-  styleUrl: './culinary-dish-list.component.css',
+  styleUrls: [
+    '../../../shared/ui/styles/section-card.css',
+    '../../../shared/ui/styles/empty-state.css',
+    './culinary-dish-list.component.css',
+  ],
 })
 export class CulinaryDishListComponent {
   dishes = input.required<CulinaryFoodItem[]>();

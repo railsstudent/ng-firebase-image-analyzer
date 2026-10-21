@@ -1,47 +1,67 @@
-<app-accordion-group [isMulti]="isMulti()" [(expandedIds)]="expandedDishNames">
-  @for (dish of dishes(); track dish.name) {
-    <app-accordion-item [id]="dish.name" (expandedChange)="onDishToggle(dish, $event)">
-      <div accordion-header class="dish-header">
-        <div class="dish-title-row">
-          <span class="dish-name">{{ dish.name }}</span>
-          @let nativeName = dish.nativeName?.trim();
-          @if (nativeName) {
-            <span class="dish-native-badge">
-              {{ nativeName }}
-            </span>
+@let dishList = dishes();
+@if (dishList.length > 0) {
+  <app-accordion-group [isMulti]="isMulti()" [(expandedIds)]="expandedDishNames">
+    @for (dish of dishList; track dish.name) {
+      <app-accordion-item [id]="dish.name" (expandedChange)="onDishToggle(dish, $event)">
+        <div accordion-header class="dish-header">
+          <div class="dish-title-row">
+            <span class="dish-name">{{ dish.name }}</span>
+            @let nativeName = dish.nativeName?.trim();
+            @if (nativeName) {
+              <span class="dish-native-badge">
+                {{ nativeName }}
+              </span>
+            }
+          </div>
+          <p class="dish-description">
+            {{ dish.description }}
+          </p>
+        </div>
+        <div accordion-body class="dish-body">
+          @let recipeDetail = getRecipeDetail(dish);
+          <div class="dish-content-grid">
+            <div class="space-y-2">
+              @if (!recipeDetail?.ingredients?.length) {
+                <app-skeleton variant="line" [lines]="2" class="w-48" />
+              } @else {
+                <ul class="list-disc pl-5 space-y-1 text-sm text-on-surface">
+                  @for (ingredient of recipeDetail?.ingredients; track $index) {
+                    <li>{{ ingredient }}</li>
+                  }
+                </ul>
+              }
+            </div>
+
+            <div class="dish-instructions">
+              @if (!recipeDetail?.recipeHtml) {
+                <div aria-busy="true">
+                  <span class="sr-only">Generating recipe instructions...</span>
+                  <app-skeleton variant="line" [lines]="4" class="w-full" />
+                </div>
+              } @else {
+                <div [innerHTML]="recipeDetail?.recipeHtml"></div>
+              }
+            </div>
+          </div>
+          @defer (when recipeDetail?.tokenSummary) {
+            <app-token-analytics
+              [tokenSummary]="recipeDetail?.tokenSummary"
+              [tokenModalityBreakdown]="recipeDetail?.tokenModalityBreakdown"
+            />
+          } @placeholder {
+            <div aria-busy="true">
+              <span class="sr-only">Calculating recipe token usage...</span>
+              <app-skeleton variant="line" [lines]="4" class="w-full" />
+            </div>
           }
         </div>
-        <p class="dish-description">
-          {{ dish.description }}
-        </p>
-      </div>
-      <div accordion-body class="dish-body">
-        @let recipeDetail = getRecipeDetail(dish);
-        <div class="dish-content-grid">
-          <div class="space-y-2">
-            @if (!recipeDetail?.ingredients?.length) {
-              <app-skeleton variant="line" [lines]="2" class="w-48" />
-            } @else {
-              <ul class="list-disc pl-5 space-y-1 text-sm text-on-surface">
-                @for (ingredient of recipeDetail?.ingredients; track $index) {
-                  <li>{{ ingredient }}</li>
-                }
-              </ul>
-            }
-          </div>
-
-          <div class="dish-instructions">
-            @if (!recipeDetail?.recipeHtml) {
-              <div aria-busy="true">
-                <span class="sr-only">Generating recipe instructions...</span>
-                <app-skeleton variant="line" [lines]="4" class="w-full" />
-              </div>
-            } @else {
-              <div [innerHTML]="recipeDetail?.recipeHtml"></div>
-            }
-          </div>
-        </div>
-      </div>
-    </app-accordion-item>
-  }
-</app-accordion-group>
+      </app-accordion-item>
+    }
+  </app-accordion-group>
+} @else {
+  <div class="section-card">
+    <p class="empty-state-text">
+      No iconic dishes available. Search for a destination above to explore local culinary highlights.
+    </p>
+  </div>
+}

@@ -5,9 +5,9 @@ Implement the internal empty-state card fallback in `CulinaryDishListComponent` 
 
 **Blocked by:** 23: Export Canonical Key Normalization and Adopt Across Feature Components, 26: Fix Culinary Guide and Culinary Dish List Layout
 
-**Status:** ready-for-agent
+**Status:** in_progress
 
-- [ ] Import `section-card.css` and `empty-state.css` via `styleUrls` in `culinary-dish-list.component.ts`:
+- [x] Import `section-card.css` and `empty-state.css` via `styleUrls` in `culinary-dish-list.component.ts`:
 
   ```typescript
   @Component({
@@ -21,19 +21,18 @@ Implement the internal empty-state card fallback in `CulinaryDishListComponent` 
     imports: [
       AccordionGroupComponent,
       AccordionItemComponent,
-      SkeletonComponent,
       TokenAnalyticsComponent,
+      SkeletonComponent,
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
   })
   ```
 
-- [ ] In `culinary-dish-list.component.html`, wrap the accordion group in `@if (dishes().length > 0) ... @else`:
+- [x] In `culinary-dish-list.component.html`, wrap the accordion group in `@if (dishes().length > 0) ... @else`:
 
   ```html
-  @let dishList = dishes(); @if (dishList.length > 0) {
   <app-accordion-group [isMulti]="isMulti()" [(expandedIds)]="expandedDishNames">
-    @for (dish of dishList; track dish.name) {
+    @let dishList = dishes(); @if (dishList.length > 0) { @for (dish of dishList; track dish.name) {
     <app-accordion-item [id]="dish.name" (expandedChange)="onDishToggle(dish, $event)"> ... </app-accordion-item>
     }
   </app-accordion-group>
@@ -46,7 +45,7 @@ Implement the internal empty-state card fallback in `CulinaryDishListComponent` 
   }
   ```
 
-- [ ] In `culinary-dish-list.component.html`, render deferred `<app-token-analytics>` with `<app-skeleton>` placeholder below `.dish-content-grid`:
+- [x] In `culinary-dish-list.component.html`, render deferred `<app-token-analytics>` with `<app-skeleton>` placeholder below `.dish-content-grid`:
 
   ```html
   @defer (when recipeDetail?.tokenSummary) {
@@ -57,12 +56,12 @@ Implement the internal empty-state card fallback in `CulinaryDishListComponent` 
   } @placeholder {
   <div aria-busy="true">
     <span class="sr-only">Calculating recipe token usage...</span>
-    <app-skeleton variant="line" [lines]="2" class="w-full" />
+    <app-skeleton variant="line" [lines]="4" class="w-full" />
   </div>
   }
   ```
 
-- [ ] Update `culinary-dish-list.component.spec.ts` unit tests covering:
+- [x] Update `culinary-dish-list.component.spec.ts` unit tests covering:
   - Empty state card rendering when `dishes` input is empty (`"No iconic dishes available. Search for a destination above to explore local culinary highlights."`)
   - Accordion rendering when `dishes` input contains items
   - `<app-skeleton>` placeholder rendering while `tokenSummary` is absent and `<app-token-analytics>` hydrating when `tokenSummary` arrives:
@@ -103,4 +102,4 @@ Implement the internal empty-state card fallback in `CulinaryDishListComponent` 
     });
     ```
 
-- [ ] Ensure all unit tests pass with zero regressions and strict coding standards (zero `!`, native `#` for private state/deps, Signal Forms, no `../` imports)
+- [x] Ensure all unit tests pass with zero regressions and strict coding standards (zero `!`, native `#` for private state/deps, Signal Forms, no `../` imports)

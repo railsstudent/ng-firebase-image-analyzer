@@ -67,6 +67,20 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
   it('should render a list of accordion items matching the dishes input', () => {
     const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
     expect(accordionItems.length).toBe(2);
+    expect(fixture.nativeElement.querySelector('.empty-state-text')).toBeNull();
+  });
+
+  it('should render empty state card and omit accordion group when dishes input is empty', async () => {
+    hostComponent.dishes.set([]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('app-accordion-group')).toBeNull();
+    const emptyCard = fixture.nativeElement.querySelector('.section-card .empty-state-text');
+    expect(emptyCard).toBeTruthy();
+    expect(emptyCard?.textContent?.trim()).toBe(
+      'No iconic dishes available. Search for a destination above to explore local culinary highlights.',
+    );
   });
 
   it('should render English dish names and descriptions for all dishes', () => {
@@ -266,19 +280,23 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
     expect(instructions).toBeTruthy();
   });
 
-  it('should render dual-instance skeletons (2-line ingredients and 4-line instructions with aria-busy) during initial loading', async () => {
+  it('should render skeletons for ingredients, instructions, and deferred token analytics placeholder during initial loading', async () => {
     await fixture.whenStable();
 
     const ramenBody = fixture.nativeElement.querySelector('[accordion-body]');
-    const skeletons = ramenBody.querySelectorAll('app-skeleton');
-    expect(skeletons.length).toBe(2);
+    const gridSkeletons = ramenBody.querySelectorAll('.dish-content-grid app-skeleton');
+    expect(gridSkeletons.length).toBe(2);
 
-    const busyInstructions = ramenBody.querySelector('[aria-busy="true"]');
-    expect(busyInstructions).toBeTruthy();
-    expect(busyInstructions.querySelector('.sr-only')?.textContent).toBe('Generating recipe instructions...');
+    const allSkeletons = ramenBody.querySelectorAll('app-skeleton');
+    expect(allSkeletons.length).toBe(3);
+
+    const busyRegions = ramenBody.querySelectorAll('[aria-busy="true"]');
+    expect(busyRegions.length).toBe(2);
+    expect(busyRegions[0].querySelector('.sr-only')?.textContent).toBe('Generating recipe instructions...');
+    expect(busyRegions[1].querySelector('.sr-only')?.textContent).toBe('Calculating recipe token usage...');
   });
 
-  it('should render progressive ingredients and replace ingredients skeleton while keeping instructions skeleton during active streaming', async () => {
+  it('should render progressive ingredients and replace ingredients skeleton while keeping instructions and token analytics skeletons during active streaming', async () => {
     hostComponent.recipes.set({
       ramen: {
         ingredients: ['Fresh Ramen Noodles', 'Tonkotsu Broth', 'Chashu Pork'],
@@ -289,11 +307,15 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
     await fixture.whenStable();
 
     const ramenBody = fixture.nativeElement.querySelector('[accordion-body]');
-    const skeletons = ramenBody.querySelectorAll('app-skeleton');
-    // Only the 4-line instructions skeleton remains
-    expect(skeletons.length).toBe(1);
+    const gridSkeletons = ramenBody.querySelectorAll('.dish-content-grid app-skeleton');
+    // Only the 4-line instructions skeleton remains inside .dish-content-grid
+    expect(gridSkeletons.length).toBe(1);
 
-    const busyInstructions = ramenBody.querySelector('[aria-busy="true"]');
+    const allSkeletons = ramenBody.querySelectorAll('app-skeleton');
+    // 1 instructions skeleton + 1 deferred token analytics placeholder skeleton
+    expect(allSkeletons.length).toBe(2);
+
+    const busyInstructions = ramenBody.querySelector('.dish-instructions [aria-busy="true"]');
     expect(busyInstructions).toBeTruthy();
 
     expect(ramenBody.textContent).toContain('Fresh Ramen Noodles');
@@ -302,7 +324,7 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
   });
 });
 
-describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Multi-Dish Isolation', () => {
+describe('CulinaryDishListComponent - Slice 4: Recipe Completion, Deferred Token Analytics & Multi-Dish Isolation', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let hostComponent: TestHostComponent;
 
@@ -330,12 +352,54 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion & Multi-Dish Is
 
     const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
     const ramenBody = accordionItems[0].querySelector('[accordion-body]');
-    const skeletons = ramenBody.querySelectorAll('app-skeleton');
-    expect(skeletons.length).toBe(0);
+    const gridSkeletons = ramenBody.querySelectorAll('.dish-content-grid app-skeleton');
+    expect(gridSkeletons.length).toBe(0);
 
     const recipeStep = ramenBody.querySelector('.recipe-step');
     expect(recipeStep).toBeTruthy();
     expect(recipeStep?.textContent).toBe('Step 1: Boil water and add noodles.');
+  });
+
+  it('should render skeleton placeholder prior to tokenSummary and hydrate full-width token analytics below .dish-content-grid upon completion', async () => {
+    hostComponent.recipes.set({
+      ramen: {
+        ingredients: ['Fresh Ramen Noodles'],
+        recipe: 'Step 1: Boil water.',
+        recipeHtml: '<p>Step 1: Boil water.</p>',
+      },
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
+    const ramenBody = accordionItems[0].querySelector('[accordion-body]');
+    expect(ramenBody.querySelector('app-token-analytics')).toBeNull();
+    expect(ramenBody.querySelectorAll('app-skeleton').length).toBe(1);
+    expect(ramenBody.querySelector('[aria-busy="true"] .sr-only')?.textContent).toBe(
+      'Calculating recipe token usage...',
+    );
+
+    hostComponent.recipes.set({
+      ramen: {
+        ingredients: ['Fresh Ramen Noodles'],
+        recipe: 'Step 1: Boil water.',
+        recipeHtml: '<p>Step 1: Boil water.</p>',
+        tokenSummary: {
+          totalTokenCount: 350,
+          promptTokenCount: 100,
+          thoughtsTokenCount: 0,
+          cachedContentTokenCount: 0,
+          outputTokenCount: 250,
+        },
+      },
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const hydratedAnalytics = ramenBody.querySelector('app-token-analytics');
+    expect(hydratedAnalytics).toBeTruthy();
+    expect(ramenBody.querySelector('.dish-content-grid app-token-analytics')).toBeNull();
+    expect(ramenBody.querySelectorAll('app-skeleton').length).toBe(0);
   });
 
   it('should correctly isolate recipe details for multiple expanded dishes by dish.name', async () => {
