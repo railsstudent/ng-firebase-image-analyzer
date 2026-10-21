@@ -5,7 +5,7 @@ Implement the internal empty-state card fallback in `CulinaryDishListComponent` 
 
 **Blocked by:** 23: Export Canonical Key Normalization and Adopt Across Feature Components, 26: Fix Culinary Guide and Culinary Dish List Layout
 
-**Status:** in_progress
+**Status:** done
 
 - [x] Import `section-card.css` and `empty-state.css` via `styleUrls` in `culinary-dish-list.component.ts`:
 

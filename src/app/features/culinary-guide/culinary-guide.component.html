@@ -4,14 +4,30 @@
     [isLoading]="isDiscovering()"
     (locationSelected)="search($event)"
   />
+
   <div class="culinary-dish-section">
-    <app-culinary-dish-list
-      [dishes]="dishes()"
-      [(expandedDishNames)]="expandedDishNames"
-      [recipes]="recipes()"
-      [isMulti]="false"
-      (dishSelected)="loadRecipe($event)"
-    />
+    @let dishList = dishes();
+    @defer (when dishList.length > 0) {
+      <app-culinary-dish-list
+        [dishes]="dishList"
+        [(expandedDishNames)]="expandedDishNames"
+        [recipes]="recipes()"
+        [isMulti]="false"
+        (dishSelected)="loadRecipe($event)"
+      />
+    } @placeholder {
+      <div class="section-card">
+        <p class="empty-state-text">Iconic dishes will appear here once you search for a destination.</p>
+      </div>
+    }
   </div>
-  <app-culinary-discovery-panel [discovery]="discoveryData()" />
+  @defer (when discoveryData()) {
+    <app-culinary-discovery-panel [discovery]="discoveryData()" />
+  } @placeholder {
+    <div class="section-card">
+      <p class="empty-state-text">
+        Culinary discovery insights and token analytics will appear here after a destination is selected.
+      </p>
+    </div>
+  }
 </div>

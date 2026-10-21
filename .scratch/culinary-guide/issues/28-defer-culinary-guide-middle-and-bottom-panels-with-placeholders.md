@@ -5,9 +5,9 @@ Wrap the middle dish list and bottom discovery panel sections in `@defer` with i
 
 **Blocked by:** 25: Implement Culinary Guide Layout, Race Guard, Cache Bypass, and Test Suite, 26: Fix Culinary Guide and Culinary Dish List Layout, 27: Add Culinary Dish List Empty State and Deferred Full-Width Token Analytics
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Import `section-card.css` and `empty-state.css` via `styleUrls` in `culinary-guide.component.ts`:
+- [x] Import `section-card.css` and `empty-state.css` via `styleUrls` in `culinary-guide.component.ts`:
 
   ```typescript
   @Component({
@@ -42,7 +42,7 @@ Wrap the middle dish list and bottom discovery panel sections in `@defer` with i
   </div>
   ```
 
-- [ ] In `culinary-guide.component.html`, wrap `<app-culinary-discovery-panel>` in `@defer (when discoveryData())`:
+- [x] In `culinary-guide.component.html`, wrap `<app-culinary-discovery-panel>` in `@defer (when discoveryData())`:
 
   ```html
   @defer (when discoveryData()) {

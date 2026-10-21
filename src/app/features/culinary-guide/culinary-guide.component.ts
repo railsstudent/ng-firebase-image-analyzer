@@ -17,8 +17,12 @@ import type { CulinaryRecipeDetail } from './interfaces/culinary-recipe-detail.i
 @Component({
   selector: 'app-culinary-guide',
   imports: [CulinaryDiscoveryPanelComponent, CulinarySearchBoxComponent, CulinaryDishListComponent],
-  styleUrl: './culinary-guide.component.css',
   templateUrl: './culinary-guide.component.html',
+  styleUrls: [
+    '../../shared/ui/styles/section-card.css',
+    '../../shared/ui/styles/empty-state.css',
+    './culinary-guide.component.css',
+  ],
 })
 export default class CulinaryGuideComponent {
   #asyncCoordinatorService = injectAsync(() =>

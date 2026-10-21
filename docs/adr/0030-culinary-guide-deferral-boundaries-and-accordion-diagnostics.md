@@ -36,7 +36,7 @@ During implementation and browser verification of the Culinary Guide workspace (
 
 3. **Stage 2 Accordion Diagnostics with `@defer` and Reused `<app-skeleton>`**:
    - Inside `CulinaryDishListComponent`, place `<app-token-analytics>` below `.dish-content-grid` spanning 100% container width.
-   - Wrap `<app-token-analytics>` in `@defer (when recipeDetail?.tokenSummary)` with `<app-skeleton variant="line" [lines]="2" class="w-full" />` in `@placeholder` (reusing the already-imported `SkeletonComponent`).
+   - Wrap `<app-token-analytics>` in `@defer (when recipeDetail?.tokenSummary)` with `<app-skeleton variant="line" [lines]="4" class="w-full" />` in `@placeholder` (reusing the already-imported `SkeletonComponent`).
    - Prune `ListSkeletonComponent` from imports to keep chunk size minimal.
 
 ## Consequences
