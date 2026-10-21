@@ -40,6 +40,7 @@ export class CulinarySearchBoxComponent {
   readonly activeOptionIndex = signal(NO_SELECTION_INDEX);
 
   readonly #lowercaseCity = computed(() => normalizeKeys(this.#locationModel().city));
+  readonly isSearchDisabled = computed(() => this.searchForm().invalid() || this.isLoading());
 
   readonly filteredCities = computed(() => {
     const query = this.#lowercaseCity();

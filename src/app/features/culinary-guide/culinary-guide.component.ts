@@ -29,7 +29,7 @@ export default class CulinaryGuideComponent {
   expandedDishNames = signal<string[]>([]);
   recipes = signal<Record<string, CulinaryRecipeDetail>>({});
   currentLocation = signal<CulinaryLocation | undefined>(undefined);
-  isLoading = signal(false);
+  isDiscovering = signal(false);
 
   dishes = computed(() => this.discoveryData()?.foods || []);
 
@@ -37,7 +37,7 @@ export default class CulinaryGuideComponent {
 
   async search(location: CulinaryLocation): Promise<void> {
     try {
-      this.isLoading.set(true);
+      this.isDiscovering.set(true);
       this.currentLocation.set(location);
       const coordinatorService = await this.#asyncCoordinatorService();
       const generator = coordinatorService.search(location);
@@ -54,7 +54,7 @@ export default class CulinaryGuideComponent {
     } catch {
       this.discoveryData.set(DEFAULT_DISCOVERY_DATA);
     } finally {
-      this.isLoading.set(false);
+      this.isDiscovering.set(false);
     }
   }
 

@@ -39,7 +39,3 @@
 .submit-btn {
   @apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm transition-all shadow-md hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed sm:self-end;
 }
-
-.loading-spinner {
-  @apply animate-spin text-on-primary w-4 h-4 mr-2;
-}

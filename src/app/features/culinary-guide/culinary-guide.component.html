@@ -1,7 +1,7 @@
 <div>
   <app-culinary-search-box
     [destinations]="culinaryDestinations"
-    [isLoading]="isLoading()"
+    [isLoading]="isDiscovering()"
     (locationSelected)="search($event)"
   />
   <app-culinary-dish-list

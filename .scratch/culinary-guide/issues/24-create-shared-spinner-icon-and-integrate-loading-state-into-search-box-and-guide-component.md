@@ -33,9 +33,8 @@ export class SpinnerIconComponent {}
 - [x] Create standalone `SpinnerIconComponent` in `src/app/shared/ui/icons/spinner-icon/spinner-icon.component.ts` matching the prototype snippet
 - [x] Declare `readonly isLoading = input(false)` on `CulinarySearchBoxComponent`
 - [x] Update `CulinarySearchBoxComponent` template to disable submit button when `searchForm().invalid() || isLoading()`
-- [ ] Render `<app-spinner-icon class="loading-spinner" />` inside the search submit button when `isLoading()` is true. Add `.loading-spinner { @apply animate-spin text-on-primary w-4 h-4 mr-2;
-}` to `culinary-search-box.component.css`.
-- [x] Declare `isLoading = signal(false)` in `CulinaryGuideComponent`
-- [x] Bind `[isLoading]="isLoading()"` to `<app-culinary-search-box>` in `culinary-guide.component.html`
-- [x] Update `isLoading` in `CulinaryGuideComponent.search()` (`set(true)` on start, `set(false)` in `finally`)
+- [x] Render `<app-spinner-icon class="animate-spin text-on-primary w-4 h-4 mr-2" />` inside the search submit button when `isLoading()` is true.
+- [x] Declare `isDiscovering = signal(false)` in `CulinaryGuideComponent`
+- [x] Bind `[isLoading]="isDiscovering()"` to `<app-culinary-search-box>` in `culinary-guide.component.html`
+- [x] Update `isDiscovering` in `CulinaryGuideComponent.search()` (`set(true)` on start, `set(false)` in `finally`)
 - [x] Unit tests for `CulinarySearchBoxComponent` assert disabled state and spinner presence when `isLoading` is true

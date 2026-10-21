@@ -62,14 +62,9 @@
       }
     </div>
 
-    <button
-      type="submit"
-      class="submit-btn"
-      [disabled]="searchForm().invalid() || isLoading()"
-      [attr.aria-disabled]="searchForm().invalid() || isLoading()"
-    >
+    <button type="submit" class="submit-btn" [disabled]="isSearchDisabled()" [attr.aria-disabled]="isSearchDisabled()">
       @if (isLoading()) {
-        <app-spinner-icon class="loading-spinner" />
+        <app-spinner-icon class="animate-spin text-on-primary w-4 h-4 mr-2" />
       }
       <span>Search</span>
     </button>
