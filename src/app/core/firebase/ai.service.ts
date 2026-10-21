@@ -2,6 +2,7 @@ import { PERCENT_FACTOR, WINDOW } from '@/core/constants';
 import { DOCUMENT, inject, Service } from '@angular/core';
 import {
   type EnhancedGenerateContentResponse,
+  type GenerateContentStreamResult,
   GenerativeModel,
   type InferenceSource,
   type Part,
@@ -11,6 +12,7 @@ import {
 } from 'firebase/ai';
 import { jsonrepair } from 'jsonrepair';
 import { AiModelCacheService } from './ai-model-cache.service';
+import { STREAM_CHUNK_BUFFER_SIZE } from './ai.const';
 import type { GenerateContentParams, PartialResponse } from './ai.interface';
 import { validateAiInputs, validateAiResponse } from './ai.validation';
 import type { DisplaySource } from './display-source.type';
@@ -85,25 +87,47 @@ export class AiService {
     const result = await model.generateContentStream(request);
     let accumulatedText = '';
     let latestUsage: UsageMetadata | undefined = undefined;
+    let bufferedChunkCount = 0;
 
     for await (const chunk of result.stream) {
-      try {
-        if (chunk.usageMetadata) {
-          latestUsage = chunk.usageMetadata;
+      if (chunk.usageMetadata) {
+        latestUsage = chunk.usageMetadata;
+      }
+      accumulatedText = accumulatedText + chunk.text();
+      bufferedChunkCount = bufferedChunkCount + 1;
+
+      if (bufferedChunkCount >= STREAM_CHUNK_BUFFER_SIZE) {
+        const parsed = this.tryParseStreamChunk<T>(accumulatedText, params.schema);
+        if (parsed !== undefined) {
+          bufferedChunkCount = 0;
+          yield {
+            partialData: parsed,
+          };
         }
-        accumulatedText = accumulatedText + chunk.text();
-        const parsed = this.parseStreamJSONResponse<T>(accumulatedText, params.schema);
-        yield {
-          partialData: parsed,
-        };
-      } catch (err) {
-        // Silently swallow errors during the stream.
-        // The loop will try parsing again when the next chunk adds more text!
-        console.log('Temporary streaming JSON parse failure (normal during generation):', err);
       }
     }
 
     // The stream is 100%  completed. Resolve the final Response promise
+    yield this.buildFinalStreamResponse<T>(result, latestUsage, params);
+  }
+
+  private tryParseStreamChunk<T>(
+    accumulatedText: string,
+    schema?: TypedSchema | SchemaRequest,
+  ): Partial<T> | undefined {
+    try {
+      return this.parseStreamJSONResponse<T>(accumulatedText, schema);
+    } catch (err) {
+      console.log('Temporary streaming JSON parse failure (normal during generation):', err);
+      return undefined;
+    }
+  }
+
+  private async buildFinalStreamResponse<T>(
+    result: GenerateContentStreamResult,
+    latestUsage: UsageMetadata | undefined,
+    params: GenerateContentParams,
+  ): Promise<PartialResponse<T>> {
     const finalResponse = await result.response;
     if (finalResponse && !finalResponse.usageMetadata && latestUsage) {
       finalResponse.usageMetadata = latestUsage;
@@ -117,7 +141,7 @@ export class AiService {
       ? this.parseStreamJSONResponse<T>(finalResponse.text(), params.schema)
       : ({} as Partial<T>);
 
-    yield {
+    return {
       partialData: finalParsed,
       inferenceMetadata: this.extractInferenceMetadata(finalResponse),
     };

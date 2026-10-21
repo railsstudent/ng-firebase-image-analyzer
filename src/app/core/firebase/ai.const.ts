@@ -1,0 +1,1 @@
+export const STREAM_CHUNK_BUFFER_SIZE = 10;

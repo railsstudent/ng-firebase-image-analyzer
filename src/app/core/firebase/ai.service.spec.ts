@@ -79,10 +79,12 @@ describe('AiService', () => {
 
       mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
         stream: (async function* () {
-          yield {
-            text: () => '{"caption": "A partial caption"}',
-            usageMetadata: { totalTokenCount: 40, promptTokenCount: 20, candidatesTokenCount: 20 },
-          };
+          for (let i = 1; i <= 10; i = i + 1) {
+            yield {
+              text: () => `{"caption": "A partial caption ${i}"}`,
+              usageMetadata: { totalTokenCount: 40, promptTokenCount: 20, candidatesTokenCount: 20 },
+            };
+          }
         })(),
         response: Promise.resolve(mockStreamResponse),
       });
@@ -143,8 +145,8 @@ describe('AiService', () => {
         results.push(chunk);
       }
 
-      expect(results).toHaveLength(2);
-      expect(results[1].inferenceMetadata).toEqual({
+      expect(results).toHaveLength(1);
+      expect(results[0].inferenceMetadata).toEqual({
         source: 'on_device',
         displaySource: 'Unknown',
         thoughtSummary: 'No thought summary',
@@ -179,10 +181,10 @@ describe('AiService', () => {
         results.push(chunk);
       }
 
-      expect(results).toHaveLength(2);
-      expect(results[1].inferenceMetadata?.source).toBe('in_cloud');
-      expect(results[1].inferenceMetadata?.displaySource).toBe('Cloud AI');
-      expect(results[1].inferenceMetadata?.thoughtSummary).toBe('Synthesized via cloud model');
+      expect(results).toHaveLength(1);
+      expect(results[0].inferenceMetadata?.source).toBe('in_cloud');
+      expect(results[0].inferenceMetadata?.displaySource).toBe('Cloud AI');
+      expect(results[0].inferenceMetadata?.thoughtSummary).toBe('Synthesized via cloud model');
     });
 
     it('should fallback displaySource to Unknown when response is undefined', async () => {
@@ -198,8 +200,130 @@ describe('AiService', () => {
         results.push(chunk);
       }
 
-      expect(results).toHaveLength(2);
-      expect(results[1].inferenceMetadata?.displaySource).toBe('Unknown');
+      expect(results).toHaveLength(1);
+      expect(results[0].inferenceMetadata?.displaySource).toBe('Unknown');
+    });
+
+    describe('stream chunk buffering', () => {
+      it('should yield 0 intermediate chunks and 1 final chunk from response resolution when stream has fewer than 10 chunks', async () => {
+        mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+          stream: (async function* () {
+            yield { text: () => '{"caption": "First part, ' };
+            yield { text: () => 'second part"}' };
+          })(),
+          response: Promise.resolve({
+            text: () => '{"caption": "First part, second part"}',
+            candidates: [{ finishReason: 'STOP', content: {} }],
+          }),
+        });
+
+        const results = [];
+        for await (const chunk of service.generateContentStream({ contents: 'test stream' })) {
+          results.push(chunk);
+        }
+
+        expect(results).toHaveLength(1);
+        expect(results[0].partialData).toBeDefined();
+        expect(results[0].inferenceMetadata).toBeDefined();
+      });
+
+      it('should yield 1 intermediate chunk on the 10th chunk and 1 final chunk from response resolution when stream has exactly 10 chunks', async () => {
+        mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+          stream: (async function* () {
+            yield { text: () => '{"items": [1' };
+            for (let i = 2; i <= 10; i = i + 1) {
+              yield { text: () => `, ${i}` };
+            }
+          })(),
+          response: Promise.resolve({
+            text: () => '{"items": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}',
+            candidates: [{ finishReason: 'STOP', content: {} }],
+          }),
+        });
+
+        const results = [];
+        for await (const chunk of service.generateContentStream({ contents: 'test stream', schema: {} as never })) {
+          results.push(chunk);
+        }
+
+        expect(results).toHaveLength(2);
+        expect(results[0].partialData).toEqual({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        expect(results[0].inferenceMetadata).toBeUndefined();
+        expect(results[1].partialData).toEqual({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        expect(results[1].inferenceMetadata).toBeDefined();
+      });
+
+      it('should yield 2 intermediate chunks at chunks 10 and 20 and flush trailing 2 chunks via the final chunk for 12 chunks', async () => {
+        mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+          stream: (async function* () {
+            yield { text: () => '{"items": [1' };
+            for (let i = 2; i <= 21; i = i + 1) {
+              yield { text: () => `, ${i}` };
+            }
+            yield { text: () => ', 22]}' };
+          })(),
+          response: Promise.resolve({
+            text: () => '{"items": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]}',
+            candidates: [{ finishReason: 'STOP', content: {} }],
+          }),
+        });
+
+        const results = [];
+        for await (const chunk of service.generateContentStream({ contents: 'test stream', schema: {} as never })) {
+          results.push(chunk);
+        }
+
+        expect(results).toHaveLength(3);
+        expect(results[0].partialData).toEqual({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        expect(results[0].inferenceMetadata).toBeUndefined();
+        expect(results[1].partialData).toEqual({
+          items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        });
+        expect(results[1].inferenceMetadata).toBeUndefined();
+        expect(results[2].partialData).toEqual({
+          items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+        });
+        expect(results[2].inferenceMetadata).toBeDefined();
+      });
+
+      it('should not reset bufferedChunkCount if parseStreamJSONResponse fails on chunk 5 and immediately retry and yield on chunk 6 upon valid repair', async () => {
+        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+        vi.spyOn(console, 'log').mockImplementation(() => {});
+
+        mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
+          stream: (async function* () {
+            // Chunks 1-4
+            yield { text: () => '{"msg": ' };
+            yield { text: () => '"' };
+            yield { text: () => 'hel' };
+            yield { text: () => 'lo' };
+            yield { text: () => 'lo' };
+            yield { text: () => 'lo' };
+            yield { text: () => 'lo' };
+            yield { text: () => 'lo' };
+            yield { text: () => 'lo' };
+            // Chunk 10: causes jsonrepair to throw syntax error (lone slash after quote)
+            yield { text: () => '/' };
+            // Chunk 11: valid continuation that resolves the syntax
+            yield { text: () => 'world"}' };
+          })(),
+          response: Promise.resolve({
+            text: () => '{"msg": "hellolololololo/world"}',
+            candidates: [{ finishReason: 'STOP', content: {} }],
+          }),
+        });
+
+        const results = [];
+        for await (const chunk of service.generateContentStream({ contents: 'test stream', schema: {} as never })) {
+          results.push(chunk);
+        }
+
+        expect(results).toHaveLength(2);
+        expect(results[0].partialData).toEqual({ msg: 'hellolololololo/world' });
+        expect(results[0].inferenceMetadata).toBeUndefined();
+        expect(results[1].partialData).toEqual({ msg: 'hellolololololo/world' });
+        expect(results[1].inferenceMetadata).toBeDefined();
+      });
     });
   });
 

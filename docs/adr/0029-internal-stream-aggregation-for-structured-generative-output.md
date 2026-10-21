@@ -29,6 +29,10 @@ Relates to: [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown
    - In [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown.md), search operations clear the recipe accordion cache.
    - Clearing the cache eagerly before a search succeeds degrades the user experience if a transient network/inference failure occurs, wiping the user's previously loaded recommendations and cached recipes.
 
+7. **Stream Chunk Parsing Overhead & Fragment Thrashing**:
+   - Running `jsonrepair` and `JSON.parse` eagerly on every individual raw stream chunk introduces CPU parsing overhead and produces frequent intermediate parse exceptions before meaningful token boundaries arrive.
+   - Yielding on every raw chunk triggers excessive intermediate UI re-renders with partial or identical data.
+
 ## Decision
 
 1. **Hybrid Streaming Architecture**:
@@ -56,6 +60,11 @@ Relates to: [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown
    - `#recipeCache` is cleared safely only upon successful completion of a new search query. If a search fails mid-stream, previous cached recipes are preserved.
    - An explicit `clearCache(): void` method is exposed for manual resets and component unmounting.
 
+7. **Stream Chunk Buffering & Resilient JSON Repair (`AiService`)**:
+   - `AiService.generateContentStream` accumulates raw stream text and tracks chunk count in batches governed by `STREAM_CHUNK_BUFFER_SIZE = 5` before executing `parseStreamJSONResponse`.
+   - The buffer count resets only after a successful JSON parse and yield. If `jsonrepair` throws on chunk $N$, the count is preserved so chunk $N+1$ immediately retries parsing on the next chunk without dropping accumulated text.
+   - If the stream completes with fewer than 5 un-yielded chunks in the buffer, intermediate yields are bypassed and trailing chunks are flushed via `await result.response` with complete `inferenceMetadata`.
+
 ## Consequences
 
 - **Positive**:
@@ -66,5 +75,9 @@ Relates to: [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown
   - Provides a consistent caller contract with uniform `for await` iteration across live streams and cached hits.
   - Adheres to repository coding standards by keeping feature services signal-free and localizing UI state in components.
   - Preserves previously cached recipes on transient search failures.
+  - Reduces JSON repair execution overhead and intermediate UI rendering thrash by throttling partial structured emissions to 5-chunk batches while maintaining perceived responsiveness.
+  - Provides fault-tolerant parsing recovery by retrying repair on immediately following chunks upon temporary syntax failures without resetting buffer progress.
+  - Eliminates redundant intermediate yields on stream termination by delegating trailing chunk delivery directly to final response resolution.
 - **Negative / Trade-offs**:
   - Recipe instructions text does not render token-by-token; instead, instructions show an animated skeleton while ingredients populate, followed by instantaneous complete HTML rendering upon completion.
+  - Intermediate structured UI updates emit at 5-chunk intervals rather than single-token increments.

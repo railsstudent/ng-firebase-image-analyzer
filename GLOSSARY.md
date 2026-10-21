@@ -71,3 +71,7 @@ _Avoid_: Dish slug, cache key hash, recipe id.
 **Recipe Synthesis Failure**:
 The deterministic graceful fallback state returning `DEFAULT_RECIPE_DATA` during Stage 2 Recipe Synthesis errors or network interruptions, ensuring UI accordions recover cleanly without leaving permanent skeleton states.
 _Avoid_: Synthesis error, recipe crash, failed prompt.
+
+**Stream Chunk Buffering**:
+The accumulation of raw generative stream chunks into fixed batch thresholds prior to executing partial JSON parsing and repair, deferring un-yielded trailing fragments to final model response resolution.
+_Avoid_: Micro-batching, chunk throttling, stream debouncing.
