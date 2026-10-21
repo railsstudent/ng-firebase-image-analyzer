@@ -5,7 +5,9 @@ import type {
 } from '@/core/culinary-guide';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { DEFAULT_DISCOVERY_DATA, DEFAULT_RECIPE_DATA } from './constants/culinary-guide.const';
+import { CulinaryDishListComponent } from './culinary-dish-list/culinary-dish-list.component';
 import CulinaryGuideComponent from './culinary-guide.component';
 import type { CulinaryRecipeDetail } from './interfaces/culinary-recipe-detail.interface';
 import { CulinaryGuideCoordinatorService } from './services/culinary-guide-coordinator.service';
@@ -327,6 +329,40 @@ describe('CulinaryGuideComponent', () => {
       expect(dishSectionEl?.querySelector('app-culinary-dish-list')).toBeTruthy();
       expect(compiled.querySelector('app-culinary-discovery-panel')).toBeTruthy();
       expect(compiled.querySelectorAll('.empty-state-text').length).toBe(0);
+    });
+
+    it('should pass isDisabled to app-culinary-dish-list during Stage 1 discovery streaming and re-enable when settled', async () => {
+      let resolveStream!: () => void;
+      const streamDeferred = new Promise<void>((resolve) => {
+        resolveStream = resolve;
+      });
+
+      const chunk = createMockDiscoveryChunk(2);
+      mockCoordinatorService.search = vi.fn().mockReturnValue({
+        async *[Symbol.asyncIterator]() {
+          yield chunk;
+          await streamDeferred;
+        },
+      });
+
+      const searchPromise = component.search(mockLocation);
+      // Wait for coordinator import resolution and first streaming chunk
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(component.isDiscovering()).toBe(true);
+      const dishListDebugEl = fixture.debugElement.query(By.directive(CulinaryDishListComponent));
+      expect(dishListDebugEl).toBeTruthy();
+      expect(dishListDebugEl.componentInstance.isDisabled()).toBe(true);
+
+      resolveStream();
+      await searchPromise;
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(component.isDiscovering()).toBe(false);
+      expect(dishListDebugEl.componentInstance.isDisabled()).toBe(false);
     });
   });
 });

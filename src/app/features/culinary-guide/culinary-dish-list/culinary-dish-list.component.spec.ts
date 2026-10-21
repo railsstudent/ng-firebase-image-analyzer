@@ -27,6 +27,7 @@ const MOCK_DISHES: CulinaryFoodItem[] = [
       [(expandedDishNames)]="expandedDishNames"
       [recipes]="recipes()"
       [isMulti]="isMulti()"
+      [isDisabled]="isDisabled()"
       (dishSelected)="onDishSelected($event)"
     />
   `,
@@ -36,6 +37,7 @@ class TestHostComponent {
   expandedDishNames = signal<string[]>([]);
   recipes = signal<Record<string, CulinaryRecipeDetail>>({});
   isMulti = signal(true);
+  isDisabled = signal(false);
   selectedDishes: CulinaryFoodItem[] = [];
 
   onDishSelected(dish: CulinaryFoodItem): void {
@@ -426,5 +428,38 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion, Deferred Token
 
     expect(sushiBody.querySelector('.sushi-instructions')?.textContent).toBe('Slice tuna and season sushi rice.');
     expect(sushiBody.querySelector('.ramen-instructions')).toBeNull();
+  });
+});
+
+describe('CulinaryDishListComponent - Slice 5: Disabled State', () => {
+  let fixture: ComponentFixture<TestHostComponent>;
+  let hostComponent: TestHostComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TestHostComponent, CulinaryDishListComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TestHostComponent);
+    hostComponent = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should propagate isDisabled to accordion items and prevent dish selection when disabled', async () => {
+    hostComponent.isDisabled.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const triggerButtons = fixture.nativeElement.querySelectorAll('button.accordion-trigger');
+    expect(triggerButtons.length).toBe(2);
+    expect(triggerButtons[0].disabled).toBe(true);
+    expect(triggerButtons[1].disabled).toBe(true);
+
+    triggerButtons[0].click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(hostComponent.selectedDishes.length).toBe(0);
   });
 });

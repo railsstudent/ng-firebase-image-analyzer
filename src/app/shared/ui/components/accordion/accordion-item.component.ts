@@ -12,11 +12,16 @@ export class AccordionItemComponent {
   readonly #accordionGroup = inject(ACCORDION_GROUP_CONTEXT);
 
   id = input.required<string>();
+  isDisabled = input(false);
+
   isExpanded = computed(() => this.#accordionGroup.isItemExpanded(this.id()));
 
   expandedChange = output<boolean>();
 
   toggle(): void {
+    if (this.isDisabled()) {
+      return;
+    }
     this.#accordionGroup.toggleItem(this.id());
     this.expandedChange.emit(this.isExpanded());
   }

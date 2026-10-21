@@ -30,3 +30,7 @@
 .accordion-panel {
   @apply px-4 pb-4 pt-1;
 }
+
+.accordion-trigger:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}

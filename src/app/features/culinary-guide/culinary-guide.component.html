@@ -16,6 +16,7 @@
         [(expandedDishNames)]="expandedDishNames"
         [recipes]="recipes()"
         [isMulti]="false"
+        [isDisabled]="isDiscovering()"
         (dishSelected)="loadRecipe($event)"
       />
     } @placeholder {

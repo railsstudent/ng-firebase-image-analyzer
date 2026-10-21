@@ -21,6 +21,7 @@ export class CulinaryDishListComponent {
   expandedDishNames = model<string[]>([]);
   recipes = input<Record<string, CulinaryRecipeDetail>>({});
   isMulti = input(true);
+  isDisabled = input(false);
 
   dishSelected = output<CulinaryFoodItem>();
 

@@ -135,6 +135,20 @@ describe('AccordionItemComponent', () => {
 
       expect(emittedValues).toEqual([true, false]);
     });
+
+    it('disables trigger button and prevents toggling when isDisabled is true', async () => {
+      fixture.componentRef.setInput('id', 'item-disabled');
+      fixture.componentRef.setInput('isDisabled', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.accordion-trigger');
+      expect(button?.disabled).toBe(true);
+      expect(button?.getAttribute('aria-disabled')).toBe('true');
+
+      component.toggle();
+      expect(mockContext.toggleItem).not.toHaveBeenCalled();
+    });
   });
 
   describe('Compound Integration with AccordionGroupComponent', () => {
