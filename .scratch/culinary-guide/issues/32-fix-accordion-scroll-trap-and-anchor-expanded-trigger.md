@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** to_progress
+**Status:** done
 
 ## Acceptance Criteria & Implementation Checklist
 
@@ -119,7 +119,7 @@
     constructor() {
       afterRenderEffect(() => {
         if (this.isExpanded()) {
-          this.triggerButton().nativeElement.scrollIntoView?.({
+          this.triggerButton().nativeElement.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest',
           });

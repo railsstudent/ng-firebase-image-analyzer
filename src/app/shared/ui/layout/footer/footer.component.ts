@@ -1,5 +1,5 @@
 import { TerminalIconComponent } from '@/shared/ui/icons/terminal-icon/terminal-icon.component';
-import { Component, computed } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-footer',
@@ -8,5 +8,5 @@ import { Component, computed } from '@angular/core';
   styleUrl: './footer.component.css',
 })
 export class FooterComponent {
-  copyrightYear = computed(() => new Date(Date.now()).getFullYear());
+  copyrightYear = new Date(Date.now()).getFullYear();
 }

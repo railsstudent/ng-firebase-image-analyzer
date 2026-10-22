@@ -303,10 +303,8 @@ describe('CulinaryGuideComponent', () => {
       const containerEl = compiled.querySelector('.culinary-guide-container');
       expect(containerEl).toBeTruthy();
 
-      const dishSectionEl = compiled.querySelector('.culinary-dish-section');
-      expect(dishSectionEl).toBeTruthy();
-      expect(dishSectionEl?.querySelector('app-culinary-dish-list')).toBeNull();
-      expect(dishSectionEl?.querySelector('.section-card .empty-state-text')?.textContent?.trim()).toBe(
+      expect(containerEl?.querySelector('app-culinary-dish-list')).toBeNull();
+      expect(containerEl?.querySelector('.section-card .empty-state-text')?.textContent?.trim()).toBe(
         'Iconic dishes will appear here once you search for a destination.',
       );
 
@@ -325,8 +323,8 @@ describe('CulinaryGuideComponent', () => {
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      const dishSectionEl = compiled.querySelector('.culinary-dish-section');
-      expect(dishSectionEl?.querySelector('app-culinary-dish-list')).toBeTruthy();
+      const containerEl = compiled.querySelector('.culinary-guide-container');
+      expect(containerEl?.querySelector('app-culinary-dish-list')).toBeTruthy();
       expect(compiled.querySelector('app-culinary-discovery-panel')).toBeTruthy();
       expect(compiled.querySelectorAll('.empty-state-text').length).toBe(0);
     });

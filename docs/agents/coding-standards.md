@@ -20,6 +20,7 @@ This document outlines project-specific coding standards and architectural conve
 
 - **Methods**: Always use the TypeScript `private` keyword (`private fetchImage(...)`). Do NOT use `#` prefixes on class methods (enforced by `no-restricted-syntax`).
 - **State & Injected Dependencies**: Always use JavaScript native `#` prefixes for private properties, state signals, and class-internal injected services that are not exposed to templates (`readonly #state = signal(...)`, `readonly #nav = inject(NavService)`).
+- **Angular Signal Queries & Compiler Metadata Exception**: Signal query properties (`viewChild`, `viewChildren`, `contentChild`, `contentChildren`) as well as `input`, `output`, and `model` declarations MUST NOT use native `#` prefixes—even when only read internally within the class—because Angular's AOT compiler emits external metadata accessors outside the class lexical body that fail to compile with `#`.
 
 ## 3. Angular Reactivity & Forms
 

@@ -63,7 +63,7 @@ Relates to: [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown
 7. **Stream Chunk Buffering & Resilient JSON Repair (`AiService`)**:
    - `AiService.generateContentStream` accumulates raw stream text and tracks chunk count in batches governed by `STREAM_CHUNK_BUFFER_SIZE = 10` before executing `parseStreamJSONResponse`.
    - The buffer count resets only after a successful JSON parse and yield. If `jsonrepair` throws on chunk $N$, the count is preserved so chunk $N+1$ immediately retries parsing on the next chunk without dropping accumulated text.
-   - If the stream completes with fewer than 5 un-yielded chunks in the buffer, intermediate yields are bypassed and trailing chunks are flushed via `await result.response` with complete `inferenceMetadata`.
+   - If the stream completes with fewer than 10 un-yielded chunks in the buffer, intermediate yields are bypassed and trailing chunks are flushed via `await result.response` with complete `inferenceMetadata`.
 
 ## Consequences
 
@@ -75,9 +75,9 @@ Relates to: [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown
   - Provides a consistent caller contract with uniform `for await` iteration across live streams and cached hits.
   - Adheres to repository coding standards by keeping feature services signal-free and localizing UI state in components.
   - Preserves previously cached recipes on transient search failures.
-  - Reduces JSON repair execution overhead and intermediate UI rendering thrash by throttling partial structured emissions to 5-chunk batches while maintaining perceived responsiveness.
+  - Reduces JSON repair execution overhead and intermediate UI rendering thrash by throttling partial structured emissions to 10-chunk batches while maintaining perceived responsiveness.
   - Provides fault-tolerant parsing recovery by retrying repair on immediately following chunks upon temporary syntax failures without resetting buffer progress.
   - Eliminates redundant intermediate yields on stream termination by delegating trailing chunk delivery directly to final response resolution.
 - **Negative / Trade-offs**:
   - Recipe instructions text does not render token-by-token; instead, instructions show an animated skeleton while ingredients populate, followed by instantaneous complete HTML rendering upon completion.
-  - Intermediate structured UI updates emit at 5-chunk intervals rather than single-token increments.
+  - Intermediate structured UI updates emit at 10-chunk intervals rather than single-token increments.

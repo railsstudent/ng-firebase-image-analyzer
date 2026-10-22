@@ -35,6 +35,6 @@ Reviewers must distinguish between actual scope creep and valid engineering impr
 
 - **Not Scope Creep**:
   - **Retrospective Documentation Updates**: Modifications to `docs/agents/*.md` or `.scratch/*.md` resulting from retrospectives are expected byproducts.
-  - **Opportunistic Polish**: Minor adjacent improvements discovered during manual coding (e.g., import hygiene, explicit `import type`, type annotations, dead code cleanup, comment accuracy) are valid refinements, provided they do not break existing public contracts.
+  - **Opportunistic Polish**: Minor adjacent improvements discovered during manual coding (e.g., import hygiene, explicit `import type`, type annotations, dead code cleanup, comment accuracy, or simplifying a `computed()`/`signal()` with zero reactive dependencies into a plain class property) are valid refinements, provided they do not break existing public contracts.
 - **Actual Scope Creep**:
   - Introducing unspecified public methods, unrelated feature behaviors, or orthogonal domain changes not mentioned in the ticket, spec, ADR, or conversation.

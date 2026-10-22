@@ -9,11 +9,7 @@
 }
 
 .footer-brand {
-  @apply flex items-center gap-2;
-}
-
-.footer-brand-title {
-  @apply text-lg font-bold text-white;
+  @apply flex items-center shrink-0;
 }
 
 .footer-copyright {

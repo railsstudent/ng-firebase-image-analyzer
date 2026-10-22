@@ -72,6 +72,7 @@ This document defines testing conventions, DI mocking contracts, and verificatio
      ```
 
    - When running from the terminal, always use `npx ng test --include="<path>/**/*.spec.ts" --no-watch` rather than bare `npx vitest run <file>` to ensure `@/` tsconfig path aliases are resolved through Angular CLI.
+   - Whenever a component's HTML template structure or CSS class selectors are modified, always include that component's own `*.component.spec.ts` in the targeted test run (`include` array) alongside any child or sibling specs.
 
 2. **End-of-Task Verification**:
    - **Intermediate Domain Tickets** (work-in-progress core packages prior to UI/route wiring):
