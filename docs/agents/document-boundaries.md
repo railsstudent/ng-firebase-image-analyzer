@@ -1,6 +1,6 @@
 # Documentation Architecture & Document Boundaries
 
-This document defines the separation of roles and scope boundaries across the three core document types.
+This document defines the separation of roles and scope boundaries across the four core document types.
 
 ## Core Document Types
 
@@ -13,9 +13,17 @@ This document defines the separation of roles and scope boundaries across the th
    - **Role**: Documents **how** the system is built, technology choices, and architectural trade-offs.
    - **Content**: Rationale for technical decisions, evaluation of alternatives, performance and bundle considerations, data storage or persistence strategies, and overarching system patterns.
 
-3. **Implementation Tickets (`.scratch/<feature>/issues/NN-<slug>.md` & `.scratch/platform/issues/NN-<slug>.md`)**:
-   - **Role**: Concrete engineering execution breakdown.
-   - **Content**: Specific public API contracts, internal module structure, test matrices, and step-by-step implementation tasks. See [issue-tracker.md](issue-tracker.md).
+3. **`DESIGN.md` (Design System & UI Architecture Specification)**:
+   - **Role**: Defines the visual language, `@theme` semantic design tokens (synchronized with `src/styles.css`), glassmorphic component patterns, typography scale, and feature UI layout contracts.
+   - **Content**: Color/surface tokens, reusable component recipes (e.g. status pills, glassmorphic badges), CLS-safe layout slots, and responsive geometry.
+   - **Scope Boundaries**: Must be consulted and reconciled whenever a feature or ticket introduces new UI states, visual badges, layout slots, or theme tokens.
+
+4. **Implementation Tickets (`.scratch/<feature>/issues/NN-<slug>.md` & `.scratch/platform/issues/NN-<slug>.md`)**:
+   - **Role**: Human-executable engineering breakdown. Do not assume tickets will be executed by an AI agent—when AI token budgets are low or unavailable, human engineers implement them directly.
+   - **Content & Human-Executable Ticket Standard** (overrides generic prose-only templates in `/to-tickets`):
+     - Structure the body under `## Acceptance Criteria & Implementation Checklist` with numbered, file-scoped subsections (`### 1. <Task Title> (<exact/file/path>)`).
+     - Include exact target `ts`, `html`, `css`, and `.spec.ts` fenced code blocks for every code and unit-test change rather than vague one-line prose descriptions.
+     - Reference examples: [06-after-next-render-prewarm-and-cls-safe-status-slot.md](../../.scratch/image-analysis/issues/06-after-next-render-prewarm-and-cls-safe-status-slot.md) and [32-fix-accordion-scroll-trap-and-anchor-expanded-trigger.md](../../.scratch/culinary-guide/issues/32-fix-accordion-scroll-trap-and-anchor-expanded-trigger.md). See also [issue-tracker.md](issue-tracker.md).
    - **Platform & Cross-Domain Issues**: Cross-cutting infrastructure and core platform refactoring tickets belong in `.scratch/platform/issues/` rather than proliferating ad-hoc scratch folders.
    - **Call-Site Blast Radius in Refactoring Tickets**: When authoring refactoring or extraction tickets, never specify the extracted utility in isolation. Always audit existing call sites and include the consumer services/callers that need updating in the ticket's _Scope of Work_ and _Acceptance Criteria_.
 

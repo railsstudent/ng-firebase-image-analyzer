@@ -22,10 +22,11 @@ This document outlines project-specific coding standards and architectural conve
 - **State & Injected Dependencies**: Always use JavaScript native `#` prefixes for private properties, state signals, and class-internal injected services that are not exposed to templates (`readonly #state = signal(...)`, `readonly #nav = inject(NavService)`).
 - **Angular Signal Queries & Compiler Metadata Exception**: Signal query properties (`viewChild`, `viewChildren`, `contentChild`, `contentChildren`) as well as `input`, `output`, and `model` declarations MUST NOT use native `#` prefixes—even when only read internally within the class—because Angular's AOT compiler emits external metadata accessors outside the class lexical body that fail to compile with `#`.
 
-## 3. Angular Reactivity & Forms
+## 3. Angular Reactivity, Lifecycle & Forms
 
 - **Signal Forms Exclusively**: All forms MUST use `@angular/forms/signals`. Legacy reactive forms (`FormGroup`, `FormControl`, `FormBuilder`) and template-driven forms are strictly forbidden.
 - **Signal Localization**: Presentation-only state (pagination, sort column, modal visibility) must reside locally in components or view helpers, not in parent data services.
+- **Component Cleanup (`DestroyRef`)**: Always use `inject(DestroyRef).onDestroy(...)` (or `afterNextRender` cleanup callbacks) for component and directive teardown logic instead of implementing the legacy `OnDestroy` interface / `ngOnDestroy()` lifecycle hook.
 
 ## 4. Tailwind CSS v4 & Styling
 
