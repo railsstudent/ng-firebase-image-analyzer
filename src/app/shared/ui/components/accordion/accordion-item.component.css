@@ -11,7 +11,7 @@
 }
 
 .accordion-trigger {
-  @apply flex w-full items-center justify-between gap-4 p-4 text-left cursor-pointer transition-colors rounded-2xl;
+  @apply flex w-full items-center justify-between gap-4 p-4 text-left cursor-pointer transition-colors rounded-2xl scroll-mt-20;
 }
 
 .accordion-trigger:focus-visible {

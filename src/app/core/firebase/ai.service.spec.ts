@@ -2,6 +2,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import type { GenerativeModel } from 'firebase/ai';
 import { AiModelCacheService } from './ai-model-cache.service';
+import { STREAM_CHUNK_BUFFER_SIZE } from './ai.const';
 import { AiService } from './ai.service';
 
 describe('AiService', () => {
@@ -79,7 +80,7 @@ describe('AiService', () => {
 
       mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
         stream: (async function* () {
-          for (let i = 1; i <= 10; i = i + 1) {
+          for (let i = 1; i <= STREAM_CHUNK_BUFFER_SIZE; i = i + 1) {
             yield {
               text: () => `{"caption": "A partial caption ${i}"}`,
               usageMetadata: { totalTokenCount: 40, promptTokenCount: 20, candidatesTokenCount: 20 },
@@ -228,15 +229,16 @@ describe('AiService', () => {
       });
 
       it('should yield 1 intermediate chunk on the 10th chunk and 1 final chunk from response resolution when stream has exactly 10 chunks', async () => {
+        const chunkAnswer = { items: Array.from({ length: STREAM_CHUNK_BUFFER_SIZE }, (_, i) => i + 1) };
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
             yield { text: () => '{"items": [1' };
-            for (let i = 2; i <= 10; i = i + 1) {
+            for (let i = 2; i <= STREAM_CHUNK_BUFFER_SIZE; i = i + 1) {
               yield { text: () => `, ${i}` };
             }
           })(),
           response: Promise.resolve({
-            text: () => '{"items": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}',
+            text: () => JSON.stringify(chunkAnswer),
             candidates: [{ finishReason: 'STOP', content: {} }],
           }),
         });
@@ -247,23 +249,24 @@ describe('AiService', () => {
         }
 
         expect(results).toHaveLength(2);
-        expect(results[0].partialData).toEqual({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        expect(results[0].partialData).toEqual(chunkAnswer);
         expect(results[0].inferenceMetadata).toBeUndefined();
-        expect(results[1].partialData).toEqual({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        expect(results[1].partialData).toEqual(chunkAnswer);
         expect(results[1].inferenceMetadata).toBeDefined();
       });
 
-      it('should yield 2 intermediate chunks at chunks 10 and 20 and flush trailing 2 chunks via the final chunk for 12 chunks', async () => {
+      it('should yield 2 intermediate chunks at chunks 10 and 20 and flush trailing 2 chunks via the final chunk for 22 chunks', async () => {
+        const chunkAnswer = { items: Array.from({ length: 2 * STREAM_CHUNK_BUFFER_SIZE + 2 }, (_, i) => i + 1) };
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
             yield { text: () => '{"items": [1' };
-            for (let i = 2; i <= 21; i = i + 1) {
+            for (let i = 2; i <= 2 * STREAM_CHUNK_BUFFER_SIZE + 1; i = i + 1) {
               yield { text: () => `, ${i}` };
             }
-            yield { text: () => ', 22]}' };
+            yield { text: () => `, ${2 * STREAM_CHUNK_BUFFER_SIZE + 2}]}` };
           })(),
           response: Promise.resolve({
-            text: () => '{"items": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]}',
+            text: () => JSON.stringify(chunkAnswer),
             candidates: [{ finishReason: 'STOP', content: {} }],
           }),
         });
@@ -273,42 +276,38 @@ describe('AiService', () => {
           results.push(chunk);
         }
 
+        const chunkAnswer1 = { items: Array.from({ length: STREAM_CHUNK_BUFFER_SIZE }, (_, i) => i + 1) };
+        const chunkAnswer2 = { items: Array.from({ length: 2 * STREAM_CHUNK_BUFFER_SIZE }, (_, i) => i + 1) };
         expect(results).toHaveLength(3);
-        expect(results[0].partialData).toEqual({ items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        expect(results[0].partialData).toEqual(chunkAnswer1);
         expect(results[0].inferenceMetadata).toBeUndefined();
-        expect(results[1].partialData).toEqual({
-          items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-        });
+        expect(results[1].partialData).toEqual(chunkAnswer2);
         expect(results[1].inferenceMetadata).toBeUndefined();
-        expect(results[2].partialData).toEqual({
-          items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
-        });
+        expect(results[2].partialData).toEqual(chunkAnswer);
         expect(results[2].inferenceMetadata).toBeDefined();
       });
 
-      it('should not reset bufferedChunkCount if parseStreamJSONResponse fails on chunk 5 and immediately retry and yield on chunk 6 upon valid repair', async () => {
-        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        vi.spyOn(console, 'log').mockImplementation(() => {});
+      it('should not reset bufferedChunkCount if parseStreamJSONResponse fails on chunk 10 and immediately retry and yield on chunk 11 upon valid repair', async () => {
+        const consoleSpy = vi.spyOn(console, 'log').mockReturnValue(undefined);
 
+        const repeatedTerms = 'lo'.repeat(STREAM_CHUNK_BUFFER_SIZE - 4);
+        const chunkAnswer = { msg: `hel${repeatedTerms}/world` };
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
-            // Chunks 1-4
+            // Chunks 1-9
             yield { text: () => '{"msg": ' };
             yield { text: () => '"' };
             yield { text: () => 'hel' };
-            yield { text: () => 'lo' };
-            yield { text: () => 'lo' };
-            yield { text: () => 'lo' };
-            yield { text: () => 'lo' };
-            yield { text: () => 'lo' };
-            yield { text: () => 'lo' };
+            for (let i = 3; i <= STREAM_CHUNK_BUFFER_SIZE - 2; i = i + 1) {
+              yield { text: () => 'lo' };
+            }
             // Chunk 10: causes jsonrepair to throw syntax error (lone slash after quote)
             yield { text: () => '/' };
             // Chunk 11: valid continuation that resolves the syntax
             yield { text: () => 'world"}' };
           })(),
           response: Promise.resolve({
-            text: () => '{"msg": "hellolololololo/world"}',
+            text: () => JSON.stringify(chunkAnswer),
             candidates: [{ finishReason: 'STOP', content: {} }],
           }),
         });
@@ -319,10 +318,15 @@ describe('AiService', () => {
         }
 
         expect(results).toHaveLength(2);
-        expect(results[0].partialData).toEqual({ msg: 'hellolololololo/world' });
+        expect(results[0].partialData).toEqual(chunkAnswer);
         expect(results[0].inferenceMetadata).toBeUndefined();
-        expect(results[1].partialData).toEqual({ msg: 'hellolololololo/world' });
+        expect(results[1].partialData).toEqual(chunkAnswer);
         expect(results[1].inferenceMetadata).toBeDefined();
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Temporary streaming JSON parse failure (normal during generation):',
+          expect.any(Error),
+        );
       });
     });
   });
@@ -340,8 +344,7 @@ describe('AiService', () => {
 
       it('should download device assets but skip shader pre-compilation', async () => {
         const params = { contents: 'pre-warm prompt' };
-        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+        const consoleSpy = vi.spyOn(console, 'log').mockReturnValue(undefined);
 
         await service.preWarmModel(params, { runDummyQuery: true });
 
@@ -383,8 +386,7 @@ describe('AiService', () => {
 
       it('should proceed and perform dummy shader pre-compilation with specified dummySize', async () => {
         const params = { contents: 'pre-warm prompt' };
-        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+        const consoleSpy = vi.spyOn(console, 'log').mockReturnValue(undefined);
 
         await service.preWarmModel(params, { runDummyQuery: true, dummySize: 128 });
 
@@ -401,8 +403,7 @@ describe('AiService', () => {
 
       it('should use FALLBACK_IMAGE_SIZE for shape log when dummySize is omitted', async () => {
         const params = { contents: 'pre-warm prompt' };
-        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+        const consoleSpy = vi.spyOn(console, 'log').mockReturnValue(undefined);
 
         await service.preWarmModel(params, { runDummyQuery: true });
 

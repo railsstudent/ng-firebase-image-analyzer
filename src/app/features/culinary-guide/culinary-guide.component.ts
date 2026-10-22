@@ -98,7 +98,6 @@ export default class CulinaryGuideComponent {
       const generator = coordinatorService.loadRecipe(recipeTarget);
 
       for await (const chunk of generator) {
-        console.log('chunk', chunk);
         this.recipes.update((map) => ({
           ...map,
           [dishName]: chunk,

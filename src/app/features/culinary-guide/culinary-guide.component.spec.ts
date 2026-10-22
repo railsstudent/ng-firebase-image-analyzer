@@ -346,15 +346,14 @@ describe('CulinaryGuideComponent', () => {
       });
 
       const searchPromise = component.search(mockLocation);
-      // Wait for coordinator import resolution and first streaming chunk
-      await new Promise((resolve) => setTimeout(resolve, 20));
-      fixture.detectChanges();
-      await fixture.whenStable();
-
+      const dishListDebugEl = await vi.waitFor(() => {
+        fixture.detectChanges();
+        const debugEl = fixture.debugElement.query(By.directive(CulinaryDishListComponent));
+        expect(debugEl).toBeTruthy();
+        expect(debugEl.componentInstance.isDisabled()).toBe(true);
+        return debugEl;
+      });
       expect(component.isDiscovering()).toBe(true);
-      const dishListDebugEl = fixture.debugElement.query(By.directive(CulinaryDishListComponent));
-      expect(dishListDebugEl).toBeTruthy();
-      expect(dishListDebugEl.componentInstance.isDisabled()).toBe(true);
 
       resolveStream();
       await searchPromise;

@@ -142,12 +142,60 @@ describe('AccordionItemComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
+      const emittedValues: boolean[] = [];
+      component.expandedChange.subscribe((val) => emittedValues.push(val));
+
       const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.accordion-trigger');
       expect(button?.disabled).toBe(true);
       expect(button?.getAttribute('aria-disabled')).toBe('true');
 
+      button?.click();
       component.toggle();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
       expect(mockContext.toggleItem).not.toHaveBeenCalled();
+      expect(emittedValues).toEqual([]);
+      expect(button?.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('scrolls the trigger button into view when expanded and does not scroll when collapsed', async () => {
+      const isItemExpandedSignal = signal(false);
+      mockContext.isItemExpanded = vi.fn(() => isItemExpandedSignal());
+      mockContext.toggleItem = vi.fn(() => {
+        isItemExpandedSignal.update((v) => !v);
+      });
+
+      fixture.componentRef.setInput('id', 'item-scroll');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const button = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.accordion-trigger');
+      expect(button).toBeTruthy();
+
+      const scrollIntoViewSpy = vi.fn();
+      if (button) {
+        button.scrollIntoView = scrollIntoViewSpy;
+      }
+
+      // 1. Expand item -> should scroll trigger button into view
+      button?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(scrollIntoViewSpy).toHaveBeenCalledTimes(1);
+      expect(scrollIntoViewSpy).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+
+      // 2. Collapse item -> should not trigger additional scrollIntoView
+      scrollIntoViewSpy.mockClear();
+      button?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(scrollIntoViewSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -235,6 +283,45 @@ describe('AccordionItemComponent', () => {
       expect(panels[1]?.hasAttribute('hidden')).toBe(false);
       expect(triggers[0]?.getAttribute('aria-expanded')).toBe('false');
       expect(triggers[1]?.getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('scrolls the newly expanded item trigger into view without scrolling the collapsed sibling trigger', async () => {
+      const compiled = hostFixture.nativeElement as HTMLElement;
+      const triggers = compiled.querySelectorAll<HTMLButtonElement>('.accordion-trigger');
+      const scrollSpy1 = vi.fn();
+      const scrollSpy2 = vi.fn();
+
+      if (triggers[0]) {
+        triggers[0].scrollIntoView = scrollSpy1;
+      }
+      if (triggers[1]) {
+        triggers[1].scrollIntoView = scrollSpy2;
+      }
+
+      // 1. Expand Dish 1 -> Dish 1 trigger scrolls into view
+      triggers[0]?.click();
+      hostFixture.detectChanges();
+      await hostFixture.whenStable();
+
+      expect(scrollSpy1).toHaveBeenCalledTimes(1);
+      expect(scrollSpy1).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+      expect(scrollSpy2).not.toHaveBeenCalled();
+
+      // 2. Expand Dish 2 -> Dish 1 collapses (no scroll), Dish 2 expands and scrolls into view
+      scrollSpy1.mockClear();
+      triggers[1]?.click();
+      hostFixture.detectChanges();
+      await hostFixture.whenStable();
+
+      expect(scrollSpy1).not.toHaveBeenCalled();
+      expect(scrollSpy2).toHaveBeenCalledTimes(1);
+      expect(scrollSpy2).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     });
   });
 });

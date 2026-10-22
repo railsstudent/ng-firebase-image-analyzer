@@ -3,6 +3,7 @@
   @let panelId = 'accordion-panel-' + id();
   <button
     type="button"
+    #triggerButton
     class="accordion-trigger"
     [attr.id]="headerId"
     [attr.aria-expanded]="isExpanded()"

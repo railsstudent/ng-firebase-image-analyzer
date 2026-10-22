@@ -61,7 +61,7 @@ Relates to: [ADR-0028](0028-culinary-guide-two-stage-inference-and-lazy-markdown
    - An explicit `clearCache(): void` method is exposed for manual resets and component unmounting.
 
 7. **Stream Chunk Buffering & Resilient JSON Repair (`AiService`)**:
-   - `AiService.generateContentStream` accumulates raw stream text and tracks chunk count in batches governed by `STREAM_CHUNK_BUFFER_SIZE = 5` before executing `parseStreamJSONResponse`.
+   - `AiService.generateContentStream` accumulates raw stream text and tracks chunk count in batches governed by `STREAM_CHUNK_BUFFER_SIZE = 10` before executing `parseStreamJSONResponse`.
    - The buffer count resets only after a successful JSON parse and yield. If `jsonrepair` throws on chunk $N$, the count is preserved so chunk $N+1$ immediately retries parsing on the next chunk without dropping accumulated text.
    - If the stream completes with fewer than 5 un-yielded chunks in the buffer, intermediate yields are bypassed and trailing chunks are flushed via `await result.response` with complete `inferenceMetadata`.
 

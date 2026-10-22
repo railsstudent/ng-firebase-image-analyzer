@@ -8,23 +8,22 @@
     />
   }
 
-  <div class="culinary-dish-section">
-    @let dishList = dishes();
-    @defer (when dishList.length > 0) {
-      <app-culinary-dish-list
-        [dishes]="dishList"
-        [(expandedDishNames)]="expandedDishNames"
-        [recipes]="recipes()"
-        [isMulti]="false"
-        [isDisabled]="isDiscovering()"
-        (dishSelected)="loadRecipe($event)"
-      />
-    } @placeholder {
-      <div class="section-card">
-        <p class="empty-state-text">Iconic dishes will appear here once you search for a destination.</p>
-      </div>
-    }
-  </div>
+  @let dishList = dishes();
+  @defer (when dishList.length > 0) {
+    <app-culinary-dish-list
+      [dishes]="dishList"
+      [(expandedDishNames)]="expandedDishNames"
+      [recipes]="recipes()"
+      [isMulti]="false"
+      [isDisabled]="isDiscovering()"
+      (dishSelected)="loadRecipe($event)"
+    />
+  } @placeholder {
+    <div class="section-card">
+      <p class="empty-state-text">Iconic dishes will appear here once you search for a destination.</p>
+    </div>
+  }
+
   @defer (when discoveryData()) {
     <app-culinary-discovery-panel [discovery]="discoveryData()" />
   } @placeholder {

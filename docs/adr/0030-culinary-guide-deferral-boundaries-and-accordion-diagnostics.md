@@ -19,8 +19,8 @@ During implementation and browser verification of the Culinary Guide workspace (
 2. **Cramped Accordion Grid & Trapped Diagnostics**:
    - Placing `<app-token-analytics>` inside the right-hand Recipe Instructions column of a `1fr 2fr` (33.3% / 66.7%) 2-column grid compressed both the Ingredients sidebar (33.3%) and the horizontal stacked token bar inside the right column.
 
-3. **Workspace Vertical Distribution**:
-   - Using a static `space-y-8` container on `CulinaryGuideComponent` allowed the bottom discovery panel (`CulinaryDiscoveryPanelComponent`) to float directly beneath the search bar before dishes were expanded, rather than anchoring toward the bottom of the viewport.
+3. **Workspace Vertical Overflow**:
+   - Applying `min-h-[calc(100vh-8rem)]` on `.culinary-guide-container` and `flex-1` on `.culinary-dish-section` inside `AppComponent`'s root shell (`.app-container` `min-h-screen` + `.main-content` `flex-grow pt-16` + `<app-footer>` `py-8`) caused the initial `/culinary-guide` route to exceed `100vh` by the footer height (~3rem), creating an unwanted vertical scrollbar and clipping the footer before any dishes were expanded.
 
 ## Decision
 
@@ -39,6 +39,11 @@ During implementation and browser verification of the Culinary Guide workspace (
    - Wrap `<app-token-analytics>` in `@defer (when recipeDetail?.tokenSummary)` with `<app-skeleton variant="line" [lines]="4" class="w-full" />` in `@placeholder` (reusing the already-imported `SkeletonComponent`).
    - Prune `ListSkeletonComponent` from imports to keep chunk size minimal.
 
+4. **Unified Document Scrolling, Natural Workspace Height & Expanded Accordion Trigger Anchoring**:
+   - `.culinary-guide-container` in `CulinaryGuideComponent` stacks its three `@defer` sections naturally (`@apply flex flex-col gap-8 max-w-(--spacing-container-max) mx-auto px-4 py-8;`) without `min-h-[calc(100vh-8rem)]` or `.culinary-dish-section { @apply flex-1; }`, delegating full-viewport sticky footer placement to `AppComponent` (`.app-container` `min-h-screen` + `.main-content` `flex-grow`) so `/culinary-guide` renders with zero initial vertical scrollbar and an unclipped footer.
+   - `.dish-body` in `CulinaryDishListComponent` flows naturally with the root document scrollport (`@apply flex flex-col gap-6 pt-4;`), avoiding nested `max-h` / `overflow-y-auto overscroll-contain` scroll containers that trap wheel and trackpad gestures when streaming completes or when re-expanding cached recipes.
+   - `AccordionItemComponent` applies `scroll-mt-20` (`scroll-margin-top: 5rem`, clearing the fixed `4rem` top navigation bar with `1rem` spacing) to `<button #triggerButton class="accordion-trigger">` and invokes `scrollIntoView?.({ behavior: 'smooth', block: 'nearest' })` inside `afterRenderEffect` when `isExpanded()` becomes `true`, keeping newly expanded dish headers anchored in the viewport after sibling panels collapse.
+
 ## Consequences
 
 - **Positive**:
@@ -46,5 +51,6 @@ During implementation and browser verification of the Culinary Guide workspace (
   - Zero added bundle overhead by reusing existing `<app-skeleton>`.
   - Zero layout shift during recipe generation due to the line skeleton placeholder.
   - Clear visual hierarchy with full-width token analytics beneath the 40% / 60% ingredients and recipe grid.
+  - Smooth, uninterrupted window scrolling across streaming and cached recipes, with automatic viewport anchoring on expanded accordion headers.
 - **Negative**:
   - First expansion and completion of a recipe requires hydrating the `TokenAnalyticsComponent` chunk (mitigated by immediate placeholder display).

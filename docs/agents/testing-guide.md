@@ -25,7 +25,8 @@ This document defines testing conventions, DI mocking contracts, and verificatio
    - Test components and services strictly through their public API surface (signals, inputs, outputs, public methods, and DOM behaviors).
 
 3. **Testing `injectAsync` & Background Tasks**:
-   - Always await async methods (e.g. `await component.preWarm()`) or use `await vi.waitFor(...)` within tests so asynchronous injector lookups and dynamic module loads settle before the `TestBed` fixture is torn down.
+   - Always await async methods (e.g. `await component.preWarm()`) or use `await vi.waitFor(...)` within tests so asynchronous injector lookups and dynamic module loads settle before the `TestBed` fixture is torn down. Never use hardcoded `setTimeout` delays.
+   - Return queried `DebugElement` or DOM references from the `vi.waitFor` callback (`const el = await vi.waitFor(() => { ...; return debugEl; })`) so they remain in scope for post-settlement assertions.
    - Prevents `NG0205: Injector has already been destroyed` runtime errors in test suites.
 
 4. **Testing Zoneless `@defer` Hydration**:
@@ -49,9 +50,14 @@ This document defines testing conventions, DI mocking contracts, and verificatio
      - Keep helpers pure, synchronous/async explicit, and accepting generic `ComponentFixture<T>`.
      - Never mutate shared mock instances across tests; instantiate fresh mock objects per test run inside `beforeEach`.
 
-6. **Exact Assertions for Diagnostics & Thrown Errors**:
+6. **Exact Assertions for Diagnostics, Spies & Thrown Errors**:
+   - When silencing or spying on `void` methods (`console.log`, `console.warn`, `console.error`), always use `vi.spyOn(console, 'log').mockReturnValue(undefined)`. Never pass an empty arrow function `.mockImplementation(() => {})` or suppress `@typescript-eslint/no-empty-function` with `eslint-disable` comments.
    - When asserting console logs, telemetry events, or error messages containing dynamic arguments (e.g. shapes, dimensions, status codes, URLs), assert the full interpolated pattern or regex (e.g., `expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('pre-compiled successfully for shape 128x128!'))`).
    - Ban overly broad substring matches (e.g., `expect.stringContaining('pre-compiled')`) that remain green if dynamic arguments are accidentally stripped during refactoring.
+
+7. **Parameterizing Domain Threshold & Batching Tests**:
+   - When testing streaming buffers, batch sizes, pagination, or limits governed by a domain constant (e.g., `STREAM_CHUNK_BUFFER_SIZE`), import the constant into the spec and derive loop bounds and expected payloads from it (`Array.from({ length: STREAM_CHUNK_BUFFER_SIZE }, (_, i) => i + 1)`).
+   - Keep `it(...)` descriptions, inline chunk/step comments, and loop counts strictly synchronized with the actual number of iterations.
 
 ## Test Execution Workflow
 

@@ -1,5 +1,5 @@
 import { ExpandMoreIconComponent } from '@/shared/ui/icons/expand-more-icon/expand-more-icon.component';
-import { Component, computed, inject, input, output } from '@angular/core';
+import { afterRenderEffect, Component, computed, ElementRef, inject, input, output, viewChild } from '@angular/core';
 import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 
 @Component({
@@ -10,6 +10,7 @@ import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 })
 export class AccordionItemComponent {
   readonly #accordionGroup = inject(ACCORDION_GROUP_CONTEXT);
+  readonly triggerButton = viewChild.required<ElementRef<HTMLButtonElement>>('triggerButton');
 
   id = input.required<string>();
   isDisabled = input(false);
@@ -17,6 +18,19 @@ export class AccordionItemComponent {
   isExpanded = computed(() => this.#accordionGroup.isItemExpanded(this.id()));
 
   expandedChange = output<boolean>();
+
+  constructor() {
+    afterRenderEffect({
+      write: () => {
+        if (this.isExpanded()) {
+          this.triggerButton().nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+          });
+        }
+      },
+    });
+  }
 
   toggle(): void {
     if (this.isDisabled()) {

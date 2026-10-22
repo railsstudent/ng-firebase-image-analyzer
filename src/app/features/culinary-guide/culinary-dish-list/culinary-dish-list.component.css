@@ -21,7 +21,7 @@
 }
 
 .dish-body {
-  @apply flex flex-col gap-6 pt-4 max-h-[60vh] md:max-h-[70vh] overflow-y-auto overscroll-contain;
+  @apply flex flex-col gap-6 pt-4;
 }
 
 .dish-content-grid {

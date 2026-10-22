@@ -10,7 +10,7 @@
 
 ### 1. Stream Chunk Buffer Constant (`src/app/core/firebase/`)
 
-- [ ] Create `src/app/core/firebase/ai.const.ts` defining `STREAM_CHUNK_BUFFER_SIZE = 5`:
+- [x] Create `src/app/core/firebase/ai.const.ts` defining `STREAM_CHUNK_BUFFER_SIZE = 10`:
 
   ```ts
   /**
@@ -20,7 +20,7 @@
   export const STREAM_CHUNK_BUFFER_SIZE = 10;
   ```
 
-- [x] Export `STREAM_CHUNK_BUFFER_SIZE` from `src/app/core/firebase/index.ts`:
+- [x] Export `STREAM_CHUNK_BUFFER_SIZE` from `src/app/core/firebase/ai.const.ts`:
 
   ```ts
   export { STREAM_CHUNK_BUFFER_SIZE } from './ai.const';
@@ -60,7 +60,7 @@
 
 ### 3. Verify Clean Logging in `CulinaryGuideComponent` (`src/app/features/culinary-guide/culinary-guide.component.ts`)
 
-- [ ] Verify no debug `console.log('chunk', chunk)` exists in `loadRecipe()` in `src/app/features/culinary-guide/culinary-guide.component.ts`:
+- [x] Verify no debug `console.log('chunk', chunk)` exists in `loadRecipe()` in `src/app/features/culinary-guide/culinary-guide.component.ts`:
 
   ```ts
   const generator = this.#asyncCoordinatorService().loadRecipe(recipeTarget);
