@@ -163,13 +163,13 @@ Rather than covering the screen with a destructive full-page blocking overlay, w
 
 ### 5.2 Progressive Content Reveal Animation (`.animate-fade-in`)
 
-To ensure streaming text and UI cards do not pop onto the canvas in a jarring, static manner, all progressive elements (including newly rendered tag lists and analysis tabs) are bound to a transition-smooth fade-and-rise entrance:
+To ensure streaming text and UI cards do not pop onto the canvas in a jarring, static manner, all progressive elements (including newly rendered tag lists and analysis cards) use the global `animate-fade-in` utility defined in `src/styles.css`:
 
 ```css
-@keyframes progressiveReveal {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -177,12 +177,28 @@ To ensure streaming text and UI cards do not pop onto the canvas in a jarring, s
   }
 }
 
-.animate-fade-in {
-  animation: progressiveReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@utility animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 ```
 
 This progressive approach maintains typographic rhythm and ensures the UI feels exceptionally natural and modern under progressive data conditions.
+
+### 5.3 CLS-Safe On-Device Pre-Warming Status Slot (`.prewarm-status-slot` & `.prewarm-status-badge`)
+
+When `ImageAnalysisComponent` triggers background Gemini Nano pre-warming after initial render (`afterNextRender`), a dedicated status slot sits directly below `<app-image-uploader>` to communicate background shader compilation without blocking upload or analysis controls or shifting page layout:
+
+- **Zero-CLS Layout Slot (`.prewarm-status-slot`)**:
+  - `.workspace-container`: `@apply space-y-6 max-w-(--spacing-container-max) mx-auto px-4 py-8;` with `.workspace-container > app-image-uploader { @apply mb-0; }`.
+  - `.prewarm-status-slot`: `@apply min-h-9 my-0 flex items-center justify-center;`
+  - Reserves a fixed minimum height (`min-h-9` / `36px`) with zero vertical margin (`my-0`) and `role="status"` / `aria-live="polite"`, acting as the single spacing gap between `<app-image-uploader>` and the next workspace element so mounting and unmounting `.prewarm-status-badge` produces `0.000` Cumulative Layout Shift (CLS) without excess whitespace.
+- **Glassmorphic Pre-Warming Pill (`.prewarm-status-badge`)**:
+  - `@apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity duration-300 ease-out;`
+  - **Light Mode Surface**: `background: var(--color-surface-glass)` (`#ffffffb3`) and `border-color: var(--color-surface-glass-border)` (`#d3e4fe80`) with `backdrop-filter: blur(12px)`.
+  - **Dark Mode Surface (`:host-context(.dark) .prewarm-status-badge`)**: `background: var(--color-surface-glass-dark)` (`#0f172a99`) and `border-color: var(--color-surface-glass-border-dark)` (`#94a3b81a`).
+- **Spinner & Status Typography (`.prewarm-status-icon` & `.prewarm-status-text`)**:
+  - `.prewarm-status-icon`: `<app-sync-icon>` styled with `@apply w-4 h-4 animate-spin motion-reduce:animate-none text-primary shrink-0;` (`--color-primary`).
+  - `.prewarm-status-text`: Monospace status label styled with `@apply text-xs font-semibold tracking-wide text-(--color-on-surface-variant) font-mono;` (`--color-on-surface-variant`).
 
 ---
 

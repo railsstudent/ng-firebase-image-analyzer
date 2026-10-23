@@ -19,6 +19,10 @@ When looking up platform or framework facts, follow this **3-Tier Resolution Lad
    - **Firebase & Google Cloud Questions (`firebase-mcp-server`)**:
      - **Target Versions**: Firebase Web SDK 12.x, App Hosting, Remote Config.
      - **Tools to Use**: `developerknowledge_answer_query` and `developerknowledge_search_documents`.
+   - **Live Browser Geometry, CLS & Visual Verification (`chrome-devtools` + `angular-cli` MCP)**:
+     - **Target**: Layout slots, conditional `@if` state swaps (e.g., idle vs. pre-warming vs. streaming loader), spacing rhythm, and glassmorphic light/dark contrast.
+     - **Tools to Use**: Connect to the running dev server (`http://localhost:4200`, or start via `angular-cli` `devserver_start`) using `chrome-devtools` `navigate_page`, `evaluate_script` (`getBoundingClientRect()`), `get_css_styles`, and `take_screenshot`.
+     - **Rule (`0px` State-Swap Shift / `0.000` CLS)**: When verifying UI layout changes or status slots, measure downstream `getBoundingClientRect().top` across mutually exclusive `@if` state transitions to confirm `0px` unexpected vertical shift, and inspect `take_screenshot` snapshots directly.
 
 2. **Tier 2 — Repo-Bundled Skills & Installed `.d.ts` Contracts (When MCP is Unavailable in a Fork or Prose Docs Omit Type Overloads)**:
    - If an MCP server is not configured in the environment (e.g. a forked repo) or Tier 1 documentation does not specify an exact TypeScript overload signature:

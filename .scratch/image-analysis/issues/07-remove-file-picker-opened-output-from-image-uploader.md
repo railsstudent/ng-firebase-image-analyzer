@@ -5,13 +5,13 @@ Retire the obsolete `filePickerOpened` output from `ImageUploaderComponent` and 
 
 **Blocked by:** None (can be developed concurrently with 06; merge after 06 removes the `(filePickerOpened)` template binding)
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Acceptance Criteria & Implementation Checklist
 
 ### 1. Remove `filePickerOpened` from `ImageUploaderComponent` (`src/app/shared/ui/image-uploader/image-uploader.component.ts`)
 
-- [ ] Remove `filePickerOpened = output();` and `this.filePickerOpened.emit();` inside `openFilePicker()` (keep `output` in `@angular/core` imports for `fileSelected = output<File | null>()`):
+- [x] Remove `filePickerOpened = output();` and `this.filePickerOpened.emit();` inside `openFilePicker()` (keep `output` in `@angular/core` imports for `fileSelected = output<File | null>()`):
 
   ```ts
   export class ImageUploaderComponent {
@@ -33,7 +33,7 @@ Retire the obsolete `filePickerOpened` output from `ImageUploaderComponent` and 
 
 ### 2. Update `ImageUploaderComponent` Unit Tests (`src/app/shared/ui/image-uploader/image-uploader.component.spec.ts`)
 
-- [ ] Update `describe('Seam 1: File Picker Activation (Click & Keyboard Accessibility)', ...)` to assert `fileInputClickSpy` without `filePickerOpenedSpy`:
+- [x] Update `describe('Seam 1: File Picker Activation (Click & Keyboard Accessibility)', ...)` to assert `fileInputClickSpy` without `filePickerOpenedSpy`:
 
   ```ts
   describe('Seam 1: File Picker Activation (Click & Keyboard Accessibility)', () => {
@@ -74,7 +74,7 @@ Retire the obsolete `filePickerOpened` output from `ImageUploaderComponent` and 
   });
   ```
 
-- [ ] Update `describe('Seam 3: Image Removal & Event Isolation', ...)` to assert that clicking or pressing Enter on `.remove-btn` does not click the native `input[type="file"]` element (`expect(fileInputClickSpy).not.toHaveBeenCalled()`):
+- [x] Update `describe('Seam 3: Image Removal & Event Isolation', ...)` to assert that clicking or pressing Enter on `.remove-btn` does not click the native `input[type="file"]` element (`expect(fileInputClickSpy).not.toHaveBeenCalled()`):
 
   ```ts
   describe('Seam 3: Image Removal & Event Isolation', () => {
@@ -120,4 +120,4 @@ Retire the obsolete `filePickerOpened` output from `ImageUploaderComponent` and 
   });
   ```
 
-- [ ] Run targeted unit tests for `src/app/shared/ui/image-uploader/image-uploader.component.spec.ts` and `npm run lint` (once Ticket 06 is merged) and verify zero errors.
+- [x] Run targeted unit tests for `src/app/shared/ui/image-uploader/image-uploader.component.spec.ts` and `npm run lint` (once Ticket 06 is merged) and verify zero errors.

@@ -1,5 +1,6 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Mock } from '@vitest/spy';
 import { ImageUploaderComponent } from './image-uploader.component';
 
 function dispatchFileInput(fileInput: HTMLInputElement, ...files: File[]): void {
@@ -30,50 +31,39 @@ describe('ImageUploaderComponent', () => {
   });
 
   describe('Seam 1: File Picker Activation (Click & Keyboard Accessibility)', () => {
-    it('should emit filePickerOpened and click native file input on panel click', async () => {
-      const filePickerOpenedSpy = vi.fn();
-      component.filePickerOpened.subscribe(filePickerOpenedSpy);
+    it('should not expose deprecated filePickerOpened output', () => {
+      expect('filePickerOpened' in component).toBe(false);
+    });
 
+    it('should click native file input on panel click', async () => {
       const panel = fixture.nativeElement.querySelector('.uploader-panel') as HTMLElement;
-      const fileInput = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
-      const fileInputClickSpy = vi.spyOn(fileInput, 'click');
+      const fileInputClick = spyFileInputClick(fixture);
 
       panel.click();
       await fixture.whenStable();
 
-      expect(filePickerOpenedSpy).toHaveBeenCalledTimes(1);
-      expect(fileInputClickSpy).toHaveBeenCalledTimes(1);
+      expect(fileInputClick).toHaveBeenCalledTimes(1);
     });
 
-    it('should emit filePickerOpened and click input on Enter keydown on panel', async () => {
-      const filePickerOpenedSpy = vi.fn();
-      component.filePickerOpened.subscribe(filePickerOpenedSpy);
-
+    it('should click input on Enter keydown on panel', async () => {
       const panel = fixture.nativeElement.querySelector('.uploader-panel') as HTMLElement;
-      const fileInput = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
-      const fileInputClickSpy = vi.spyOn(fileInput, 'click');
+      const fileInputClick = spyFileInputClick(fixture);
 
       panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
       await fixture.whenStable();
 
-      expect(filePickerOpenedSpy).toHaveBeenCalledTimes(1);
-      expect(fileInputClickSpy).toHaveBeenCalledTimes(1);
+      expect(fileInputClick).toHaveBeenCalledTimes(1);
     });
 
-    it('should emit filePickerOpened, prevent default, and click input on Space keydown on panel', async () => {
-      const filePickerOpenedSpy = vi.fn();
-      component.filePickerOpened.subscribe(filePickerOpenedSpy);
-
+    it('should prevent default and click input on Space keydown on panel', async () => {
       const panel = fixture.nativeElement.querySelector('.uploader-panel') as HTMLElement;
-      const fileInput = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
-      const fileInputClickSpy = vi.spyOn(fileInput, 'click');
+      const fileInputClick = spyFileInputClick(fixture);
 
       const spaceEvent = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
       panel.dispatchEvent(spaceEvent);
       await fixture.whenStable();
 
-      expect(filePickerOpenedSpy).toHaveBeenCalledTimes(1);
-      expect(fileInputClickSpy).toHaveBeenCalledTimes(1);
+      expect(fileInputClick).toHaveBeenCalledTimes(1);
       expect(spaceEvent.defaultPrevented).toBe(true);
     });
   });
@@ -158,9 +148,8 @@ describe('ImageUploaderComponent', () => {
       await fixture.whenStable();
 
       const fileSelectedSpy = vi.fn();
-      const filePickerOpenedSpy = vi.fn();
       component.fileSelected.subscribe(fileSelectedSpy);
-      component.filePickerOpened.subscribe(filePickerOpenedSpy);
+      const fileInputClick = spyFileInputClick(fixture);
 
       const removeBtn = fixture.nativeElement.querySelector('.remove-btn') as HTMLButtonElement;
       expect(removeBtn).toBeTruthy();
@@ -170,16 +159,14 @@ describe('ImageUploaderComponent', () => {
 
       expect(component.imageUrl()).toBeNull();
       expect(fileSelectedSpy).toHaveBeenCalledWith(null);
-      // Event isolation: filePickerOpened must NOT be triggered
-      expect(filePickerOpenedSpy).not.toHaveBeenCalled();
+      // Event isolation: native file input must NOT be clicked
+      expect(fileInputClick).not.toHaveBeenCalled();
     });
 
     it('should stop keydown propagation on remove button and not open file picker on Enter', async () => {
       component.imageUrl.set('data:image/png;base64,sample');
       await fixture.whenStable();
-
-      const filePickerOpenedSpy = vi.fn();
-      component.filePickerOpened.subscribe(filePickerOpenedSpy);
+      const fileInputClick = spyFileInputClick(fixture);
 
       const removeBtn = fixture.nativeElement.querySelector('.remove-btn') as HTMLButtonElement;
       expect(removeBtn).toBeTruthy();
@@ -188,8 +175,14 @@ describe('ImageUploaderComponent', () => {
       removeBtn.dispatchEvent(enterEvent);
       await fixture.whenStable();
 
-      // Keyboard event isolation: filePickerOpened must NOT be triggered
-      expect(filePickerOpenedSpy).not.toHaveBeenCalled();
+      // Keyboard event isolation: native file input must NOT be clicked
+      expect(fileInputClick).not.toHaveBeenCalled();
     });
   });
 });
+
+function spyFileInputClick(fixture: ComponentFixture<ImageUploaderComponent>): Mock<() => void> {
+  const fileInput = fixture.nativeElement.querySelector('input[type="file"]') as HTMLInputElement;
+  const fileInputClickSpy = vi.spyOn(fileInput, 'click');
+  return fileInputClickSpy;
+}

@@ -19,13 +19,13 @@ Status: Accepted
 
 1. **Lazy Service Injection via `injectAsync`**:
    - Use Angular's `injectAsync` in `ImageAnalysisComponent` to dynamically load `ImageAnalysisService` on demand, isolating it into a separate code-split bundle chunk (`chunk-image-analysis-service.js`).
-2. **Lifecycle-Decoupled Pre-Warming via Event Trigger**:
-   - Eliminate `OnInit` and `ngOnInit()` from `ImageAnalysisComponent`.
-   - Introduce `filePickerOpened = output()` on `ImageUploaderComponent` to trigger `preWarm()` in the background immediately when the user clicks or activates the file picker.
-   - The natural 10–15 second window while the user navigates the native OS file picker is utilized to compile WebGPU compute shaders in the background.
-3. **Non-Blocking Promise Pre-Warming**:
-   - Structure `preWarm()` in `ImageAnalysisComponent` using asynchronous background promise execution (`.then().catch()`) so that UI event handlers remain non-blocking.
-   - Memoize the pre-warm sequence in `ImageAnalysisService` via `#preWarmPromise` to guarantee idempotent, exactly-once execution.
+2. **Lifecycle-Decoupled Pre-Warming via `afterNextRender`**:
+   - Eliminate `OnInit` and `ngOnInit()` from `ImageAnalysisComponent`, and retire the `(filePickerOpened)` output from `ImageUploaderComponent` as well as redundant `preWarm()` triggers in `onFileSelected()`.
+   - Trigger `this.preWarm()` automatically once inside `ImageAnalysisComponent`'s `constructor()` via `afterNextRender({ write: async () => { await this.preWarm(); } })` so WebGPU shader compilation starts immediately after the initial browser paint without blocking first render.
+   - Remove `#preWarmPromise` memoization from `ImageAnalysisService.preWarm()` in favor of single-execution `afterNextRender` orchestration at the component boundary.
+3. **Non-Blocking Pre-Warm Status & 0-CLS Layout Slot**:
+   - Track pre-warming progress via a component-local `warmingMessage = signal<string>('')` inside `ImageAnalysisComponent`, setting `'Pre-warming on-device AI model...'` after awaiting `this.#asyncImageAnalysisService()` (yielding past `afterNextRender`'s synchronous `_tick()` window so Zoneless change detection schedules a view refresh) and before awaiting `imageAnalysisService.preWarm()`, then clearing it to `''` inside `finally`.
+   - Render a dedicated `.prewarm-status-slot` (`min-h-9 my-0`, paired with `.workspace-container > app-image-uploader { @apply mb-0; }`, `role="status"`, `aria-live="polite"`) directly below `<app-image-uploader>` to display `.prewarm-status-badge` while preserving a 0.000 Cumulative Layout Shift (CLS) and keeping upload and analysis controls 100% enabled.
 4. **Single Source of Truth for WebGPU Capabilities**:
    - Centralize `#isWebGPUSupported` inside `AiService` at the infrastructure boundary.
    - Remove redundant `WINDOW` and GPU capability checks from `ImageAnalysisComponent`.
@@ -36,8 +36,8 @@ Status: Accepted
 
 - **Positive**:
   - Initial JS bundle size is reduced through code splitting.
-  - Perceived cold start latency is reduced by >50% (absorbing the 16s WebGPU compilation during file selection).
-  - Component code is purely event-driven with zero Angular lifecycle hook bloat.
-  - Idempotent memoization ensures multiple triggers (file picker open, drop fallback) never create conflicting GPU compilation queries.
+  - Pre-warming begins immediately after initial component render (`afterNextRender`), maximizing head start before the user selects an image and clicks "Analyze Image".
+  - Dedicated `min-h-9` `.prewarm-status-slot` provides accessible live status feedback (`role="status"`, `aria-live="polite"`) with 0.000 CLS while keeping the uploader and "Analyze Image" action unblocked.
+  - Single-execution `afterNextRender` orchestration eliminates `#preWarmPromise` state from `ImageAnalysisService` and removes pre-warming coupling from `ImageUploaderComponent`.
 - **Negative**:
-  - Pre-warming starts upon user interaction (file picker open / drop) rather than at initial page load.
+  - If a user uploads an image and clicks "Analyze Image" within the first few seconds before WebGPU shader compilation finishes, the analysis stream awaits or falls back dynamically.

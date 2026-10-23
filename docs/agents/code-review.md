@@ -19,6 +19,10 @@ This document outlines repository-specific standards for running `/code-review` 
     git diff <base-branch>...HEAD
     ```
 
+- **Sub-Agent Diff Injection & Follow-Up Fast-Path**:
+  - **Pre-Injected Initial Diff (`< 500` total diff lines)**: On the initial `/code-review` run, when the total diff is `< 500` lines, the parent agent runs `git diff` once and embeds the full diff text directly in both sub-agent prompts so neither sub-agent spends tool calls re-running `git diff` or `git log`.
+  - **In-Context Follow-Up Fast-Path (`<= 6` files or `< 400` delta lines)**: After the initial parallel sub-agent review reports its findings, any follow-up iteration in the same review session touching `<= 6` files or `< 400` delta lines is verified directly in-context by the parent agent (`git diff`) without re-dispatching or messaging the sub-agents, unless the user switches commit ranges/tickets or explicitly requests a full sub-agent re-run.
+
 ## 2. Source of Truth (Spec, ADR, Ticket, Conversation)
 
 The **Spec Reviewer** verifies the diff against whichever sources of truth are provided:

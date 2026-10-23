@@ -1,7 +1,11 @@
 @reference "../../../styles.css";
 
 .workspace-container {
-  @apply space-y-8 max-w-(--spacing-container-max) mx-auto px-4 py-8;
+  @apply space-y-6 max-w-(--spacing-container-max) mx-auto px-4 py-8;
+}
+
+.workspace-container > app-image-uploader {
+  @apply mb-0;
 }
 
 .loading-container {
@@ -14,14 +18,6 @@
 
 .loading-text {
   @apply text-sm font-mono text-(--color-outline);
-}
-
-.tag-cloud-section {
-  @apply space-y-3;
-}
-
-.action-container {
-  @apply flex justify-center py-4;
 }
 
 .primary-action-btn {
@@ -49,23 +45,8 @@
 }
 
 /* ==========================================
-   Section 5: Streaming Loader & Progressive Reveal Animations
+   Section 5: Streaming Loader
    ========================================== */
-
-@keyframes progressiveReveal {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: progressiveReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
 
 @keyframes loaderPulse {
   0%,
@@ -79,12 +60,16 @@
   }
 }
 
-.streaming-loader-badge {
-  @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-500 ease-out;
+.streaming-loader-badge,
+.prewarm-status-badge {
   background: var(--color-surface-glass);
   border-color: var(--color-surface-glass-border);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.streaming-loader-badge {
+  @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-500 ease-out;
   animation: loaderPulse 2.5s infinite ease-in-out;
 }
 
@@ -96,19 +81,28 @@
   @apply text-xs font-bold uppercase tracking-wider text-(--color-on-surface-variant) font-mono;
 }
 
-.error-content-body {
-  @apply flex-1;
-}
-
-.streaming-loader-container {
-  @apply flex justify-center py-6;
-}
-
 .streaming-loader-icon {
   @apply animate-spin text-primary;
 }
 
-:host-context(.dark) .streaming-loader-badge {
+:host-context(.dark) .streaming-loader-badge,
+:host-context(.dark) .prewarm-status-badge {
   background: var(--color-surface-glass-dark);
   border-color: var(--color-surface-glass-border-dark);
+}
+
+.prewarm-status-slot {
+  @apply min-h-9 my-0 flex items-center justify-center;
+}
+
+.prewarm-status-badge {
+  @apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity duration-300 ease-out;
+}
+
+.prewarm-status-icon {
+  @apply w-4 h-4 animate-spin motion-reduce:animate-none text-primary shrink-0;
+}
+
+.prewarm-status-text {
+  @apply text-xs font-semibold tracking-wide text-(--color-on-surface-variant) font-mono;
 }

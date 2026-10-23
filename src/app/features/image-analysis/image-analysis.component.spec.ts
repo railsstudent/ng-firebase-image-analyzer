@@ -7,7 +7,10 @@ describe('ImageAnalysisComponent', () => {
   let component: ImageAnalysisComponent;
   let fixture: ComponentFixture<ImageAnalysisComponent>;
 
-  let mockImageAnalysisService: Partial<ImageAnalysisService>;
+  let mockImageAnalysisService: {
+    preWarm: ReturnType<typeof vi.fn>;
+    analyzeImageStream: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
     mockImageAnalysisService = {
@@ -33,6 +36,9 @@ describe('ImageAnalysisComponent', () => {
     fixture = TestBed.createComponent(ImageAnalysisComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
+    await vi.waitFor(() => {
+      expect(mockImageAnalysisService.preWarm).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('should create', () => {
@@ -50,19 +56,65 @@ describe('ImageAnalysisComponent', () => {
     expect(component.seconds()).toBe('0.5');
   });
 
-  it('should prewarm model on preWarm when WebGPU is supported', async () => {
-    await component.preWarm();
-
-    expect(mockImageAnalysisService.preWarm).toHaveBeenCalled();
+  it('should automatically prewarm model once after initial render via afterNextRender', () => {
+    expect(mockImageAnalysisService.preWarm).toHaveBeenCalledTimes(1);
   });
 
-  it('should select file on onFileSelected', () => {
+  it('should display warmingMessage in a CLS-safe status slot while preWarm is pending and clear it once settled', async () => {
+    let resolvePreWarm: () => void = () => undefined;
+    mockImageAnalysisService.preWarm.mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        resolvePreWarm = resolve;
+      }),
+    );
+
+    const preWarmPromise = component.preWarm();
+    await vi.waitFor(() => {
+      expect(component.warmingMessage()).toBe('Pre-warming on-device AI model...');
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const statusSlot = compiled.querySelector('.prewarm-status-slot');
+    expect(statusSlot).toBeTruthy();
+    expect(statusSlot?.getAttribute('role')).toBe('status');
+    expect(statusSlot?.getAttribute('aria-live')).toBe('polite');
+    expect(statusSlot?.querySelector('.prewarm-status-text')?.textContent?.trim()).toBe(
+      'Pre-warming on-device AI model...',
+    );
+
+    resolvePreWarm();
+    await preWarmPromise;
+    fixture.detectChanges();
+
+    expect(component.warmingMessage()).toBe('');
+    expect(compiled.querySelector('.prewarm-status-slot')).toBeTruthy();
+    expect(compiled.querySelector('.prewarm-status-badge')).toBeNull();
+  });
+
+  it('should log a warning and reset warmingMessage to empty string when preWarm rejects', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockReturnValue(undefined);
+    const preWarmError = new Error('Pre-warm failed');
+    mockImageAnalysisService.preWarm.mockRejectedValueOnce(preWarmError);
+
+    await component.preWarm();
+    fixture.detectChanges();
+
+    expect(warnSpy).toHaveBeenCalledWith('Model pre-warming skipped, falling back to cloud dynamically.', preWarmError);
+    expect(component.warmingMessage()).toBe('');
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.prewarm-status-badge')).toBeNull();
+  });
+
+  it('should select file on onFileSelected without re-triggering preWarm', () => {
+    mockImageAnalysisService.preWarm.mockClear();
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     component.onFileSelected(file);
 
     expect(component.selectedFile()).toBe(file);
     expect(component.analysisData()).toBeNull();
     expect(component.errorMessage()).toBe('');
+    expect(mockImageAnalysisService.preWarm).not.toHaveBeenCalled();
   });
 
   it('should trigger analysis stream and populate analysisData', async () => {
@@ -95,7 +147,7 @@ describe('ImageAnalysisComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const emptyPlaceholder = compiled.querySelector('.tag-cloud-section .empty-state-text');
+    const emptyPlaceholder = compiled.querySelector('.space-y-3 .empty-state-text');
     expect(emptyPlaceholder?.textContent).toContain(
       'No tags detected yet. Run image analysis to extract visual labels.',
     );
