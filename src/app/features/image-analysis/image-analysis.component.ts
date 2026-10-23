@@ -5,7 +5,7 @@ import { SellIconComponent } from '@/shared/ui/icons/sell-icon/sell-icon.compone
 import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
 import { ImageUploaderComponent } from '@/shared/ui/image-uploader/image-uploader.component';
 import { formatDurationSeconds } from '@/shared/utils/format.util';
-import { Component, computed, injectAsync, signal } from '@angular/core';
+import { afterNextRender, Component, computed, injectAsync, signal } from '@angular/core';
 import { ImageAnalysisPanelComponent } from './image-analysis-panel/image-analysis-panel.component';
 import type { ImageTag } from './tag-list/interfaces/image-tag.interface';
 import { TagListComponent } from './tag-list/tag-list.component';
@@ -42,6 +42,15 @@ export default class ImageAnalysisComponent {
   performance = signal(0);
   errorMessage = signal('');
   seconds = computed(() => formatDurationSeconds(this.performance()));
+  warmingMessage = signal<string>('');
+
+  constructor() {
+    afterNextRender({
+      write: async () => {
+        await this.preWarm();
+      },
+    });
+  }
 
   // Computed derived states
   tags = computed<ImageTag[]>(() => {
@@ -58,17 +67,16 @@ export default class ImageAnalysisComponent {
   async preWarm(): Promise<void> {
     try {
       const imageAnalysisService = await this.#asyncImageAnalysisService();
+      this.warmingMessage.set('Pre-warming on-device AI model...');
       await imageAnalysisService.preWarm();
-      console.log('Gemini Nano pre-warmed and ready for action!');
     } catch (err: unknown) {
       console.warn('Model pre-warming skipped, falling back to cloud dynamically.', err);
+    } finally {
+      this.warmingMessage.set('');
     }
   }
 
   onFileSelected(file: File | null): void {
-    if (file) {
-      this.preWarm().catch((err: unknown) => console.warn('Pre-warm failed on file selection:', err));
-    }
     this.selectedFile.set(file);
     this.analysisData.set(null);
     this.errorMessage.set('');

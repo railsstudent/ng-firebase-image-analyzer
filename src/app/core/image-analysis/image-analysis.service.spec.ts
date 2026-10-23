@@ -41,10 +41,13 @@ describe('ImageAnalysisService', () => {
   });
 
   describe('preWarm', () => {
-    it('calls preWarmModel on AiService with configured schema and instructions', async () => {
+    it('calls preWarmModel on AiService with configured schema and instructions without caching across invocations', async () => {
+      const logSpy = vi.spyOn(console, 'log').mockReturnValue(undefined);
+
+      await service.preWarm();
       await service.preWarm();
 
-      expect(mockAiService.preWarmModel).toHaveBeenCalledTimes(1);
+      expect(mockAiService.preWarmModel).toHaveBeenCalledTimes(2);
       expect(mockAiService.preWarmModel).toHaveBeenCalledWith(
         {
           systemInstruction: SYSTEM_INSTRUCTION,
@@ -56,19 +59,11 @@ describe('ImageAnalysisService', () => {
           dummySize: 512,
         },
       );
+      expect(logSpy).toHaveBeenCalledWith('Image analysis on-device engine and WebGPU shaders warmed successfully!');
     });
 
-    it('reuses existing preWarm promise on repeated invocations', async () => {
-      const p1 = service.preWarm();
-      const p2 = service.preWarm();
-
-      await Promise.all([p1, p2]);
-
-      expect(mockAiService.preWarmModel).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles preWarm failure gracefully and resets promise to allow retry', async () => {
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    it('handles preWarm failure gracefully and logs warning', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockReturnValue(undefined);
       const preWarmError = new Error('WebGPU compilation error');
       mockAiService.preWarmModel.mockRejectedValueOnce(preWarmError);
 
@@ -78,12 +73,6 @@ describe('ImageAnalysisService', () => {
         'Image analysis pre-warm sequence finished with warning/skip:',
         preWarmError,
       );
-
-      // Subsequent call should retry since promise was reset
-      mockAiService.preWarmModel.mockResolvedValueOnce(undefined);
-      await service.preWarm();
-
-      expect(mockAiService.preWarmModel).toHaveBeenCalledTimes(2);
     });
   });
 

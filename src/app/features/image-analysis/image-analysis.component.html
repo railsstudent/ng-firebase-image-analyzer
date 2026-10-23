@@ -1,17 +1,22 @@
 <div class="workspace-container">
   <!-- Upload State Area -->
-  <app-image-uploader
-    [(imageUrl)]="imageUrl"
-    (fileSelected)="onFileSelected($event)"
-    (filePickerOpened)="preWarm()"
-  ></app-image-uploader>
+  <app-image-uploader [(imageUrl)]="imageUrl" (fileSelected)="onFileSelected($event)"></app-image-uploader>
+
+  <div class="prewarm-status-slot" role="status" aria-live="polite">
+    @if (warmingMessage(); as message) {
+      <div class="prewarm-status-badge">
+        <app-sync-icon class="prewarm-status-icon" />
+        <span class="prewarm-status-text">{{ message }}</span>
+      </div>
+    }
+  </div>
 
   @if (errorMessage()) {
     <div class="error-banner">
       <div class="error-icon-badge">
         <app-error-icon />
       </div>
-      <div class="error-content-body">
+      <div class="flex-1">
         <p class="error-text">{{ errorMessage() }}</p>
       </div>
     </div>
@@ -19,7 +24,7 @@
 
   <!-- Explicit Analyze Action Button -->
   @if (imageUrl() && !isLoading()) {
-    <div class="action-container">
+    <div class="flex justify-center">
       <button (click)="triggerAnalysis()" class="primary-action-btn">
         <app-psychology-icon />
         <span>Analyze Image ({{ seconds() }}s)</span>
@@ -28,7 +33,7 @@
   }
 
   @if (isLoading()) {
-    <div class="streaming-loader-container">
+    <div class="flex justify-center">
       <div class="streaming-loader-badge">
         <app-sync-icon class="streaming-loader-icon" />
         <span class="streaming-loader-text">Streaming AI Insights ({{ seconds() }}s)...</span>
@@ -37,7 +42,7 @@
   }
 
   <!-- Semantic Tag Cloud -->
-  <div class="tag-cloud-section">
+  <div class="space-y-3">
     <span class="section-subtitle">Analysis Output</span>
     <h3 class="section-title">
       <app-sell-icon class="section-title-icon" />

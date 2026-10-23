@@ -14,7 +14,6 @@ export class ImageUploaderComponent {
   imageUrl = model<string | null>(null);
   maxSize = input<number>(MAX_FILE_SIZE_MB); // Default 20MB
 
-  filePickerOpened = output();
   fileSelected = output<File | null>();
 
   isDragging = signal<boolean>(false);
@@ -56,7 +55,6 @@ export class ImageUploaderComponent {
 
   openFilePicker(fileInput: HTMLInputElement, event?: Event): void {
     event?.preventDefault();
-    this.filePickerOpened.emit();
     fileInput.click();
   }
 
