@@ -39,10 +39,14 @@ This document outlines project-specific coding standards and architectural conve
 - **Zero-Dependency Icons**: Implement UI icons as standalone SVG components under `src/app/shared/ui/icons/` with `styleUrl: './icon.css'` (`:host { @apply app-icon; }`). Do not install icon packages or font icons.
 - **PWA Icons**: Icons in `public/icons/` must match their exact pixel dimensions (192x192 for `icon-192.png`, 512x512 for `icon-512.png`).
 
-## 6. Asynchronous & Fire-and-Forget Operations
+## 6. Asynchronous Operations & Lazy DI Boundaries
 
 - **Floating Promises Handling**: At caller sites requiring non-blocking / fire-and-forget execution, handle the returned Promise with `.catch(...)` to satisfy `@typescript-eslint/no-floating-promises`.
 - **Ban `void` Operator Keyword**: Never use the `void` expression operator keyword (e.g. `void this.method()`) at call sites.
+- **Single-Hop `injectAsync` Boundary**: Place `injectAsync` strictly at the **Feature Component** entry boundary (`*.component.ts` ➔ Coordinator or Core Domain Service) to keep initial route shells (`FCP`/`LCP`) free of service-graph weight, and use synchronous `inject()` inside all downstream Coordinator and Core Domain services (`*.service.ts`) so the bundler emits static ESM imports that the browser fetches in parallel rather than in a sequential multi-hop waterfall. Before introducing any lazy boundary, apply this 3-point check:
+  1. **Upstream Boundary Check**: Verify whether the caller is already behind an `injectAsync` boundary; once inside a lazy service chunk, use synchronous `inject()` for downstream services.
+  2. **Co-Execution Probability**: Reserve secondary lazy boundaries inside an already-lazy service strictly for conditional or Stage-2 branches (e.g. `snarkdown` + `dompurify` in `MarkdownFormatterService`, or staged Firebase SDK chunks in `ConfigService`). Services that execute on 100% of calls to their parent service (e.g. `ImageAnalysisService` / `CulinaryGuideService` ➔ `AiService`) must use synchronous `inject()`.
+  3. **Sibling Static Imports & Barrel Splitting**: Check whether the file already statically imports from the target vendor package (e.g. `import { Schema } from 'firebase/ai'`) or from the same barrel (`index.ts`), as static imports in the same chunk already bind the vendor module.
 
 ## 7. Deferred Component Empty State Invariant
 
