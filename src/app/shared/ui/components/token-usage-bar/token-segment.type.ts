@@ -9,7 +9,6 @@ export interface TokenSegment {
 
 export interface TokenLegendItem {
   type: TokenSegmentType;
-  itemCssClass: string;
   itemDotCssClass: string;
   token: number;
   label: string;

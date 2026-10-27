@@ -1,6 +1,6 @@
-<div class="analysis-section-card space-y-6">
+<div class="section-card space-y-6">
   <h3 class="section-title">
-    <app-bar-chart-icon class="section-title-icon" />
+    <app-bar-chart-icon />
     Inference Token Analytics
   </h3>
 
@@ -9,8 +9,8 @@
       <!-- Composite stacked progress bar -->
       <div>
         <div class="token-header">
-          <span class="token-header-label">Token Budget Allocation</span>
-          <span class="token-header-total">{{ totalTokens() }} Tokens</span>
+          <span class="font-semibold text-on-surface-variant">Token Budget Allocation</span>
+          <span class="font-mono font-bold text-primary">{{ totalTokens() }} Tokens</span>
         </div>
 
         <app-token-usage-bar
@@ -55,11 +55,11 @@
         </div>
 
         <div class="cached-savings-card">
-          <div class="cached-savings-header">
-            <span class="cached-savings-title">Cached Savings</span>
-            <span class="cached-savings-value">-{{ cachedTokens() }} Tokens</span>
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-semibold text-on-surface">Cached Savings</span>
+            <span class="font-mono font-bold text-emerald-600">-{{ cachedTokens() }} Tokens</span>
           </div>
-          <p class="cached-savings-description">
+          <p class="text-xs text-on-surface-variant mt-1">
             Re-using context vectors significantly lowers latency and active token cost.
           </p>
         </div>

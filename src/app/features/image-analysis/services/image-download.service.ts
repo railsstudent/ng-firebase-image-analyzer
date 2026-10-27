@@ -1,5 +1,5 @@
-import { Crop } from '@/core/image-analysis';
-import { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
+import type { Crop } from '@/core/image-analysis';
+import type { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
 import { DOCUMENT, inject, Service } from '@angular/core';
 
 @Service()

@@ -1,6 +1,7 @@
 import type { CulinaryDestination } from '@/core/culinary-guide';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { CulinarySearchBoxComponent } from './culinary-search-box.component';
 
@@ -155,12 +156,12 @@ describe('CulinarySearchBoxComponent', () => {
     it('should render spinner icon inside submit button when isLoading is true and omit it when false', async () => {
       fixture.componentRef.setInput('isLoading', false);
       await fixture.whenStable();
-      expect(fixture.nativeElement.querySelector('app-spinner-icon')).toBeNull();
+      expect(fixture.nativeElement.querySelector('app-sync-icon')).toBeNull();
 
       fixture.componentRef.setInput('isLoading', true);
       await fixture.whenStable();
 
-      const spinner = fixture.nativeElement.querySelector('button[type="submit"] app-spinner-icon');
+      const spinner = fixture.nativeElement.querySelector('button[type="submit"] app-sync-icon');
       expect(spinner).not.toBeNull();
     });
 

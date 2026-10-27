@@ -4,7 +4,8 @@ import type {
   StreamingCulinaryDiscoveryWithMetadata,
 } from '@/core/culinary-guide';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DEFAULT_DISCOVERY_DATA, DEFAULT_RECIPE_DATA } from './constants/culinary-guide.const';
 import { CulinaryDishListComponent } from './culinary-dish-list/culinary-dish-list.component';

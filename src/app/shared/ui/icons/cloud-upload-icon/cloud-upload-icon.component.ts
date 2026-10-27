@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-cloud-upload-icon',
+  host: {
+    class: 'inline-flex items-center justify-center shrink-0 w-10 h-10 select-none',
+  },
   template: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -15,6 +18,5 @@ import { Component } from '@angular/core';
       />
     </svg>
   `,
-  styleUrl: '../icon.css',
 })
 export class CloudUploadIconComponent {}

@@ -1,12 +1,12 @@
 import {
-  CulinaryGuideService,
-  MarkdownFormatterService,
   normalizeKeys,
   type CulinaryLocation,
   type CulinaryRecipeTarget,
   type StreamingCulinaryDiscoveryWithMetadata,
   type StreamingCulinaryRecipeWithMetadata,
 } from '@/core/culinary-guide';
+import { CulinaryGuideService } from '@/core/culinary-guide/culinary-guide.service';
+import { MarkdownFormatterService } from '@/core/culinary-guide/markdown-formatter.service';
 import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
 import { inject, Service } from '@angular/core';
 

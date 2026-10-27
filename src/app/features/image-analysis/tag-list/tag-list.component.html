@@ -1,4 +1,4 @@
-<div class="tag-list-grid">
+<div class="flex flex-wrap gap-2.5">
   @for (tag of tags(); track tag.label) {
     <app-badge [label]="tag.label" [tooltip]="tag.tooltip" />
   } @empty {

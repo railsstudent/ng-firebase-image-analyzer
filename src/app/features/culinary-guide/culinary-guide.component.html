@@ -1,4 +1,4 @@
-<div class="culinary-guide-container">
+<div class="flex flex-col gap-8 max-w-container-max mx-auto px-4 py-8">
   @let culinaryDestinationList = culinaryDestinations();
   @defer (when culinaryDestinationList.length > 0) {
     <app-culinary-search-box
@@ -20,7 +20,9 @@
     />
   } @placeholder {
     <div class="section-card">
-      <p class="empty-state-text">Iconic dishes will appear here once you search for a destination.</p>
+      <p class="text-sm text-on-surface-variant italic">
+        Iconic dishes will appear here once you search for a destination.
+      </p>
     </div>
   }
 
@@ -28,7 +30,7 @@
     <app-culinary-discovery-panel [discovery]="discoveryData()" />
   } @placeholder {
     <div class="section-card">
-      <p class="empty-state-text">
+      <p class="text-sm text-on-surface-variant italic">
         Culinary discovery insights and token analytics will appear here after a destination is selected.
       </p>
     </div>

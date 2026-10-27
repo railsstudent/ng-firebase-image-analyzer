@@ -1,4 +1,5 @@
-import { AiService, type PartialResponse } from '@/core/firebase';
+import type { PartialResponse } from '@/core/firebase';
+import { AiService } from '@/core/firebase/ai.service';
 import { inject, Service } from '@angular/core';
 import { EXPECTED_FOOD_COUNT, MAX_HONORABLE_MENTIONS, MIN_HONORABLE_MENTIONS } from './culinary-guide.const';
 import type {
@@ -10,6 +11,7 @@ import type {
   StreamingCulinaryRecipeWithMetadata,
   TopFoodsResponse,
 } from './culinary-guide.interface';
+import { normalizeDiscoveryResponse } from './culinary-guide.normalization';
 import {
   createRecipePrompt,
   createTopFoodsPrompt,
@@ -18,7 +20,6 @@ import {
 } from './culinary-guide.prompt';
 import { CulinaryRecipeSchema, TopFoodsSchema } from './culinary-guide.schema';
 import { isValidDiscoveryResponse, isValidRecipeResponse } from './culinary-guide.validation';
-import { normalizeDiscoveryResponse } from './culinary-guide.normalization';
 
 const MAX_ATTEMPTS = 2;
 

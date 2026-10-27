@@ -1,16 +1,10 @@
 import { WINDOW } from '@/core/constants';
 import { inject, Service } from '@angular/core';
-import {
-  GenerativeModel,
-  getGenerativeModel,
-  HarmBlockThreshold,
-  HarmCategory,
-  HybridParams,
-  InferenceMode,
-} from 'firebase/ai';
+import type { GenerativeModel, HybridParams } from 'firebase/ai';
+import { getGenerativeModel, HarmBlockThreshold, HarmCategory, InferenceMode } from 'firebase/ai';
 import { ConfigService } from './config.service';
 import { isOnline } from './host.util';
-import { ModelConfigParams } from './model-config-params.interface';
+import type { ModelConfigParams } from './model-config-params.interface';
 
 const SAFETY_SETTINGS = [
   {

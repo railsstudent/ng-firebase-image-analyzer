@@ -1,4 +1,4 @@
-<div class="uploader-container">
+<div class="relative">
   <!-- Error Message Banner -->
   @if (errorMessage()) {
     <div class="error-banner">
@@ -51,13 +51,15 @@
       <!-- Empty Upload State -->
       <div class="empty-state">
         <div class="upload-icon-wrapper">
-          <app-cloud-upload-icon class="w-10 h-10" />
+          <app-cloud-upload-icon />
         </div>
-        <div class="empty-state-text">
-          <p class="empty-state-title">Drag & drop your image here</p>
-          <p class="empty-state-subtitle">or <span class="browse-link">browse files</span></p>
+        <div class="space-y-1">
+          <p class="font-semibold text-lg text-on-surface">Drag & drop your image here</p>
+          <p class="text-sm text-on-surface-variant">
+            or <span class="text-primary font-semibold hover:underline">browse files</span>
+          </p>
         </div>
-        <p class="empty-state-footer">Supports JPEG, JPG, PNG, WebP up to 20MB</p>
+        <p class="text-xs text-outline">Supports JPEG, JPG, PNG, WebP up to 20MB</p>
       </div>
     }
   </div>

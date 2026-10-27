@@ -12,10 +12,6 @@
   @apply text-xl font-bold tracking-tight text-on-surface flex items-center gap-2;
 }
 
-.section-title-icon {
-  @apply text-primary text-2xl;
-}
-
 .section-subtitle {
   @apply text-xs font-bold uppercase tracking-widest text-outline block;
 }

@@ -1,4 +1,4 @@
-import { ModalityTokenCount } from 'firebase/ai';
+import type { ModalityTokenCount } from 'firebase/ai';
 
 export interface TokenSummary {
   totalTokenCount: number;

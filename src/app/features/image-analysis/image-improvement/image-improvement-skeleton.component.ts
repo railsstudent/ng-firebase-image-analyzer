@@ -1,4 +1,4 @@
-import { SkeletonComponent } from '@/shared/ui/components/skeleton';
+import { SkeletonComponent } from '@/shared/ui/components/skeleton/skeleton.component';
 import { Component } from '@angular/core';
 
 @Component({

@@ -1,6 +1,4 @@
 import {
-  CulinaryGuideService,
-  MarkdownFormatterService,
   type CulinaryLocation,
   type CulinaryRecipeTarget,
   type StreamingCulinaryDiscoveryWithMetadata,
@@ -10,6 +8,8 @@ import { collectStream } from '@/testing/ai-stream.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { CulinaryGuideCoordinatorService } from './culinary-guide-coordinator.service';
+import { CulinaryGuideService } from '@/core/culinary-guide/culinary-guide.service';
+import { MarkdownFormatterService } from '@/core/culinary-guide/markdown-formatter.service';
 
 async function* toAsyncStream<T>(items: readonly T[]): AsyncGenerator<T> {
   for (const item of items) {

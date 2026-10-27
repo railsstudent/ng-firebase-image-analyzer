@@ -1,6 +1,7 @@
-import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
+import { ListSkeletonComponent } from '@/shared/ui/components/skeleton/list-skeleton.component';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TokenAnalyticsComponent } from './token-analytics.component';
 
@@ -55,7 +56,7 @@ describe('TokenAnalyticsComponent', () => {
     expect(skeletonEl).toBeNull();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.token-header-total')?.textContent).toContain('150 Tokens');
-    expect(compiled.querySelector('.cached-savings-value')?.textContent).toContain('-10 Tokens');
+    expect(compiled.querySelector('.token-header .font-mono')?.textContent).toContain('150 Tokens');
+    expect(compiled.querySelector('.cached-savings-card .text-emerald-600')?.textContent).toContain('-10 Tokens');
   });
 });

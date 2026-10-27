@@ -1,4 +1,4 @@
-import { TokenSummary } from './token-usage.interface';
+import type { TokenSummary } from './token-usage.interface';
 
 export const ZERO_TOKEN_SUMMARY: TokenSummary = {
   totalTokenCount: 0,

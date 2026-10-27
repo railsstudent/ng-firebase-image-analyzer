@@ -20,7 +20,7 @@
       <input
         id="city-input"
         type="text"
-        class="input-control"
+        class="select-control placeholder:text-outline"
         placeholder="Enter city..."
         role="combobox"
         aria-haspopup="listbox"
@@ -65,7 +65,7 @@
 
     <button type="submit" class="submit-btn" [disabled]="isSearchDisabled()" [attr.aria-disabled]="isSearchDisabled()">
       @if (isLoading()) {
-        <app-spinner-icon class="animate-spin text-on-primary w-4 h-4 mr-2" />
+        <app-sync-icon class="text-on-primary w-4 h-4" />
       }
       <span>Search</span>
     </button>

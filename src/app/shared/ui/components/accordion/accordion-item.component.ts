@@ -1,9 +1,13 @@
 import { ExpandMoreIconComponent } from '@/shared/ui/icons/expand-more-icon/expand-more-icon.component';
-import { afterRenderEffect, Component, computed, ElementRef, inject, input, output, viewChild } from '@angular/core';
+import type { ElementRef } from '@angular/core';
+import { afterRenderEffect, Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 
 @Component({
   selector: 'app-accordion-item',
+  host: {
+    class: 'block',
+  },
   imports: [ExpandMoreIconComponent],
   templateUrl: './accordion-item.component.html',
   styleUrl: './accordion-item.component.css',

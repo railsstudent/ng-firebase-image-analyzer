@@ -1,9 +1,10 @@
 import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.interface';
-import { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
-import { AccordionItemComponent } from '@/shared/ui/components/accordion';
+import type { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.interface';
+import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
+import { AccordionItemComponent } from '@/shared/ui/components/accordion/accordion-item.component';
 import { CulinaryDishListComponent } from './culinary-dish-list.component';
 
 const MOCK_DISHES: CulinaryFoodItem[] = [
@@ -102,7 +103,7 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
     const headerEl = accordionItems[0].querySelector('[accordion-header]');
     expect(headerEl.classList).toContain('dish-header');
     expect(headerEl.querySelector('.dish-title-row')).toBeTruthy();
-    expect(headerEl.querySelector('.dish-name')?.textContent).toBe('Ramen');
+    expect(headerEl.querySelector('.text-on-surface')?.textContent).toBe('Ramen');
     expect(headerEl.querySelector('.dish-description')?.textContent).toContain(
       'Savory noodle soup with rich pork or chicken broth and toppings.',
     );
@@ -216,7 +217,7 @@ describe('CulinaryDishListComponent - Slice 2: Expansion & dishSelected Output',
     hostComponent.expandedDishNames.set([]);
     await fixture.whenStable();
 
-    const panels = fixture.nativeElement.querySelectorAll('.accordion-panel');
+    const panels = fixture.nativeElement.querySelectorAll('div[role="region"]');
     expect(panels[0].getAttribute('hidden')).not.toBeNull();
     expect(panels[1].getAttribute('hidden')).not.toBeNull();
   });

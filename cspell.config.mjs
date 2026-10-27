@@ -24,5 +24,6 @@ export default defineConfig({
     'skills-lock.json',
     'DESIGN.md',
     'destinations.json',
+    '.agents',
   ],
 });

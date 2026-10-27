@@ -9,8 +9,9 @@
 </div>
 <div [class]="gridCssClass()">
   @for (legendItem of gridItems(); track legendItem.type) {
-    <div [class]="legendItem.itemCssClass">
-      <div [class]="'legend-dot ' + legendItem.itemDotCssClass"></div>
+    <div class="flex items-center gap-2">
+      <div class="w-3 h-3 rounded-full" [class]="legendItem.itemDotCssClass"></div>
+      x
       <span class="legend-text">{{ legendItem.label }}: {{ legendItem.token }}</span>
     </div>
   }

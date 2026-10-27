@@ -1,6 +1,7 @@
-import { SkeletonComponent } from '@/shared/ui/components/skeleton';
+import { SkeletonComponent } from '@/shared/ui/components/skeleton/skeleton.component';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ImageImprovementSkeletonComponent } from './image-improvement-skeleton.component';
 

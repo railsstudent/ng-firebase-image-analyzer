@@ -4,26 +4,10 @@
   @apply block md:col-span-1;
 }
 
-.specs-sidebar {
-  @apply space-y-4;
-}
-
 .specs-box {
   @apply p-4 bg-surface-card rounded-xl border border-outline-variant/20 space-y-3;
 }
 
-.specs-title {
-  @apply text-xs font-bold uppercase tracking-widest text-outline;
-}
-
 .specs-list {
   @apply text-xs font-mono text-on-surface-variant space-y-2;
-}
-
-.specs-item {
-  @apply flex justify-between;
-}
-
-.specs-item-name {
-  @apply font-semibold text-on-surface;
 }

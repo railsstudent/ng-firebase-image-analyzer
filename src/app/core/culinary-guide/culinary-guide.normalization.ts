@@ -1,4 +1,4 @@
-import { TopFoodsResponse } from './culinary-guide.interface';
+import type { TopFoodsResponse } from './culinary-guide.interface';
 
 export function normalizeKeys(...parts: (string | undefined)[]): string {
   if (parts.length > 1) {

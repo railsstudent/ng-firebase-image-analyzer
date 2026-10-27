@@ -1,7 +1,8 @@
 import { WINDOW } from '@/core/constants';
 import { inject, Service } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import type { VersionReadyEvent } from '@angular/service-worker';
+import { SwUpdate } from '@angular/service-worker';
 import { EMPTY } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 

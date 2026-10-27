@@ -1,47 +1,30 @@
 @reference "../../../styles.css";
 
 .workspace-container {
-  @apply space-y-6 max-w-(--spacing-container-max) mx-auto px-4 py-8;
+  @apply space-y-6 max-w-container-max mx-auto px-4 py-8;
 }
 
 .workspace-container > app-image-uploader {
   @apply mb-0;
 }
 
-.loading-container {
-  @apply flex flex-col items-center justify-center py-12 space-y-4;
-}
-
-.loading-spinner {
-  @apply animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-(--color-primary);
-}
-
-.loading-text {
-  @apply text-sm font-mono text-(--color-outline);
-}
-
 .primary-action-btn {
-  @apply flex items-center gap-2 bg-gradient-to-r from-(--color-primary) to-(--color-primary-container) hover:opacity-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-(--color-primary)/20 active:scale-95 transition-all duration-300;
+  @apply flex items-center gap-2 bg-gradient-to-r from-primary to-primary-container hover:opacity-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-primary/20 active:scale-95 transition-all duration-300;
 }
 
 .error-banner {
-  @apply flex items-center gap-4 bg-(--color-error-container) border border-(--color-error-border) p-4 rounded-2xl mx-auto my-6;
+  @apply flex items-center gap-4 bg-error-container border border-error-border p-4 rounded-2xl mx-auto my-6;
   max-width: 64rem;
   box-shadow: var(--shadow-error);
   backdrop-filter: blur(8px);
 }
 
 .error-icon-badge {
-  @apply flex items-center justify-center bg-(--color-error-container) text-(--color-error-text-muted) rounded-xl h-10 w-10 shrink-0 border
-  border-(--color-error-border);
+  @apply flex items-center justify-center bg-error-container text-error-text-muted rounded-xl h-10 w-10 shrink-0 border border-error-border;
 }
 
 .error-icon-badge app-error-icon {
   @apply w-7 h-7;
-}
-
-.error-text {
-  @apply text-2xl font-medium text-(--color-error-text);
 }
 
 /* ==========================================
@@ -78,11 +61,7 @@
 }
 
 .streaming-loader-text {
-  @apply text-xs font-bold uppercase tracking-wider text-(--color-on-surface-variant) font-mono;
-}
-
-.streaming-loader-icon {
-  @apply animate-spin text-primary;
+  @apply text-xs font-bold uppercase tracking-wider text-on-surface-variant font-mono;
 }
 
 :host-context(.dark) .streaming-loader-badge,
@@ -99,10 +78,6 @@
   @apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity duration-300 ease-out;
 }
 
-.prewarm-status-icon {
-  @apply w-4 h-4 animate-spin motion-reduce:animate-none text-primary shrink-0;
-}
-
 .prewarm-status-text {
-  @apply text-xs font-semibold tracking-wide text-(--color-on-surface-variant) font-mono;
+  @apply text-xs font-semibold tracking-wide text-on-surface-variant font-mono;
 }

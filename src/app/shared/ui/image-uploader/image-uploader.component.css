@@ -1,14 +1,6 @@
 @reference "../../../../styles.css";
 
 /* Component styles for app-image-uploader */
-:host {
-  display: block;
-}
-
-.uploader-container {
-  @apply relative;
-}
-
 .error-banner {
   @apply absolute -top-12 left-0 right-0 text-center z-10;
   animation: fadeIn 0.2s ease-out forwards;
@@ -56,26 +48,6 @@
 
 .upload-icon-wrapper {
   @apply p-4 bg-surface-container-high rounded-full text-primary;
-}
-
-.empty-state-text {
-  @apply space-y-1;
-}
-
-.empty-state-title {
-  @apply font-semibold text-lg text-on-surface;
-}
-
-.empty-state-subtitle {
-  @apply text-sm text-on-surface-variant;
-}
-
-.browse-link {
-  @apply text-primary font-semibold hover:underline;
-}
-
-.empty-state-footer {
-  @apply text-xs text-outline;
 }
 
 @keyframes spin {

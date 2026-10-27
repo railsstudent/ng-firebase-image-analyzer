@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
-import { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
+import type { ImageDownloadOptions } from '@/features/image-analysis/interfaces/image-download-options.interface';
 import { ImageDownloadService } from './image-download.service';
 
 describe('ImageDownloadService', () => {

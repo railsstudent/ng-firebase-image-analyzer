@@ -1,4 +1,4 @@
-import { ImageAnalysisResponse } from '@/core/image-analysis';
+import type { ImageAnalysisResponse } from '@/core/image-analysis';
 import { EnhancedCanvasComponent } from '@/features/image-analysis/enhanced-canvas/enhanced-canvas.component';
 import { ImageCropComponent } from '@/features/image-analysis/image-crop/image-crop.component';
 import { VisualCalibrationService } from '@/features/image-analysis/services/visual-calibration.service';

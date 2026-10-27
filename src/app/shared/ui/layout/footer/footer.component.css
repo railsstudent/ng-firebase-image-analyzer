@@ -8,10 +8,6 @@
   @apply max-w-container-max mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4;
 }
 
-.footer-brand {
-  @apply flex items-center shrink-0;
-}
-
 .footer-copyright {
   @apply text-lg text-white/80 text-center md:text-left;
 }

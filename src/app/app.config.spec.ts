@@ -4,7 +4,7 @@ import { Router, ROUTES } from '@angular/router';
 import { SwRegistrationOptions } from '@angular/service-worker';
 import { appConfig } from './app.config';
 import { routes } from './app.routes';
-import { AiService } from './core/firebase';
+import { AiService } from './core/firebase/ai.service';
 import { ConfigService } from './core/firebase/config.service';
 
 function hasProvider(token: unknown): boolean {

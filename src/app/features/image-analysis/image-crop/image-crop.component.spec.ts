@@ -1,7 +1,8 @@
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { ImageCropComponent } from './image-crop.component';
 
 describe('ImageCropComponent', () => {
@@ -76,7 +77,7 @@ describe('ImageCropComponent', () => {
       { label: 'Warmth', value: 0.4 },
     ]);
 
-    const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) .specs-item'));
+    const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) li'));
     expect(items.length).toBe(4);
     expect(items[0].nativeElement.textContent).toContain('Brightness: 1.25');
     expect(items[1].nativeElement.textContent).toContain('Saturation: 1.5');
@@ -97,7 +98,7 @@ describe('ImageCropComponent', () => {
       { label: 'Warmth', value: 'N/A' },
     ]);
 
-    const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) .specs-item'));
+    const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) li'));
     items.forEach((item) => {
       expect(item.nativeElement.textContent).toContain('N/A');
     });

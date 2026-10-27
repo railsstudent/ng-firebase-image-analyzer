@@ -1,5 +1,5 @@
 import { DownloadEnhancedDirective } from '@/features/image-analysis/directives/download-enhanced.directive';
-import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { DownloadIconComponent } from '@/shared/ui/icons/download-icon/download-icon.component';
 import { Component, computed, input, signal } from '@angular/core';
 

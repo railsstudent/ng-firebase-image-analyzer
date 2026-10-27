@@ -1,6 +1,7 @@
 import { TerminalIconComponent } from '@/shared/ui/icons/terminal-icon/terminal-icon.component';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FooterComponent } from './footer.component';
 
@@ -32,8 +33,8 @@ describe('FooterComponent', () => {
     expect(component.copyrightYear).toBe(2026);
   });
 
-  it('renders <app-terminal-icon> inside .footer-brand without .footer-brand-title', () => {
-    const brandDebugEl = fixture.debugElement.query(By.css('.footer-brand'));
+  it('renders <app-terminal-icon> inside .footer-container without .footer-brand-title', () => {
+    const brandDebugEl = fixture.debugElement.query(By.css('.footer-container > .flex'));
     expect(brandDebugEl).toBeTruthy();
 
     const terminalIcon = brandDebugEl.query(By.directive(TerminalIconComponent));

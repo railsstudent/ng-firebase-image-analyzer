@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-system-update-alt-icon',
+  host: {
+    class: 'inline-flex items-center justify-center shrink-0 select-none w-6 h-6',
+  },
   template: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -15,6 +18,5 @@ import { Component } from '@angular/core';
       />
     </svg>
   `,
-  styleUrl: '../icon.css',
 })
 export class SystemUpdateAltIconComponent {}

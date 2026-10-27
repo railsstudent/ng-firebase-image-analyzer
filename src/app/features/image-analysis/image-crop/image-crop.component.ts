@@ -1,6 +1,6 @@
-import { ColorAdjustment } from '@/core/image-analysis';
+import type { ColorAdjustment } from '@/core/image-analysis';
 import { Component, computed, input } from '@angular/core';
-import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 
 @Component({
   selector: 'app-image-crop',

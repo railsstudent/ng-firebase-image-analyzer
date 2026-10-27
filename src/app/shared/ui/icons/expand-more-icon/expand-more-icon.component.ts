@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-expand-more-icon',
+  host: {
+    class: 'inline-flex items-center justify-center shrink-0 w-5 h-5 select-none',
+  },
   template: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -17,6 +20,5 @@ import { Component } from '@angular/core';
       />
     </svg>
   `,
-  styleUrl: '../icon.css',
 })
 export class ExpandMoreIconComponent {}

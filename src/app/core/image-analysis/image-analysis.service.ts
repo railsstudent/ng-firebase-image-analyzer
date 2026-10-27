@@ -1,7 +1,8 @@
-import { AiService, FALLBACK_IMAGE_SIZE, type PartialResponse } from '@/core/firebase';
+import { FALLBACK_IMAGE_SIZE, type PartialResponse } from '@/core/firebase';
+import { AiService } from '@/core/firebase/ai.service';
 import { inject, Service } from '@angular/core';
-import { Part } from 'firebase/ai';
-import { ImageAnalysisResponse, StreamingAnalysisWithMetadata } from './image-analysis.interface';
+import type { Part } from 'firebase/ai';
+import type { ImageAnalysisResponse, StreamingAnalysisWithMetadata } from './image-analysis.interface';
 import { IMAGE_ANALYSIS_USER_PROMPT, SYSTEM_INSTRUCTION } from './image-analysis.prompt';
 import { ImageAnalysisSchema } from './image-analysis.schema';
 import { readFileAsDataURL, resizeToFixedDimensions, validateImageInput, validatePrompt } from './image.util';

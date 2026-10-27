@@ -1,4 +1,4 @@
-import { AiService } from '@/core/firebase';
+import { AiService } from '@/core/firebase/ai.service';
 import { collectStream, createMockStream } from '@/testing/ai-stream.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';

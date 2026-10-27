@@ -118,6 +118,7 @@ export default defineConfig([
           allowDirectConstAssertionInArrowFunctions: true,
         },
       ],
+      '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
     },
   },
   {

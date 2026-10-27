@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeDiscoveryResponse, normalizeKeys } from './culinary-guide.normalization';
-import { CulinaryFoodItem } from './culinary-guide.interface';
+import type { CulinaryFoodItem } from './culinary-guide.interface';
 
 function makeFood(name: string): CulinaryFoodItem {
   return { name, description: `Description for ${name}` };

@@ -24,18 +24,10 @@
   animation: slideUpFadeIn 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.pwa-banner-header {
-  @apply flex items-start gap-4;
-}
-
 .pwa-banner-badge-wrapper {
   @apply flex items-center justify-center p-2.5;
   @apply bg-indigo-50 dark:bg-indigo-950/40;
   @apply text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0;
-}
-
-.pwa-banner-badge-icon {
-  @apply w-6 h-6 select-none;
 }
 
 .pwa-banner-content {

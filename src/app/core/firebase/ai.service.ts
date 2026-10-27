@@ -1,9 +1,9 @@
 import { PERCENT_FACTOR, WINDOW } from '@/core/constants';
 import { DOCUMENT, inject, Service } from '@angular/core';
+import type { GenerativeModel } from 'firebase/ai';
 import {
   type EnhancedGenerateContentResponse,
   type GenerateContentStreamResult,
-  GenerativeModel,
   type InferenceSource,
   type Part,
   type SchemaRequest,

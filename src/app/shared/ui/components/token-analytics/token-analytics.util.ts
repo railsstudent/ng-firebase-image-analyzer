@@ -23,13 +23,13 @@ function buildModalitySegments({ textTokens, imageTokens, totalTokens }: Modalit
     {
       type: 'Text',
       widthPercentage: textPercentage,
-      colorClass: 'modality-text',
+      colorClass: 'bg-primary',
       title: 'Text Metadata',
     },
     {
       type: 'Image',
       widthPercentage: imagePercentage,
-      colorClass: 'modality-image',
+      colorClass: 'bg-secondary',
       title: 'Image Metadata',
     },
   ];
@@ -39,15 +39,13 @@ function buildModalityLegend({ textTokens, imageTokens }: BaseModalityTokens): T
   return [
     {
       type: 'Text',
-      itemCssClass: 'modality-legend-item',
-      itemDotCssClass: 'bg-input',
+      itemDotCssClass: 'bg-primary',
       token: textTokens,
       label: 'Text',
     },
     {
       type: 'Image',
-      itemCssClass: 'modality-legend-item',
-      itemDotCssClass: 'bg-output',
+      itemDotCssClass: 'bg-secondary',
       token: imageTokens,
       label: 'Image',
     },
@@ -91,29 +89,25 @@ function getTokenUsageLegend(metadata: TokenUsageMetadata): TokenLegendItem[] {
   return [
     {
       type: 'prompt',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-input',
+      itemDotCssClass: 'bg-primary',
       token: promptTokens,
       label: 'Input',
     },
     {
       type: 'output',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-output',
+      itemDotCssClass: 'bg-secondary',
       token: candidatesTokens,
       label: 'Output',
     },
     {
       type: 'cached',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-cached',
+      itemDotCssClass: 'bg-tertiary',
       token: cachedTokens,
       label: 'Cached',
     },
     {
       type: 'thought',
-      itemCssClass: 'legend-item',
-      itemDotCssClass: 'bg-thought',
+      itemDotCssClass: 'bg-quaternary',
       token: thoughtTokens,
       label: 'Thought',
     },
@@ -135,25 +129,25 @@ function getTokenUsageSegments({
     {
       type: 'prompt',
       widthPercentage: promptTokensPercentage,
-      colorClass: 'segment-input',
+      colorClass: 'bg-primary',
       title: 'Input Tokens',
     },
     {
       type: 'output',
       widthPercentage: outputTokensPercentage,
-      colorClass: 'segment-output',
+      colorClass: 'bg-secondary',
       title: 'Output Tokens',
     },
     {
       type: 'cached',
       widthPercentage: cachedTokensPercentage,
-      colorClass: 'segment-cached',
+      colorClass: 'bg-tertiary',
       title: 'Cached Tokens',
     },
     {
       type: 'thought',
       widthPercentage: thoughtTokensPercentage,
-      colorClass: 'segment-thought',
+      colorClass: 'bg-quaternary',
       title: 'Thought Tokens',
     },
   ];

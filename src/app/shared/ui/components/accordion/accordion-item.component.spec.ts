@@ -1,5 +1,6 @@
 import { Component, provideZonelessChangeDetection, signal } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 import type { AccordionGroupContext } from './accordion-context.interface';
 import { AccordionGroupComponent } from './accordion-group.component';
@@ -63,7 +64,7 @@ describe('AccordionItemComponent', () => {
 
       const host = fixture.nativeElement as HTMLElement;
       const button = host.querySelector<HTMLButtonElement>('.accordion-trigger');
-      const panel = host.querySelector<HTMLElement>('.accordion-panel');
+      const panel = host.querySelector<HTMLElement>('div[role="region"]');
       const chevron = host.querySelector<SVGElement>('.accordion-chevron');
 
       expect(button).toBeTruthy();
@@ -88,7 +89,7 @@ describe('AccordionItemComponent', () => {
 
       const host = fixture.nativeElement as HTMLElement;
       const button = host.querySelector<HTMLButtonElement>('.accordion-trigger');
-      const panel = host.querySelector<HTMLElement>('.accordion-panel');
+      const panel = host.querySelector<HTMLElement>('div[role="region"]');
       const chevron = host.querySelector<SVGElement>('.accordion-chevron');
 
       expect(button?.getAttribute('aria-expanded')).toBe('true');
@@ -245,7 +246,7 @@ describe('AccordionItemComponent', () => {
 
     it('initializes all panels in collapsed state', () => {
       const compiled = hostFixture.nativeElement as HTMLElement;
-      const panels = compiled.querySelectorAll<HTMLElement>('.accordion-panel');
+      const panels = compiled.querySelectorAll<HTMLElement>('div[role="region"]');
 
       expect(panels[0]?.hasAttribute('hidden')).toBe(true);
       expect(panels[1]?.hasAttribute('hidden')).toBe(true);
@@ -254,7 +255,7 @@ describe('AccordionItemComponent', () => {
     it('expands first panel and updates attributes when trigger clicked', async () => {
       const compiled = hostFixture.nativeElement as HTMLElement;
       const triggers = compiled.querySelectorAll<HTMLButtonElement>('.accordion-trigger');
-      const panels = compiled.querySelectorAll<HTMLElement>('.accordion-panel');
+      const panels = compiled.querySelectorAll<HTMLElement>('div[role="region"]');
 
       triggers[0]?.click();
       hostFixture.detectChanges();
@@ -269,7 +270,7 @@ describe('AccordionItemComponent', () => {
     it('collapses previous panel when another item is expanded in single mode', async () => {
       const compiled = hostFixture.nativeElement as HTMLElement;
       const triggers = compiled.querySelectorAll<HTMLButtonElement>('.accordion-trigger');
-      const panels = compiled.querySelectorAll<HTMLElement>('.accordion-panel');
+      const panels = compiled.querySelectorAll<HTMLElement>('div[role="region"]');
 
       triggers[0]?.click();
       hostFixture.detectChanges();

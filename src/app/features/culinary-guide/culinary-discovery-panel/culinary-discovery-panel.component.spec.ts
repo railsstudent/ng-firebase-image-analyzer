@@ -1,9 +1,10 @@
 import type { StreamingCulinaryDiscoveryWithMetadata } from '@/core/culinary-guide';
-import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
+import { ListSkeletonComponent } from '@/shared/ui/components/skeleton/list-skeleton.component';
 import { ThoughtSummaryComponent } from '@/shared/ui/components/thought-summary/thought-summary.component';
 import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { CulinaryDiscoveryPanelComponent } from './culinary-discovery-panel.component';
 

@@ -1,4 +1,4 @@
-import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
 import { Directive, inject, input } from '@angular/core';
 

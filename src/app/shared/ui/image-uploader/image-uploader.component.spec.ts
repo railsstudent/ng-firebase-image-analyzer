@@ -1,6 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Mock } from '@vitest/spy';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import type { Mock } from '@vitest/spy';
 import { ImageUploaderComponent } from './image-uploader.component';
 
 function dispatchFileInput(fileInput: HTMLInputElement, ...files: File[]): void {

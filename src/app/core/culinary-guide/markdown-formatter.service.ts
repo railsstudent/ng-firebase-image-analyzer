@@ -1,5 +1,5 @@
 import { Service } from '@angular/core';
-import { MarkdownModules } from './culinary-guide.interface';
+import type { MarkdownModules } from './culinary-guide.interface';
 
 @Service()
 export class MarkdownFormatterService {

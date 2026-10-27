@@ -4,66 +4,14 @@
   @apply flex h-8 w-full rounded-full overflow-hidden shadow-sm bg-surface-container-high border border-outline-variant/10;
 }
 
-.segment-input {
-  @apply bg-primary;
-}
-
-.segment-output {
-  @apply bg-secondary;
-}
-
-.segment-cached {
-  @apply bg-tertiary;
-}
-
-.segment-thought {
-  @apply bg-quaternary;
-}
-
 .modality-progress-bar {
   @apply flex h-5 w-full rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/10;
-}
-
-.modality-text {
-  @apply bg-primary;
-}
-
-.modality-image {
-  @apply bg-secondary;
 }
 
 .token-legend-grid {
   @apply grid grid-cols-2 md:grid-cols-4 gap-4 mt-4;
 }
 
-.legend-item {
-  @apply flex items-center gap-2;
-}
-
-.legend-dot {
-  @apply w-3 h-3 rounded-full;
-}
-
-.legend-dot.bg-input {
-  @apply bg-primary;
-}
-
-.legend-dot.bg-output {
-  @apply bg-secondary;
-}
-
-.legend-dot.bg-cached {
-  @apply bg-tertiary;
-}
-
-.legend-dot.bg-thought {
-  @apply bg-quaternary;
-}
-
 .modality-legend {
   @apply flex justify-between text-xs font-mono text-on-surface-variant;
-}
-
-.modality-legend-item {
-  @apply flex items-center gap-1.5;
 }

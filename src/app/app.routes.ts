@@ -1,5 +1,5 @@
 import { inject, provideEnvironmentInitializer } from '@angular/core';
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 import { ConfigService } from './core/firebase/config.service';
 import { ROUTE_PATHS } from './core/routing';
 import HomeComponent from './features/home/home.component';

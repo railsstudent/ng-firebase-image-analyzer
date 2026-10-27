@@ -1,7 +1,7 @@
 import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
 import { DownloadEnhancedDirective } from './download-enhanced.directive';
 

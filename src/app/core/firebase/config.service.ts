@@ -4,7 +4,7 @@ import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 import { inject, isDevMode, Service } from '@angular/core';
 import type { AI, ThinkingLevel } from 'firebase/ai';
 import type { FirebaseApp } from 'firebase/app';
-import { AppRemoteConfig } from './app-remote-config.interface';
+import type { AppRemoteConfig } from './app-remote-config.interface';
 import { isLocalhost, isOnline } from './host.util';
 
 const DEV_TIMEOUT = 1000;

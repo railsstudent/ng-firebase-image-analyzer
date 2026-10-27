@@ -1,8 +1,9 @@
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
-import { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { EnhancedCanvasComponent } from './enhanced-canvas.component';
 
 describe('EnhancedCanvasComponent', () => {

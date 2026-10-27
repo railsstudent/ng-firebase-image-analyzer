@@ -1,11 +1,11 @@
-import { normalizeKeys } from '@/core/culinary-guide/culinary-guide.normalization';
 import type { CulinaryDestination, CulinaryLocation } from '@/core/culinary-guide';
-import { SpinnerIconComponent } from '@/shared/ui/icons/spinner-icon/spinner-icon.component';
+import { normalizeKeys } from '@/core/culinary-guide/culinary-guide.normalization';
+import { SyncIconComponent } from '@/shared/ui/icons/sync-icon/sync-icon.component';
+import type { ElementRef } from '@angular/core';
 import {
   afterRenderEffect,
   Component,
   computed,
-  ElementRef,
   input,
   linkedSignal,
   output,
@@ -19,7 +19,7 @@ const CITY_DEBOUNCE_MS = 200;
 
 @Component({
   selector: 'app-culinary-search-box',
-  imports: [FormField, SpinnerIconComponent],
+  imports: [FormField, SyncIconComponent],
   templateUrl: './culinary-search-box.component.html',
   styleUrl: './culinary-search-box.component.css',
 })

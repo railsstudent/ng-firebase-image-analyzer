@@ -5,7 +5,7 @@
   <div class="prewarm-status-slot" role="status" aria-live="polite">
     @if (warmingMessage(); as message) {
       <div class="prewarm-status-badge">
-        <app-sync-icon class="prewarm-status-icon" />
+        <app-sync-icon class="text-primary w-4 h-4 motion-reduce:animate-none" />
         <span class="prewarm-status-text">{{ message }}</span>
       </div>
     }
@@ -17,7 +17,7 @@
         <app-error-icon />
       </div>
       <div class="flex-1">
-        <p class="error-text">{{ errorMessage() }}</p>
+        <p class="text-2xl font-medium text-error-text">{{ errorMessage() }}</p>
       </div>
     </div>
   }
@@ -35,7 +35,7 @@
   @if (isLoading()) {
     <div class="flex justify-center">
       <div class="streaming-loader-badge">
-        <app-sync-icon class="streaming-loader-icon" />
+        <app-sync-icon class="text-primary w-5 h-5" />
         <span class="streaming-loader-text">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>
@@ -45,13 +45,15 @@
   <div class="space-y-3">
     <span class="section-subtitle">Analysis Output</span>
     <h3 class="section-title">
-      <app-sell-icon class="section-title-icon" />
+      <app-sell-icon />
       Detected Visual Tags
     </h3>
     @defer (when tags().length > 0) {
       <app-tag-list class="animate-fade-in block" [tags]="tags()"></app-tag-list>
     } @placeholder {
-      <p class="empty-state-text">No tags detected yet. Run image analysis to extract visual labels.</p>
+      <p class="text-sm text-on-surface-variant italic">
+        No tags detected yet. Run image analysis to extract visual labels.
+      </p>
     }
   </div>
 
@@ -60,7 +62,7 @@
     <app-image-analysis-panel class="block" [data]="analysisData()" [imageUrl]="imageUrl()"></app-image-analysis-panel>
   } @placeholder {
     <div class="section-card">
-      <p class="empty-state-text">
+      <p class="text-sm text-on-surface-variant italic">
         No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.
       </p>
     </div>

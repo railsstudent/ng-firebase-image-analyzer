@@ -1,9 +1,0 @@
-@reference "../../../../../styles.css";
-
-.reasoning-text {
-  @apply text-on-surface-variant leading-relaxed;
-}
-
-.thought-label {
-  @apply font-bold text-on-surface gap-2;
-}

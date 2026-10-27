@@ -1,12 +1,14 @@
-<div class="analysis-section-card space-y-4">
+<div class="section-card space-y-4">
   <h3 class="section-title">
-    <app-psychology-icon class="section-title-icon" />
+    <app-psychology-icon class="text-primary text-2xl" />
     <span>AI Reasoning Overview</span>
   </h3>
 
   <div class="space-y-3">
-    <p class="reasoning-text"><span class="thought-label">Source:</span> {{ displaySource() }}</p>
-    <p class="reasoning-text">{{ thoughtSummary() }}</p>
+    <p class="text-on-surface-variant leading-relaxed">
+      <span class="font-bold text-on-surface gap-2">Source:</span> {{ displaySource() }}
+    </p>
+    <p class="text-on-surface-variant leading-relaxed">{{ thoughtSummary() }}</p>
 
     @if (remarks(); as remarkList) {
       <app-recommendation-list [listTitle]="remarksTitle()">

@@ -1,5 +1,6 @@
-import { RecommendationItemComponent, RecommendationListComponent } from '@/shared/ui/components/recommendation-list';
-import { ListSkeletonComponent } from '@/shared/ui/components/skeleton';
+import { RecommendationItemComponent } from '@/shared/ui/components/recommendation-list/recommendation-item.component';
+import { RecommendationListComponent } from '@/shared/ui/components/recommendation-list/recommendation-list.component';
+import { ListSkeletonComponent } from '@/shared/ui/components/skeleton/list-skeleton.component';
 import { PsychologyIconComponent } from '@/shared/ui/icons/psychology-icon/psychology-icon.component';
 import { Component, input } from '@angular/core';
 
@@ -7,7 +8,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-thought-summary',
   imports: [RecommendationListComponent, RecommendationItemComponent, PsychologyIconComponent, ListSkeletonComponent],
   templateUrl: './thought-summary.component.html',
-  styleUrls: ['../../styles/section-card.css', './thought-summary.component.css'],
+  styleUrls: ['../../styles/section-card.css'],
 })
 export class ThoughtSummaryComponent {
   displaySource = input('N/A');

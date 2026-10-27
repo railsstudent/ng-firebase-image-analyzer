@@ -1,4 +1,4 @@
-import { ROUTE_PATHS } from './route.const';
+import type { ROUTE_PATHS } from './route.const';
 
 type AppRoute = `/${(typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS]}`;
 

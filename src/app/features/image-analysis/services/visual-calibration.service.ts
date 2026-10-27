@@ -1,6 +1,6 @@
-import { ColorAdjustment, Crop, ImageAnalysisResponse } from '@/core/image-analysis';
-import { ClampOptions } from '@/features/image-analysis/interfaces/clamp-option.interface';
-import {
+import type { ColorAdjustment, Crop, ImageAnalysisResponse } from '@/core/image-analysis';
+import type { ClampOptions } from '@/features/image-analysis/interfaces/clamp-option.interface';
+import type {
   CropImageStyles,
   VisualCalibrationResult,
 } from '@/features/image-analysis/interfaces/visual-calibration.interface';

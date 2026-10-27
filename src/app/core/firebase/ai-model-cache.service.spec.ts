@@ -1,9 +1,10 @@
 import { WINDOW } from '@/core/constants';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { getGenerativeModel, InferenceMode, SchemaRequest, SchemaType, ThinkingLevel } from 'firebase/ai';
+import type { SchemaRequest } from 'firebase/ai';
+import { getGenerativeModel, InferenceMode, SchemaType, ThinkingLevel } from 'firebase/ai';
 import { AiModelCacheService } from './ai-model-cache.service';
-import { AppRemoteConfig } from './app-remote-config.interface';
+import type { AppRemoteConfig } from './app-remote-config.interface';
 import { ConfigService } from './config.service';
 
 describe('AiModelCacheService', () => {

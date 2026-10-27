@@ -1,6 +1,7 @@
-import { ImageAnalysisService } from '@/core/image-analysis';
+import { ImageAnalysisService } from '@/core/image-analysis/image-analysis.service';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import ImageAnalysisComponent from './image-analysis.component';
 
 describe('ImageAnalysisComponent', () => {

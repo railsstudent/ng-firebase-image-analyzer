@@ -1,21 +1,25 @@
 @let aspectRatio = calibration().aspectRatio;
 @let cropPosition = calibration().cropPosition;
 
-<div class="specs-sidebar">
+<div class="space-y-4">
   <div class="specs-box">
-    <p class="specs-title">Crop Metadata</p>
+    <p class="token-details-label">Crop Metadata</p>
     <ul class="specs-list">
-      <li class="specs-item"><span class="specs-item-name">Crop Bounds:</span> {{ cropPosition }}</li>
-      <li class="specs-item"><span class="specs-item-name">Aspect Ratio:</span> {{ aspectRatio }}</li>
+      <li class="flex justify-between">
+        <span class="font-semibold text-on-surface">Crop Bounds:</span> {{ cropPosition }}
+      </li>
+      <li class="flex justify-between">
+        <span class="font-semibold text-on-surface">Aspect Ratio:</span> {{ aspectRatio }}
+      </li>
     </ul>
   </div>
 
   <div class="specs-box">
-    <p class="specs-title">Filters Applied</p>
+    <p class="token-details-label">Filters Applied</p>
     <ul class="specs-list">
       @for (item of appliedFilters(); track item.label) {
-        <li class="specs-item">
-          <span class="specs-item-name">{{ item.label }}:</span>
+        <li class="flex justify-between">
+          <span class="font-semibold text-on-surface">{{ item.label }}:</span>
           {{ item.value }}
         </li>
       }

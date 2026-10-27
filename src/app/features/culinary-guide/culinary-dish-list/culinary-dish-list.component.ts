@@ -1,8 +1,9 @@
 import { normalizeKeys } from '@/core/culinary-guide';
 import type { CulinaryFoodItem } from '@/core/culinary-guide/culinary-guide.interface';
 import type { CulinaryRecipeDetail } from '@/features/culinary-guide/interfaces/culinary-recipe-detail.interface';
-import { AccordionGroupComponent, AccordionItemComponent } from '@/shared/ui/components/accordion';
-import { SkeletonComponent } from '@/shared/ui/components/skeleton';
+import { AccordionGroupComponent } from '@/shared/ui/components/accordion/accordion-group.component';
+import { AccordionItemComponent } from '@/shared/ui/components/accordion/accordion-item.component';
+import { SkeletonComponent } from '@/shared/ui/components/skeleton/skeleton.component';
 import { TokenAnalyticsComponent } from '@/shared/ui/components/token-analytics/token-analytics.component';
 import { Component, input, model, output } from '@angular/core';
 

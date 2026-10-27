@@ -12,7 +12,7 @@
     [attr.aria-controls]="panelId"
     (click)="toggle()"
   >
-    <div class="accordion-trigger-content">
+    <div class="flex-1 min-w-0">
       <ng-content select="[accordion-header]" />
     </div>
     <app-expand-more-icon class="accordion-chevron" [class.rotate-180]="isExpanded()" />
@@ -23,7 +23,7 @@
     role="region"
     [attr.aria-labelledby]="headerId"
     [hidden]="!isExpanded()"
-    class="accordion-panel"
+    class="px-4 pb-4 pt-1"
   >
     <ng-content select="[accordion-body]" />
   </div>

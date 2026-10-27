@@ -1,9 +1,5 @@
 @reference "../../../../../styles.css";
 
-:host {
-  @apply block;
-}
-
 .accordion-item {
   @apply rounded-2xl border transition-colors;
   background-color: var(--color-surface-glass);
@@ -19,16 +15,8 @@
   --tw-ring-color: var(--color-primary);
 }
 
-.accordion-trigger-content {
-  @apply flex-1 min-w-0;
-}
-
 .accordion-chevron {
   @apply w-5 h-5 shrink-0 transition-transform duration-200 text-on-surface-variant;
-}
-
-.accordion-panel {
-  @apply px-4 pb-4 pt-1;
 }
 
 .accordion-trigger:disabled {

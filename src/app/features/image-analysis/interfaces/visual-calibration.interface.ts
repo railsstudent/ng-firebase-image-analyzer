@@ -1,4 +1,4 @@
-import { ColorAdjustment, Crop } from '@/core/image-analysis';
+import type { ColorAdjustment, Crop } from '@/core/image-analysis';
 
 interface ContainerStyle {
   width: string;
