@@ -15,7 +15,7 @@ import { Component, input } from '@angular/core';
       display: block;
     }
   `,
-  styleUrls: ['../../../shared/ui/styles/section-card.css', '../../../shared/ui/styles/empty-state.css'],
+  styleUrls: ['../../../shared/ui/styles/section-card.css'],
 })
 export class CulinaryDiscoveryPanelComponent {
   discovery = input<StreamingCulinaryDiscoveryWithMetadata | null>(null);

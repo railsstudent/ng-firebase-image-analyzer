@@ -14,7 +14,7 @@
         </div>
 
         <app-token-usage-bar
-          barCss="segmented-progress-bar"
+          barCss="shadow-sm h-8"
           [tokenSegments]="tokenDetails().segments"
           gridCssClass="token-legend-grid"
           [gridItems]="tokenDetails().legend"
@@ -22,12 +22,12 @@
       </div>
 
       <!-- Modality Details -->
-      <div class="token-details-grid">
+      <div class="border-t border-outline-variant/20 token-details-grid">
         <div class="space-y-3">
           @if (promptTokens() > 0) {
             <p class="token-details-label">Prompt Split (Input)</p>
             <app-token-usage-bar
-              barCss="modality-progress-bar"
+              barCss="h-5"
               [tokenSegments]="promptModalityDetails().segments"
               gridCssClass="modality-legend"
               [gridItems]="promptModalityDetails().legend"
@@ -36,7 +36,7 @@
           @if (candidatesTokens() > 0) {
             <p class="token-details-label">Candidate Split (Output)</p>
             <app-token-usage-bar
-              barCss="modality-progress-bar"
+              barCss="h-5"
               [tokenSegments]="outputModalityDetails().segments"
               gridCssClass="modality-legend"
               [gridItems]="outputModalityDetails().legend"
@@ -46,7 +46,7 @@
           @if (cachedTokens() > 0) {
             <p class="token-details-label">Saving (Cached)</p>
             <app-token-usage-bar
-              barCss="modality-progress-bar"
+              barCss="h-5"
               [tokenSegments]="cachedModalityDetails().segments"
               gridCssClass="modality-legend"
               [gridItems]="cachedModalityDetails().legend"
@@ -54,7 +54,7 @@
           }
         </div>
 
-        <div class="cached-savings-card">
+        <div class="border rounded-xl cached-savings-card">
           <div class="flex justify-between items-center">
             <span class="text-sm font-semibold text-on-surface">Cached Savings</span>
             <span class="font-mono font-bold text-emerald-600">-{{ cachedTokens() }} Tokens</span>

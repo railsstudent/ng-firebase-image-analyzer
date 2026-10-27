@@ -1,10 +1,6 @@
 @reference "../../../../../styles.css";
 
 /* Component styles for app-tag */
-:host {
-  display: inline-block;
-}
-
 .tag-container {
   @apply relative inline-block;
 }

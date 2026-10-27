@@ -1,17 +1,23 @@
-type TokenSegmentType = 'prompt' | 'output' | 'cached' | 'thought' | 'Text' | 'Image';
+export type TokenSegmentType = 'prompt' | 'output' | 'cached' | 'thought' | 'Text' | 'Image';
 
 export interface TokenSegment {
   type: TokenSegmentType;
   widthPercentage: number;
-  colorClass: string;
   title: string;
+}
+
+export interface ColoredTokenSegment extends TokenSegment {
+  colorClass: string;
 }
 
 export interface TokenLegendItem {
   type: TokenSegmentType;
-  itemDotCssClass: string;
   token: number;
   label: string;
+}
+
+export interface ColoredTokenLegendItem extends TokenLegendItem {
+  itemDotCssClass: string;
 }
 
 export interface ModalitySegmentsLegend {

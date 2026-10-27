@@ -29,7 +29,7 @@ describe('TagListComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const emptyMsg = compiled.querySelector('.empty-state-text');
+    const emptyMsg = compiled.querySelector('.text-on-surface-variant');
     expect(emptyMsg?.textContent).toContain('No tags detected yet');
   });
 

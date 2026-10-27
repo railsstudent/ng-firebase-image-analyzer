@@ -1,13 +1,5 @@
 @reference "../../../../../styles.css";
 
-.segmented-progress-bar {
-  @apply flex h-8 w-full rounded-full overflow-hidden shadow-sm bg-surface-container-high border border-outline-variant/10;
-}
-
-.modality-progress-bar {
-  @apply flex h-5 w-full rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/10;
-}
-
 .token-legend-grid {
   @apply grid grid-cols-2 md:grid-cols-4 gap-4 mt-4;
 }

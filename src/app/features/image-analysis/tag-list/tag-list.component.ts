@@ -9,7 +9,6 @@ import type { ImageTag } from './interfaces/image-tag.interface';
   },
   imports: [BadgeComponent],
   templateUrl: './tag-list.component.html',
-  styleUrls: ['../../../shared/ui/styles/empty-state.css'],
 })
 export class TagListComponent {
   tags = input.required<ImageTag[]>();

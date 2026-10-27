@@ -70,7 +70,7 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
   it('should render a list of accordion items matching the dishes input', () => {
     const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
     expect(accordionItems.length).toBe(2);
-    expect(fixture.nativeElement.querySelector('.empty-state-text')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.section-card .text-on-surface-variant')).toBeNull();
   });
 
   it('should render empty state card and omit accordion group when dishes input is empty', async () => {
@@ -79,7 +79,7 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('app-accordion-group')).toBeNull();
-    const emptyCard = fixture.nativeElement.querySelector('.section-card .empty-state-text');
+    const emptyCard = fixture.nativeElement.querySelector('.section-card .text-on-surface-variant');
     expect(emptyCard).toBeTruthy();
     expect(emptyCard?.textContent?.trim()).toBe(
       'No iconic dishes available. Search for a destination above to explore local culinary highlights.',

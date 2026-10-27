@@ -56,7 +56,7 @@ describe('CulinaryDiscoveryPanelComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const emptyCard = compiled.querySelector('.section-card .empty-state-text');
+    const emptyCard = compiled.querySelector('.section-card .text-on-surface-variant');
     expect(emptyCard?.textContent).toContain(
       'No culinary discovery results available yet. Select a destination to explore iconic dishes and AI insights.',
     );
@@ -70,7 +70,7 @@ describe('CulinaryDiscoveryPanelComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.panel-container')).toBeTruthy();
-    expect(compiled.querySelector('.empty-state-text')).toBeNull();
+    expect(compiled.querySelector('.section-card p.italic')).toBeNull();
   });
 
   it('should discover both tab headers on initial render', async () => {

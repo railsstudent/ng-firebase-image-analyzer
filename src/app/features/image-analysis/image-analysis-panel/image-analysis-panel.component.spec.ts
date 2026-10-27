@@ -47,7 +47,7 @@ describe('ImageAnalysisPanelComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const emptyCard = compiled.querySelector('.section-card .empty-state-text');
+    const emptyCard = compiled.querySelector('.section-card .text-on-surface-variant');
     expect(emptyCard?.textContent).toContain(
       "No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.",
     );
@@ -61,7 +61,7 @@ describe('ImageAnalysisPanelComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.panel-container')).toBeTruthy();
-    expect(compiled.querySelector('.empty-state-text')).toBeNull();
+    expect(compiled.querySelector('.section-card p.italic')).toBeNull();
   });
 
   it('should discover all 4 tab headers immediately on initial render', async () => {

@@ -36,6 +36,7 @@ describe('ImageAnalysisComponent', () => {
 
     fixture = TestBed.createComponent(ImageAnalysisComponent);
     component = fixture.componentInstance;
+    component.analysisData.set(null);
     await fixture.whenStable();
     await vi.waitFor(() => {
       expect(mockImageAnalysisService.preWarm).toHaveBeenCalledTimes(1);
@@ -148,7 +149,7 @@ describe('ImageAnalysisComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const emptyPlaceholder = compiled.querySelector('.space-y-3 .empty-state-text');
+    const emptyPlaceholder = compiled.querySelector('.space-y-3 .text-on-surface-variant');
     expect(emptyPlaceholder?.textContent).toContain(
       'No tags detected yet. Run image analysis to extract visual labels.',
     );
@@ -174,7 +175,7 @@ describe('ImageAnalysisComponent', () => {
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const analysisPlaceholder = compiled.querySelector('.section-card .empty-state-text');
+    const analysisPlaceholder = compiled.querySelector('.section-card .text-on-surface-variant');
     expect(analysisPlaceholder?.textContent).toContain(
       "No analysis results available yet. Upload an image and click 'Analyze Image' to inspect AI insights.",
     );

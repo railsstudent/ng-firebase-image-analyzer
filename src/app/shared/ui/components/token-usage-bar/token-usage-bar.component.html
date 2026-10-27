@@ -1,5 +1,8 @@
-<div [class]="barCss()">
-  @for (tokenSegment of tokenSegments(); track tokenSegment.type) {
+<div
+  class="flex w-full rounded-full overflow-hidden bg-surface-container-high border border-outline-variant/10"
+  [class]="barCss()"
+>
+  @for (tokenSegment of coloredTokenSegments(); track tokenSegment.type) {
     <div
       [class]="tokenSegment.colorClass"
       [style.width.%]="tokenSegment.widthPercentage"
@@ -8,11 +11,10 @@
   }
 </div>
 <div [class]="gridCssClass()">
-  @for (legendItem of gridItems(); track legendItem.type) {
+  @for (legendItem of coloredGridItems(); track legendItem.type) {
     <div class="flex items-center gap-2">
       <div class="w-3 h-3 rounded-full" [class]="legendItem.itemDotCssClass"></div>
-      x
-      <span class="legend-text">{{ legendItem.label }}: {{ legendItem.token }}</span>
+      <span class="text-xs font-mono text-on-surface-variant">{{ legendItem.label }}: {{ legendItem.token }}</span>
     </div>
   }
 </div>

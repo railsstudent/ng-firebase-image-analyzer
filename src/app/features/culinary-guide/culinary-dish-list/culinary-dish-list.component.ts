@@ -11,11 +11,7 @@ import { Component, input, model, output } from '@angular/core';
   selector: 'app-culinary-dish-list',
   imports: [AccordionGroupComponent, AccordionItemComponent, TokenAnalyticsComponent, SkeletonComponent],
   templateUrl: './culinary-dish-list.component.html',
-  styleUrls: [
-    '../../../shared/ui/styles/section-card.css',
-    '../../../shared/ui/styles/empty-state.css',
-    './culinary-dish-list.component.css',
-  ],
+  styleUrls: ['../../../shared/ui/styles/section-card.css', './culinary-dish-list.component.css'],
 })
 export class CulinaryDishListComponent {
   dishes = input.required<CulinaryFoodItem[]>();

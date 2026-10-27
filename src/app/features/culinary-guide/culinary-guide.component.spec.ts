@@ -298,20 +298,20 @@ describe('CulinaryGuideComponent', () => {
     });
   });
 
-  describe('3-tier @defer boundaries and layout (.culinary-guide-container and .culinary-dish-section)', () => {
-    it('should render placeholder cards inside .culinary-dish-section and bottom panel prior to search without instantiating deferred child components', () => {
+  describe('3-tier @defer boundaries and layout', () => {
+    it('should render placeholder cards for dish list and bottom panel prior to search without instantiating deferred child components', () => {
       const compiled = fixture.nativeElement as HTMLElement;
-      const containerEl = compiled.querySelector('.culinary-guide-container');
+      const containerEl = compiled.querySelector('.max-w-container-max');
       expect(containerEl).toBeTruthy();
 
       expect(containerEl?.querySelector('app-culinary-dish-list')).toBeNull();
-      expect(containerEl?.querySelector('.section-card .empty-state-text')?.textContent?.trim()).toBe(
+      expect(containerEl?.querySelector('.section-card .text-on-surface-variant')?.textContent?.trim()).toBe(
         'Iconic dishes will appear here once you search for a destination.',
       );
 
       expect(compiled.querySelector('app-culinary-discovery-panel')).toBeNull();
-      const emptyStateTexts = Array.from(compiled.querySelectorAll('.section-card .empty-state-text')).map((el) =>
-        el.textContent?.trim(),
+      const emptyStateTexts = Array.from(compiled.querySelectorAll('.section-card .text-on-surface-variant')).map(
+        (el) => el.textContent?.trim(),
       );
       expect(emptyStateTexts).toContain(
         'Culinary discovery insights and token analytics will appear here after a destination is selected.',
@@ -324,10 +324,10 @@ describe('CulinaryGuideComponent', () => {
       await fixture.whenStable();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      const containerEl = compiled.querySelector('.culinary-guide-container');
+      const containerEl = compiled.querySelector('.max-w-container-max');
       expect(containerEl?.querySelector('app-culinary-dish-list')).toBeTruthy();
       expect(compiled.querySelector('app-culinary-discovery-panel')).toBeTruthy();
-      expect(compiled.querySelectorAll('.empty-state-text').length).toBe(0);
+      expect(compiled.querySelectorAll('.section-card p.italic').length).toBe(0);
     });
 
     it('should pass isDisabled to app-culinary-dish-list during Stage 1 discovery streaming and re-enable when settled', async () => {

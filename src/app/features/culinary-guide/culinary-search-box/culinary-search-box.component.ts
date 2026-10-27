@@ -19,6 +19,9 @@ const CITY_DEBOUNCE_MS = 200;
 
 @Component({
   selector: 'app-culinary-search-box',
+  host: {
+    class: 'relative z-20 block',
+  },
   imports: [FormField, SyncIconComponent],
   templateUrl: './culinary-search-box.component.html',
   styleUrl: './culinary-search-box.component.css',

@@ -1,5 +1,5 @@
 @if (pwaUpdateService.updateAvailable() && !isDismissed()) {
-  <div class="pwa-banner-card">
+  <div class="pwa-banner-card border shadow-lg">
     <div class="flex items-start gap-4">
       <div class="pwa-banner-badge-wrapper">
         <app-system-update-alt-icon />
@@ -12,8 +12,8 @@
       </div>
     </div>
     <div class="pwa-banner-actions">
-      <button (click)="dismiss()" class="pwa-banner-btn-secondary">Later</button>
-      <button (click)="pwaUpdateService.reloadPage()" class="pwa-banner-btn-primary">Reload Now</button>
+      <button (click)="dismiss()" class="pwa-banner-btn pwa-banner-btn-secondary">Later</button>
+      <button (click)="pwaUpdateService.reloadPage()" class="pwa-banner-btn pwa-banner-btn-primary">Reload Now</button>
     </div>
   </div>
 }

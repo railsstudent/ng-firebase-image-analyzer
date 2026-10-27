@@ -5,9 +5,9 @@
 }
 
 .token-details-grid {
-  @apply pt-6 border-t border-outline-variant/20 grid grid-cols-1 md:grid-cols-2 gap-6;
+  @apply pt-6 grid grid-cols-1 md:grid-cols-2 gap-6;
 }
 
 .cached-savings-card {
-  @apply p-4 bg-surface-card rounded-xl border border-outline-variant/20 flex flex-col justify-center;
+  @apply p-4 bg-surface-card border-outline-variant/20;
 }

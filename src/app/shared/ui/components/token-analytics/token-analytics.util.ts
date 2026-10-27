@@ -23,13 +23,11 @@ function buildModalitySegments({ textTokens, imageTokens, totalTokens }: Modalit
     {
       type: 'Text',
       widthPercentage: textPercentage,
-      colorClass: 'bg-primary',
       title: 'Text Metadata',
     },
     {
       type: 'Image',
       widthPercentage: imagePercentage,
-      colorClass: 'bg-secondary',
       title: 'Image Metadata',
     },
   ];
@@ -39,13 +37,11 @@ function buildModalityLegend({ textTokens, imageTokens }: BaseModalityTokens): T
   return [
     {
       type: 'Text',
-      itemDotCssClass: 'bg-primary',
       token: textTokens,
       label: 'Text',
     },
     {
       type: 'Image',
-      itemDotCssClass: 'bg-secondary',
       token: imageTokens,
       label: 'Image',
     },
@@ -89,25 +85,21 @@ function getTokenUsageLegend(metadata: TokenUsageMetadata): TokenLegendItem[] {
   return [
     {
       type: 'prompt',
-      itemDotCssClass: 'bg-primary',
       token: promptTokens,
       label: 'Input',
     },
     {
       type: 'output',
-      itemDotCssClass: 'bg-secondary',
       token: candidatesTokens,
       label: 'Output',
     },
     {
       type: 'cached',
-      itemDotCssClass: 'bg-tertiary',
       token: cachedTokens,
       label: 'Cached',
     },
     {
       type: 'thought',
-      itemDotCssClass: 'bg-quaternary',
       token: thoughtTokens,
       label: 'Thought',
     },
@@ -129,25 +121,21 @@ function getTokenUsageSegments({
     {
       type: 'prompt',
       widthPercentage: promptTokensPercentage,
-      colorClass: 'bg-primary',
       title: 'Input Tokens',
     },
     {
       type: 'output',
       widthPercentage: outputTokensPercentage,
-      colorClass: 'bg-secondary',
       title: 'Output Tokens',
     },
     {
       type: 'cached',
       widthPercentage: cachedTokensPercentage,
-      colorClass: 'bg-tertiary',
       title: 'Cached Tokens',
     },
     {
       type: 'thought',
       widthPercentage: thoughtTokensPercentage,
-      colorClass: 'bg-quaternary',
       title: 'Thought Tokens',
     },
   ];
