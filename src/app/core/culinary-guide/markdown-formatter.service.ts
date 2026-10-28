@@ -33,28 +33,24 @@ export class MarkdownFormatterService {
           .map((c) => c.trim());
         const isDelimiter = cells.every((c) => /^:?-+:?$/.test(c));
 
-        if (isDelimiter) {
-          continue;
+        if (!isDelimiter) {
+          if (!inTable) {
+            inTable = true;
+            headers = cells;
+          } else {
+            const formattedRow = cells
+              .map((cell, idx) => {
+                if (!cell) {
+                  return '';
+                }
+                const header = headers[idx] ? `**${headers[idx]}:** ` : '';
+                return `${header}${cell}`;
+              })
+              .filter(Boolean)
+              .join(' - ');
+            result.push(`- ${formattedRow}`);
+          }
         }
-
-        if (!inTable) {
-          inTable = true;
-          headers = cells;
-          continue;
-        }
-
-        const formattedRow = cells
-          .map((cell, idx) => {
-            if (!cell) {
-              return '';
-            }
-            const header = headers[idx] ? `**${headers[idx]}:** ` : '';
-            return `${header}${cell}`;
-          })
-          .filter(Boolean)
-          .join(' - ');
-
-        result.push(`- ${formattedRow}`);
       } else {
         inTable = false;
         headers = [];

@@ -23,15 +23,12 @@ export class CulinaryGuideCoordinatorService {
       let hasYieldedFoods = false;
 
       for await (const chunk of generator) {
-        if (chunk.foods.length === 0 && hasYieldedFoods) {
-          continue;
+        if (chunk.foods.length > 0 || !hasYieldedFoods) {
+          if (chunk.foods.length > 0) {
+            hasYieldedFoods = true;
+          }
+          yield chunk;
         }
-
-        if (chunk.foods.length > 0) {
-          hasYieldedFoods = true;
-        }
-
-        yield chunk;
       }
 
       this.clearCache();
@@ -55,19 +52,17 @@ export class CulinaryGuideCoordinatorService {
       let hasYieldedIngredients = false;
 
       for await (const chunk of generator) {
-        if (chunk.ingredients.length === 0 && hasYieldedIngredients) {
-          continue;
-        }
+        if (chunk.ingredients.length > 0 || !hasYieldedIngredients) {
+          if (chunk.ingredients.length > 0) {
+            hasYieldedIngredients = true;
+          }
 
-        if (chunk.ingredients.length > 0) {
-          hasYieldedIngredients = true;
+          lastChunk = chunk;
+          yield {
+            ...chunk,
+            recipeHtml: '',
+          };
         }
-
-        lastChunk = chunk;
-        yield {
-          ...chunk,
-          recipeHtml: '',
-        };
       }
 
       if (lastChunk) {

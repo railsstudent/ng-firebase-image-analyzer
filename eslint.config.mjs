@@ -119,6 +119,7 @@ export default defineConfig([
         },
       ],
       '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
+      'no-continue': 'error',
     },
   },
   {

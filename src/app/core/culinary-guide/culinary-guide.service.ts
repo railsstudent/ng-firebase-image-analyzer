@@ -58,12 +58,11 @@ export class CulinaryGuideService {
           foods: [],
           honorableMentions: [],
         };
-        continue;
+      } else {
+        throw new Error(
+          `Incomplete culinary discovery stream: expected ${EXPECTED_FOOD_COUNT} foods and ${MIN_HONORABLE_MENTIONS}-${MAX_HONORABLE_MENTIONS} honorable mentions, but received ${foods.length} foods and ${honorableMentions.length} honorable mentions.`,
+        );
       }
-
-      throw new Error(
-        `Incomplete culinary discovery stream: expected ${EXPECTED_FOOD_COUNT} foods and ${MIN_HONORABLE_MENTIONS}-${MAX_HONORABLE_MENTIONS} honorable mentions, but received ${foods.length} foods and ${honorableMentions.length} honorable mentions.`,
-      );
     }
   }
 
@@ -118,12 +117,11 @@ export class CulinaryGuideService {
           ingredients: [],
           recipe: '',
         };
-        continue;
+      } else {
+        throw new Error(
+          `Incomplete culinary recipe stream: missing ingredients or recipe text for "${target.dishName}".`,
+        );
       }
-
-      throw new Error(
-        `Incomplete culinary recipe stream: missing ingredients or recipe text for "${target.dishName}".`,
-      );
     }
   }
 }
