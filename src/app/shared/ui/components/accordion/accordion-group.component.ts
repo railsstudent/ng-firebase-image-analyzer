@@ -3,10 +3,12 @@ import { ACCORDION_GROUP_CONTEXT } from './accordion-context.const';
 
 @Component({
   selector: 'app-accordion-group',
-  template: ` <div class="accordion-content">
+  host: {
+    class: 'block',
+  },
+  template: ` <div class="flex flex-col gap-3">
     <ng-content />
   </div>`,
-  styleUrl: './accordion-group.component.css',
   providers: [{ provide: ACCORDION_GROUP_CONTEXT, useExisting: AccordionGroupComponent }],
 })
 export class AccordionGroupComponent {

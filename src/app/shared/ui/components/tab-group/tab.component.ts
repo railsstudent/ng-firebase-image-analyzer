@@ -3,14 +3,12 @@ import { TAB_GROUP_CONTEXT } from './tab-group-context.const';
 
 @Component({
   selector: 'app-tab',
+  host: {
+    class: 'block',
+  },
   template: ` <div [class.hidden]="!isActive()">
     <ng-content>No content at the moment</ng-content>
   </div>`,
-  styles: `
-    :host {
-      display: block;
-    }
-  `,
 })
 export class TabComponent {
   id = input.required<string>();

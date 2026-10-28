@@ -7,7 +7,7 @@ import { Component, input, model, output, signal } from '@angular/core';
 @Component({
   selector: 'app-image-uploader',
   host: {
-    style: 'display: block',
+    class: 'block',
   },
   imports: [DeleteIconComponent, CloudUploadIconComponent],
   templateUrl: './image-uploader.component.html',

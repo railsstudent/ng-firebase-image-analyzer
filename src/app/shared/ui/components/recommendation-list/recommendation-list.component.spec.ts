@@ -99,7 +99,6 @@ describe('RecommendationListComponent with RecommendationItemComponent compound 
     expect(itemElements.length).toBe(2);
     for (const item of itemElements) {
       expect(item.getAttribute('role')).toBe('listitem');
-      expect(item.classList.contains('recommendation-item')).toBe(true);
     }
   });
 

@@ -8,13 +8,11 @@ import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-culinary-discovery-panel',
+  host: {
+    class: 'block',
+  },
   imports: [TabGroupComponent, TabComponent, TokenAnalyticsComponent, ThoughtSummaryComponent, ListSkeletonComponent],
   templateUrl: './culinary-discovery-panel.component.html',
-  styles: `
-    :host {
-      display: block;
-    }
-  `,
   styleUrls: ['../../../shared/ui/styles/section-card.css'],
 })
 export class CulinaryDiscoveryPanelComponent {

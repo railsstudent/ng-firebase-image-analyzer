@@ -7,6 +7,9 @@ const DECIMAL_PLACES = 4;
 
 @Component({
   selector: 'app-enhanced-canvas',
+  host: {
+    class: 'block md:col-span-2 w-full',
+  },
   imports: [DownloadEnhancedDirective, DownloadIconComponent],
   templateUrl: './enhanced-canvas.component.html',
   styleUrl: './enhanced-canvas.component.css',

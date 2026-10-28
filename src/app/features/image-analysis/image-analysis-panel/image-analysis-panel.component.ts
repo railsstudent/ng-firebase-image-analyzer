@@ -11,6 +11,9 @@ import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-image-analysis-panel',
+  host: {
+    class: 'block',
+  },
   imports: [
     TabGroupComponent,
     TabComponent,
@@ -22,11 +25,6 @@ import { Component, input } from '@angular/core';
     ImageImprovementSkeletonComponent,
   ],
   templateUrl: './image-analysis-panel.component.html',
-  styles: `
-    :host {
-      display: block;
-    }
-  `,
   styleUrls: ['../../../shared/ui/styles/section-card.css'],
 })
 export class ImageAnalysisPanelComponent {

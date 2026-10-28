@@ -10,7 +10,7 @@ import { Component, input } from '@angular/core';
   `,
   host: {
     role: 'list',
-    class: 'recommendations-list',
+    class: 'recommendations-list block',
   },
   styleUrl: './recommendation-list.component.css',
 })

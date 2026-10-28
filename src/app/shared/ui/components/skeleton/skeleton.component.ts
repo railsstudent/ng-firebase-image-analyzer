@@ -3,6 +3,9 @@ import type { SkeletonVariant } from './skeleton-variant.type';
 
 @Component({
   selector: 'app-skeleton',
+  host: {
+    class: 'flex flex-col gap-2',
+  },
   template: ` @for (itemClass of itemClasses(); track itemClass.id) {
     <div [class]="itemClass.itemClass" aria-hidden="true"></div>
   }`,

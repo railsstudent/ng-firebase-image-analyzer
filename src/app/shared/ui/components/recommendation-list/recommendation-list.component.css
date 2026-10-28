@@ -1,9 +1,5 @@
 @reference "../../../../../styles.css";
 
-:host {
-  display: block;
-}
-
 .recommendation-list-title {
   @apply font-bold text-on-surface mb-2 flex items-center gap-2;
 }

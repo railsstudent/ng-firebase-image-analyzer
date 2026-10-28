@@ -28,11 +28,10 @@ describe('RecommendationItemComponent', () => {
     await fixture.whenStable();
   });
 
-  it('should have role="listitem" and class="recommendation-item" on host element', () => {
+  it('should have role="listitem" on host element', () => {
     const itemEl = fixture.nativeElement.querySelector('app-recommendation-item');
     expect(itemEl).toBeTruthy();
     expect(itemEl.getAttribute('role')).toBe('listitem');
-    expect(itemEl.classList.contains('recommendation-item')).toBe(true);
   });
 
   it('should project indicator and title into .recommendation-item-title paragraph', () => {

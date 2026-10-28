@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './recommendation-item.component.html',
   host: {
     role: 'listitem',
-    class: 'recommendation-item',
+    class: 'py-4 border-t border-outline-variant/20 first:border-t-0 block',
   },
   styleUrl: './recommendation-item.component.css',
 })

@@ -1,9 +1,5 @@
 @reference "../../../../styles.css";
 
-:host {
-  @apply block md:col-span-1;
-}
-
 .specs-box {
   @apply p-4 bg-surface-card rounded-xl border border-outline-variant/20 space-y-3;
 }
