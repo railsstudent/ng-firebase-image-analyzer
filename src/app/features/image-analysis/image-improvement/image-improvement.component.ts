@@ -10,7 +10,7 @@ import { ImageImprovementSkeletonComponent } from './image-improvement-skeleton.
   selector: 'app-image-improvement',
   imports: [ImageCropComponent, EnhancedCanvasComponent, ImageImprovementSkeletonComponent, PhotoFilterIconComponent],
   templateUrl: './image-improvement.component.html',
-  styleUrls: ['../../../shared/ui/styles/section-card.css', './image-improvement.component.css'],
+  styleUrls: ['./image-improvement.component.css'],
 })
 export class ImageImprovementComponent {
   imageUrl = input<string | null>(null);

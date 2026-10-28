@@ -1,0 +1,15 @@
+.panel-container {
+  @apply mt-8 transition-opacity duration-500 animate-fade-in;
+}
+
+.section-card {
+  @apply p-6 rounded-xl bg-surface-glass backdrop-blur-md border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark;
+}
+
+.section-title {
+  @apply text-xl font-bold text-on-surface flex items-center gap-2 tracking-tight;
+}
+
+.section-subtitle {
+  @apply text-xs font-bold uppercase tracking-widest text-outline block;
+}

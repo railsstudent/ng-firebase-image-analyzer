@@ -13,7 +13,6 @@ import { Component, input } from '@angular/core';
   },
   imports: [TabGroupComponent, TabComponent, TokenAnalyticsComponent, ThoughtSummaryComponent, ListSkeletonComponent],
   templateUrl: './culinary-discovery-panel.component.html',
-  styleUrls: ['../../../shared/ui/styles/section-card.css'],
 })
 export class CulinaryDiscoveryPanelComponent {
   discovery = input<StreamingCulinaryDiscoveryWithMetadata | null>(null);

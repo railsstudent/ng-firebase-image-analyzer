@@ -1,10 +1,10 @@
-<div class="accordion-item">
+<div class="accordion-item border border-surface-glass-border">
   @let headerId = 'accordion-header-' + id();
   @let panelId = 'accordion-panel-' + id();
   <button
     type="button"
     #triggerButton
-    class="accordion-trigger"
+    class="accordion-trigger cursor-pointer scroll-mt-20"
     [attr.id]="headerId"
     [attr.aria-expanded]="isExpanded()"
     [disabled]="isDisabled()"
@@ -15,7 +15,10 @@
     <div class="flex-1 min-w-0">
       <ng-content select="[accordion-header]" />
     </div>
-    <app-expand-more-icon class="accordion-chevron" [class.rotate-180]="isExpanded()" />
+    <app-expand-more-icon
+      class="accordion-chevron duration-200 transition-transform"
+      [class.rotate-180]="isExpanded()"
+    />
   </button>
 
   <div

@@ -1,5 +1,5 @@
 <div class="space-y-4 max-w-[400px] mx-auto">
-  <div class="canvas-container" [style.aspect-ratio]="containerAspectRatio()">
+  <div class="canvas-container shadow-sm relative" [style.aspect-ratio]="containerAspectRatio()">
     @if (imageUrl(); as url) {
       @let wrapperStyle = containerCss();
       @let imageStyle = cropImage().imageStyle;
@@ -16,11 +16,16 @@
         </div>
 
         <!-- Download button floating hover -->
-        <button type="button" class="download-enhanced-btn" [appDownloadEnhanced]="url" [calibration]="calibration()">
+        <button
+          type="button"
+          class="download-enhanced-btn shadow-lg duration-200"
+          [appDownloadEnhanced]="url"
+          [calibration]="calibration()"
+        >
           <app-download-icon />
           Download PNG
         </button>
-        <div class="canvas-badge">AI ENHANCED</div>
+        <div class="canvas-badge shadow-lg tracking-widest">AI ENHANCED</div>
       } @else {
         <div class="no-image-placeholder">No image improvement available</div>
       }

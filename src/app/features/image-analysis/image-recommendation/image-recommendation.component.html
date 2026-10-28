@@ -7,7 +7,7 @@
     <app-recommendation-list>
       @for (rec of recs; track rec.recommendation) {
         <app-recommendation-item>
-          <span indicator class="recommendation-indicator"></span>
+          <span indicator class="recommendation-indicator rounded-full bg-primary"></span>
           <span title>{{ rec.recommendation }}</span>
           {{ rec.sentence }}
         </app-recommendation-item>

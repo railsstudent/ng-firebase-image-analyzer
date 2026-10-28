@@ -8,7 +8,6 @@ import { Component, input } from '@angular/core';
   selector: 'app-thought-summary',
   imports: [RecommendationListComponent, RecommendationItemComponent, PsychologyIconComponent, ListSkeletonComponent],
   templateUrl: './thought-summary.component.html',
-  styleUrls: ['../../styles/section-card.css'],
 })
 export class ThoughtSummaryComponent {
   displaySource = input('N/A');

@@ -1,20 +1,20 @@
-<nav class="nav-bar">
-  <div class="nav-container">
+<nav class="nav-bar backdrop-blur-md w-full">
+  <div class="nav-container px-6 mx-auto">
     <div class="flex items-center gap-2">
-      <span class="nav-brand-title">
+      <span class="nav-brand-title font-bold text-xl">
         <app-terminal-icon />
         {{ title() }}
       </span>
     </div>
-    <div class="nav-links">
+    <div class="nav-links font-medium text-lg">
       @for (link of navLinks(); track link.path) {
-        <a class="nav-link" routerLinkActive="nav-link-active" [routerLink]="link.path">
+        <a class="nav-link transition-colors py-1" routerLinkActive="nav-link-active" [routerLink]="link.path">
           {{ link.label }}
         </a>
       }
     </div>
     <div class="flex items-center gap-4">
-      <a class="nav-cta-btn" routerLink="/image-analysis">Get Started</a>
+      <a class="nav-cta-btn font-semibold shadow-sm" routerLink="/image-analysis">Get Started</a>
     </div>
   </div>
 </nav>

@@ -9,7 +9,7 @@ import { parseModalityDetails, parseTokenDetails } from './token-analytics.util'
   selector: 'app-token-analytics',
   imports: [TokenUsageBarComponent, BarChartIconComponent, ListSkeletonComponent],
   templateUrl: './token-analytics.component.html',
-  styleUrls: ['../../styles/section-card.css', './token-analytics.component.css'],
+  styleUrls: ['./token-analytics.component.css'],
 })
 export class TokenAnalyticsComponent {
   tokenSummary = input<TokenSummary | undefined>(undefined);

@@ -1,7 +1,7 @@
 @reference "../../../styles.css";
 
 .workspace-container {
-  @apply space-y-6 max-w-container-max mx-auto px-4 py-8;
+  @apply space-y-6 max-w-container-max py-8;
 }
 
 .workspace-container > app-image-uploader {
@@ -9,15 +9,15 @@
 }
 
 .primary-action-btn {
-  @apply flex items-center gap-2 bg-gradient-to-r from-primary to-primary-container hover:opacity-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-primary/20 active:scale-95 transition-all duration-300;
+  @apply flex items-center gap-2 bg-gradient-to-r from-primary to-primary-container hover:opacity-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-primary/20 transition-all;
 }
 
 .error-banner {
-  @apply flex items-center gap-4 bg-error-container border border-error-border p-4 rounded-2xl mx-auto my-6 shadow-error max-w-5xl backdrop-blur-sm;
+  @apply flex items-center gap-4 bg-error-container border border-error-border p-4 rounded-2xl mx-auto my-6 max-w-5xl;
 }
 
 .error-icon-badge {
-  @apply flex items-center justify-center bg-error-container text-error-text-muted rounded-xl h-10 w-10 shrink-0 border border-error-border;
+  @apply flex items-center justify-center bg-error-container text-error-text-muted rounded-xl h-10 w-10 shrink-0;
 }
 
 .error-icon-badge app-error-icon {
@@ -34,21 +34,21 @@
 }
 
 .streaming-loader-badge {
-  @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-500 ease-out;
+  @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all;
 }
 
 .streaming-loader-text {
-  @apply text-xs font-bold uppercase tracking-wider text-on-surface-variant font-mono;
+  @apply text-xs uppercase text-on-surface-variant font-mono;
 }
 
 .prewarm-status-slot {
-  @apply min-h-9 my-0 flex items-center justify-center;
+  @apply flex items-center justify-center;
 }
 
 .prewarm-status-badge {
-  @apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity duration-300 ease-out;
+  @apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity;
 }
 
 .prewarm-status-text {
-  @apply text-xs font-semibold tracking-wide text-on-surface-variant font-mono;
+  @apply text-xs text-on-surface-variant font-mono;
 }

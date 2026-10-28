@@ -2,15 +2,19 @@
 
 /* Component styles for app-image-uploader */
 .error-banner {
-  @apply absolute -top-12 left-0 right-0 text-center z-10 animate-fade-in;
+  @apply absolute -top-12 left-0 right-0 text-center;
 }
 
 .error-banner-text {
-  @apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border border-error/20 inline-block shadow-md;
+  @apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border border-error/20;
 }
 
 .uploader-panel {
-  @apply relative h-auto min-h-[300px] border-2 border-dashed rounded-xl overflow-hidden shadow-sm transition-all duration-300 flex flex-col items-center justify-center cursor-pointer border-outline-variant bg-surface-card;
+  @apply relative min-h-[300px] flex items-center justify-center;
+}
+
+.uploader-panel {
+  @apply h-auto border-2 border-dashed rounded-xl overflow-hidden transition-all flex-col cursor-pointer border-outline-variant bg-surface-card;
 }
 
 .uploader-panel.is-dragging {
@@ -21,16 +25,12 @@
   @apply border-primary;
 }
 
-.preview-area {
-  @apply relative w-full h-full min-h-[300px] flex items-center justify-center bg-transparent;
-}
-
 .preview-image {
-  @apply w-full h-auto max-h-[450px] object-contain transition-all duration-300 pointer-events-none;
+  @apply w-full h-auto max-h-[450px] object-contain transition-all;
 }
 
 .remove-btn {
-  @apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 transition-opacity duration-200 flex items-center justify-center shadow-lg;
+  @apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 transition-opacity flex items-center justify-center;
 }
 
 .preview-area:hover .remove-btn {
@@ -38,13 +38,13 @@
 }
 
 .remove-btn:hover {
-  @apply bg-error text-white;
+  @apply bg-error;
 }
 
 .empty-state {
-  @apply flex flex-col items-center justify-center p-8 text-center space-y-4 pointer-events-none;
+  @apply flex flex-col items-center justify-center p-8 text-center;
 }
 
 .upload-icon-wrapper {
-  @apply p-4 bg-surface-container-high rounded-full text-primary;
+  @apply bg-surface-container-high text-primary;
 }

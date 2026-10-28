@@ -14,41 +14,33 @@
 }
 
 .hero-container {
-  @apply w-full max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;
+  @apply mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;
 }
 
 .hero-content {
-  @apply md:col-span-7 space-y-6 md:space-y-8 min-w-0;
+  @apply md:col-span-7 space-y-6 md:space-y-8;
 }
 
 .hero-title {
-  @apply text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-on-surface;
+  @apply text-5xl lg:text-6xl leading-tight text-on-surface;
 }
 
 .hero-description {
-  @apply text-lg text-on-surface-variant leading-relaxed max-w-xl;
+  @apply text-lg text-on-surface-variant;
 }
 
 .hero-cta-btn {
-  @apply inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-xl font-semibold text-lg transition-all shadow-lg hover:bg-surface-container;
+  @apply inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-xl text-lg transition-all hover:bg-surface-container;
 }
 
 .hero-visual {
-  @apply md:col-span-5 relative w-full min-w-0 max-w-[480px] md:max-w-none mx-auto;
+  @apply md:col-span-5 min-w-0 max-w-[480px] md:max-w-none mx-auto;
 }
 
 .hero-image-wrapper {
-  @apply relative z-10 w-full animate-pulse transition-all duration-1000 hover:scale-[1.02];
+  @apply relative z-10 w-full animate-pulse transition-all;
 }
 
 .hero-image {
-  @apply block w-full h-auto rounded-xl shadow-lg border border-outline-variant/30 aspect-[512/382];
-}
-
-.floating-blur-top {
-  @apply absolute -top-6 -right-6 w-32 h-32 bg-secondary-container/30 rounded-full blur-3xl;
-}
-
-.floating-blur-bottom {
-  @apply absolute -bottom-8 -left-8 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl;
+  @apply block w-full h-auto border border-outline-variant/30 aspect-[512/382];
 }

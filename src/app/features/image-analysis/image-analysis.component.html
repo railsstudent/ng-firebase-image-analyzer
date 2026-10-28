@@ -1,19 +1,19 @@
-<div class="workspace-container">
+<div class="workspace-container mx-auto px-4">
   <!-- Upload State Area -->
   <app-image-uploader [(imageUrl)]="imageUrl" (fileSelected)="onFileSelected($event)"></app-image-uploader>
 
-  <div class="prewarm-status-slot" role="status" aria-live="polite">
+  <div class="prewarm-status-slot min-h-9 my-0" role="status" aria-live="polite">
     @if (warmingMessage(); as message) {
-      <div class="prewarm-status-badge">
+      <div class="prewarm-status-badge duration-300 ease-out">
         <app-sync-icon class="text-primary w-4 h-4" />
-        <span class="prewarm-status-text">{{ message }}</span>
+        <span class="prewarm-status-text font-semibold tracking-wide">{{ message }}</span>
       </div>
     }
   </div>
 
   @if (errorMessage()) {
-    <div class="error-banner">
-      <div class="error-icon-badge">
+    <div class="error-banner shadow-error backdrop-blur-sm">
+      <div class="error-icon-badge border border-error-border">
         <app-error-icon />
       </div>
       <div class="flex-1">
@@ -25,7 +25,7 @@
   <!-- Explicit Analyze Action Button -->
   @if (imageUrl() && !isLoading()) {
     <div class="flex justify-center">
-      <button (click)="triggerAnalysis()" class="primary-action-btn">
+      <button (click)="triggerAnalysis()" class="primary-action-btn active:scale-95 duration-300">
         <app-psychology-icon />
         <span>Analyze Image ({{ seconds() }}s)</span>
       </button>
@@ -34,9 +34,9 @@
 
   @if (isLoading()) {
     <div class="flex justify-center">
-      <div class="streaming-loader-badge">
+      <div class="streaming-loader-badge duration-500 ease-out">
         <app-sync-icon class="text-primary w-5 h-5" />
-        <span class="streaming-loader-text">Streaming AI Insights ({{ seconds() }}s)...</span>
+        <span class="streaming-loader-text font-bold tracking-wider">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>
   }

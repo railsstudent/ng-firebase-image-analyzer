@@ -1,7 +1,7 @@
 @reference "../../../../../styles.css";
 
 .token-header {
-  @apply flex justify-between items-center text-sm mb-2;
+  @apply flex justify-between items-center;
 }
 
 .token-details-grid {

@@ -1,37 +1,33 @@
 @reference "../../../../styles.css";
 
 .search-box-card {
-  @apply relative z-20 p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;
+  @apply relative z-20 p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark;
 }
 
 .search-form {
-  @apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full;
+  @apply flex flex-col sm:flex-row items-stretch sm:items-center;
 }
 
 .form-group {
-  @apply flex flex-col gap-1.5 flex-1 relative;
+  @apply flex flex-col gap-1.5;
 }
 
 .form-label {
-  @apply text-xs font-semibold tracking-wider uppercase text-on-surface-variant;
+  @apply text-xs uppercase text-on-surface-variant;
 }
 
 .select-control {
-  @apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all;
+  @apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:ring-2 focus:ring-primary/50 transition-all;
 }
 
 .listbox-overlay {
-  @apply absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-high shadow-lg z-50 p-1 list-none m-0;
+  @apply absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-high z-50 p-1 list-none m-0;
 }
 
 .listbox-option {
-  @apply px-3.5 py-2 rounded-lg text-sm text-on-surface cursor-pointer select-none transition-colors hover:bg-surface-container-highest;
-}
-
-.listbox-option-active {
-  @apply bg-primary/10 text-primary font-medium;
+  @apply px-3.5 py-2 rounded-lg text-sm text-on-surface transition-colors hover:bg-surface-container-highest;
 }
 
 .submit-btn {
-  @apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm transition-all shadow-md hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed sm:self-end;
+  @apply px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm transition-all hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed sm:self-end;
 }

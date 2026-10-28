@@ -22,7 +22,7 @@ import { TagListComponent } from './tag-list/tag-list.component';
     SellIconComponent,
   ],
   templateUrl: './image-analysis.component.html',
-  styleUrls: ['../../shared/ui/styles/section-card.css', './image-analysis.component.css'],
+  styleUrls: ['./image-analysis.component.css'],
 })
 export default class ImageAnalysisComponent {
   // Inject the actual neural analysis service

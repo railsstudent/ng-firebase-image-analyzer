@@ -2,11 +2,11 @@
 
 /* Component styles for app-tab-group */
 .tabs-header-list {
-  @apply flex border-b border-outline-variant/30 mb-8 overflow-x-auto;
+  @apply flex mb-8 overflow-x-auto;
 }
 
 .tab-header-btn {
-  @apply whitespace-nowrap px-6 py-3 text-sm font-medium transition-all duration-200 border-0 border-b-2 cursor-pointer border-transparent bg-transparent outline-none text-on-surface-variant -mb-px;
+  @apply whitespace-nowrap px-6 py-3 text-sm font-medium transition-all border-0 border-b-2 cursor-pointer border-transparent bg-transparent text-on-surface-variant -mb-px;
 }
 
 .tab-header-btn:hover {

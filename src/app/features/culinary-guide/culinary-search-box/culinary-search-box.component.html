@@ -1,10 +1,10 @@
-<div class="search-box-card">
-  <form class="search-form" (submit)="onSubmit($event)">
-    <div class="form-group">
-      <label class="form-label" for="country-select">Country</label>
+<div class="search-box-card backdrop-blur-md shadow-sm">
+  <form class="search-form gap-3 w-full" (submit)="onSubmit($event)">
+    <div class="form-group flex-1 relative">
+      <label class="form-label font-semibold tracking-wider" for="country-select">Country</label>
       <select
         id="country-select"
-        class="select-control"
+        class="select-control focus:outline-none"
         [formField]="searchForm.country"
         #countrySelect
         (change)="onCountryChange(countrySelect.value)"
@@ -15,12 +15,12 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <label class="form-label" for="city-input">City</label>
+    <div class="form-group flex-1 relative">
+      <label class="form-label font-semibold tracking-wider" for="city-input">City</label>
       <input
         id="city-input"
         type="text"
-        class="select-control placeholder:text-outline"
+        class="select-control focus:outline-none placeholder:text-outline"
         placeholder="Enter city..."
         role="combobox"
         aria-haspopup="listbox"
@@ -44,14 +44,14 @@
       />
 
       @if (isDropdownOpen() && filteredCities().length > 0) {
-        <ul id="city-listbox" class="listbox-overlay" role="listbox" aria-label="Suggested cities">
+        <ul id="city-listbox" class="listbox-overlay shadow-lg" role="listbox" aria-label="Suggested cities">
           @for (city of filteredCities(); track city; let i = $index) {
             @let isSelected = activeOptionIndex() === i;
             <li
               #cityOption
               [id]="`city-option-${i}`"
-              class="listbox-option"
-              [class.listbox-option-active]="isSelected"
+              class="listbox-option cursor-pointer select-none"
+              [class]="isSelected ? 'bg-primary/10 text-primary font-medium' : ''"
               role="option"
               [attr.aria-selected]="isSelected"
               (mousedown)="selectCity(city, $event)"
@@ -63,7 +63,12 @@
       }
     </div>
 
-    <button type="submit" class="submit-btn" [disabled]="isSearchDisabled()" [attr.aria-disabled]="isSearchDisabled()">
+    <button
+      type="submit"
+      class="submit-btn font-semibold shadow-md"
+      [disabled]="isSearchDisabled()"
+      [attr.aria-disabled]="isSearchDisabled()"
+    >
       @if (isLoading()) {
         <app-sync-icon class="text-on-primary w-4 h-4" />
       }

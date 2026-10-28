@@ -9,7 +9,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-image-recommendation',
   imports: [RecommendationListComponent, RecommendationItemComponent, AutoAwesomeIconComponent, ListSkeletonComponent],
   templateUrl: './image-recommendation.component.html',
-  styleUrls: ['../../../shared/ui/styles/section-card.css', './image-recommendation.component.css'],
+  styleUrls: ['./image-recommendation.component.css'],
 })
 export class ImageRecommendationComponent {
   recommendations = input<Recommendation[] | undefined>(undefined);

@@ -1,23 +1,23 @@
 @reference "../../../../../styles.css";
 
 .nav-bar {
-  @apply fixed top-0 w-full z-50 backdrop-blur-md border-b border-outline-variant/30 bg-primary text-white;
+  @apply fixed top-0 z-50 border-b border-outline-variant/30 bg-primary text-white;
 }
 
 .nav-container {
-  @apply flex justify-between items-center h-16 px-6 max-w-container-max mx-auto;
+  @apply flex justify-between items-center h-16 max-w-container-max;
 }
 
 .nav-brand-title {
-  @apply text-xl font-bold flex items-center gap-2;
+  @apply flex items-center gap-2;
 }
 
 .nav-links {
-  @apply hidden md:flex items-center gap-8 text-lg font-medium;
+  @apply hidden md:flex items-center gap-8;
 }
 
 .nav-link {
-  @apply text-white/80 hover:text-white transition-colors py-1;
+  @apply text-white/80 hover:text-white;
 }
 
 .nav-link-active {
@@ -25,5 +25,5 @@
 }
 
 .nav-cta-btn {
-  @apply bg-white text-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm hover:bg-surface-container;
+  @apply bg-white text-primary px-4 py-2 rounded-lg text-sm transition-all hover:bg-surface-container;
 }

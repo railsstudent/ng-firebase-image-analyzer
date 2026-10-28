@@ -1,8 +1,8 @@
 <div class="relative">
   <!-- Error Message Banner -->
   @if (errorMessage()) {
-    <div class="error-banner">
-      <span class="error-banner-text">
+    <div class="error-banner animate-fade-in z-10">
+      <span class="error-banner-text shadow-md inline-block">
         {{ errorMessage() }}
       </span>
     </div>
@@ -10,7 +10,7 @@
 
   <!-- Uploader Panel -->
   <div
-    class="uploader-panel"
+    class="uploader-panel shadow-sm duration-300"
     [class.is-dragging]="isDragging()"
     [class.has-image]="imageUrl()"
     tabindex="0"
@@ -33,13 +33,13 @@
 
     @if (imageUrl()) {
       <!-- Image Preview Area -->
-      <div class="preview-area">
-        <img [src]="imageUrl()" class="preview-image" alt="Selected preview" />
+      <div class="uploader-panel bg-transparent w-full h-full">
+        <img [src]="imageUrl()" class="preview-image duration-300 pointer-events-none" alt="Selected preview" />
 
         <!-- Hover Remove Action -->
         <button
           type="button"
-          class="remove-btn"
+          class="remove-btn duration-200 shadow-lg"
           (click)="removeImage($event, fileInput)"
           (keydown)="$event.stopPropagation()"
           title="Remove Image"
@@ -49,8 +49,8 @@
       </div>
     } @else {
       <!-- Empty Upload State -->
-      <div class="empty-state">
-        <div class="upload-icon-wrapper">
+      <div class="empty-state space-y-4 pointer-events-none">
+        <div class="upload-icon-wrapper p-4 rounded-full">
           <app-cloud-upload-icon />
         </div>
         <div class="space-y-1">

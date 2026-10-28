@@ -1,9 +1,9 @@
 @reference "../../../../../styles.css";
 
 .recommendation-item-title {
-  @apply font-bold text-on-surface flex items-center gap-2;
+  @apply flex items-center gap-2;
 }
 
 .recommendation-item-reason {
-  @apply text-sm text-on-surface-variant mt-1 ml-3.5 leading-relaxed;
+  @apply text-on-surface-variant mt-1 ml-3.5;
 }

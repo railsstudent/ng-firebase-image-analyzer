@@ -25,7 +25,6 @@ import { Component, input } from '@angular/core';
     ImageImprovementSkeletonComponent,
   ],
   templateUrl: './image-analysis-panel.component.html',
-  styleUrls: ['../../../shared/ui/styles/section-card.css'],
 })
 export class ImageAnalysisPanelComponent {
   data = input<StreamingAnalysisWithMetadata | null>(null);

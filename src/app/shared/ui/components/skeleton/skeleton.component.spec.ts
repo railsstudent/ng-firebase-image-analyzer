@@ -16,7 +16,7 @@ describe('SkeletonComponent', () => {
   });
 
   function getItems(): HTMLElement[] {
-    return Array.from(fixture.nativeElement.querySelectorAll('.skeleton-primitive'));
+    return Array.from(fixture.nativeElement.querySelectorAll('.bg-skeleton'));
   }
 
   describe('Default State', () => {
@@ -26,8 +26,10 @@ describe('SkeletonComponent', () => {
       const items = getItems();
       expect(items.length).toBe(1);
       expect(items[0].getAttribute('aria-hidden')).toBe('true');
-      expect(items[0].classList.contains('skeleton-primitive')).toBe(true);
-      expect(items[0].classList.contains('skeleton-line')).toBe(true);
+      expect(items[0].classList.contains('bg-skeleton')).toBe(true);
+      expect(items[0].classList.contains('animate-pulse')).toBe(true);
+      expect(items[0].classList.contains('h-4')).toBe(true);
+      expect(items[0].classList.contains('rounded')).toBe(true);
     });
   });
 
@@ -38,8 +40,9 @@ describe('SkeletonComponent', () => {
 
       const items = getItems();
       expect(items.length).toBe(1);
-      expect(items[0].classList.contains('skeleton-circle')).toBe(true);
-      expect(items[0].classList.contains('skeleton-line')).toBe(false);
+      expect(items[0].classList.contains('rounded-full')).toBe(true);
+      expect(items[0].classList.contains('aspect-square')).toBe(true);
+      expect(items[0].classList.contains('h-4')).toBe(false);
     });
 
     it('should render rect variant class when variant="rect"', () => {
@@ -48,8 +51,10 @@ describe('SkeletonComponent', () => {
 
       const items = getItems();
       expect(items.length).toBe(1);
-      expect(items[0].classList.contains('skeleton-rect')).toBe(true);
-      expect(items[0].classList.contains('skeleton-line')).toBe(false);
+      expect(items[0].classList.contains('rounded-lg')).toBe(true);
+      expect(items[0].classList.contains('w-full')).toBe(true);
+      expect(items[0].classList.contains('h-full')).toBe(true);
+      expect(items[0].classList.contains('h-4')).toBe(false);
     });
   });
 
@@ -59,7 +64,7 @@ describe('SkeletonComponent', () => {
       fixture.detectChanges();
 
       const items = getItems();
-      expect(items[0].classList.contains('skeleton-primitive')).toBe(true);
+      expect(items[0].classList.contains('bg-skeleton')).toBe(true);
       expect(items[0].classList.contains('h-10')).toBe(true);
       expect(items[0].classList.contains('w-10')).toBe(true);
       expect(items[0].classList.contains('shrink-0')).toBe(true);
