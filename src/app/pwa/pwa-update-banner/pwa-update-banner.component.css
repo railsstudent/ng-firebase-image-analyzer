@@ -2,17 +2,11 @@
 
 /* Gorgeous, High-Contrast, Glassmorphic Update Toast in BOTH Light and Dark Modes */
 .pwa-banner-card {
-  @apply fixed bottom-6 right-6 z-50;
-  @apply flex flex-col gap-4 p-5 rounded-2xl;
-  @apply bg-white dark:bg-slate-900;
-  @apply border-slate-200 dark:border-slate-800;
-  @apply w-[360px] max-w-[calc(100vw-48px)] box-border;
+  @apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 w-[360px] max-w-[calc(100vw-48px)] box-border;
 }
 
 .pwa-banner-badge-wrapper {
-  @apply flex items-center justify-center p-2.5;
-  @apply bg-indigo-50 dark:bg-indigo-950/40;
-  @apply text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0;
+  @apply flex items-center justify-center p-2.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0;
 }
 
 .pwa-banner-content {
@@ -28,8 +22,7 @@
 }
 
 .pwa-banner-actions {
-  @apply flex items-center justify-end gap-3 pt-3;
-  @apply border-t border-slate-100 dark:border-slate-800/60;
+  @apply flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800/60;
 }
 
 .pwa-banner-btn {
@@ -37,12 +30,9 @@
 }
 
 .pwa-banner-btn-secondary {
-  @apply px-4 text-slate-500;
-  @apply dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100;
-  @apply bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800;
+  @apply px-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800;
 }
 
 .pwa-banner-btn-primary {
-  @apply px-[18px] text-white;
-  @apply bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400;
+  @apply px-[18px] text-white bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400;
 }

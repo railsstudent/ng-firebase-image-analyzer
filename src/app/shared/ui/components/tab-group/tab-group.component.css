@@ -20,7 +20,7 @@
 .tabs-header-list::-webkit-scrollbar {
   display: none;
 }
+
 .tabs-header-list {
-  -ms-overflow-style: none;
   scrollbar-width: none;
 }

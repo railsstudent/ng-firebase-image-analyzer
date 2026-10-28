@@ -5,8 +5,8 @@
 }
 
 .logic-grid {
+  @apply bg-[size:24px_24px];
   background-image: radial-gradient(circle, var(--color-surface-container) 1px, transparent 1px);
-  background-size: 24px 24px;
 }
 
 .hero-section {
@@ -26,8 +26,7 @@
 }
 
 .hero-description {
-  @apply text-lg text-on-surface-variant leading-relaxed;
-  max-width: 36rem;
+  @apply text-lg text-on-surface-variant leading-relaxed max-w-xl;
 }
 
 .hero-cta-btn {
@@ -43,8 +42,7 @@
 }
 
 .hero-image {
-  @apply block w-full h-auto rounded-xl shadow-lg border border-outline-variant/30;
-  aspect-ratio: 512 / 382;
+  @apply block w-full h-auto rounded-xl shadow-lg border border-outline-variant/30 aspect-[512/382];
 }
 
 .floating-blur-top {

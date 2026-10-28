@@ -1,9 +1,7 @@
 @reference "../../../../../styles.css";
 
 .accordion-item {
-  @apply rounded-2xl border transition-colors;
-  background-color: var(--color-surface-glass);
-  border-color: var(--color-surface-glass-border);
+  @apply rounded-2xl border transition-colors bg-surface-glass border-surface-glass-border;
 }
 
 .accordion-trigger {
@@ -11,8 +9,7 @@
 }
 
 .accordion-trigger:focus-visible {
-  @apply outline-none ring-2 ring-offset-2;
-  --tw-ring-color: var(--color-primary);
+  @apply outline-none ring-2 ring-offset-2 ring-primary;
 }
 
 .accordion-chevron {

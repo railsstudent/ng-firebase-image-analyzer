@@ -2,8 +2,7 @@
 
 /* Component styles for app-image-uploader */
 .error-banner {
-  @apply absolute -top-12 left-0 right-0 text-center z-10;
-  animation: fadeIn 0.2s ease-out forwards;
+  @apply absolute -top-12 left-0 right-0 text-center z-10 animate-fade-in;
 }
 
 .error-banner-text {
@@ -48,24 +47,4 @@
 
 .upload-icon-wrapper {
   @apply p-4 bg-surface-container-high rounded-full text-primary;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

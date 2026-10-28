@@ -13,10 +13,7 @@
 }
 
 .error-banner {
-  @apply flex items-center gap-4 bg-error-container border border-error-border p-4 rounded-2xl mx-auto my-6;
-  max-width: 64rem;
-  box-shadow: var(--shadow-error);
-  backdrop-filter: blur(8px);
+  @apply flex items-center gap-4 bg-error-container border border-error-border p-4 rounded-2xl mx-auto my-6 shadow-error max-w-5xl backdrop-blur-sm;
 }
 
 .error-icon-badge {
@@ -31,43 +28,17 @@
    Section 5: Streaming Loader
    ========================================== */
 
-@keyframes loaderPulse {
-  0%,
-  100% {
-    box-shadow: var(--shadow-primary-glow);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 6px 24px 0 #4648d426;
-    transform: scale(1.01);
-  }
-}
-
 .streaming-loader-badge,
 .prewarm-status-badge {
-  background: var(--color-surface-glass);
-  border-color: var(--color-surface-glass-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  @apply bg-surface-glass border-surface-glass-border backdrop-blur-md dark:bg-surface-glass-dark dark:border-surface-glass-border-dark;
 }
 
 .streaming-loader-badge {
   @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-500 ease-out;
-  animation: loaderPulse 2.5s infinite ease-in-out;
-}
-
-.streaming-loader-badge .animate-spin {
-  animation-duration: 1.5s !important;
 }
 
 .streaming-loader-text {
   @apply text-xs font-bold uppercase tracking-wider text-on-surface-variant font-mono;
-}
-
-:host-context(.dark) .streaming-loader-badge,
-:host-context(.dark) .prewarm-status-badge {
-  background: var(--color-surface-glass-dark);
-  border-color: var(--color-surface-glass-border-dark);
 }
 
 .prewarm-status-slot {
