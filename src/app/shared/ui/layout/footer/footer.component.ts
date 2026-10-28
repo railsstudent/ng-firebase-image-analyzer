@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
   selector: 'app-footer',
   imports: [TerminalIconComponent],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css',
 })
 export class FooterComponent {
   copyrightYear = new Date(Date.now()).getFullYear();

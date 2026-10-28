@@ -11,7 +11,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   },
   imports: [RouterLink, RouterLinkActive, TerminalIconComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
 })
 export class HeaderComponent {
   title = input('HomeComponent');

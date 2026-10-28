@@ -1,5 +1,4 @@
-@reference "../../../../../styles.css";
-
+/* header styles */
 .nav-bar {
   @apply fixed top-0 z-50 border-b border-outline-variant/30 bg-primary text-white;
 }
@@ -26,4 +25,17 @@
 
 .nav-cta-btn {
   @apply bg-white text-primary px-4 py-2 rounded-lg text-sm transition-all hover:bg-surface-container;
+}
+
+/* footer styles */
+.footer-bar {
+  @apply bg-primary text-white py-8;
+}
+
+.footer-container {
+  @apply max-w-container-max flex flex-col md:flex-row justify-between items-center gap-4;
+}
+
+.footer-copyright {
+  @apply text-center md:text-left;
 }

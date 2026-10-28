@@ -3,6 +3,7 @@
 /* Component styles for app-tab-group */
 .tabs-header-list {
   @apply flex mb-8 overflow-x-auto;
+  scrollbar-width: none;
 }
 
 .tab-header-btn {
@@ -19,8 +20,4 @@
 
 .tabs-header-list::-webkit-scrollbar {
   display: none;
-}
-
-.tabs-header-list {
-  scrollbar-width: none;
 }
