@@ -17,7 +17,7 @@
    ========================================== */
 
 .streaming-loader-badge {
-  @apply flex px-4 items-center gap-2.5 py-1.5 bg-surface-glass border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark text-on-surface-variant;
+  @apply flex px-4 items-center gap-2.5 py-1.5 bg-surface-glass border-surface-glass-border text-on-surface-variant;
 }
 
 .prewarm-status-slot {

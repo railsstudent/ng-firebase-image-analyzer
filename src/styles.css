@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme static {
   --color-primary: #6366f1;
   --color-on-primary: #ffffff;
@@ -26,8 +24,6 @@
 
   --color-surface-glass: #ffffffb3;
   --color-surface-glass-border: #d3e4fe80;
-  --color-surface-glass-dark: #0f172a99;
-  --color-surface-glass-border-dark: #94a3b81a;
 
   --color-skeleton: #64748b;
 

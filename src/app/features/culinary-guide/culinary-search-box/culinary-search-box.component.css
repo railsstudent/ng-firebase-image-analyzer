@@ -1,7 +1,7 @@
 @reference "../../../../styles.css";
 
 .search-box-card {
-  @apply relative z-20 p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark;
+  @apply relative z-20 p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border;
 }
 
 .search-form {
