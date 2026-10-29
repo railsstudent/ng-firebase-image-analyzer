@@ -68,5 +68,13 @@ h6 {
   animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.app-icon {
+  @apply inline-flex items-center justify-center shrink-0 select-none;
+}
+
+.app-icon > svg {
+  @apply size-full;
+}
+
 @import './section-card.css';
 @import './layout.css';

@@ -52,21 +52,19 @@ describe('SkeletonComponent', () => {
       const items = getItems();
       expect(items.length).toBe(1);
       expect(items[0].classList.contains('rounded-lg')).toBe(true);
-      expect(items[0].classList.contains('w-full')).toBe(true);
-      expect(items[0].classList.contains('h-full')).toBe(true);
+      expect(items[0].classList.contains('size-full')).toBe(true);
       expect(items[0].classList.contains('h-4')).toBe(false);
     });
   });
 
   describe('Class Input Merging', () => {
     it('should merge custom classes passed via class input', () => {
-      fixture.componentRef.setInput('class', 'h-10 w-10 shrink-0');
+      fixture.componentRef.setInput('class', 'size-10 shrink-0');
       fixture.detectChanges();
 
       const items = getItems();
       expect(items[0].classList.contains('bg-skeleton')).toBe(true);
-      expect(items[0].classList.contains('h-10')).toBe(true);
-      expect(items[0].classList.contains('w-10')).toBe(true);
+      expect(items[0].classList.contains('size-10')).toBe(true);
       expect(items[0].classList.contains('shrink-0')).toBe(true);
     });
   });

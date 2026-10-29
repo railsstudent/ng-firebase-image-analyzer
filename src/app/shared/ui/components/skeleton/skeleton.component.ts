@@ -4,7 +4,7 @@ import type { SkeletonVariant } from './skeleton-variant.type';
 const VARIANT_CLASSES: Record<SkeletonVariant, string> = {
   line: 'h-4 rounded',
   circle: 'rounded-full aspect-square',
-  rect: 'rounded-lg w-full h-full',
+  rect: 'rounded-lg size-full',
 };
 
 @Component({

@@ -2,13 +2,13 @@ import type { ImageAnalysisResponse } from '@/core/image-analysis';
 import { EnhancedCanvasComponent } from '@/features/image-analysis/enhanced-canvas/enhanced-canvas.component';
 import { ImageCropComponent } from '@/features/image-analysis/image-crop/image-crop.component';
 import { VisualCalibrationService } from '@/features/image-analysis/services/visual-calibration.service';
-import { PhotoFilterIconComponent } from '@/shared/ui/icons/photo-filter-icon/photo-filter-icon.component';
+import { AutoAwesomeIconComponent } from '@/shared/ui/icons/auto-awesome-icon/auto-awesome-icon.component';
 import { Component, computed, inject, input } from '@angular/core';
 import { ImageImprovementSkeletonComponent } from './image-improvement-skeleton.component';
 
 @Component({
   selector: 'app-image-improvement',
-  imports: [ImageCropComponent, EnhancedCanvasComponent, ImageImprovementSkeletonComponent, PhotoFilterIconComponent],
+  imports: [ImageCropComponent, EnhancedCanvasComponent, ImageImprovementSkeletonComponent, AutoAwesomeIconComponent],
   templateUrl: './image-improvement.component.html',
   styleUrls: ['./image-improvement.component.css'],
 })

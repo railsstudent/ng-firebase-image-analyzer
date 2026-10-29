@@ -5,7 +5,7 @@
   <div class="prewarm-status-slot min-h-9 my-0" role="status" aria-live="polite">
     @if (warmingMessage(); as message) {
       <div class="streaming-loader-badge rounded-full border">
-        <app-sync-icon class="text-primary w-4 h-4" />
+        <app-sync-icon class="text-primary size-4" />
         <span class="text-xs font-bold font-mono">{{ message }}</span>
       </div>
     }
@@ -13,7 +13,7 @@
 
   @if (errorMessage()) {
     <div class="error-banner border backdrop-blur-sm">
-      <app-error-icon class="w-7 h-7 text-error-text-muted" />
+      <app-error-icon class="size-7 text-error-text-muted" />
       <div class="flex-1">
         <p class="text-2xl font-medium text-error-text">{{ errorMessage() }}</p>
       </div>
@@ -36,7 +36,7 @@
   @if (isLoading()) {
     <div class="flex justify-center">
       <div class="streaming-loader-badge rounded-full border">
-        <app-sync-icon class="text-primary w-5 h-5" />
+        <app-sync-icon class="text-primary size-5" />
         <span class="text-xs font-bold font-mono">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>

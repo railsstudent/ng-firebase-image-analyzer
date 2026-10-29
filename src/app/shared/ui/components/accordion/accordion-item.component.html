@@ -1,6 +1,6 @@
 <div class="accordion-item border border-surface-glass-border">
-  @let headerId = 'accordion-header-' + id();
-  @let panelId = 'accordion-panel-' + id();
+  @let headerId = `accordion-header-${id()}`;
+  @let panelId = `accordion-panel-${id()}`;
   <button
     type="button"
     #triggerButton
@@ -17,7 +17,7 @@
       <ng-content select="[accordion-header]" />
     </div>
     <app-expand-more-icon
-      class="accordion-chevron transition-transform text-on-surface-variant"
+      class="size-5 transition-transform text-on-surface-variant"
       [class.rotate-180]="isExpanded()"
     />
   </button>

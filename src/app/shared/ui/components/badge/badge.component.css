@@ -18,7 +18,7 @@
 }
 
 .tooltip-content {
-  @apply bg-secondary text-slate-100 text-sm px-3.5 py-2.5 rounded-lg whitespace-normal w-64 relative border border-slate-800;
+  @apply bg-secondary text-surface text-sm px-3.5 py-2.5 rounded-lg whitespace-normal w-64 relative border border-outline/30;
 }
 
 .tooltip-arrow {

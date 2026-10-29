@@ -65,7 +65,7 @@ describe('AccordionItemComponent', () => {
       const host = fixture.nativeElement as HTMLElement;
       const button = host.querySelector<HTMLButtonElement>('.accordion-trigger');
       const panel = host.querySelector<HTMLElement>('div[role="region"]');
-      const chevron = host.querySelector<SVGElement>('.accordion-chevron');
+      const chevron = host.querySelector<SVGElement>('app-expand-more-icon');
 
       expect(button).toBeTruthy();
       expect(panel).toBeTruthy();
@@ -90,7 +90,7 @@ describe('AccordionItemComponent', () => {
       const host = fixture.nativeElement as HTMLElement;
       const button = host.querySelector<HTMLButtonElement>('.accordion-trigger');
       const panel = host.querySelector<HTMLElement>('div[role="region"]');
-      const chevron = host.querySelector<SVGElement>('.accordion-chevron');
+      const chevron = host.querySelector<SVGElement>('app-expand-more-icon');
 
       expect(button?.getAttribute('aria-expanded')).toBe('true');
       expect(panel?.hasAttribute('hidden')).toBe(false);
