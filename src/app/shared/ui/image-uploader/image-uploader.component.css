@@ -10,7 +10,7 @@
 }
 
 .uploader-panel {
-  @apply relative min-h-[300px] flex items-center justify-center border-2 border-dashed rounded-xl overflow-hidden flex-col cursor-pointer border-outline-variant bg-surface-card;
+  @apply relative min-h-[300px] flex items-center justify-center border-2 border-dashed rounded-xl overflow-hidden flex-col border-outline-variant bg-surface-card;
 }
 
 .uploader-panel.is-dragging {
@@ -22,11 +22,11 @@
 }
 
 .preview-image {
-  @apply w-full h-auto max-h-[450px] object-contain;
+  @apply w-full h-auto max-h-[450px];
 }
 
 .remove-btn {
-  @apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 transition-opacity flex items-center justify-center;
+  @apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 flex items-center justify-center;
 }
 
 .uploader-panel:hover .remove-btn {

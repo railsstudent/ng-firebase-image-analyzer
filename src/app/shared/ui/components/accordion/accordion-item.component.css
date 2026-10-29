@@ -5,7 +5,7 @@
 }
 
 .accordion-trigger {
-  @apply flex w-full items-center justify-between gap-4 p-4 text-left rounded-2xl;
+  @apply flex w-full items-center justify-between gap-4 p-4 text-left;
 }
 
 .accordion-trigger:focus-visible {
@@ -13,5 +13,5 @@
 }
 
 .accordion-chevron {
-  @apply w-5 h-5 text-on-surface-variant;
+  @apply w-5 h-5;
 }

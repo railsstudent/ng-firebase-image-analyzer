@@ -10,7 +10,7 @@
 
   <!-- Uploader Panel -->
   <div
-    class="uploader-panel shadow-sm"
+    class="uploader-panel shadow-sm cursor-pointer"
     [class.is-dragging]="isDragging()"
     [class.has-image]="imageUrl()"
     tabindex="0"
@@ -34,12 +34,12 @@
     @if (imageUrl()) {
       <!-- Image Preview Area -->
       <div class="w-full h-full">
-        <img [src]="imageUrl()" class="preview-image pointer-events-none" alt="Selected preview" />
+        <img [src]="imageUrl()" class="preview-image pointer-events-none object-contain" alt="Selected preview" />
 
         <!-- Hover Remove Action -->
         <button
           type="button"
-          class="remove-btn shadow-lg"
+          class="remove-btn shadow-lg transition-opacity"
           (click)="removeImage($event, fileInput)"
           (keydown)="$event.stopPropagation()"
           title="Remove Image"

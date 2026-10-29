@@ -1,11 +1,11 @@
 <div class="group relative hover:z-30">
-  <span class="tag-pill font-medium">
+  <span class="tag-pill font-medium transition-colors">
     {{ label() }}
   </span>
 
   @let toolTipText = tooltip();
   @if (toolTipText) {
-    <div class="tooltip-wrapper pointer-events-none">
+    <div class="tooltip-wrapper pointer-events-none transition-opacity">
       <div class="tooltip-content shadow-xl break-words">
         {{ toolTipText }}
         <div class="tooltip-arrow left-4 top-full"></div>

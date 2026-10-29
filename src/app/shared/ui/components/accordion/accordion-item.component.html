@@ -4,7 +4,7 @@
   <button
     type="button"
     #triggerButton
-    class="accordion-trigger scroll-mt-20"
+    class="accordion-trigger scroll-mt-20 rounded-2xl"
     [class]="isDisabled() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
     [attr.id]="headerId"
     [attr.aria-expanded]="isExpanded()"
@@ -16,7 +16,10 @@
     <div class="flex-1 min-w-0">
       <ng-content select="[accordion-header]" />
     </div>
-    <app-expand-more-icon class="accordion-chevron transition-transform" [class.rotate-180]="isExpanded()" />
+    <app-expand-more-icon
+      class="accordion-chevron transition-transform text-on-surface-variant"
+      [class.rotate-180]="isExpanded()"
+    />
   </button>
 
   <div
