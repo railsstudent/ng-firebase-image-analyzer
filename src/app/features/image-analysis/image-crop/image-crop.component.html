@@ -2,9 +2,9 @@
 @let cropPosition = calibration().cropPosition;
 
 <div class="space-y-4">
-  <div class="specs-box">
-    <p class="token-details-label">Crop Metadata</p>
-    <ul class="specs-list">
+  <div class="specs-box p-4 space-y-3">
+    <p class="section-subtitle">Crop Metadata</p>
+    <ul class="font-mono space-y-2">
       <li class="flex justify-between">
         <span class="font-semibold text-on-surface">Crop Bounds:</span> {{ cropPosition }}
       </li>
@@ -14,9 +14,9 @@
     </ul>
   </div>
 
-  <div class="specs-box">
-    <p class="token-details-label">Filters Applied</p>
-    <ul class="specs-list">
+  <div class="specs-box p-4 space-y-3">
+    <p class="section-subtitle">Filters Applied</p>
+    <ul class="font-mono space-y-2">
       @for (item of appliedFilters(); track item.label) {
         <li class="flex justify-between">
           <span class="font-semibold text-on-surface">{{ item.label }}:</span>

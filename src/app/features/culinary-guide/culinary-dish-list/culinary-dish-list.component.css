@@ -1,29 +1,17 @@
 @reference "../../../../styles.css";
 
-.dish-header {
-  @apply flex flex-col gap-1 w-full text-left;
-}
-
-.dish-title-row {
-  @apply flex items-center gap-2 flex-wrap;
-}
-
 .dish-native-badge {
-  @apply font-mono text-xs px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium;
+  @apply px-2.5 bg-surface-container-high text-on-surface-variant;
 }
 
 .dish-description {
-  @apply text-sm text-on-surface-variant line-clamp-2 md:line-clamp-none mt-1;
-}
-
-.dish-body {
-  @apply flex flex-col gap-6 pt-4;
+  @apply text-on-surface-variant line-clamp-2 md:line-clamp-none;
 }
 
 .dish-content-grid {
-  @apply grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 items-start;
+  @apply grid grid-cols-1 md:grid-cols-[2fr_3fr];
 }
 
 .dish-instructions {
-  @apply space-y-4 min-h-[160px] min-w-0 wrap-break-word [&_pre]:whitespace-pre-wrap [&_pre]:font-sans [&_code]:whitespace-pre-wrap [&_code]:font-sans;
+  @apply min-h-[160px] wrap-break-word [&_pre]:whitespace-pre-wrap [&_pre]:font-sans [&_code]:whitespace-pre-wrap [&_code]:font-sans;
 }

@@ -8,24 +8,16 @@
   @apply flex flex-col sm:flex-row items-stretch sm:items-center;
 }
 
-.form-group {
-  @apply flex flex-col gap-1.5;
-}
-
-.form-label {
-  @apply text-xs uppercase text-on-surface-variant;
-}
-
 .select-control {
-  @apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:outline-none placeholder:text-outline transition-all;
+  @apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface focus:outline-none placeholder:text-outline transition-all;
 }
 
 .listbox-overlay {
-  @apply absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-high z-50 p-1 list-none m-0;
+  @apply absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-high z-50;
 }
 
 .listbox-option {
-  @apply px-3.5 py-2 rounded-lg text-sm text-on-surface transition-colors hover:bg-surface-container-highest;
+  @apply px-3.5 py-2 rounded-lg text-sm transition-colors hover:bg-surface-container-highest;
 }
 
 .listbox-option-active {

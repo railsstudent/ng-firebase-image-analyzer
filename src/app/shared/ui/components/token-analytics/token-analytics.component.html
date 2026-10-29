@@ -25,7 +25,7 @@
       <div class="border-t border-outline-variant/20 token-details-grid">
         <div class="space-y-3">
           @if (promptTokens() > 0) {
-            <p class="token-details-label">Prompt Split (Input)</p>
+            <p class="section-subtitle">Prompt Split (Input)</p>
             <app-token-usage-bar
               barCss="h-5"
               [tokenSegments]="promptModalityDetails().segments"
@@ -34,7 +34,7 @@
             />
           }
           @if (candidatesTokens() > 0) {
-            <p class="token-details-label">Candidate Split (Output)</p>
+            <p class="section-subtitle">Candidate Split (Output)</p>
             <app-token-usage-bar
               barCss="h-5"
               [tokenSegments]="outputModalityDetails().segments"
@@ -44,7 +44,7 @@
           }
 
           @if (cachedTokens() > 0) {
-            <p class="token-details-label">Saving (Cached)</p>
+            <p class="section-subtitle">Saving (Cached)</p>
             <app-token-usage-bar
               barCss="h-5"
               [tokenSegments]="cachedModalityDetails().segments"

@@ -17,5 +17,5 @@
 }
 
 .canvas-badge {
-  @apply absolute bottom-4 right-4 bg-primary text-white text-[10px] font-bold uppercase px-2.5 py-1.5 rounded;
+  @apply absolute bottom-4 right-4 bg-primary text-white text-[10px] px-2.5 py-1.5 rounded;
 }

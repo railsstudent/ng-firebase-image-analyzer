@@ -1,7 +1,7 @@
 <div class="search-box-card backdrop-blur-md shadow-sm">
   <form class="search-form gap-3 w-full" (submit)="onSubmit($event)">
-    <div class="form-group flex-1 relative">
-      <label class="form-label font-semibold tracking-wider" for="country-select">Country</label>
+    <div class="flex-1 relative">
+      <label class="section-subtitle font-semibold" for="country-select">Country</label>
       <select
         id="country-select"
         class="select-control focus:ring-2 focus:ring-primary/50"
@@ -15,8 +15,8 @@
       </select>
     </div>
 
-    <div class="form-group flex-1 relative">
-      <label class="form-label font-semibold tracking-wider" for="city-input">City</label>
+    <div class="flex-1 relative">
+      <label class="section-subtitle font-semibold" for="city-input">City</label>
       <input
         id="city-input"
         type="text"
@@ -44,7 +44,7 @@
       />
 
       @if (isDropdownOpen() && filteredCities().length > 0) {
-        <ul id="city-listbox" class="listbox-overlay shadow-lg" role="listbox" aria-label="Suggested cities">
+        <ul id="city-listbox" class="listbox-overlay shadow-lg p-1" role="listbox" aria-label="Suggested cities">
           @for (city of filteredCities(); track city; let i = $index) {
             @let isSelected = activeOptionIndex() === i;
             <li

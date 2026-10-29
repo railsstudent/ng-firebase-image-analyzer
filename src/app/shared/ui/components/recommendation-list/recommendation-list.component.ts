@@ -4,7 +4,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-recommendation-list',
   template: `
     @if (listTitle()) {
-      <p class="recommendation-list-title">{{ listTitle() }}</p>
+      <p class="recommendation-list-title font-bold mb-2">{{ listTitle() }}</p>
     }
     <ng-content />
   `,

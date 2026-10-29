@@ -81,9 +81,7 @@ describe('ImageAnalysisComponent', () => {
     expect(statusSlot).toBeTruthy();
     expect(statusSlot?.getAttribute('role')).toBe('status');
     expect(statusSlot?.getAttribute('aria-live')).toBe('polite');
-    expect(statusSlot?.querySelector('.prewarm-status-text')?.textContent?.trim()).toBe(
-      'Pre-warming on-device AI model...',
-    );
+    expect(statusSlot?.querySelector('span')?.textContent?.trim()).toBe('Pre-warming on-device AI model...');
 
     resolvePreWarm();
     await preWarmPromise;

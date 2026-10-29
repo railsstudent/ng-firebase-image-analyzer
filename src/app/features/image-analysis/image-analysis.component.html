@@ -1,12 +1,12 @@
 <div class="workspace-container mx-auto px-4">
   <!-- Upload State Area -->
-  <app-image-uploader [(imageUrl)]="imageUrl" (fileSelected)="onFileSelected($event)"></app-image-uploader>
+  <app-image-uploader class="mb-0" [(imageUrl)]="imageUrl" (fileSelected)="onFileSelected($event)" />
 
   <div class="prewarm-status-slot min-h-9 my-0" role="status" aria-live="polite">
     @if (warmingMessage(); as message) {
       <div class="prewarm-status-badge duration-300 ease-out">
         <app-sync-icon class="text-primary w-4 h-4" />
-        <span class="prewarm-status-text font-semibold tracking-wide">{{ message }}</span>
+        <span class="text-xs font-bold font-mono">{{ message }}</span>
       </div>
     }
   </div>
@@ -14,7 +14,7 @@
   @if (errorMessage()) {
     <div class="error-banner shadow-error backdrop-blur-sm">
       <div class="error-icon-badge border border-error-border">
-        <app-error-icon />
+        <app-error-icon class="w-7 h-7" />
       </div>
       <div class="flex-1">
         <p class="text-2xl font-medium text-error-text">{{ errorMessage() }}</p>
@@ -36,7 +36,7 @@
     <div class="flex justify-center">
       <div class="streaming-loader-badge duration-500 ease-out">
         <app-sync-icon class="text-primary w-5 h-5" />
-        <span class="streaming-loader-text font-bold tracking-wider">Streaming AI Insights ({{ seconds() }}s)...</span>
+        <span class="text-xs font-bold font-mono">Streaming AI Insights ({{ seconds() }}s)...</span>
       </div>
     </div>
   }

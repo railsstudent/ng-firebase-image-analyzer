@@ -101,9 +101,8 @@ describe('CulinaryDishListComponent - Slice 1: Header & Native Badges', () => {
   it('should render semantic header classes and structure', () => {
     const accordionItems = fixture.nativeElement.querySelectorAll('app-accordion-item');
     const headerEl = accordionItems[0].querySelector('[accordion-header]');
-    expect(headerEl.classList).toContain('dish-header');
-    expect(headerEl.querySelector('.dish-title-row')).toBeTruthy();
-    expect(headerEl.querySelector('.text-on-surface')?.textContent).toBe('Ramen');
+    expect(headerEl).toBeTruthy();
+    expect(headerEl.querySelector('span')?.textContent).toBe('Ramen');
     expect(headerEl.querySelector('.dish-description')?.textContent).toContain(
       'Savory noodle soup with rich pork or chicken broth and toppings.',
     );
@@ -248,7 +247,7 @@ describe('CulinaryDishListComponent - Slice 2: Expansion & dishSelected Output',
     await fixture.whenStable();
     expect(hostComponent.selectedDishes.length).toBe(1);
 
-    const dishBody = fixture.nativeElement.querySelector('.dish-body') as HTMLElement;
+    const dishBody = fixture.nativeElement.querySelector('[accordion-body]') as HTMLElement;
     expect(dishBody).toBeTruthy();
 
     dishBody.click();
@@ -276,7 +275,7 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
 
   it('should render responsive layout and scroll containment classes on accordion body', () => {
     const ramenBody = fixture.nativeElement.querySelector('[accordion-body]');
-    expect(ramenBody.classList).toContain('dish-body');
+    expect(ramenBody).toBeTruthy();
     const contentGrid = ramenBody.querySelector('.dish-content-grid');
     expect(contentGrid).toBeTruthy();
     const instructions = ramenBody.querySelector('.dish-instructions');

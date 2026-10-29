@@ -22,7 +22,7 @@
 }
 
 .hero-title {
-  @apply text-5xl lg:text-6xl leading-tight text-on-surface;
+  @apply text-5xl lg:text-6xl;
 }
 
 .hero-description {
