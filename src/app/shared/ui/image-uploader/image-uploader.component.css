@@ -10,7 +10,7 @@
 }
 
 .uploader-panel {
-  @apply relative min-h-[300px] flex items-center justify-center h-auto border-2 border-dashed rounded-xl overflow-hidden transition-all flex-col cursor-pointer border-outline-variant bg-surface-card;
+  @apply relative min-h-[300px] flex items-center justify-center border-2 border-dashed rounded-xl overflow-hidden flex-col cursor-pointer border-outline-variant bg-surface-card;
 }
 
 .uploader-panel.is-dragging {
@@ -22,7 +22,7 @@
 }
 
 .preview-image {
-  @apply w-full h-auto max-h-[450px] object-contain transition-all;
+  @apply w-full h-auto max-h-[450px] object-contain;
 }
 
 .remove-btn {

@@ -20,11 +20,11 @@
 }
 
 .nav-link-active {
-  @apply text-white font-bold border-b-2 border-white transition-colors py-1;
+  @apply text-white font-bold border-b-2 border-white;
 }
 
 .nav-cta-btn {
-  @apply bg-white text-primary px-4 py-2 rounded-lg text-sm transition-all hover:bg-surface-container;
+  @apply bg-white text-primary px-4 py-2 rounded-lg text-sm hover:bg-surface-container;
 }
 
 /* footer styles */

@@ -1,7 +1,7 @@
 <div class="tabs-header-list border-b border-outline-variant/30">
   @for (tab of tabs(); track tab.id()) {
     @let isActive = activeTabId() === tab.id();
-    <button class="tab-header-btn duration-200 outline-none" [class.active]="isActive" (click)="selectTab(tab.id())">
+    <button class="tab-header-btn outline-none" [class.active]="isActive" (click)="selectTab(tab.id())">
       {{ tab.label() }}
     </button>
   }

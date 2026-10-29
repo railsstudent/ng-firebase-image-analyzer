@@ -7,7 +7,7 @@
 }
 
 .tab-header-btn {
-  @apply whitespace-nowrap px-6 py-3 text-sm font-medium transition-all border-0 border-b-2 cursor-pointer border-transparent bg-transparent text-on-surface-variant -mb-px;
+  @apply whitespace-nowrap px-6 py-3 text-sm font-medium border-0 border-b-2 cursor-pointer border-transparent bg-transparent text-on-surface-variant -mb-px;
 }
 
 .tab-header-btn:hover {

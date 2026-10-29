@@ -1,5 +1,5 @@
 .panel-container {
-  @apply mt-8 transition-opacity duration-500 animate-fade-in;
+  @apply mt-8 animate-fade-in;
 }
 
 .section-card {

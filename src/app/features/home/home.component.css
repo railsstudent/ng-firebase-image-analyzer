@@ -30,7 +30,7 @@
 }
 
 .hero-cta-btn {
-  @apply inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-xl text-lg transition-all hover:bg-surface-container;
+  @apply inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-xl text-lg hover:bg-surface-container;
 }
 
 .hero-visual {

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-expand-more-icon',
   host: {
-    class: 'inline-flex items-center justify-center shrink-0 w-5 h-5 select-none',
+    class: 'inline-flex items-center justify-center shrink-0 select-none',
   },
   template: `
     <svg

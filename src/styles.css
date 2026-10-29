@@ -39,6 +39,7 @@
   --font-label-md: var(--font-mono);
 
   --spacing-container-max: 1280px;
+  --default-transition-duration: 200ms;
 }
 
 body {

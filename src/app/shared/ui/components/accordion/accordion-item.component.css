@@ -1,21 +1,17 @@
 @reference "../../../../../styles.css";
 
 .accordion-item {
-  @apply rounded-2xl transition-colors bg-surface-glass;
+  @apply rounded-2xl bg-surface-glass;
 }
 
 .accordion-trigger {
-  @apply flex w-full items-center justify-between gap-4 p-4 text-left transition-colors rounded-2xl;
+  @apply flex w-full items-center justify-between gap-4 p-4 text-left rounded-2xl;
 }
 
 .accordion-trigger:focus-visible {
-  @apply outline-none ring-2 ring-offset-2 ring-primary;
+  @apply outline-2 outline-offset-2 outline-primary;
 }
 
 .accordion-chevron {
-  @apply w-5 h-5 shrink-0 text-on-surface-variant;
-}
-
-.accordion-trigger:disabled {
-  @apply opacity-50 cursor-not-allowed;
+  @apply w-5 h-5 text-on-surface-variant;
 }
