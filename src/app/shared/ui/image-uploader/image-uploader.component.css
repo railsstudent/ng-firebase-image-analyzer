@@ -28,7 +28,3 @@
 .remove-btn:hover {
   @apply bg-error;
 }
-
-.empty-state {
-  @apply flex flex-col items-center justify-center p-8 text-center;
-}

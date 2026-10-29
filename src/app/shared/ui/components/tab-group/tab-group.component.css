@@ -7,15 +7,7 @@
 }
 
 .tab-header-btn {
-  @apply whitespace-nowrap px-6 py-3 text-sm font-medium border-0 border-b-2 border-transparent bg-transparent text-on-surface-variant -mb-px;
-}
-
-.tab-header-btn:hover {
-  @apply text-primary border-b-outline-variant/40;
-}
-
-.tab-header-btn.active {
-  @apply border-b-primary text-primary font-semibold;
+  @apply whitespace-nowrap px-6 py-3 text-sm border-b-2;
 }
 
 .tabs-header-list::-webkit-scrollbar {

@@ -50,14 +50,14 @@
       </div>
     } @else {
       <!-- Empty Upload State -->
-      <div class="empty-state space-y-4 pointer-events-none">
-        <div class="bg-surface-container-high text-primary p-4 rounded-full">
-          <app-cloud-upload-icon />
+      <div class="p-8 text-center space-y-4 pointer-events-none">
+        <div class="inline-block bg-surface-container-high p-4 rounded-full">
+          <app-cloud-upload-icon class="text-primary" />
         </div>
         <div class="space-y-1">
           <p class="font-semibold text-lg text-on-surface">Drag & drop your image here</p>
           <p class="text-sm text-on-surface-variant">
-            or <span class="text-primary font-semibold hover:underline">browse files</span>
+            or <span class="text-primary font-semibold underline">browse files</span>
           </p>
         </div>
         <p class="text-xs text-outline">Supports JPEG, JPG, PNG, WebP up to 20MB</p>
