@@ -10,7 +10,7 @@
 }
 
 .hero-section {
-  @apply relative min-h-[90vh] flex items-center overflow-hidden;
+  @apply relative flex-1 flex items-center overflow-hidden;
 }
 
 .hero-container {
@@ -38,7 +38,7 @@
 }
 
 .hero-image-wrapper {
-  @apply relative z-10 w-full animate-pulse transition-all;
+  @apply relative z-10 w-full transition-all;
 }
 
 .hero-image {

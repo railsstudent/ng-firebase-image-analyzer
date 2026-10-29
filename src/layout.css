@@ -1,6 +1,6 @@
 /* header styles */
 .nav-bar {
-  @apply fixed top-0 z-50 border-b border-outline-variant/30 bg-primary text-white;
+  @apply border-b border-outline-variant/30 bg-primary text-white;
 }
 
 .nav-container {

@@ -5,6 +5,9 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
+  host: {
+    class: 'flex-1 flex flex-col',
+  },
   imports: [RouterLink, ArrowForwardIconComponent, NgOptimizedImage],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',

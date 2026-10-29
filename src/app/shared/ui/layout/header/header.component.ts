@@ -7,7 +7,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 @Component({
   selector: 'app-header',
   host: {
-    class: 'block',
+    class: 'block sticky top-0 z-50',
   },
   imports: [RouterLink, RouterLinkActive, TerminalIconComponent],
   templateUrl: './header.component.html',
