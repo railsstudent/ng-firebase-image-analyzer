@@ -2,17 +2,18 @@
   <!-- Error Message Banner -->
   @if (errorMessage()) {
     <div class="error-banner animate-fade-in z-10">
-      <span class="error-banner-text shadow-md inline-block">
+      <span class="error-banner-text border-2 shadow-md inline-block">
         {{ errorMessage() }}
       </span>
     </div>
   }
 
   <!-- Uploader Panel -->
+  @let borderClass = isDragging() || imageUrl() ? 'border-primary' : 'border-outline-variant';
+  @let bgClass = isDragging() ? 'bg-surface-container' : 'bg-surface-card';
   <div
-    class="uploader-panel shadow-sm cursor-pointer"
-    [class.is-dragging]="isDragging()"
-    [class.has-image]="imageUrl()"
+    class="uploader-panel border-2 border-dashed shadow-sm"
+    [class]="`${borderClass} ${bgClass}`"
     tabindex="0"
     role="button"
     (dragover)="onDragState($event, true)"
@@ -50,7 +51,7 @@
     } @else {
       <!-- Empty Upload State -->
       <div class="empty-state space-y-4 pointer-events-none">
-        <div class="upload-icon-wrapper p-4 rounded-full">
+        <div class="bg-surface-container-high text-primary p-4 rounded-full">
           <app-cloud-upload-icon />
         </div>
         <div class="space-y-1">

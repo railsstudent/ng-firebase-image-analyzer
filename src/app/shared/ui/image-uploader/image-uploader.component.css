@@ -6,19 +6,11 @@
 }
 
 .error-banner-text {
-  @apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border border-error/20;
+  @apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border-error-border;
 }
 
 .uploader-panel {
-  @apply relative min-h-[300px] flex items-center justify-center border-2 border-dashed rounded-xl overflow-hidden flex-col border-outline-variant bg-surface-card;
-}
-
-.uploader-panel.is-dragging {
-  @apply border-primary bg-surface-container;
-}
-
-.uploader-panel.has-image {
-  @apply border-primary;
+  @apply relative min-h-[300px] flex flex-col items-center justify-center cursor-pointer rounded-xl overflow-hidden;
 }
 
 .preview-image {
@@ -39,8 +31,4 @@
 
 .empty-state {
   @apply flex flex-col items-center justify-center p-8 text-center;
-}
-
-.upload-icon-wrapper {
-  @apply bg-surface-container-high text-primary;
 }
