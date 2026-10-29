@@ -5,5 +5,5 @@
 }
 
 .modality-legend {
-  @apply flex justify-between text-xs font-mono text-on-surface-variant;
+  @apply flex justify-between text-xs text-on-surface-variant;
 }

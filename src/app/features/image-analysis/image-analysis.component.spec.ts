@@ -89,7 +89,7 @@ describe('ImageAnalysisComponent', () => {
 
     expect(component.warmingMessage()).toBe('');
     expect(compiled.querySelector('.prewarm-status-slot')).toBeTruthy();
-    expect(compiled.querySelector('.prewarm-status-badge')).toBeNull();
+    expect(compiled.querySelector('.streaming-loader-badge')).toBeNull();
   });
 
   it('should log a warning and reset warmingMessage to empty string when preWarm rejects', async () => {
@@ -103,7 +103,7 @@ describe('ImageAnalysisComponent', () => {
     expect(warnSpy).toHaveBeenCalledWith('Model pre-warming skipped, falling back to cloud dynamically.', preWarmError);
     expect(component.warmingMessage()).toBe('');
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.prewarm-status-badge')).toBeNull();
+    expect(compiled.querySelector('.streaming-loader-badge')).toBeNull();
   });
 
   it('should select file on onFileSelected without re-triggering preWarm', () => {

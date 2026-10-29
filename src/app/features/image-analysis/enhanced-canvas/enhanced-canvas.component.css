@@ -1,19 +1,15 @@
 @reference "../../../../styles.css";
 
 .canvas-container {
-  @apply rounded-xl overflow-hidden border border-primary/20 bg-surface-card flex items-center justify-center max-h-[400px];
+  @apply rounded-xl overflow-hidden border-primary/20 bg-surface-card flex items-center justify-center max-h-[400px];
 }
 
 .download-enhanced-btn {
-  @apply absolute top-4 right-4 bg-primary text-white text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2 font-medium;
+  @apply absolute top-4 right-4 bg-primary text-white text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2;
 }
 
 .canvas-container:hover .download-enhanced-btn {
   @apply opacity-100;
-}
-
-.download-enhanced-btn:hover {
-  @apply brightness-95;
 }
 
 .canvas-badge {

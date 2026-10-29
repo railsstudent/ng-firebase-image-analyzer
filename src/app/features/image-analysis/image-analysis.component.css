@@ -1,38 +1,25 @@
 @reference "../../../styles.css";
 
 .workspace-container {
-  @apply space-y-6 max-w-container-max py-8;
+  @apply flex flex-col gap-6 max-w-container-max py-8;
 }
 
 .primary-action-btn {
-  @apply flex items-center gap-2 bg-gradient-to-r from-primary to-primary-container hover:opacity-95 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-primary/20 transition-all;
+  @apply flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl;
 }
 
 .error-banner {
-  @apply flex items-center gap-4 bg-error-container border border-error-border p-4 rounded-2xl mx-auto my-6 max-w-5xl;
-}
-
-.error-icon-badge {
-  @apply flex items-center justify-center bg-error-container text-error-text-muted rounded-xl h-10 w-10 shrink-0;
+  @apply flex items-center gap-4 bg-error-container border-error-border p-4 rounded-2xl mx-auto my-6 max-w-5xl;
 }
 
 /* ==========================================
    Section 5: Streaming Loader
    ========================================== */
 
-.streaming-loader-badge,
-.prewarm-status-badge {
-  @apply bg-surface-glass border-surface-glass-border backdrop-blur-md dark:bg-surface-glass-dark dark:border-surface-glass-border-dark text-on-surface-variant;
-}
-
 .streaming-loader-badge {
-  @apply flex items-center gap-3 px-4 py-2 rounded-full border transition-all;
+  @apply flex px-4 items-center gap-2.5 py-1.5 bg-surface-glass border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark text-on-surface-variant;
 }
 
 .prewarm-status-slot {
   @apply flex items-center justify-center;
-}
-
-.prewarm-status-badge {
-  @apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity;
 }

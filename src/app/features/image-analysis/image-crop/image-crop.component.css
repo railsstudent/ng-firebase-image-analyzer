@@ -1,5 +1,5 @@
 @reference "../../../../styles.css";
 
 .specs-box {
-  @apply bg-surface-card rounded-xl border border-outline-variant/20 text-xs text-on-surface-variant;
+  @apply p-4 bg-surface-card rounded-xl border-outline-variant/20 text-xs text-on-surface-variant;
 }

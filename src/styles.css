@@ -39,8 +39,6 @@
   --font-label-md: var(--font-mono);
 
   --spacing-container-max: 1280px;
-
-  --shadow-error: 0 10px 30px -10px #ef444426;
 }
 
 body {

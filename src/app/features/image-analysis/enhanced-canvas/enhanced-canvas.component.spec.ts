@@ -86,7 +86,7 @@ describe('EnhancedCanvasComponent', () => {
     fixture.componentRef.setInput('imageUrl', null);
     fixture.detectChanges();
 
-    const placeholder = fixture.debugElement.query(By.css('.no-image-placeholder'));
+    const placeholder = fixture.debugElement.query(By.css('div.italic'));
     expect(placeholder).toBeTruthy();
     expect(placeholder.nativeElement.textContent).toContain('No image selected for preview');
 
