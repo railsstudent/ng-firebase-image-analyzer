@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
   });
 
   it('should render the optimized hero image with priority, dimensions, and webp source', () => {
-    const imgElement: HTMLImageElement | null = fixture.nativeElement.querySelector('.hero-image');
+    const imgElement: HTMLImageElement | null = fixture.nativeElement.querySelector('img');
     expect(imgElement).not.toBeNull();
     expect(imgElement?.getAttribute('ngsrc')).toBe('/images/home.webp');
     expect(imgElement?.getAttribute('width')).toBe('512');

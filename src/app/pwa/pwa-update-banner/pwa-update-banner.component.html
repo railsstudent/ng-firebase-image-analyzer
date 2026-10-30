@@ -4,11 +4,19 @@
       <div class="pwa-banner-badge-wrapper bg-primary/10 shrink-0">
         <app-download-icon class="text-primary" />
       </div>
-      <h4 class="font-semibold leading-snug">App Update Ready</h4>
+      <h4 class="font-semibold">App Update Ready</h4>
     </div>
-    <div class="pwa-banner-actions justify-end gap-3">
-      <button (click)="dismiss()" class="font-bold pwa-banner-btn pwa-banner-btn-secondary">Later</button>
-      <button (click)="pwaUpdateService.reloadPage()" class="font-bold pwa-banner-btn pwa-banner-btn-primary">
+    <div class="font-bold flex justify-end gap-3">
+      <button
+        (click)="dismiss()"
+        class="pwa-banner-btn text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
+      >
+        Later
+      </button>
+      <button
+        (click)="pwaUpdateService.reloadPage()"
+        class="pwa-banner-btn text-on-primary bg-primary hover:bg-primary/90"
+      >
         Reload Now
       </button>
     </div>

@@ -5,5 +5,5 @@
 }
 
 .recommendation-item-reason {
-  @apply text-on-surface-variant mt-1 ml-3.5;
+  @apply mt-1 ml-3.5;
 }

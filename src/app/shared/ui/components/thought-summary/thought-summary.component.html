@@ -5,10 +5,10 @@
   </h3>
 
   <div class="space-y-3">
-    <p class="text-on-surface-variant leading-relaxed">
+    <p class="text-on-surface-variant">
       <span class="font-bold text-on-surface gap-2">Source:</span> {{ displaySource() }}
     </p>
-    <p class="text-on-surface-variant leading-relaxed">{{ thoughtSummary() }}</p>
+    <p class="text-on-surface-variant">{{ thoughtSummary() }}</p>
 
     @if (remarks(); as remarkList) {
       <app-recommendation-list [listTitle]="remarksTitle()">

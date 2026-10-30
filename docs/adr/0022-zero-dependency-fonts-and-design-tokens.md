@@ -57,11 +57,12 @@ We aligned `src/styles.css` to declare all design tokens in a single `@theme sta
 ### 4. Enforce Tailwind v4 Utilities and Strict Hex Alpha Transparency
 
 - **Clean Syntax**: Replaced arbitrary bracket syntax (`@apply bg-[var(--color-primary)]`) with native Tailwind v4 theme utilities (`@apply bg-primary`, `text-on-surface`, `max-w-container-max`).
+- **Layer & `@property` Hygiene**: Keep utilities that emit `@property --tw-*` boilerplate (`font-*`, `shadow-*`), short single-use typography/layout wrappers, and coupled base + `hover:*` color pairs inline in HTML templates (reusing `@layer utilities` in `src/styles.css`), while keeping multi-utility layout and geometry primitives (`.hero-container`, `.hero-content`, `.hero-cta-btn`, `.pwa-banner-card`, `.pwa-banner-badge-wrapper`, `.pwa-banner-btn`) in component `.css` files.
 - **Hex Transparency**: Replaced all `rgba(r, g, b, a)` declarations with modern 6- and 8-digit hexadecimal colors (`#rrggbbaa`), ensuring standard format consistency across design specs and CSS files.
 
 ### 5. Consolidate Design Specifications into Root `DESIGN.md`
 
-We migrated the Image Analysis feature architecture (orchestration mermaid diagram and 4-tab control system breakdown) from `src/app/features/image-analysis/Design.md` into Section 6 of root `DESIGN.md`, deleted the redundant file to prevent design drift, and synchronized component stylesheet contracts (including `src/app/pwa/pwa-update-banner/pwa-update-banner.component.css` in Section 4.4) with root `DESIGN.md`.
+We migrated the Image Analysis feature architecture (orchestration mermaid diagram and 4-tab control system breakdown) from `src/app/features/image-analysis/Design.md` into Section 6 of root `DESIGN.md`, deleted the redundant file to prevent design drift, and synchronized component stylesheet contracts (including `src/app/features/home/home.component.css` in Section 4.3 and `src/app/pwa/pwa-update-banner/pwa-update-banner.component.css` in Section 4.4) with root `DESIGN.md`.
 
 ---
 
