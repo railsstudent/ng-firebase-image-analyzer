@@ -8,11 +8,11 @@
 }
 
 .nav-brand-title {
-  @apply flex items-center gap-2;
+  @apply flex items-center md:text-xl;
 }
 
 .nav-links {
-  @apply hidden md:flex items-center gap-8;
+  @apply hidden md:flex gap-6 lg:gap-8 lg:text-lg;
 }
 
 .nav-link {
@@ -37,5 +37,5 @@
 }
 
 .footer-copyright {
-  @apply text-center md:text-left;
+  @apply text-center md:text-left text-sm md:text-lg;
 }

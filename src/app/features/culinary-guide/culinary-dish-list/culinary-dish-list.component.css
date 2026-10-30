@@ -13,5 +13,5 @@
 }
 
 .dish-instructions {
-  @apply min-h-[160px] wrap-break-word [&_pre]:whitespace-pre-wrap [&_pre]:font-sans [&_code]:whitespace-pre-wrap [&_code]:font-sans;
+  @apply min-h-[160px] wrap-break-word;
 }

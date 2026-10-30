@@ -1,14 +1,15 @@
 <div class="group relative hover:z-30">
-  <span class="tag-pill font-medium transition-colors">
+  @let pillColors = 'bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary';
+  <span class="tag-pill font-medium transition-colors" [class]="pillColors">
     {{ label() }}
   </span>
 
   @let toolTipText = tooltip();
   @if (toolTipText) {
     <div class="tooltip-wrapper pointer-events-none transition-opacity">
-      <div class="tooltip-content shadow-xl break-words">
+      <div class="bg-secondary text-surface tooltip-content">
         {{ toolTipText }}
-        <div class="tooltip-arrow left-4 top-full"></div>
+        <div class="tooltip-arrow border-8 border-transparent border-t-secondary"></div>
       </div>
     </div>
   }

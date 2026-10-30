@@ -1,29 +1,27 @@
 <!-- Hero Section -->
-<section class="hero-section hero-gradient logic-grid">
+<section class="flex-1 flex items-center">
   <div class="hero-container w-full max-w-7xl">
     <!-- Left side text content -->
-    <div class="hero-content flex-col min-w-0">
+    <div class="hero-content flex flex-col">
       <h1 class="hero-title font-bold leading-tight">
         Intelligent Inference.<br />
         <span class="text-primary">Anywhere.</span>
       </h1>
 
-      <p class="hero-description leading-relaxed max-w-xl">
+      <p class="text-lg text-on-surface-variant leading-relaxed max-w-xl">
         Deploy hybrid AI logic across cloud and edge with Firebase. Real-time image analysis, on-device privacy, low
         token costs, and cloud-scale power.
       </p>
 
-      <div class="pt-2">
-        <a routerLink="/image-analysis" class="hero-cta-btn font-semibold shadow-lg">
-          Get Started
-          <app-arrow-forward-icon />
-        </a>
-      </div>
+      <a routerLink="/image-analysis" class="hero-cta-btn font-semibold shadow-lg">
+        Get Started
+        <app-arrow-forward-icon />
+      </a>
     </div>
 
     <!-- Right side modernized image/illustration -->
-    <div class="hero-visual relative w-full">
-      <div class="hero-image-wrapper duration-1000 hover:scale-[1.02]">
+    <div class="hero-visual mx-auto w-full">
+      <div class="transition-all duration-1000 hover:scale-[1.02]">
         <img
           ngSrc="/images/home.webp"
           width="512"

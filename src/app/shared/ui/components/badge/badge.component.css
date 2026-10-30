@@ -1,16 +1,11 @@
 @reference "../../../../../styles.css";
 
-/* Component styles for app-tag */
 .tag-pill {
-  @apply bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-sm cursor-pointer;
-}
-
-.tag-pill:hover {
-  @apply bg-primary text-on-primary;
+  @apply text-sm px-4 py-2 rounded-full cursor-pointer;
 }
 
 .tooltip-wrapper {
-  @apply absolute bottom-full left-0 mb-2 opacity-0 z-10;
+  @apply absolute bottom-full left-0 mb-2 opacity-0;
 }
 
 .group:hover .tooltip-wrapper {
@@ -18,9 +13,9 @@
 }
 
 .tooltip-content {
-  @apply bg-secondary text-surface text-sm px-3.5 py-2.5 rounded-lg whitespace-normal w-64 relative border border-outline/30;
+  @apply text-sm px-3.5 py-2.5 rounded-lg w-64;
 }
 
 .tooltip-arrow {
-  @apply absolute border-8 border-transparent border-t-secondary;
+  @apply absolute left-4 top-full;
 }

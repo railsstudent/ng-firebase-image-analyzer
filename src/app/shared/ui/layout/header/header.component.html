@@ -1,12 +1,12 @@
 <nav class="nav-bar backdrop-blur-md w-full">
   <div class="nav-container px-6 mx-auto">
     <div class="flex items-center gap-2">
-      <span class="nav-brand-title font-bold text-xl">
+      <span class="nav-brand-title font-bold gap-2">
         <app-terminal-icon />
         {{ title() }}
       </span>
     </div>
-    <div class="nav-links font-medium text-lg">
+    <div class="nav-links font-medium items-center">
       @for (link of navLinks(); track link.path) {
         <a class="nav-link transition-colors py-1" routerLinkActive="nav-link-active" [routerLink]="link.path">
           {{ link.label }}

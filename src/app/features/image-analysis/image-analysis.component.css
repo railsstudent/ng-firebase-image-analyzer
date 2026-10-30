@@ -1,7 +1,7 @@
 @reference "../../../styles.css";
 
 .workspace-container {
-  @apply flex flex-col gap-6 max-w-container-max py-8;
+  @apply max-w-container-max px-4 py-8;
 }
 
 .primary-action-btn {
