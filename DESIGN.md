@@ -1,6 +1,6 @@
 # Design System: Hybrid Image Analysis (Firebase AI Logic)
 
-This document outlines the design system, brand identity, and structural layout for the **Hybrid Image Analysis** application, as extracted from the design tokens and the **Home Page** screen in the Stitch platform. The main design system configurations and Tailwind v4 theme block are located in [src/styles.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/styles.css).
+This document outlines the design system, brand identity, and structural layout for the **Hybrid Image Analysis** application. The main design system configurations and Tailwind CSS v4 `@theme static` block are located in [src/styles.css](src/styles.css), accompanied by global layout and card primitives in [src/layout.css](src/layout.css) and [src/section-card.css](src/section-card.css).
 
 ---
 
@@ -10,162 +10,155 @@ The brand identity centers on **Firebase AI Logic**, projecting a sense of secur
 
 - **Aesthetic Tone**: Corporate, modern, and leaning heavily toward minimalism.
 - **Visual Elements**:
-  - **Precision Dot Grid**: A technical background dot grid (`logic-grid` using small repeated radial dots) representing structured logic.
-  - **Gradients**: Muted radial color spots (`hero-gradient`) indicating focus and ambient lighting.
-  - **Tactile Layers**: Clean, modern cards with a glassmorphism aesthetic (`glass-card`) using subtle borders and soft background blur.
+  - **Clean Canvas Backdrop**: High-contrast light surface (`--color-surface`: `#f8f9ff`) paired with crisp white cards (`--color-surface-card`: `#ffffff`).
+  - **Tactile Glassmorphic Layers**: Modern translucent panels (`.section-card` in [src/section-card.css](src/section-card.css)) using subtle borders (`--color-surface-glass-border`) and soft background blur (`backdrop-blur-md`).
+  - **Zero-Dependency Standalone Icons**: 12 standalone SVG icon components styled globally via `.app-icon` and `.app-icon > svg` in [src/styles.css](src/styles.css).
 
 ---
 
 ## 2. Color Roles & Tokens
 
-The color palette is built using Material Design 3 semantic color variables mapped to functional styling roles, backed by `:root` and `@theme` definitions in [src/styles.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/styles.css). All transparency is strictly declared using 8-digit hex notation (`#rrggbbaa`).
+The color palette is defined in a single `@theme static` block in [src/styles.css](src/styles.css). All transparency is strictly declared using 8-digit hex notation (`#rrggbbaa`).
 
-### Core Brand & Surface Roles
+### Core Brand, Metric & Surface Roles
 
-| Token Name                  | Hex Value | Role / Usage                                            |
-| :-------------------------- | :-------- | :------------------------------------------------------ |
-| `primary`                   | `#6366f1` | Primary branding, buttons, active interactive states    |
-| `primary-container`         | `#6063ee` | High-visibility container background and gradient stops |
-| `on-primary`                | `#ffffff` | High-contrast text on primary buttons and badges        |
-| `secondary`                 | `#0f172a` | Authoritative text colors, tooltips, secondary elements |
-| `secondary-container`       | `#dae2fd` | Soft secondary accents and containers                   |
-| `surface` / `background`    | `#f8f9ff` | Application canvas backdrop                             |
-| `surface-container`         | `#e5eeff` | Default cards and panels                                |
-| `surface-container-high`    | `#ecf2ff` | Elevated surfaces and tag pills                         |
-| `surface-container-highest` | `#d3e4fe` | Highest elevation surfaces                              |
-| `on-surface`                | `#0b1c30` | Main text color on surfaces                             |
-| `on-surface-variant`        | `#464554` | Subdued descriptive text                                |
-| `outline`                   | `#767586` | Low-contrast borders and lines                          |
-| `outline-variant`           | `#c7c4d7` | Muted division lines                                    |
+| Token Name                  | CSS Variable                        | Hex Value | Role / Usage                                                       |
+| :-------------------------- | :---------------------------------- | :-------- | :----------------------------------------------------------------- |
+| `primary`                   | `--color-primary`                   | `#6366f1` | Primary branding, buttons, active interactive states, input tokens |
+| `on-primary`                | `--color-on-primary`                | `#ffffff` | High-contrast text on primary buttons and badges                   |
+| `secondary`                 | `--color-secondary`                 | `#0f172a` | Authoritative text colors, tooltips, output/image token bars       |
+| `tertiary`                  | `--color-tertiary`                  | `#10b981` | Cached token segments and positive efficiency metrics              |
+| `quaternary`                | `--color-quaternary`                | `#f59e0b` | Thought/reasoning token segments                                   |
+| `surface`                   | `--color-surface`                   | `#f8f9ff` | Application canvas backdrop and form control background            |
+| `surface-card`              | `--color-surface-card`              | `#ffffff` | Opaque card surfaces (uploaders, canvas preview, PWA banner)       |
+| `surface-container`         | `--color-surface-container`         | `#e5eeff` | Interactive hover surfaces and active dropzone backgrounds         |
+| `surface-container-high`    | `--color-surface-container-high`    | `#ecf2ff` | Elevated surfaces, tag pills, and autocomplete overlays            |
+| `surface-container-highest` | `--color-surface-container-highest` | `#d3e4fe` | Highest elevation hover surfaces (listbox options)                 |
+| `on-surface`                | `--color-on-surface`                | `#0b1c30` | Main text color on surfaces                                        |
+| `on-surface-variant`        | `--color-on-surface-variant`        | `#464554` | Subdued descriptive text                                           |
+| `outline`                   | `--color-outline`                   | `#767586` | Low-contrast borders, placeholders, and section subtitles          |
+| `outline-variant`           | `--color-outline-variant`           | `#c7c4d7` | Muted division lines and container borders                         |
 
-### Semantic Error & Glassmorphism Tokens
+### Semantic Error, Glassmorphism & Utility Tokens
 
-| Token Name                  | Hex Value   | Role / Usage                                 |
-| :-------------------------- | :---------- | :------------------------------------------- |
-| `error`                     | `#ef4444`   | High-visibility alert states and error icons |
-| `error-container`           | `#ef44441a` | 10% opacity backdrop for error banners       |
-| `error-border`              | `#ef444433` | 20% opacity border for error containers      |
-| `error-text`                | `#fca5a5`   | Error banner headline and label text         |
-| `error-text-muted`          | `#f87171`   | Secondary error messages                     |
-| `surface-glass`             | `#ffffffb3` | 70% opacity light mode glass card background |
-| `surface-glass-border`      | `#d3e4fe80` | 50% opacity subtle glass panel border        |
-| `surface-glass-dark`        | `#0f172a99` | 60% opacity dark mode glass surface          |
-| `surface-glass-border-dark` | `#94a3b81a` | 10% opacity dark mode glass border           |
-| `skeleton`                  | `#e2e8f0`   | Light mode placeholder loading shimmer       |
-| `skeleton-dark`             | `#334155`   | Dark mode placeholder loading shimmer        |
-
----
-
-## 3. Typography Scales
-
-Typography uses a zero-dependency 2-tier system font hierarchy designed to maximize rendering speed and eliminate network font downloads:
-
-1. **`--font-sans`** (`'Inter', ui-sans-serif, system-ui, sans-serif`): Headlines, display banners, and body text.
-2. **`--font-mono`** (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`): Numeric metrics, badges, code blocks, and streaming status text.
-
-### Scales
-
-- **`display-lg`** (Hero Heading)
-  - **Font Family**: `--font-sans`
-  - **Size**: `64px`
-  - **Line Height**: `1.1`
-  - **Font Weight**: `700`
-  - **Letter Spacing**: `-0.02em`
-- **`headline-lg`** (Primary Headings)
-  - **Font Family**: `--font-sans`
-  - **Size**: `40px`
-  - **Line Height**: `1.2`
-  - **Font Weight**: `600`
-  - **Letter Spacing**: `-0.01em`
-- **`headline-md`** (Secondary Headings)
-  - **Font Family**: `--font-sans`
-  - **Size**: `24px`
-  - **Line Height**: `1.4`
-  - **Font Weight**: `500`
-- **`body-lg`** (Lead Paragraphs)
-  - **Font Family**: `--font-sans`
-  - **Size**: `18px`
-  - **Line Height**: `1.6`
-  - **Font Weight**: `400`
-- **`body-md`** (Default Body Text)
-  - **Font Family**: `--font-sans`
-  - **Size**: `16px`
-  - **Line Height**: `1.6`
-  - **Font Weight**: `400`
-- **`label-md`** (Buttons and Navigation Labels)
-  - **Font Family**: `--font-mono`
-  - **Size**: `14px`
-  - **Line Height**: `1.2`
-  - **Font Weight**: `500`
-  - **Letter Spacing**: `0.05em`
-- **`code-sm`** (Monospace Text)
-  - **Font Family**: `--font-mono`
-  - **Size**: `13px`
-  - **Line Height**: `1.5`
-  - **Font Weight**: `400`
+| Token Name             | CSS Variable                    | Value       | Role / Usage                                        |
+| :--------------------- | :------------------------------ | :---------- | :-------------------------------------------------- |
+| `error`                | `--color-error`                 | `#ef4444`   | High-visibility alert states and destructive hovers |
+| `error-container`      | `--color-error-container`       | `#ef44441a` | 10% opacity backdrop for error banners              |
+| `error-border`         | `--color-error-border`          | `#ef444433` | 20% opacity border for error containers             |
+| `error-text`           | `--color-error-text`            | `#fca5a5`   | Error banner headline text                          |
+| `error-text-muted`     | `--color-error-text-muted`      | `#f87171`   | Secondary error messages and error icons            |
+| `surface-glass`        | `--color-surface-glass`         | `#ffffffb3` | 70% opacity glass card and status badge background  |
+| `surface-glass-border` | `--color-surface-glass-border`  | `#d3e4fe80` | 50% opacity subtle glass panel border               |
+| `skeleton`             | `--color-skeleton`              | `#64748b`   | Placeholder loading shimmer fill                    |
+| `container-max`        | `--spacing-container-max`       | `1280px`    | Maximum horizontal container constraint             |
+| `transition-duration`  | `--default-transition-duration` | `200ms`     | Default CSS transition timing across interactive UI |
 
 ---
 
-## 4. Structural Layouts & Spacing Scale (Home Page)
+## 3. Typography & Global Icon Primitives
 
-The layout of the Home Page leverages standard Tailwind CSS v4 dynamic spacing rules and CSS Grid/Flexbox to establish structured spatial relationships:
+Typography uses a zero-dependency 2-tier system font hierarchy in `@theme static` ([src/styles.css](src/styles.css#L30-L35)) designed to maximize rendering speed and eliminate network font downloads:
 
-### Grid & Alignments
+1. **`--font-sans`** (`'Inter', ui-sans-serif, system-ui, sans-serif`) & **`--font-body-md`** (`var(--font-sans)`): Default `body` font family, headlines, and body prose.
+2. **`--font-mono`** (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`) & **`--font-label-md`** (`var(--font-mono)`): Numeric metrics, badges, token counters, and streaming status labels.
 
-- **Desktop Grid**: 12-column layout with responsive gap spacing (`gap-10 md:gap-16` on container, transitioning to grid columns for desktop).
-- **Max Width**: Standard application boundaries locked to `1280px` (`max-w-container-max` / `max-w-7xl`).
-- **Spatial & Sizing Scale**: Standard Tailwind v4 dynamic 4px-base scale (`gap-2` = 8px, `gap-4` = 16px, `px-6` = 24px, `py-8` = 32px, `py-12` = 48px, `py-16` = 64px). Non-standard `--spacing-sm/md/lg` theme overrides are omitted to preserve standard container sizing utilities (`max-w-sm` = 384px, `max-w-md` = 448px).
+### Canonical Typography Utility Mappings
 
-### Main Page Sections
+| Role / Element                 | Selector / Location          | Tailwind CSS v4 Utilities                                            |
+| :----------------------------- | :--------------------------- | :------------------------------------------------------------------- |
+| **Hero Display Heading**       | `.hero-title` (`home`)       | `text-3xl md:text-5xl lg:text-6xl font-bold leading-tight`           |
+| **Section Title**              | `.section-title` (global)    | `text-xl font-bold flex items-center gap-2 tracking-tight`           |
+| **Section Subtitle / Label**   | `.section-subtitle` (global) | `text-xs font-bold uppercase tracking-widest text-outline block`     |
+| **Card / Dish Headline**       | Accordion & Banner titles    | `text-lg font-semibold` or `text-base font-semibold text-on-surface` |
+| **Lead / Body Copy**           | Hero & Panel descriptions    | `text-lg` or `text-sm text-on-surface-variant leading-relaxed`       |
+| **Monospace Status & Metrics** | Badges & Token counters      | `font-mono text-xs font-bold` or `font-label-md text-xs`             |
 
-1. **Top Navigation Bar (`nav`)**:
-   - Sticky position at the top (`block sticky top-0 z-50` on `<app-header>`).
-   - Primary background (`bg-primary`) with horizontal alignment (`h-16 px-6 max-w-container-max mx-auto flex justify-between items-center`).
-   - Minimalist responsive header layout:
-     - **Brand Home Link (`a.nav-brand-title`)**: Navigating back to `/home` (`HOME_NAV_LINK`) with `[attr.aria-label]="homeLink().label"`, displaying `<app-terminal-icon />` across all viewports and `<span class="hidden sm:inline">{{ title() }}</span>` on `>= 640px`.
-     - **Always-Visible Feature Links (`.nav-links`)**: Visible across both mobile and desktop (`flex gap-6 lg:gap-8 text-sm md:text-base lg:text-lg`) for direct one-tap access to `Analysis` and `Culinary Guide` without redundant `"Home"` or `"Get Started"` buttons.
-2. **Hero Section (`section`)**:
-   - **Layout Structure**: Full-width container (`.hero-container`: `w-full max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16`).
-   - **Background & Accent Styles**:
-     - `.hero-gradient`: Radial ambient glow (`radial-gradient(circle at 50% 50%, #4648d40d 0%, #f8f9ff00 70%)`).
-     - `.logic-grid`: Radial dot grid backdrop pattern (`background-image: radial-gradient(circle, var(--color-surface-container) 1px, transparent 1px); background-size: 24px 24px;`).
-     - Minimum height: `min-h-[90vh]`.
-   - **Left Side Column (`md:col-span-7 space-y-6 md:space-y-8 min-w-0`)**:
-     - **Display Headline**: `Intelligent Inference. Anywhere.` (`text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-on-surface`), where "Anywhere." is styled with the primary color (`text-primary`).
-     - **Subhead description**: `Deploy hybrid AI logic across cloud and edge with Firebase. Real-time image analysis, on-device privacy, low token costs, and cloud-scale power.` (`text-lg text-on-surface-variant leading-relaxed max-w-[36rem]`).
-     - **Primary CTA Button**: `Get Started` accompanied by the standalone SVG icon component `<app-arrow-forward-icon>`. Sizing/styling: `bg-white text-primary px-8 py-3.5 rounded-xl font-semibold text-lg inline-flex items-center gap-2 transition-all shadow-lg hover:bg-surface-container`.
-   - **Right Side Column (`md:col-span-5 relative w-full min-w-0 max-w-md md:max-w-none mx-auto`)**:
-     - **Illustration Container**: A pulse-animated wrapper with hover scale (`animate-pulse transition-all duration-1000 hover:scale-[1.02]`).
-     - **Optimized Hero Image**: Next-generation WebP asset loaded via Angular's `NgOptimizedImage` (`ngSrc="/images/home.webp"`, `width="512"`, `height="382"`, `priority`), preserving zero-CLS layout stability and responsive fluid aspect ratio (`aspect-ratio: 512 / 382`).
-     - **Decorative Floating Blurs**:
-       - Top-Right: `absolute -top-6 -right-6 w-32 h-32 bg-secondary-container/30 rounded-full blur-3xl`.
-       - Bottom-Left: `absolute -bottom-8 -left-8 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl`.
-3. **Footer (`footer`)**:
-   - Primary background with structured responsive flex layout (`py-8 px-6 gap-4`) grouping branding items and license/credits text.
+### Global SVG Icon Rules (`.app-icon`)
+
+Defined in [src/styles.css](src/styles.css#L61-L67), all 12 standalone icon components (`src/app/shared/ui/icons/`) bind `class="app-icon size-5"` on their host element:
+
+```css
+.app-icon {
+  @apply inline-flex items-center justify-center shrink-0 select-none;
+}
+
+.app-icon > svg {
+  @apply size-full;
+}
+```
+
+---
+
+## 4. Global Shell, Section Cards & Home Layout
+
+Global layout and section-card primitives are separated into [src/layout.css](src/layout.css) and [src/section-card.css](src/section-card.css) (imported at the bottom of [src/styles.css](src/styles.css)).
+
+### 4.1 Global Section Card Primitives (`src/section-card.css`)
+
+| Class               | `@apply` Rule in `src/section-card.css`                                                       | Usage                                                         |
+| :------------------ | :-------------------------------------------------------------------------------------------- | :------------------------------------------------------------ |
+| `.panel-container`  | `@apply mt-8 animate-fade-in;`                                                                | Outer wrapper for deferred feature panels                     |
+| `.section-card`     | `@apply p-6 rounded-xl bg-surface-glass backdrop-blur-md border border-surface-glass-border;` | Standard glassmorphic card container and `@placeholder` box   |
+| `.section-title`    | `@apply text-xl font-bold flex items-center gap-2 tracking-tight;`                            | Primary section/card heading with leading icon                |
+| `.section-subtitle` | `@apply text-xs font-bold uppercase tracking-widest text-outline block;`                      | Overline label for sections, form controls, and metric splits |
+
+### 4.2 Global Header & Footer Primitives (`src/layout.css`)
+
+1. **Top Navigation Bar (`<app-header>` & `src/layout.css`)**:
+   - Host binding: `block sticky top-0 z-50`.
+   - `.nav-bar`: `@apply border-b border-outline-variant/30 bg-primary text-white;` (paired with `backdrop-blur-md w-full` in template).
+   - `.nav-container`: `@apply flex justify-between items-center h-16 max-w-container-max;` (paired with `px-6 mx-auto`).
+   - `.nav-brand-title`: `@apply flex items-center md:text-xl;` (paired with `font-bold gap-2`, displaying `<app-terminal-icon />` and `<span class="hidden sm:inline">{{ title() }}</span>`).
+   - `.nav-links`: `@apply flex gap-6 lg:gap-8 text-sm md:text-base lg:text-lg;` (paired with `font-medium items-center`).
+   - `.nav-link`: `@apply text-white/80 hover:text-white;` (paired with `transition-colors py-1`).
+   - `.nav-link-active`: `@apply text-white font-bold border-b-2 border-white;`.
+2. **Footer (`<app-footer>` & `src/layout.css`)**:
+   - `.footer-bar`: `@apply bg-primary text-white py-8;` (paired with `w-full mt-auto`).
+   - `.footer-container`: `@apply max-w-container-max flex flex-col md:flex-row justify-between items-center gap-4;` (paired with `mx-auto px-6`).
+   - `.footer-copyright`: `@apply text-center md:text-left text-sm md:text-lg;` (paired with `text-white/80`).
+
+### 4.3 Home Hero Section (`home.component.css`)
+
+- **Stylesheet ([home.component.css](src/app/features/home/home.component.css))**:
+  - `.hero-container`: `@apply mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;` (paired with `w-full max-w-7xl` inside `<section class="flex-1 flex items-center">`).
+  - `.hero-content`: `@apply md:col-span-7 gap-6 md:gap-8;` (paired with `flex flex-col`).
+  - `.hero-title`: `@apply text-3xl md:text-5xl lg:text-6xl;` (paired with `font-bold leading-tight`).
+  - `.hero-cta-btn`: `@apply flex self-start items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl text-base hover:bg-surface-container;` (paired with `font-semibold shadow-lg`).
+  - `.hero-visual`: `@apply md:col-span-5 max-w-[480px];` (paired with `mx-auto w-full`).
+  - `.hero-image`: `@apply w-full border-outline-variant/30;` (paired with `border shadow-lg rounded-xl` on `ngSrc="/images/home.webp"` `width="512"` `height="382"` `priority`).
+
+### 4.4 PWA Update Notification Banner (`pwa-update-banner.component.css`)
+
+- **Stylesheet ([pwa-update-banner.component.css](src/app/pwa/pwa-update-banner/pwa-update-banner.component.css))**:
+  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`).
+  - `.pwa-banner-badge-wrapper`: `@apply flex items-center justify-center p-2.5 bg-primary/10 text-primary;` (paired with `rounded-xl shrink-0`).
+  - `.pwa-banner-content`: `@apply flex flex-col gap-1;` (paired with `flex-grow min-w-0`).
+  - `.pwa-banner-title`: `@apply text-base text-on-surface;` (paired with `font-semibold leading-snug`).
+  - `.pwa-banner-actions`: `@apply flex items-center justify-end gap-3 border-outline-variant/20;` (paired with `border-t pt-3`).
+  - `.pwa-banner-btn`: `@apply py-2 text-xs rounded-lg font-label-md cursor-pointer;` (paired with `font-bold`).
+  - `.pwa-banner-btn-secondary`: `@apply px-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container;`.
+  - `.pwa-banner-btn-primary`: `@apply px-[18px] text-on-primary bg-primary hover:bg-primary/90;`.
 
 ---
 
 ## 5. Streaming Loader & Progressive Visual States
 
-To accommodate the shift from standard blocking operations to real-time generative streams, the design system defines a set of micro-interactions and progressive layouts to keep the user interface feeling responsive, fluid, and premium.
+To accommodate real-time generative streams and background model initialization, the design system defines progressive layout primitives in [src/styles.css](src/styles.css) and [image-analysis.component.css](src/app/features/image-analysis/image-analysis.component.css).
 
-### 5.1 The Glassmorphic Streaming Loader Badge (`.streaming-loader-badge`)
+### 5.1 Image Analysis Workspace & Streaming Loader Badge (`image-analysis.component.css`)
 
-Rather than covering the screen with a destructive full-page blocking overlay, we use an in-situ glassmorphic status badge to keep the background workspace visible and alert the user to incoming real-time tokens:
-
-- **Aesthetic & Token Properties**:
-  - **Backdrop Blur**: `backdrop-filter: blur(12px)` for maximum glass transparency.
-  - **Background Spot**: Semitransparent fill (`var(--color-surface-glass)`, `#ffffffb3` / dark `#0f172a99`) overlaid with a primary highlight tint.
-  - **Borders**: `1px solid var(--color-surface-glass-border)` (`#d3e4fe80` / dark `#94a3b81a`) to define a clean, low-contrast, premium outline.
-  - **Shadow**: Subtle, diffuse shadow (`var(--shadow-primary-glow)` / `0 4px 20px -2px #4648d414`).
-  - **Spacing**: Symmetrical inline padding (`px-4 py-2` or `sm`/`md` scale).
-- **Micro-Animations**:
-  - **Pulsing State**: A continuous, high-comfort scale pulse (`scale-[1.01]` transition with standard bezier timing) to evoke intelligence.
-  - **Sync Spinner**: Standard infinite rotation (`animate-spin` over `1.5s`) of the standalone `<app-sync-icon>` in the primary color (`#4648d4`).
+- **Workspace & Action Primitives**:
+  - `.workspace-container`: `@apply max-w-container-max px-4 py-8;` (paired with `space-y-6 mx-auto` in template).
+  - `.primary-action-btn`: `@apply flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl;` (paired with `shadow-lg hover:opacity-95 active:scale-95 transition-all`).
+  - `.error-banner`: `@apply flex items-center gap-4 bg-error-container border-error-border p-4 rounded-2xl mx-auto my-6 max-w-5xl;` (paired with `border backdrop-blur-sm`).
+- **Glassmorphic Streaming Loader Badge (`.streaming-loader-badge`)**:
+  - `@apply flex px-4 items-center gap-2.5 py-1.5 bg-surface-glass border-surface-glass-border text-on-surface-variant;` (paired with `rounded-full border` in template).
+  - Reused for both active inference streaming (`<app-sync-icon class="text-primary size-5" />`) and background on-device pre-warming (`<app-sync-icon class="text-primary size-4" />`) alongside `<span class="text-xs font-bold font-mono">`.
 
 ### 5.2 Progressive Content Reveal Animation (`.animate-fade-in`)
 
-To ensure streaming text and UI cards do not pop onto the canvas in a jarring, static manner, all progressive elements (including newly rendered tag lists and analysis cards) use the global `animate-fade-in` utility defined in `src/styles.css`:
+All progressive elements (including newly rendered tag lists and `.panel-container`) use the global `animate-fade-in` utility defined in [src/styles.css](src/styles.css#L46-L59):
 
 ```css
 @keyframes fadeIn {
@@ -184,23 +177,14 @@ To ensure streaming text and UI cards do not pop onto the canvas in a jarring, s
 }
 ```
 
-This progressive approach maintains typographic rhythm and ensures the UI feels exceptionally natural and modern under progressive data conditions.
+### 5.3 CLS-Safe On-Device Pre-Warming Status Slot (`.prewarm-status-slot`)
 
-### 5.3 CLS-Safe On-Device Pre-Warming Status Slot (`.prewarm-status-slot` & `.prewarm-status-badge`)
-
-When `ImageAnalysisComponent` triggers background Gemini Nano pre-warming after initial render (`afterNextRender`), a dedicated status slot sits directly below `<app-image-uploader>` to communicate background shader compilation without blocking upload or analysis controls or shifting page layout:
+When `ImageAnalysisComponent` triggers background Gemini Nano pre-warming after initial render (`afterNextRender`), a dedicated status slot sits directly below `<app-image-uploader class="mb-0">`:
 
 - **Zero-CLS Layout Slot (`.prewarm-status-slot`)**:
-  - `.workspace-container`: `@apply space-y-6 max-w-(--spacing-container-max) mx-auto px-4 py-8;` with `.workspace-container > app-image-uploader { @apply mb-0; }`.
-  - `.prewarm-status-slot`: `@apply min-h-9 my-0 flex items-center justify-center;`
-  - Reserves a fixed minimum height (`min-h-9` / `36px`) with zero vertical margin (`my-0`) and `role="status"` / `aria-live="polite"`, acting as the single spacing gap between `<app-image-uploader>` and the next workspace element so mounting and unmounting `.prewarm-status-badge` produces `0.000` Cumulative Layout Shift (CLS) without excess whitespace.
-- **Glassmorphic Pre-Warming Pill (`.prewarm-status-badge`)**:
-  - `@apply inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-opacity duration-300 ease-out;`
-  - **Light Mode Surface**: `background: var(--color-surface-glass)` (`#ffffffb3`) and `border-color: var(--color-surface-glass-border)` (`#d3e4fe80`) with `backdrop-filter: blur(12px)`.
-  - **Dark Mode Surface (`:host-context(.dark) .prewarm-status-badge`)**: `background: var(--color-surface-glass-dark)` (`#0f172a99`) and `border-color: var(--color-surface-glass-border-dark)` (`#94a3b81a`).
-- **Spinner & Status Typography (`.prewarm-status-icon` & `.prewarm-status-text`)**:
-  - `.prewarm-status-icon`: `<app-sync-icon>` styled with `@apply w-4 h-4 animate-spin motion-reduce:animate-none text-primary shrink-0;` (`--color-primary`).
-  - `.prewarm-status-text`: Monospace status label styled with `@apply text-xs font-semibold tracking-wide text-(--color-on-surface-variant) font-mono;` (`--color-on-surface-variant`).
+  - Stylesheet rule: `@apply flex items-center justify-center;` in [image-analysis.component.css](src/app/features/image-analysis/image-analysis.component.css).
+  - Template binding: `<div class="prewarm-status-slot min-h-9 my-0" role="status" aria-live="polite">`.
+  - Reserves a fixed minimum height (`min-h-9` / `36px`) with zero vertical margin (`my-0`), acting as the single spacing gap between `<app-image-uploader class="mb-0">` and the next workspace element so mounting and unmounting `.streaming-loader-badge` produces `0.000` Cumulative Layout Shift (CLS).
 
 ---
 
@@ -221,26 +205,56 @@ graph TD
     ImageAnalysis -->|"Click Analyze"| TriggerInference["Dispatch AI API reasoning"]
 ```
 
-### 6.2 Advanced Analysis Panel (4-Tab Control System)
+### 6.2 Workspace & Advanced Analysis Panel (4-Tab Control System)
+
+#### Shared Uploader & Tag Badge Primitives
+
+- **Image Uploader ([image-uploader.component.css](src/app/shared/ui/image-uploader/image-uploader.component.css))**:
+  - `.error-banner`: `@apply absolute -top-12 left-0 right-0 text-center;`
+  - `.error-banner-text`: `@apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border-error-border;`
+  - `.uploader-panel`: `@apply relative min-h-[300px] flex flex-col items-center justify-center cursor-pointer rounded-xl overflow-hidden;`
+  - `.preview-image`: `@apply w-full h-auto max-h-[450px];`
+  - `.remove-btn`: `@apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 flex items-center justify-center;` (reveals on `.uploader-panel:hover .remove-btn` with `@apply opacity-100;`, transitions to `@apply bg-error;` on `.remove-btn:hover`).
+- **Tag Badge & Hover Tooltip ([badge.component.css](src/app/shared/ui/components/badge/badge.component.css))**:
+  - `.tag-pill`: `@apply text-sm px-4 py-2 rounded-full cursor-pointer;`
+  - `.tooltip-wrapper`: `@apply absolute bottom-full left-0 mb-2 opacity-0;` (reveals via `.group:hover .tooltip-wrapper` with `@apply opacity-100;`)
+  - `.tooltip-content`: `@apply text-sm px-3.5 py-2.5 rounded-lg w-64;`
+  - `.tooltip-arrow`: `@apply absolute left-4 top-full;`
+- **Tab Group Header ([tab-group.component.css](src/app/shared/ui/components/tab-group/tab-group.component.css))**:
+  - `.tabs-header-list`: `@apply flex mb-8 overflow-x-auto;` with `scrollbar-width: none;` and `.tabs-header-list::-webkit-scrollbar { display: none; }`
+  - `.tab-header-btn`: `@apply whitespace-nowrap px-6 py-3 text-sm border-b-2;`
+
+#### 4-Tab Control System
 
 The results section employs a 4-tab control system allowing users to deep-dive into multi-modal metadata:
 
 1. **Thought Summary**:
-   - Card utilizing glassmorphic aesthetics (`var(--color-surface-glass)` and `var(--color-surface-glass-border)`).
+   - Card utilizing `.section-card` glassmorphic aesthetics (`var(--color-surface-glass)` and `var(--color-surface-glass-border)`).
    - Presents AI reasoning steps, model confidence scores, and structured insights (e.g. breed detection, environmental context, lighting conditions).
-2. **Recommendations List**:
+2. **Recommendations List ([recommendation-list.component.css](src/app/shared/ui/components/recommendation-list/recommendation-list.component.css) & [recommendation-item.component.css](src/app/shared/ui/components/recommendation-list/recommendation-item.component.css))**:
    - Structured list of composition, visual, and lighting suggestions (e.g. cropping guidelines, color balance shifts).
-   - Uses high-contrast typography labels (`font-headline-sm`) and secondary supporting descriptions (`text-on-surface-variant`).
-3. **Token Usage Analytics**:
-   - **Stacked Progress Bar**: Custom horizontal compound bar displaying relative ratio of:
-     - **Input Tokens** (`var(--color-primary)`)
-     - **Output Tokens** (`var(--color-secondary)`)
-     - **Cached Tokens** (`var(--color-tertiary)`)
-     - **Thought/Reasoning Tokens** (`var(--color-primary-container)`)
-   - Detailed breakdown charts illustrating prompt modality details (text vs. image), output details, and cache status with precise numeric counts.
-4. **Image Improvement (AI Enhanced Preview)**:
-   - **Metadata Sidebar**: Column displaying crop coordinates/aspect ratios and precise filtering metadata (brightness, saturation, contrast adjustments).
-   - **Enhanced Canvas**: Interactive high-fidelity preview showing the filtered/cropped output with download capability.
+   - `.recommendation-list-title`: `@apply flex items-center gap-2;`
+   - `.recommendation-item-title`: `@apply flex items-center mb-1;` on `app-recommendation-item` (`host: { role: 'listitem', class: 'py-4 border-t border-outline-variant/20 first:border-t-0 block' }`).
+3. **Token Usage Analytics ([token-analytics.component.css](src/app/shared/ui/components/token-analytics/token-analytics.component.css) & [token-usage-bar.component.css](src/app/shared/ui/components/token-usage-bar/token-usage-bar.component.css))**:
+   - **Analytics Container (`token-analytics.component.css`)**:
+     - `.token-header`: `@apply flex justify-between items-center;`
+     - `.token-details-grid`: `@apply pt-6 grid grid-cols-1 md:grid-cols-2 gap-6;`
+     - `.cached-savings-card`: `@apply p-4 bg-surface-card border-outline-variant/20;`
+   - **Stacked Progress Bar (`token-usage-bar.component.css`)**:
+     - `.token-legend-grid`: `@apply grid grid-cols-2 md:grid-cols-4 gap-4 mt-4;`
+     - `.modality-legend`: `@apply flex justify-between text-xs text-on-surface-variant;`
+     - Custom horizontal compound bar displaying relative ratio of:
+       - **Input / Text Tokens**: `bg-primary` (`var(--color-primary)`)
+       - **Output / Image Tokens**: `bg-secondary` (`var(--color-secondary)`)
+       - **Cached Tokens**: `bg-tertiary` (`var(--color-tertiary)`)
+       - **Thought/Reasoning Tokens**: `bg-quaternary` (`var(--color-quaternary)`)
+4. **Image Improvement ([image-improvement.component.css](src/app/features/image-analysis/image-improvement/image-improvement.component.css), [image-crop.component.css](src/app/features/image-analysis/image-crop/image-crop.component.css), & [enhanced-canvas.component.css](src/app/features/image-analysis/enhanced-canvas/enhanced-canvas.component.css))**:
+   - **Responsive Improvement Grid (`image-improvement.component.css`)**: `.improvement-grid` (`@apply grid-cols-1 md:grid-cols-3;`).
+   - **Crop & Filter Metadata Sidebar (`image-crop.component.css`)**: `.specs-box` (`@apply p-4 bg-surface-card rounded-xl border-outline-variant/20 text-xs text-on-surface-variant;`) displaying crop coordinates/aspect ratios and precise filtering metadata.
+   - **Enhanced Canvas (`enhanced-canvas.component.css`)**:
+     - `.canvas-container`: `@apply rounded-xl overflow-hidden border-primary/20 bg-surface-card flex items-center justify-center max-h-[400px];`
+     - `.download-enhanced-btn`: `@apply absolute top-4 right-4 bg-primary text-white text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2;` (reveals on `.canvas-container:hover .download-enhanced-btn` with `@apply opacity-100;`)
+     - `.canvas-badge`: `@apply absolute bottom-4 right-4 bg-primary text-white text-[10px] px-2.5 py-1.5 rounded;`
 
 ---
 
@@ -248,33 +262,44 @@ The results section employs a 4-tab control system allowing users to deep-dive i
 
 The Accordion Component System defines the structural layout, interactive behavior, and visual tokens for the single-expansion disclosure pattern displaying culinary dishes and recipe synthesis details.
 
-### 7.1 Visual Tokens & Glassmorphic Container
+### 7.1 Visual Tokens & Glassmorphic Container ([accordion-item.component.css](src/app/shared/ui/components/accordion/accordion-item.component.css))
 
-- **Styling Tokens & Classes**: `glass-card`, `surface-glass`, `surface-glass-border`, `rounded-2xl`
-- **Surface Elevation**: Semi-transparent background (`var(--color-surface-glass)`) with subtle outline border (`var(--color-surface-glass-border)`) and `16px` rounded corners (`rounded-2xl`).
-- **Interactive Transitions**: Smooth transition on focus and hover, maintaining elevation without breaking the ambient dot grid background.
+- **Component Stylesheet (`accordion-item.component.css`)**:
+  - `@reference "../../../../../styles.css";`
+  - `.accordion-item`: `@apply rounded-2xl bg-surface-glass;`
+  - `.accordion-trigger`: `@apply flex w-full items-center justify-between gap-4 p-4 text-left;`
+  - `.accordion-trigger:focus-visible`: `@apply outline-2 outline-offset-2 outline-primary;`
+- **Surface Elevation & Template Bindings**:
+  - Host element binds `class="block scroll-mt-20 rounded-2xl"`.
+  - Outer `.accordion-item` pairs with `border border-surface-glass-border` in [accordion-item.component.html](src/app/shared/ui/components/accordion/accordion-item.component.html), creating a semi-transparent surface (`var(--color-surface-glass)`) with a subtle outline border (`var(--color-surface-glass-border)`) and `16px` rounded corners (`rounded-2xl`).
+  - Expanded body wrapper uses `px-4 pb-4 border-t border-surface-glass-border`.
 
-### 7.2 Responsive Header Typography & Indicators
+### 7.2 Responsive Header Typography & Indicators ([culinary-dish-list.component.css](src/app/features/culinary-guide/culinary-dish-list/culinary-dish-list.component.css))
 
 The accordion header provides instant scannability for dishes in both collapsed and expanded states:
 
-- **English Title**: Primary headline styled with `font-semibold text-lg text-on-surface`.
-- **Native Script Pill Badge**: Secondary cultural context badge styled with `font-mono text-xs px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant`.
-- **Line-Clamped Description**: Supporting description clamping to 2 lines on mobile screens and expanding on desktop: `text-sm text-on-surface-variant line-clamp-2 md:line-clamp-none`.
-- **Right-Aligned Rotating Chevron**: State indicator with `transition-transform duration-200` (e.g., `rotate-180` when expanded).
+- **English Title**: Primary headline styled with `font-semibold text-lg`.
+- **Native Script Pill Badge (`.dish-native-badge`)**:
+  - Stylesheet rule: `@apply px-2.5 bg-surface-container-high text-on-surface-variant;`
+  - Template utility classes: `dish-native-badge font-mono text-xs py-0.5 rounded-full`
+- **Line-Clamped Description (`.dish-description`)**:
+  - Stylesheet rule: `@apply text-on-surface-variant line-clamp-2 md:line-clamp-none;`
+  - Template utility classes: `dish-description text-sm m-0`
+- **Right-Aligned Rotating Chevron**: `<app-chevron-down-icon>` inside `.accordion-trigger` with `[class.rotate-180]="expanded()"` and `transition-transform`.
 
-### 7.3 Responsive Panel Body Layout & Scroll Boundaries
+### 7.3 Responsive Panel Body Layout & Natural Document Flow
 
-The expanded disclosure body (`.dish-body` in `culinary-dish-list.component.css`) arranges synthesis details, markdown recipe content, and telemetry diagnostics in a vertical flex stack:
+The expanded disclosure body (`<div accordion-body class="flex flex-col gap-6 pt-4">` in [culinary-dish-list.component.html](src/app/features/culinary-guide/culinary-dish-list/culinary-dish-list.component.html)) arranges synthesis details, markdown recipe content, and telemetry diagnostics in a vertical flex stack using natural document flow (no `max-h` or nested `overflow-y-auto` scroll-trap):
 
-- **Outer Disclosure Body (`.dish-body`)**: `@apply flex flex-col gap-6 pt-4 max-h-[60vh] md:max-h-[70vh] overflow-y-auto overscroll-contain;`
+- **Outer Disclosure Body (`[accordion-body]`)**: `flex flex-col gap-6 pt-4`
 - **Top 2-Column Content Grid (`.dish-content-grid`)**:
   - **Mobile Layout**: Single-column vertical stack (`grid-cols-1`) displaying ingredients followed by cooking instructions.
-  - **Desktop Layout**: Two-column grid (`md:grid-cols-[2fr_3fr]`, a **2:3 / 40% : 60% ratio**) separating the left ingredients column (`40%`) and right cooking instructions column (`60%`): `@apply grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 items-start;`
+  - **Desktop Layout**: Two-column grid (`md:grid-cols-[2fr_3fr]`, a **2:3 / 40% : 60% ratio**) separating the left ingredients column (`40%`) and right cooking instructions column (`60%`).
+  - Stylesheet rule: `.dish-content-grid { @apply grid grid-cols-1 md:grid-cols-[2fr_3fr]; }` paired with `gap-6 items-start` in the template.
 - **Recipe Instructions Wrapping (`.dish-instructions`)**:
-  - `@apply space-y-4 min-h-[160px] min-w-0 wrap-break-word [&_pre]:whitespace-pre-wrap [&_pre]:font-sans [&_code]:whitespace-pre-wrap [&_code]:font-sans;` ensuring markdown blocks and code elements wrap properly without horizontal clipping.
+  - Stylesheet rule: `.dish-instructions { @apply min-h-[160px] wrap-break-word; }` paired with `space-y-4 min-w-0` in the template, ensuring markdown blocks wrap cleanly without horizontal clipping.
 - **Full-Width Bottom Diagnostics Row**:
-  - `<app-token-analytics>` is wrapped in `@defer (when recipeDetail?.tokenSummary)` with `<app-skeleton variant="line" [lines]="2" class="w-full" />` inside `@placeholder`. It is placed outside and below `.dish-content-grid` so it spans the full width (`100%`) of `.dish-body` beneath both the Ingredients and Recipe columns.
+  - `<app-token-analytics>` is wrapped in `@defer (when recipeDetail?.tokenSummary)` with `<app-skeleton variant="line" [lines]="4" class="w-full" />` inside `@placeholder`. It is placed outside and below `.dish-content-grid` so it spans the full width (`100%`) of the disclosure body beneath both the Ingredients and Recipe columns.
 
 ### 7.4 Semantic Content Projection Slots
 
@@ -289,23 +314,20 @@ To decouple accordion wrapper state from specific recipe rendering logic, the co
 
 The Culinary Destination Selector provides a responsive, accessible destination filter for initiating Stage 1 Culinary Discovery.
 
-### 8.1 Visual Architecture & Layout Tokens
+### 8.1 Visual Architecture & Layout Tokens ([culinary-search-box.component.css](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.css))
 
-- **Responsive Container**: Mobile-first flex container (`flex flex-col sm:flex-row gap-3 items-center`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
-- **Glassmorphic Styling**: Card container styled with `glass-card`, `surface-glass`, `surface-glass-border`, and `rounded-2xl`.
+- **Responsive Container**: Mobile-first flex container (`flex flex-col sm:flex-row gap-3 items-stretch sm:items-center`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
+- **Glassmorphic Card**: Styled with `.search-box-card` (`@apply p-4 md:p-6 rounded-2xl bg-surface-glass;`) and `border border-surface-glass-border`.
 - **Form Controls & Component Stylesheet (`culinary-search-box.component.css`)**:
   - `@reference "../../../../styles.css";`
-  - `:host`: `@apply relative z-20 block;`
-  - `.search-box-card`: `@apply relative z-20 p-4 md:p-6 rounded-2xl backdrop-blur-md bg-surface-glass border border-surface-glass-border dark:bg-surface-glass-dark dark:border-surface-glass-border-dark shadow-sm;`
-  - `.search-form`: `@apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full;`
-  - `.form-group`: `@apply flex flex-col gap-1.5 flex-1 relative;`
-  - `.form-label`: `@apply text-xs font-semibold tracking-wider uppercase text-on-surface-variant;`
-  - `.select-control`: `@apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all;`
-  - `.input-control`: `@apply w-full px-4 py-2.5 rounded-xl border border-outline/30 bg-surface text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-outline;`
-  - `.listbox-overlay`: `@apply absolute left-0 right-0 top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface-container-high shadow-lg z-50 p-1 list-none m-0;`
-  - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm text-on-surface cursor-pointer select-none transition-colors hover:bg-surface-container-highest;`
-  - `.listbox-option-active`: `@apply bg-primary/10 text-primary font-medium;`
-  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm transition-all shadow-md hover:bg-primary-container disabled:opacity-50 disabled:cursor-not-allowed sm:self-end;`
+  - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl bg-surface-glass;`
+  - `.search-form`: `@apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center;`
+  - `.select-control`: `@apply px-4 py-2.5 rounded-xl bg-surface focus:outline-none focus:ring-2 focus:ring-primary/50;` (shared by both the Country `<select>` and City `<input>`, paired with `border border-outline/30` in [culinary-search-box.component.html](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html))
+  - `.listbox-overlay`: `@apply absolute left-0 right-0 top-full max-h-56 overflow-y-auto rounded-xl bg-surface-container-high z-50 p-1;` (paired with `border border-outline-variant` in the template)
+  - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm cursor-pointer select-none hover:bg-surface-container-highest;`
+  - `.listbox-option-active`: `@apply bg-primary/10 text-primary;`
+  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed sm:self-end flex items-center justify-center;`
+  - Form field labels in the template reuse the global `.section-subtitle font-semibold` primitive (`src/section-card.css`), and field groups use inline `flex flex-col gap-1.5 flex-1`.
 
 ### 8.2 WAI-ARIA 1.2 Combobox Pattern
 
@@ -315,11 +337,11 @@ The city autocomplete combobox conforms to WAI-ARIA 1.2 specifications for typea
   - `role="combobox"`: Declares the input as a combobox.
   - `aria-autocomplete="list"`: Indicates that typing filters a list of suggested values.
   - `aria-expanded="true | false"`: Reflects the open/closed state of the suggestions listbox overlay.
-  - `aria-controls="city-listbox-id"`: References the popup listbox element ID.
+  - `aria-controls="city-listbox"`: References the popup listbox element ID.
   - `aria-activedescendant="city-option-{index}"`: Points to the currently highlighted item during keyboard navigation.
 - **Popup Listbox Overlay**:
   - `role="listbox"`: Applied to the suggestions container.
-  - `id="city-listbox-id"`: Anchored target for `aria-controls`.
+  - `id="city-listbox"`: Anchored target for `aria-controls`.
   - `aria-label="Suggested cities"`: Accessible name for screen readers.
 - **Option Elements**:
   - `role="option"`: Applied to each suggestion row.
@@ -353,24 +375,18 @@ To ensure generative AI discovery pipelines are never invoked with hallucinated 
 
 The Culinary Guide feature workspace orchestrates `CulinarySearchBoxComponent`, `CulinaryDishListComponent`, and `CulinaryDiscoveryPanelComponent` into a cohesive, responsive page with progressive AI discovery and recipe synthesis.
 
-### 9.1 Visual Architecture & Layout Tokens
+### 9.1 Visual Architecture & Layout Tokens ([culinary-guide.component.html](src/app/features/culinary-guide/culinary-guide.component.html))
 
-- **Responsive Full-Height Flex Container**:
-  - Container class: `.culinary-guide-container`
-  - Max width & auto-centering: `max-w-(--spacing-container-max) mx-auto`
-  - Vertical flex column & minimum viewport height: `flex flex-col gap-8 min-h-[calc(100vh-8rem)] px-4 py-8`
-  - Middle dish-list section wrapper uses `flex-1` so the bottom discovery panel is anchored toward the bottom of the workspace even when the dish list is collapsed or displaying a placeholder card.
-- **Component Stylesheet (`culinary-guide.component.css`)**:
-  - `@reference "../../../styles.css";`
-  - `.culinary-guide-container`: `@apply flex flex-col gap-8 min-h-[calc(100vh-8rem)] max-w-(--spacing-container-max) mx-auto px-4 py-8;`
-  - `.culinary-dish-section`: `@apply flex-1;`
+- **Utility-Driven Container (No Component Stylesheet)**:
+  - Outer wrapper uses `<div class="flex flex-col gap-8 max-w-container-max mx-auto px-4 py-8">` directly in [culinary-guide.component.html](src/app/features/culinary-guide/culinary-guide.component.html) (no separate `culinary-guide.component.css`, no `min-h-[calc(100vh-8rem)]`, and no `flex-1` spacer wrapper).
+  - `@defer (on immediate)` `@placeholder` containers for both `<app-culinary-dish-list>` and `<app-culinary-discovery-panel>` use the global `.section-card` primitive (`<div class="section-card">`) with `<app-skeleton>` placeholders to prevent layout shift during chunk hydration.
 
 ### 9.2 Search Loading State & Race Condition Prevention
 
 - **Search Loading Indicator**:
   - `isDiscovering` signal tracks the active Stage 1 discovery stream in `CulinaryGuideComponent`.
   - Passed via `[isLoading]="isDiscovering()"` into `CulinarySearchBoxComponent`.
-  - Displays `<app-spinner-icon class="animate-spin text-on-primary w-4 h-4 mr-2" />` inside the submit button while disabling interaction (`[disabled]="isSearchDisabled()"`).
+  - Displays `<app-sync-icon class="text-on-primary size-4" />` inside `.submit-btn` (`gap-2`) while disabling interaction (`[disabled]="isSearchDisabled()"`).
 - **Sequential Race Condition Guard (`#searchId`)**:
   - Native private counter `#searchId` ensures out-of-order or late chunks from previous destination searches are strictly ignored when a user submits a newer query before the older stream terminates.
   - Reset of `expandedDishNames` and `recipes` occurs on the first chunk received for the current search.

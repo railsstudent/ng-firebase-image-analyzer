@@ -1,10 +1,7 @@
-# Architecture Decision Record (ADR)
+# 0022. Zero-Dependency System Fonts, Standalone SVG Icons, and Tailwind CSS v4 Semantic Tokens
 
-## Title: Zero-Dependency System Fonts, Standalone SVG Icons, and Tailwind CSS v4 Semantic Tokens
-
-- **Status**: Accepted
-- **Date**: 2026-10-11
-- **Authors**: Antigravity & Team
+Date: 2026-10-11
+Status: Accepted
 
 ---
 
@@ -17,24 +14,25 @@ During bundle audits and performance profiling, the following issues were identi
 1. **Significant Asset Overhead**: Bundling multiple `@fontsource` weight cuts and sub-variants inflated the application distribution payload by over **3.4 MB**, delaying initial network downloads and Time to Interactive (TTI).
 2. **Flash of Unstyled Text / Layout Shifts**: Loading external webfont files caused layout shifts (CLS) and FOIT/FOUT rendering hitches on constrained network connections.
 3. **Inconsistent Styling & Incomplete Design Token Architecture**:
-   - While Tailwind CSS v4 introduced the `@theme` directive, custom CSS properties were not mirrored into a global `:root` block, breaking plain CSS expressions, third-party component styles, dynamic element style bindings, and browser devtools auto-completion.
    - Component stylesheets frequently utilized arbitrary property brackets (e.g. `bg-[var(--color-primary)]`), hardcoded utility colors (e.g. `text-red-300`), and legacy `rgba(...)` functions instead of clean Tailwind v4 utility tokens and modern hex alpha transparency.
-4. **Fragmented Documentation**: A secondary design specification existed at `src/app/features/image-analysis/Design.md`, drifting from the root `Design.md`.
+4. **Fragmented Documentation**: A secondary design specification existed at `src/app/features/image-analysis/Design.md`, drifting from the root `DESIGN.md`.
 
 ---
 
 ## Decision
 
-We eliminated all external web font dependencies, standardized on 13 standalone SVG icon components, established a unified dual-scope variable model in `src/styles.css`, and consolidated the repository's design documentation.
+We eliminated all external web font dependencies, standardized on 12 standalone SVG icon components styled via global `.app-icon` rules, established a unified `@theme static` design token model in `src/styles.css` (importing `src/section-card.css` and `src/layout.css`), and consolidated the repository's design documentation into `DESIGN.md`.
 
 ### 1. Adopt Zero-Dependency Native System Font Stacks
 
-All `@fontsource/*` dependencies were uninstalled from `package.json`, and `@import` font statements were removed from `src/styles.css`. We defined high-performance native system font stacks:
+All `@fontsource/*` dependencies were uninstalled from `package.json`, and `@import` font statements were removed from `src/styles.css`. We defined high-performance native system font stacks inside `@theme static`:
 
 ```css
-@theme {
+@theme static {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-body-md: var(--font-sans);
+  --font-label-md: var(--font-mono);
 }
 ```
 
@@ -42,29 +40,30 @@ This guarantees instantaneous zero-latency font rendering across operating syste
 
 ### 2. Standalone Zero-Dependency SVG Icon Architecture
 
-Rather than loading large icon font glyph sets or introducing third-party icon libraries, we standardized all 13 application icons as lightweight, standalone Angular SVG components under `src/app/shared/ui/icons/`:
+Rather than loading large icon font glyph sets or introducing third-party icon libraries, we standardized all 12 application icons as lightweight, standalone Angular SVG components under `src/app/shared/ui/icons/`:
 
-- Component list: `app-arrow-forward-icon`, `app-auto-awesome-icon`, `app-bar-chart-icon`, `app-check-icon`, `app-cloud-upload-icon`, `app-content-copy-icon`, `app-delete-icon`, `app-download-icon`, `app-error-icon`, `app-photo-filter-icon`, `app-psychology-icon`, `app-sync-icon`, `app-terminal-icon`.
-- Shared style footprint: Each component references `styleUrl: './icon.css'` which applies the global `@utility app-icon { @apply inline-flex items-center justify-center shrink-0 w-5 h-5 select-none; }` via Tailwind CSS v4.
+- Component list: `app-arrow-forward-icon`, `app-auto-awesome-icon`, `app-bar-chart-icon`, `app-cloud-upload-icon`, `app-delete-icon`, `app-download-icon`, `app-error-icon`, `app-expand-more-icon`, `app-psychology-icon`, `app-sell-icon`, `app-sync-icon`, `app-terminal-icon`.
+- Shared style footprint: Each icon component binds `host: { class: 'app-icon size-5' }` (without per-component CSS files), inheriting the global `.app-icon` and `.app-icon > svg` rules in `src/styles.css`.
 - Automated testing: Every icon component includes dedicated unit tests verifying DOM rendering and accessibility (`aria-hidden="true"`).
 
-### 3. Dual-Scope Variable Model (`@theme` + `:root`)
+### 3. Single `@theme static` Token Model & Global Layout Partials
 
-We aligned `src/styles.css` to declare all design tokens in both `@theme` (for Tailwind CSS v4 compile-time utility generation) and `:root` (for runtime standard CSS custom properties):
+We aligned `src/styles.css` to declare all design tokens in a single `@theme static` block (emitting both CSS custom properties and Tailwind CSS v4 utility classes without a duplicate `:root` block) and import shared global partials (`@import './section-card.css';` and `@import './layout.css';`):
 
-- **Semantic Error Tokens**: `--color-error: #ef4444;`, `--color-error-container: #ef44441a;`, `--color-error-border: #ef444433;`, `--color-error-text: #fca5a5;`.
-- **Glassmorphic Surface Tokens**: `--color-surface-glass: #ffffffb3;`, `--color-surface-glass-border: #d3e4fe80;`, and corresponding dark-mode variants (`--color-surface-glass-dark: #0f172a99;`, `--color-surface-glass-border-dark: #94a3b81a;`).
-- **Skeleton Tokens**: `--color-skeleton: #e2e8f0;`, `--color-skeleton-dark: #334155;`.
-- **Primary Glow Shadow**: `--shadow-primary-glow: 0 4px 20px -2px #4648d414;`.
+- **Core Brand & Metric Tokens**: `--color-primary: #6366f1;`, `--color-on-primary: #ffffff;`, `--color-secondary: #0f172a;`, `--color-tertiary: #10b981;`, `--color-quaternary: #f59e0b;`.
+- **Surface & Outline Tokens**: `--color-surface: #f8f9ff;`, `--color-surface-card: #ffffff;`, `--color-surface-container: #e5eeff;`, `--color-surface-container-high: #ecf2ff;`, `--color-surface-container-highest: #d3e4fe;`, `--color-on-surface: #0b1c30;`, `--color-on-surface-variant: #464554;`, `--color-outline: #767586;`, `--color-outline-variant: #c7c4d7;`.
+- **Semantic Error Tokens**: `--color-error: #ef4444;`, `--color-error-container: #ef44441a;`, `--color-error-border: #ef444433;`, `--color-error-text: #fca5a5;`, `--color-error-text-muted: #f87171;`.
+- **Glassmorphic & Skeleton Tokens**: `--color-surface-glass: #ffffffb3;`, `--color-surface-glass-border: #d3e4fe80;`, `--color-skeleton: #64748b;`.
+- **Spacing & Transition Tokens**: `--spacing-container-max: 1280px;`, `--default-transition-duration: 200ms;`.
 
 ### 4. Enforce Tailwind v4 Utilities and Strict Hex Alpha Transparency
 
-- **Clean Syntax**: Replaced arbitrary bracket syntax (`@apply bg-[var(--color-primary)]`) with native Tailwind v4 class tokens (`@apply bg-(--color-primary)`).
+- **Clean Syntax**: Replaced arbitrary bracket syntax (`@apply bg-[var(--color-primary)]`) with native Tailwind v4 theme utilities (`@apply bg-primary`, `text-on-surface`, `max-w-container-max`).
 - **Hex Transparency**: Replaced all `rgba(r, g, b, a)` declarations with modern 6- and 8-digit hexadecimal colors (`#rrggbbaa`), ensuring standard format consistency across design specs and CSS files.
 
-### 5. Consolidate Design Specifications into Root `Design.md`
+### 5. Consolidate Design Specifications into Root `DESIGN.md`
 
-We migrated the Image Analysis feature architecture (orchestration mermaid diagram and 4-tab control system breakdown) from `src/app/features/image-analysis/Design.md` into Section 6 of root `Design.md`, and deleted the redundant file to prevent design drift.
+We migrated the Image Analysis feature architecture (orchestration mermaid diagram and 4-tab control system breakdown) from `src/app/features/image-analysis/Design.md` into Section 6 of root `DESIGN.md`, and deleted the redundant file to prevent design drift.
 
 ---
 
@@ -76,7 +75,7 @@ Keeping web font packages imposes an unacceptable ~3.4 MB payload penalty for an
 
 ### Option 2: Third-Party Angular Icon Libraries (e.g. `lucide-angular`, `@ng-icons`) (Rejected)
 
-While convenient, external icon packages introduce transitive dependency overhead, version upgrade friction, and bundle risks. Our 13 targeted standalone SVG components achieve 100% tree-shakeability with zero npm dependencies.
+While convenient, external icon packages introduce transitive dependency overhead, version upgrade friction, and bundle risks. Our 12 targeted standalone SVG components achieve 100% tree-shakeability with zero npm dependencies.
 
 ### Option 3: Zero-Dependency System Fonts, Standalone SVG Components, and Unified Tokens (Accepted)
 
@@ -91,8 +90,8 @@ Provides optimal performance, zero layout shift, substantial payload savings, na
 - **Massive Payload Reduction**: Shaved over **3.4 MB** from node modules and distribution assets by dropping font files.
 - **Zero CLS / FOIT**: System font stacks render instantaneously without network delay or layout reflow.
 - **Strict Tree-Shaking**: Each SVG icon component is an individual standalone Angular component loaded only when its parent component is rendered.
-- **Runtime & Tooling Compatibility**: The explicit `:root` block ensures design variables work transparently in browser devtools, plain CSS rules, and Angular inline style bindings.
-- **Deterministic Linting**: Passes all `npm run lint` and `knip` cycle checks cleanly with 100% unit test coverage across 28 test suites.
+- **Runtime & Tooling Compatibility**: Using `@theme static` in `src/styles.css` emits all design variables onto `:root` automatically without duplicating token blocks, ensuring CSS custom properties work transparently in browser devtools, plain CSS rules, and Angular inline style bindings.
+- **Deterministic Linting**: Passes all `npm run lint` and `knip` cycle checks cleanly with 100% unit test coverage.
 
 ### Cons
 

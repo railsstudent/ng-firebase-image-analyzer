@@ -17,6 +17,7 @@ This document defines the separation of roles and scope boundaries across the fo
    - **Role**: Defines the visual language, `@theme` semantic design tokens (synchronized with `src/styles.css`), glassmorphic component patterns, typography scale, and feature UI layout contracts.
    - **Content**: Color/surface tokens, reusable component recipes (e.g. status pills, glassmorphic badges), CLS-safe layout slots, and responsive geometry.
    - **Scope Boundaries**: Must be consulted and reconciled whenever a feature or ticket introduces new UI states, visual badges, layout slots, or theme tokens.
+   - **Chunked Edit & Bulk Audit Constraint (`edit_file` Stream Safety)**: When auditing `> 5` source/style files to reconcile documentation, delegate the file inventory to the `research` subagent to return a compact diff table rather than reading all raw files into the main context. When updating long Markdown documents (`DESIGN.md`, `spec.md`, ADRs, or tickets) via `edit_file`, scope each `Target` block to a single heading or section (`<= 60` lines) and issue at most 2–3 small `edit_file` calls per turn to prevent SSE output stream timeouts.
 
 4. **Implementation Tickets (`.scratch/<feature>/issues/NN-<slug>.md` & `.scratch/platform/issues/NN-<slug>.md`)**:
    - **Role**: Human-executable engineering breakdown. Do not assume tickets will be executed by an AI agent—when AI token budgets are low or unavailable, human engineers implement them directly.

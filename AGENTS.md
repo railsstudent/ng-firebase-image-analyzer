@@ -6,7 +6,8 @@ This file provides context, rules, and guidance for AI assistants working on thi
 
 - **`src/app/core/<domain>/`**: Cohesive flat domain packages (services, domain contracts `<domain>.interface.ts`) with public `index.ts`. Keep domain files at the root level of the folder without nested subdirectories.
 - **`src/app/features/`**: Feature components, routing, and view models. Never create barrel files (`index.ts`) in feature folders or across `@defer` boundaries.
-- **`src/app/shared/`**: Reusable UI components, directives, and pipes.
+- **`src/app/shared/`**: Reusable UI (`ui/components/` including co-located `recommendation-list/recommendation-item.*`, `ui/icons/`, `ui/image-uploader/`, `ui/layout/{header,footer}/`), `directives/`, and `pipes/`.
+- **`src/app/pwa/`**: Service worker update service and `pwa-update-banner/`.
 - **`src/testing/`**: Shared mock factories (`createMock*`).
 - **`firebase/`**: Firebase CLI configs (`firebase.json`, Remote Config templates, prebuild scripts).
 

@@ -30,13 +30,12 @@ This document outlines project-specific coding standards and architectural conve
 
 ## 4. Tailwind CSS v4 & Styling
 
-- **Component Styles**: Prioritize Tailwind CSS v4 `@apply` classes over raw vanilla CSS.
-- **Design Tokens**: Use design tokens from `@theme` in `src/styles.css` (e.g. `text-(--color-text-secondary)`) instead of raw hardcoded colors.
-- **Unified Page Shells**: All pages must inherit the standardized `.app-page-shell` layout rather than declaring hardcoded background overrides or `min-h-screen`.
+- **Component Styles**: Prioritize Tailwind CSS v4 `@apply` classes over raw vanilla CSS, and import [src/section-card.css](../../src/section-card.css) and [src/layout.css](../../src/layout.css) through [src/styles.css](../../src/styles.css) for shared card and header/footer primitives.
+- **Design Tokens**: Use semantic design tokens from `@theme static` in [src/styles.css](../../src/styles.css) (e.g. `bg-surface-card`, `text-on-surface-variant`) instead of raw hardcoded colors.
 
 ## 5. UI Icons & Assets
 
-- **Zero-Dependency Icons**: Implement UI icons as standalone SVG components under `src/app/shared/ui/icons/` with `styleUrl: './icon.css'` (`:host { @apply app-icon; }`). Do not install icon packages or font icons.
+- **Zero-Dependency Icons**: Implement UI icons as standalone SVG components under `src/app/shared/ui/icons/` binding `host: { class: 'app-icon ...' }` (backed by global `.app-icon` and `.app-icon > svg` rules in `src/styles.css`). Do not install icon packages or font icons.
 - **PWA Icons**: Icons in `public/icons/` must match their exact pixel dimensions (192x192 for `icon-192.png`, 512x512 for `icon-512.png`).
 
 ## 6. Asynchronous Operations & Lazy DI Boundaries

@@ -1,4 +1,7 @@
-# Architecture Decision Record (ADR): Shared Recommendation Components
+# 0010. Shared Recommendation Components
+
+Date: 2026-07-10
+Status: Accepted
 
 This document outlines the design, rationale, and implementation steps to resolve style and HTML template duplication between `ThoughtSummary` and `ImageRecommendation` components by introducing reusable, presentation-focused UI components with native host-role styling.
 
@@ -15,7 +18,7 @@ Currently, the styling rules for:
 - `.recommendation-title` (header styles and text weights)
 - `.recommendation-reason` (muted description styling)
 
-are duplicated across [thought-summary.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/features/image-analysis/thought-summary/thought-summary.css) and [image-recommendation.css](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/features/image-analysis/image-recommendation/image-recommendation.css).
+are duplicated across [thought-summary.css](../../src/app/features/image-analysis/thought-summary/thought-summary.css) and [image-recommendation.css](../../src/app/features/image-analysis/image-recommendation/image-recommendation.css).
 
 Furthermore, while the layout is highly similar, their inline DOM trees have key differences:
 
@@ -45,47 +48,38 @@ The new components will be located in the shared UI library:
 ### A. List Wrapper Component
 
 - **Directory:** `src/app/shared/ui/components/recommendation-list`
-- **Template File:** `recommendation-list.ts` (Inline template)
-- **Stylesheet:** `recommendation-list.css`
+- **Template File:** `recommendation-list.component.ts` (Inline template)
+- **Stylesheet:** `recommendation-list.component.css`
 
 ```typescript
-// recommendation-list.ts
+// recommendation-list.component.ts
 import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-recommendation-list',
-  standalone: true,
   template: `
     @if (listTitle()) {
-      <p class="recommendation-list-title">{{ listTitle() }}</p>
+      <p class="recommendation-list-title font-bold mb-2">{{ listTitle() }}</p>
     }
-    <ng-content></ng-content>
+    <ng-content />
   `,
   host: {
     role: 'list',
-    class: 'recommendations-list',
+    class: 'recommendations-list block',
   },
-  styleUrl: './recommendation-list.css',
+  styleUrl: './recommendation-list.component.css',
 })
-export class RecommendationList {
+export class RecommendationListComponent {
   listTitle = input<string | null>(null);
 }
 ```
 
 ```css
-/* recommendation-list.css */
+/* recommendation-list.component.css */
 @reference "../../../../../styles.css";
 
-:host {
-  display: block;
-}
-
 .recommendation-list-title {
-  @apply font-bold text-[var(--color-on-surface)] mb-2 flex items-center gap-2;
-}
-
-.recommendations-list {
-  @apply divide-y divide-[var(--color-outline-variant)]/20;
+  @apply flex items-center gap-2;
 }
 ```
 
@@ -93,54 +87,48 @@ export class RecommendationList {
 
 ### B. List Item Component
 
-- **Directory:** `src/app/shared/ui/components/recommendation-item`
-- **Template File:** `recommendation-item.ts` (Inline template)
-- **Stylesheet:** `recommendation-item.css`
+- **Directory:** `src/app/shared/ui/components/recommendation-list`
+- **Template File:** `recommendation-item.component.html`
+- **Stylesheet:** `recommendation-item.component.css`
 
 ```typescript
-// recommendation-item.ts
+// recommendation-item.component.ts
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-recommendation-item',
-  standalone: true,
-  template: `
-    <p class="recommendation-item-title">
-      <ng-content select="[indicator]"></ng-content>
-      <ng-content select="[title]"></ng-content>
-    </p>
-
-    <p class="recommendation-item-reason">
-      <ng-content></ng-content>
-    </p>
-  `,
+  templateUrl: './recommendation-item.component.html',
   host: {
     role: 'listitem',
-    class: 'recommendation-item',
+    class: 'py-4 border-t border-outline-variant/20 first:border-t-0 block',
   },
-  styleUrl: './recommendation-item.css',
+  styleUrl: './recommendation-item.component.css',
 })
-export class RecommendationItem {}
+export class RecommendationItemComponent {}
+```
+
+```html
+<!-- recommendation-item.component.html -->
+<p class="recommendation-item-title font-bold gap-2">
+  <ng-content select="[indicator]"></ng-content>
+  <ng-content select="[title]"></ng-content>
+</p>
+
+<p class="recommendation-item-reason leading-relaxed text-sm">
+  <ng-content></ng-content>
+</p>
 ```
 
 ```css
-/* recommendation-item.css */
+/* recommendation-item.component.css */
 @reference "../../../../../styles.css";
 
-:host {
-  display: block;
-}
-
-.recommendation-item {
-  @apply py-4 first:pt-0 last:pb-0;
-}
-
 .recommendation-item-title {
-  @apply font-bold text-[var(--color-on-surface)] flex items-center gap-2;
+  @apply flex items-center;
 }
 
 .recommendation-item-reason {
-  @apply text-sm text-[var(--color-on-surface-variant)] mt-1 ml-3.5 leading-relaxed;
+  @apply text-on-surface-variant mt-1 ml-3.5;
 }
 ```
 
@@ -229,4 +217,3 @@ Expose both `RecommendationListComponent` and `RecommendationItemComponent` from
 export * from './recommendation-item.component';
 export * from './recommendation-list.component';
 ```
-

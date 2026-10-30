@@ -25,7 +25,7 @@ Status: Accepted
    - Remove `#preWarmPromise` memoization from `ImageAnalysisService.preWarm()` in favor of single-execution `afterNextRender` orchestration at the component boundary.
 3. **Non-Blocking Pre-Warm Status & 0-CLS Layout Slot**:
    - Track pre-warming progress via a component-local `warmingMessage = signal<string>('')` inside `ImageAnalysisComponent`, setting `'Pre-warming on-device AI model...'` after awaiting `this.#asyncImageAnalysisService()` (yielding past `afterNextRender`'s synchronous `_tick()` window so Zoneless change detection schedules a view refresh) and before awaiting `imageAnalysisService.preWarm()`, then clearing it to `''` inside `finally`.
-   - Render a dedicated `.prewarm-status-slot` (`min-h-9 my-0`, paired with `.workspace-container > app-image-uploader { @apply mb-0; }`, `role="status"`, `aria-live="polite"`) directly below `<app-image-uploader>` to display `.prewarm-status-badge` while preserving a 0.000 Cumulative Layout Shift (CLS) and keeping upload and analysis controls 100% enabled.
+   - Render a dedicated `.prewarm-status-slot` (`@apply flex items-center justify-center;` in `image-analysis.component.css`, paired with `min-h-9 my-0`, `<app-image-uploader class="mb-0">`, `role="status"`, and `aria-live="polite"` in `image-analysis.component.html`) directly below `<app-image-uploader>` to display `.streaming-loader-badge rounded-full border` while preserving a 0.000 Cumulative Layout Shift (CLS) and keeping upload and analysis controls 100% enabled.
 4. **Single Source of Truth for WebGPU Capabilities**:
    - Centralize `#isWebGPUSupported` inside `AiService` at the infrastructure boundary.
    - Remove redundant `WINDOW` and GPU capability checks from `ImageAnalysisComponent`.
