@@ -1,7 +1,7 @@
 @reference "../../../../styles.css";
 
 .dish-native-badge {
-  @apply px-2.5 bg-surface-container-high text-on-surface-variant;
+  @apply px-2.5 bg-surface-container text-on-surface-variant;
 }
 
 .dish-description {

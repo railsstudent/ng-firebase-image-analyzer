@@ -1,10 +1,10 @@
-<div class="accordion-item border border-surface-glass-border">
+<div class="accordion-item border has-[:focus-visible]:border-2">
   @let headerId = `accordion-header-${id()}`;
   @let panelId = `accordion-panel-${id()}`;
   <button
     type="button"
     #triggerButton
-    class="accordion-trigger scroll-mt-20 rounded-2xl"
+    class="accordion-trigger scroll-mt-20 outline-none"
     [class]="isDisabled() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
     [attr.id]="headerId"
     [attr.aria-expanded]="isExpanded()"

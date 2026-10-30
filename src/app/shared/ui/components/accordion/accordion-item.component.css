@@ -1,13 +1,9 @@
 @reference "../../../../../styles.css";
 
 .accordion-item {
-  @apply rounded-2xl bg-surface-glass;
+  @apply rounded-2xl bg-surface-glass border-surface-glass-border has-[:focus-visible]:border-primary;
 }
 
 .accordion-trigger {
   @apply flex w-full items-center justify-between gap-4 p-4 text-left;
-}
-
-.accordion-trigger:focus-visible {
-  @apply outline-2 outline-offset-2 outline-primary;
 }

@@ -22,22 +22,20 @@ The color palette is defined in a single `@theme static` block in [src/styles.cs
 
 ### Core Brand, Metric & Surface Roles
 
-| Token Name                  | CSS Variable                        | Hex Value | Role / Usage                                                       |
-| :-------------------------- | :---------------------------------- | :-------- | :----------------------------------------------------------------- |
-| `primary`                   | `--color-primary`                   | `#6366f1` | Primary branding, buttons, active interactive states, input tokens |
-| `on-primary`                | `--color-on-primary`                | `#ffffff` | High-contrast text on primary buttons and badges                   |
-| `secondary`                 | `--color-secondary`                 | `#0f172a` | Authoritative text colors, tooltips, output/image token bars       |
-| `tertiary`                  | `--color-tertiary`                  | `#10b981` | Cached token segments and positive efficiency metrics              |
-| `quaternary`                | `--color-quaternary`                | `#f59e0b` | Thought/reasoning token segments                                   |
-| `surface`                   | `--color-surface`                   | `#f8f9ff` | Application canvas backdrop and form control background            |
-| `surface-card`              | `--color-surface-card`              | `#ffffff` | Opaque card surfaces (uploaders, canvas preview, PWA banner)       |
-| `surface-container`         | `--color-surface-container`         | `#e5eeff` | Interactive hover surfaces and active dropzone backgrounds         |
-| `surface-container-high`    | `--color-surface-container-high`    | `#ecf2ff` | Elevated surfaces, tag pills, and autocomplete overlays            |
-| `surface-container-highest` | `--color-surface-container-highest` | `#d3e4fe` | Highest elevation hover surfaces (listbox options)                 |
-| `on-surface`                | `--color-on-surface`                | `#0b1c30` | Main text color on surfaces                                        |
-| `on-surface-variant`        | `--color-on-surface-variant`        | `#464554` | Subdued descriptive text                                           |
-| `outline`                   | `--color-outline`                   | `#767586` | Low-contrast borders, placeholders, and section subtitles          |
-| `outline-variant`           | `--color-outline-variant`           | `#c7c4d7` | Muted division lines and container borders                         |
+| Token Name           | CSS Variable                 | Hex Value | Role / Usage                                                       |
+| :------------------- | :--------------------------- | :-------- | :----------------------------------------------------------------- |
+| `primary`            | `--color-primary`            | `#6366f1` | Primary branding, buttons, active interactive states, input tokens |
+| `on-primary`         | `--color-on-primary`         | `#ffffff` | High-contrast text on primary buttons and badges                   |
+| `secondary`          | `--color-secondary`          | `#0f172a` | Authoritative text colors, tooltips, output/image token bars       |
+| `tertiary`           | `--color-tertiary`           | `#10b981` | Cached token segments and positive efficiency metrics              |
+| `quaternary`         | `--color-quaternary`         | `#f59e0b` | Thought/reasoning token segments                                   |
+| `surface`            | `--color-surface`            | `#f8f9ff` | Application canvas backdrop and form control background            |
+| `surface-card`       | `--color-surface-card`       | `#ffffff` | Opaque card surfaces (uploaders, canvas preview, PWA banner)       |
+| `surface-container`  | `--color-surface-container`  | `#e5eeff` | Interactive hover surfaces, tag pills, progress tracks, dropzones  |
+| `on-surface`         | `--color-on-surface`         | `#0b1c30` | Main text color on surfaces                                        |
+| `on-surface-variant` | `--color-on-surface-variant` | `#464554` | Subdued descriptive text                                           |
+| `outline`            | `--color-outline`            | `#767586` | Low-contrast borders, placeholders, and section subtitles          |
+| `outline-variant`    | `--color-outline-variant`    | `#c7c4d7` | Muted division lines and container borders                         |
 
 ### Semantic Error, Glassmorphism & Utility Tokens
 
@@ -266,13 +264,11 @@ The Accordion Component System defines the structural layout, interactive behavi
 
 - **Component Stylesheet (`accordion-item.component.css`)**:
   - `@reference "../../../../../styles.css";`
-  - `.accordion-item`: `@apply rounded-2xl bg-surface-glass;`
+  - `.accordion-item`: `@apply rounded-2xl bg-surface-glass border-surface-glass-border has-[:focus-visible]:border-primary;`
   - `.accordion-trigger`: `@apply flex w-full items-center justify-between gap-4 p-4 text-left;`
-  - `.accordion-trigger:focus-visible`: `@apply outline-2 outline-offset-2 outline-primary;`
 - **Surface Elevation & Template Bindings**:
-  - Host element binds `class="block scroll-mt-20 rounded-2xl"`.
-  - Outer `.accordion-item` pairs with `border border-surface-glass-border` in [accordion-item.component.html](src/app/shared/ui/components/accordion/accordion-item.component.html), creating a semi-transparent surface (`var(--color-surface-glass)`) with a subtle outline border (`var(--color-surface-glass-border)`) and `16px` rounded corners (`rounded-2xl`).
-  - Expanded body wrapper uses `px-4 pb-4 border-t border-surface-glass-border`.
+  - Outer `.accordion-item` pairs with `border has-[:focus-visible]:border-2` in [accordion-item.component.html](src/app/shared/ui/components/accordion/accordion-item.component.html), creating a semi-transparent surface (`var(--color-surface-glass)`) with a subtle outline border (`var(--color-surface-glass-border)`), `16px` rounded corners (`rounded-2xl`), and a `2px` primary border when the inner trigger (`class="accordion-trigger scroll-mt-20 outline-none"`) receives keyboard focus.
+  - Expanded body wrapper uses `px-4 pb-4 pt-1`.
 
 ### 7.2 Responsive Header Typography & Indicators ([culinary-dish-list.component.css](src/app/features/culinary-guide/culinary-dish-list/culinary-dish-list.component.css))
 
@@ -280,7 +276,7 @@ The accordion header provides instant scannability for dishes in both collapsed 
 
 - **English Title**: Primary headline styled with `font-semibold text-lg`.
 - **Native Script Pill Badge (`.dish-native-badge`)**:
-  - Stylesheet rule: `@apply px-2.5 bg-surface-container-high text-on-surface-variant;`
+  - Stylesheet rule: `@apply px-2.5 bg-surface-container text-on-surface-variant;`
   - Template utility classes: `dish-native-badge font-mono text-xs py-0.5 rounded-full`
 - **Line-Clamped Description (`.dish-description`)**:
   - Stylesheet rule: `@apply text-on-surface-variant line-clamp-2 md:line-clamp-none;`
@@ -316,18 +312,17 @@ The Culinary Destination Selector provides a responsive, accessible destination 
 
 ### 8.1 Visual Architecture & Layout Tokens ([culinary-search-box.component.css](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.css))
 
-- **Responsive Container**: Mobile-first flex container (`flex flex-col sm:flex-row gap-3 items-stretch sm:items-center`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
-- **Glassmorphic Card**: Styled with `.search-box-card` (`@apply p-4 md:p-6 rounded-2xl bg-surface-glass;`) and `border border-surface-glass-border`.
+- **Responsive Container**: Mobile-first flex container (`search-form flex gap-3` with `@apply flex-col sm:flex-row sm:items-center;`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
+- **Glassmorphic Card**: Styled with `.search-box-card` (`@apply p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border;`) paired with `backdrop-blur-md shadow-sm`.
 - **Form Controls & Component Stylesheet (`culinary-search-box.component.css`)**:
   - `@reference "../../../../styles.css";`
-  - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl bg-surface-glass;`
-  - `.search-form`: `@apply flex flex-col sm:flex-row gap-3 items-stretch sm:items-center;`
-  - `.select-control`: `@apply px-4 py-2.5 rounded-xl bg-surface focus:outline-none focus:ring-2 focus:ring-primary/50;` (shared by both the Country `<select>` and City `<input>`, paired with `border border-outline/30` in [culinary-search-box.component.html](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html))
-  - `.listbox-overlay`: `@apply absolute left-0 right-0 top-full max-h-56 overflow-y-auto rounded-xl bg-surface-container-high z-50 p-1;` (paired with `border border-outline-variant` in the template)
-  - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm cursor-pointer select-none hover:bg-surface-container-highest;`
-  - `.listbox-option-active`: `@apply bg-primary/10 text-primary;`
-  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed sm:self-end flex items-center justify-center;`
-  - Form field labels in the template reuse the global `.section-subtitle font-semibold` primitive (`src/section-card.css`), and field groups use inline `flex flex-col gap-1.5 flex-1`.
+  - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border;`
+  - `.search-form`: `@apply flex-col sm:flex-row sm:items-center;`
+  - `.select-control`: `@apply px-4 py-2.5 rounded-xl bg-surface border border-outline-variant focus-visible:border-2 focus-visible:border-primary;` (shared by both the Country `<select>` and City `<input>`, paired with `w-full outline-none` in [culinary-search-box.component.html](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html))
+  - `.listbox-overlay`: `@apply absolute w-full top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface;` (paired with `shadow-lg p-1` in the template)
+  - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm hover:bg-surface-container;` (paired with `cursor-pointer select-none` and `[class]="isSelected ? 'bg-primary/10 text-primary font-medium' : ''"` in the template)
+  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed sm:self-end cursor-pointer;` (paired with `font-semibold shadow-md` in the template)
+  - Form field labels in the template reuse the global `.section-subtitle font-semibold` primitive (`src/section-card.css`), and field groups use inline `flex-1 relative`.
 
 ### 8.2 WAI-ARIA 1.2 Combobox Pattern
 

@@ -1,10 +1,10 @@
 <div class="search-box-card backdrop-blur-md shadow-sm">
-  <form class="search-form gap-3 w-full" (submit)="onSubmit($event)">
+  <form class="search-form flex gap-3" (submit)="onSubmit($event)">
     <div class="flex-1 relative">
       <label class="section-subtitle font-semibold" for="country-select">Country</label>
       <select
         id="country-select"
-        class="select-control focus:ring-2 focus:ring-primary/50"
+        class="select-control w-full outline-none"
         [formField]="searchForm.country"
         #countrySelect
         (change)="onCountryChange(countrySelect.value)"
@@ -20,7 +20,7 @@
       <input
         id="city-input"
         type="text"
-        class="select-control focus:ring-2 focus:ring-primary/50"
+        class="select-control w-full outline-none"
         placeholder="Enter city..."
         role="combobox"
         aria-haspopup="listbox"
@@ -51,8 +51,7 @@
               #cityOption
               [id]="`city-option-${i}`"
               class="listbox-option cursor-pointer select-none"
-              [class.listbox-option-active]="isSelected"
-              [class.font-medium]="isSelected"
+              [class]="isSelected ? 'bg-primary/10 text-primary font-medium' : ''"
               role="option"
               [attr.aria-selected]="isSelected"
               (mousedown)="selectCity(city, $event)"

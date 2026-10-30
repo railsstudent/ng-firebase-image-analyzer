@@ -51,7 +51,7 @@ Rather than loading large icon font glyph sets or introducing third-party icon l
 We aligned `src/styles.css` to declare all design tokens in a single `@theme static` block (emitting both CSS custom properties and Tailwind CSS v4 utility classes without a duplicate `:root` block) and import shared global partials (`@import './section-card.css';` and `@import './layout.css';`):
 
 - **Core Brand & Metric Tokens**: `--color-primary: #6366f1;`, `--color-on-primary: #ffffff;`, `--color-secondary: #0f172a;`, `--color-tertiary: #10b981;`, `--color-quaternary: #f59e0b;`.
-- **Surface & Outline Tokens**: `--color-surface: #f8f9ff;`, `--color-surface-card: #ffffff;`, `--color-surface-container: #e5eeff;`, `--color-surface-container-high: #ecf2ff;`, `--color-surface-container-highest: #d3e4fe;`, `--color-on-surface: #0b1c30;`, `--color-on-surface-variant: #464554;`, `--color-outline: #767586;`, `--color-outline-variant: #c7c4d7;`.
+- **Surface & Outline Tokens**: `--color-surface: #f8f9ff;`, `--color-surface-card: #ffffff;`, `--color-surface-container: #e5eeff;`, `--color-on-surface: #0b1c30;`, `--color-on-surface-variant: #464554;`, `--color-outline: #767586;`, `--color-outline-variant: #c7c4d7;`.
 - **Semantic Error Tokens**: `--color-error: #ef4444;`, `--color-error-container: #ef44441a;`, `--color-error-border: #ef444433;`, `--color-error-text: #fca5a5;`, `--color-error-text-muted: #f87171;`.
 - **Glassmorphic & Skeleton Tokens**: `--color-surface-glass: #ffffffb3;`, `--color-surface-glass-border: #d3e4fe80;`, `--color-skeleton: #64748b;`.
 - **Spacing & Transition Tokens**: `--spacing-container-max: 1280px;`, `--default-transition-duration: 200ms;`.
