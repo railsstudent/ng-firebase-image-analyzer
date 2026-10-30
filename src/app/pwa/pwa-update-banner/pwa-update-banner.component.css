@@ -8,26 +8,6 @@
   @apply flex items-center justify-center p-2.5 rounded-xl;
 }
 
-.pwa-banner-actions {
-  @apply flex items-center;
-}
-
 .pwa-banner-btn {
   @apply px-4 py-2 text-xs rounded-lg cursor-pointer;
-}
-
-.pwa-banner-btn-secondary {
-  @apply text-on-surface-variant;
-}
-
-.pwa-banner-btn-secondary:hover {
-  @apply text-on-surface bg-surface-container;
-}
-
-.pwa-banner-btn-primary {
-  @apply text-on-primary bg-primary;
-}
-
-.pwa-banner-btn-primary:hover {
-  @apply bg-primary/90;
 }

@@ -129,12 +129,9 @@ Global layout and section-card primitives are separated into [src/layout.css](sr
 ### 4.4 PWA Update Notification Banner (`pwa-update-banner.component.css`)
 
 - **Stylesheet ([pwa-update-banner.component.css](src/app/pwa/pwa-update-banner/pwa-update-banner.component.css))**:
-  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`; header row `<div class="flex items-center gap-4">` vertically centers the icon badge and `<h4 class="font-semibold leading-snug">`).
+  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`; header row `<div class="flex items-center gap-4">` vertically centers the icon badge and `<h4 class="font-semibold leading-snug">`; actions row uses `<div class="font-bold flex justify-end gap-3">` so child buttons inherit `font-bold`).
   - `.pwa-banner-badge-wrapper`: `@apply flex items-center justify-center p-2.5 rounded-xl;` (paired with `bg-primary/10 shrink-0` wrapping `<app-download-icon class="text-primary" />`).
-  - `.pwa-banner-actions`: `@apply flex items-center;` (paired with `justify-end gap-3`).
-  - `.pwa-banner-btn`: `@apply px-4 py-2 text-xs rounded-lg cursor-pointer;` (paired with `font-bold`).
-  - `.pwa-banner-btn-secondary`: `@apply text-on-surface-variant;` with `.pwa-banner-btn-secondary:hover { @apply text-on-surface bg-surface-container; }`.
-  - `.pwa-banner-btn-primary`: `@apply text-on-primary bg-primary;` with `.pwa-banner-btn-primary:hover { @apply bg-primary/90; }`.
+  - `.pwa-banner-btn`: `@apply px-4 py-2 text-xs rounded-lg cursor-pointer;` (paired with `text-on-surface-variant hover:text-on-surface hover:bg-surface-container` on the secondary button and `text-on-primary bg-primary hover:bg-primary/90` on the primary button).
 
 ---
 
