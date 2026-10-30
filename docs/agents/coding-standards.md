@@ -31,7 +31,8 @@ This document outlines project-specific coding standards and architectural conve
 ## 4. Tailwind CSS v4 & Styling
 
 - **Component Styles**: Prioritize Tailwind CSS v4 `@apply` classes over raw vanilla CSS, and import [src/section-card.css](../../src/section-card.css) and [src/layout.css](../../src/layout.css) through [src/styles.css](../../src/styles.css) for shared card and header/footer primitives.
-- **Design Tokens**: Use semantic design tokens from `@theme static` in [src/styles.css](../../src/styles.css) (e.g. `bg-surface-card`, `text-on-surface-variant`) instead of raw hardcoded colors.
+- **Design Tokens & Contract Synchronization**: Use semantic design tokens from `@theme static` in [src/styles.css](../../src/styles.css) (e.g. `bg-surface-card`, `text-on-surface-variant`) instead of raw hardcoded colors, and synchronize any change to `@theme` tokens or component visual contracts in the same task/plan with [DESIGN.md](../../DESIGN.md) and [ADR-0022](../adr/0022-zero-dependency-fonts-and-design-tokens.md).
+- **Layer Specificity & Redundancy Hygiene**: Keep coupled base and responsive/pseudo-class `x:*` utility pairs (`flex-col` + `sm:flex-row`, `border` + `focus-visible:border-2`) in the same `.css` or `.html` layer (`<= 3` classes per HTML element), and avoid utilities that duplicate Tailwind v4 Preflight defaults (`placeholder:*`) or trigger unnecessary `@property` boilerplate (`focus:ring-*`).
 
 ## 5. UI Icons & Assets
 

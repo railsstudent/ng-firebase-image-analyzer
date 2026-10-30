@@ -32,6 +32,7 @@ The **Spec Reviewer** verifies the diff against whichever sources of truth are p
 - **Implementation Tickets (`.scratch/**/NN-*.md`)**: Verifies discrete task checklists, API contracts, call-site blast radius updates, and acceptance criteria.
 - **Product Specs (`spec.md`)**: Verifies feature-level behavior, user journeys, and functional expectations.
 - **ADRs (`docs/adr/*.md`)**: Verifies architectural constraints, module depth, and system design patterns.
+- **Design System & Token Contract (`DESIGN.md` & `ADR-0022`)**: Whenever a diff modifies `src/styles.css`, `src/*.css`, or any `*.component.css`, verify that [DESIGN.md](../../DESIGN.md) and [ADR-0022](../adr/0022-zero-dependency-fonts-and-design-tokens.md) are updated in the same diff if `@theme` tokens, surface classes, border/focus states, or component styling recipes changed. Flag omissions as **`Design Contract Drift`**.
 
 ## 3. Scope Creep vs. Opportunistic Polish
 

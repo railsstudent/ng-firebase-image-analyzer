@@ -6,7 +6,7 @@ How the engineering skills should consume this repo's domain documentation when 
 
 - **`GLOSSARY.md`** at the repo root, or
 - **`GLOSSARY-MAP.md`** at the repo root if it exists — it points at one `GLOSSARY.md` per context. Read each one relevant to the topic.
-- **`DESIGN.md`** & **`src/styles.css`** — canonical design system specification, `@theme` semantic color/surface tokens, typography scale, glassmorphic badges, and feature UI layout contracts. Read and reconcile whenever a task introduces or modifies UI states, badges, layout slots, or styling.
+- **`DESIGN.md`**, **`src/styles.css`**, & **[`docs/adr/0022-zero-dependency-fonts-and-design-tokens.md`](../adr/0022-zero-dependency-fonts-and-design-tokens.md)** — canonical design system specification, `@theme` semantic color/surface tokens, typography scale, glassmorphic badges, and feature UI layout contracts. Read and include updates to both `DESIGN.md` and `ADR-0022` in every implementation plan that adds, removes, or modifies `@theme` tokens, component `.css` rules, focus/hover states, or layout slots.
 - **`docs/adr/`** — read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/specs/` for context-scoped decisions.
 
 If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates them lazily when terms or decisions actually get resolved.
