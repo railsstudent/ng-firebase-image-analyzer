@@ -1,19 +1,15 @@
 @reference "../../../../styles.css";
 
-.search-box-card {
-  @apply p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border;
-}
-
 .search-form {
   @apply flex-col sm:flex-row sm:items-center;
 }
 
 .select-control {
-  @apply px-4 py-2.5 rounded-xl bg-surface border border-outline-variant focus-visible:border-2 focus-visible:border-primary;
+  @apply w-full px-4 py-2.5 rounded-xl bg-surface border-outline-variant;
 }
 
 .listbox-overlay {
-  @apply absolute w-full top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface;
+  @apply absolute w-full top-full mt-1.5 max-h-56 overflow-y-auto p-1 rounded-xl border-outline-variant bg-surface;
 }
 
 .listbox-option {
@@ -21,5 +17,5 @@
 }
 
 .submit-btn {
-  @apply px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed sm:self-end cursor-pointer;
+  @apply px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm hover:bg-primary/90 sm:self-end;
 }

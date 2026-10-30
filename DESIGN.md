@@ -313,15 +313,14 @@ The Culinary Destination Selector provides a responsive, accessible destination 
 ### 8.1 Visual Architecture & Layout Tokens ([culinary-search-box.component.css](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.css))
 
 - **Responsive Container**: Mobile-first flex container (`search-form flex gap-3` with `@apply flex-col sm:flex-row sm:items-center;`) that stacks vertically on narrow viewports and aligns into a unified search bar on tablet/desktop.
-- **Glassmorphic Card**: Styled with `.search-box-card` (`@apply p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border;`) paired with `backdrop-blur-md shadow-sm`.
+- **Glassmorphic Card**: Reuses the global `.section-card` primitive (`src/section-card.css`) paired with `shadow-sm`.
 - **Form Controls & Component Stylesheet (`culinary-search-box.component.css`)**:
   - `@reference "../../../../styles.css";`
-  - `.search-box-card`: `@apply p-4 md:p-6 rounded-2xl bg-surface-glass border border-surface-glass-border;`
   - `.search-form`: `@apply flex-col sm:flex-row sm:items-center;`
-  - `.select-control`: `@apply px-4 py-2.5 rounded-xl bg-surface border border-outline-variant focus-visible:border-2 focus-visible:border-primary;` (shared by both the Country `<select>` and City `<input>`, paired with `w-full outline-none` in [culinary-search-box.component.html](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html))
-  - `.listbox-overlay`: `@apply absolute w-full top-full mt-1.5 max-h-56 overflow-y-auto rounded-xl border border-outline-variant bg-surface;` (paired with `shadow-lg p-1` in the template)
+  - `.select-control`: `@apply w-full px-4 py-2.5 rounded-xl bg-surface border-outline-variant;` (shared by both the Country `<select>` and City `<input>`, paired with `border outline-none focus-visible:border-primary focus-visible:border-2` in [culinary-search-box.component.html](src/app/features/culinary-guide/culinary-search-box/culinary-search-box.component.html))
+  - `.listbox-overlay`: `@apply absolute w-full top-full mt-1.5 max-h-56 overflow-y-auto p-1 rounded-xl border-outline-variant bg-surface;` (paired with `border shadow-lg` in the template)
   - `.listbox-option`: `@apply px-3.5 py-2 rounded-lg text-sm hover:bg-surface-container;` (paired with `cursor-pointer select-none` and `[class]="isSelected ? 'bg-primary/10 text-primary font-medium' : ''"` in the template)
-  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed sm:self-end cursor-pointer;` (paired with `font-semibold shadow-md` in the template)
+  - `.submit-btn`: `@apply px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm hover:bg-primary/90 sm:self-end;` (paired with `font-semibold shadow-md` and `[class]="isSearchDisabled() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"` in the template)
   - Form field labels in the template reuse the global `.section-subtitle font-semibold` primitive (`src/section-card.css`), and field groups use inline `flex-1 relative`.
 
 ### 8.2 WAI-ARIA 1.2 Combobox Pattern

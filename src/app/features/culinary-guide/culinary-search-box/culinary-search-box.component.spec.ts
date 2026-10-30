@@ -149,8 +149,9 @@ describe('CulinarySearchBoxComponent', () => {
       await fixture.whenStable();
 
       const button = fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement;
-      expect(button.disabled).toBe(true);
       expect(button.getAttribute('aria-disabled')).toBe('true');
+      expect(button.classList.contains('opacity-50')).toBe(true);
+      expect(button.classList.contains('cursor-not-allowed')).toBe(true);
     });
 
     it('should render spinner icon inside submit button when isLoading is true and omit it when false', async () => {

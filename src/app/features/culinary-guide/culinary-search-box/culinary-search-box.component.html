@@ -1,10 +1,10 @@
-<div class="search-box-card backdrop-blur-md shadow-sm">
+<div class="section-card shadow-sm">
   <form class="search-form flex gap-3" (submit)="onSubmit($event)">
     <div class="flex-1 relative">
       <label class="section-subtitle font-semibold" for="country-select">Country</label>
       <select
         id="country-select"
-        class="select-control w-full outline-none"
+        class="select-control border outline-none focus-visible:border-primary focus-visible:border-2"
         [formField]="searchForm.country"
         #countrySelect
         (change)="onCountryChange(countrySelect.value)"
@@ -20,7 +20,7 @@
       <input
         id="city-input"
         type="text"
-        class="select-control w-full outline-none"
+        class="select-control border outline-none focus-visible:border-primary focus-visible:border-2"
         placeholder="Enter city..."
         role="combobox"
         aria-haspopup="listbox"
@@ -44,7 +44,7 @@
       />
 
       @if (isDropdownOpen() && filteredCities().length > 0) {
-        <ul id="city-listbox" class="listbox-overlay shadow-lg p-1" role="listbox" aria-label="Suggested cities">
+        <ul id="city-listbox" class="listbox-overlay border shadow-lg" role="listbox" aria-label="Suggested cities">
           @for (city of filteredCities(); track city; let i = $index) {
             @let isSelected = activeOptionIndex() === i;
             <li
@@ -66,7 +66,7 @@
     <button
       type="submit"
       class="submit-btn font-semibold shadow-md"
-      [disabled]="isSearchDisabled()"
+      [class]="isSearchDisabled() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
       [attr.aria-disabled]="isSearchDisabled()"
     >
       @if (isLoading()) {
