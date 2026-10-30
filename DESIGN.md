@@ -56,10 +56,10 @@ The color palette is defined in a single `@theme static` block in [src/styles.cs
 
 ## 3. Typography & Global Icon Primitives
 
-Typography uses a zero-dependency 2-tier system font hierarchy in `@theme static` ([src/styles.css](src/styles.css#L30-L35)) designed to maximize rendering speed and eliminate network font downloads:
+Typography uses a zero-dependency 2-tier system font hierarchy in `@theme static` ([src/styles.css](src/styles.css#L28-L29)) designed to maximize rendering speed and eliminate network font downloads:
 
-1. **`--font-sans`** (`'Inter', ui-sans-serif, system-ui, sans-serif`) & **`--font-body-md`** (`var(--font-sans)`): Default `body` font family, headlines, and body prose.
-2. **`--font-mono`** (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`) & **`--font-label-md`** (`var(--font-mono)`): Numeric metrics, badges, token counters, and streaming status labels.
+1. **`--font-sans`** (`'Inter', ui-sans-serif, system-ui, sans-serif`): Default `html, :host` font family, headlines, and body prose.
+2. **`--font-mono`** (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`): Numeric metrics, badges, token counters, and streaming status labels.
 
 ### Canonical Typography Utility Mappings
 
@@ -70,7 +70,7 @@ Typography uses a zero-dependency 2-tier system font hierarchy in `@theme static
 | **Section Subtitle / Label**   | `.section-subtitle` (global) | `text-xs font-bold uppercase tracking-widest text-outline block`     |
 | **Card / Dish Headline**       | Accordion & Banner titles    | `text-lg font-semibold` or `text-base font-semibold text-on-surface` |
 | **Lead / Body Copy**           | Hero & Panel descriptions    | `text-lg` or `text-sm text-on-surface-variant leading-relaxed`       |
-| **Monospace Status & Metrics** | Badges & Token counters      | `font-mono text-xs font-bold` or `font-label-md text-xs`             |
+| **Monospace Status & Metrics** | Badges & Token counters      | `font-mono text-xs font-bold`                                        |
 
 ### Global SVG Icon Rules (`.app-icon`)
 
@@ -129,14 +129,12 @@ Global layout and section-card primitives are separated into [src/layout.css](sr
 ### 4.4 PWA Update Notification Banner (`pwa-update-banner.component.css`)
 
 - **Stylesheet ([pwa-update-banner.component.css](src/app/pwa/pwa-update-banner/pwa-update-banner.component.css))**:
-  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`).
-  - `.pwa-banner-badge-wrapper`: `@apply flex items-center justify-center p-2.5 bg-primary/10 text-primary;` (paired with `rounded-xl shrink-0`).
-  - `.pwa-banner-content`: `@apply flex flex-col gap-1;` (paired with `flex-grow min-w-0`).
-  - `.pwa-banner-title`: `@apply text-base text-on-surface;` (paired with `font-semibold leading-snug`).
-  - `.pwa-banner-actions`: `@apply flex items-center justify-end gap-3 border-outline-variant/20;` (paired with `border-t pt-3`).
-  - `.pwa-banner-btn`: `@apply py-2 text-xs rounded-lg font-label-md cursor-pointer;` (paired with `font-bold`).
-  - `.pwa-banner-btn-secondary`: `@apply px-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container;`.
-  - `.pwa-banner-btn-primary`: `@apply px-[18px] text-on-primary bg-primary hover:bg-primary/90;`.
+  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`; header row `<div class="flex items-center gap-4">` vertically centers the icon badge and `<h4 class="font-semibold leading-snug">`).
+  - `.pwa-banner-badge-wrapper`: `@apply flex items-center justify-center p-2.5 rounded-xl;` (paired with `bg-primary/10 shrink-0` wrapping `<app-download-icon class="text-primary" />`).
+  - `.pwa-banner-actions`: `@apply flex items-center;` (paired with `justify-end gap-3`).
+  - `.pwa-banner-btn`: `@apply px-4 py-2 text-xs rounded-lg cursor-pointer;` (paired with `font-bold`).
+  - `.pwa-banner-btn-secondary`: `@apply text-on-surface-variant;` with `.pwa-banner-btn-secondary:hover { @apply text-on-surface bg-surface-container; }`.
+  - `.pwa-banner-btn-primary`: `@apply text-on-primary bg-primary;` with `.pwa-banner-btn-primary:hover { @apply bg-primary/90; }`.
 
 ---
 

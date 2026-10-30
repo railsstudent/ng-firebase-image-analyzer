@@ -1,7 +1,7 @@
 @reference "../../../styles.css";
 
 .hero-container {
-  @apply mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;
+  @apply mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;
 }
 
 .hero-content {
@@ -13,7 +13,7 @@
 }
 
 .hero-cta-btn {
-  @apply flex self-start items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl text-base hover:bg-surface-container;
+  @apply flex self-start items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl hover:bg-surface-container;
 }
 
 .hero-visual {

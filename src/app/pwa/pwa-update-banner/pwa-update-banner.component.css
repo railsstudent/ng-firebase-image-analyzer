@@ -5,29 +5,29 @@
 }
 
 .pwa-banner-badge-wrapper {
-  @apply flex items-center justify-center p-2.5 bg-primary/10 text-primary;
-}
-
-.pwa-banner-content {
-  @apply flex flex-col gap-1;
-}
-
-.pwa-banner-title {
-  @apply text-base text-on-surface;
+  @apply flex items-center justify-center p-2.5 rounded-xl;
 }
 
 .pwa-banner-actions {
-  @apply flex items-center justify-end gap-3 border-outline-variant/20;
+  @apply flex items-center;
 }
 
 .pwa-banner-btn {
-  @apply py-2 text-xs rounded-lg font-label-md cursor-pointer;
+  @apply px-4 py-2 text-xs rounded-lg cursor-pointer;
 }
 
 .pwa-banner-btn-secondary {
-  @apply px-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container;
+  @apply text-on-surface-variant;
+}
+
+.pwa-banner-btn-secondary:hover {
+  @apply text-on-surface bg-surface-container;
 }
 
 .pwa-banner-btn-primary {
-  @apply px-[18px] text-on-primary bg-primary hover:bg-primary/90;
+  @apply text-on-primary bg-primary;
+}
+
+.pwa-banner-btn-primary:hover {
+  @apply bg-primary/90;
 }

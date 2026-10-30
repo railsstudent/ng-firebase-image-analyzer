@@ -31,8 +31,6 @@ All `@fontsource/*` dependencies were uninstalled from `package.json`, and `@imp
 @theme static {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-body-md: var(--font-sans);
-  --font-label-md: var(--font-mono);
 }
 ```
 
@@ -63,7 +61,7 @@ We aligned `src/styles.css` to declare all design tokens in a single `@theme sta
 
 ### 5. Consolidate Design Specifications into Root `DESIGN.md`
 
-We migrated the Image Analysis feature architecture (orchestration mermaid diagram and 4-tab control system breakdown) from `src/app/features/image-analysis/Design.md` into Section 6 of root `DESIGN.md`, and deleted the redundant file to prevent design drift.
+We migrated the Image Analysis feature architecture (orchestration mermaid diagram and 4-tab control system breakdown) from `src/app/features/image-analysis/Design.md` into Section 6 of root `DESIGN.md`, deleted the redundant file to prevent design drift, and synchronized component stylesheet contracts (including `src/app/pwa/pwa-update-banner/pwa-update-banner.component.css` in Section 4.4) with root `DESIGN.md`.
 
 ---
 
