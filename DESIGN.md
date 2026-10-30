@@ -119,9 +119,11 @@ The layout of the Home Page leverages standard Tailwind CSS v4 dynamic spacing r
 ### Main Page Sections
 
 1. **Top Navigation Bar (`nav`)**:
-   - Fixed position at the top (`fixed top-0 w-full z-50`).
-   - Primary background (`bg-primary`) with horizontal alignment (`h-16 px-6 max-w-container-max mx-auto`).
-   - Navigation links using standard typography and active highlight indicator.
+   - Sticky position at the top (`block sticky top-0 z-50` on `<app-header>`).
+   - Primary background (`bg-primary`) with horizontal alignment (`h-16 px-6 max-w-container-max mx-auto flex justify-between items-center`).
+   - Minimalist responsive header layout:
+     - **Brand Home Link (`a.nav-brand-title`)**: Navigating back to `/home` (`HOME_NAV_LINK`) with `[attr.aria-label]="homeLink().label"`, displaying `<app-terminal-icon />` across all viewports and `<span class="hidden sm:inline">{{ title() }}</span>` on `>= 640px`.
+     - **Always-Visible Feature Links (`.nav-links`)**: Visible across both mobile and desktop (`flex gap-6 lg:gap-8 text-sm md:text-base lg:text-lg`) for direct one-tap access to `Analysis` and `Culinary Guide` without redundant `"Home"` or `"Get Started"` buttons.
 2. **Hero Section (`section`)**:
    - **Layout Structure**: Full-width container (`.hero-container`: `w-full max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16`).
    - **Background & Accent Styles**:

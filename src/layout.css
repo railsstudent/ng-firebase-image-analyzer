@@ -12,7 +12,7 @@
 }
 
 .nav-links {
-  @apply hidden md:flex gap-6 lg:gap-8 lg:text-lg;
+  @apply flex gap-6 lg:gap-8 text-sm md:text-base lg:text-lg;
 }
 
 .nav-link {
@@ -21,10 +21,6 @@
 
 .nav-link-active {
   @apply text-white font-bold border-b-2 border-white;
-}
-
-.nav-cta-btn {
-  @apply bg-white text-primary px-4 py-2 rounded-lg text-sm hover:bg-surface-container;
 }
 
 /* footer styles */

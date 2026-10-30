@@ -114,38 +114,31 @@ export const ImageAnalysisSchema: Schema = {
 
 - **Image Verifications (`image.utils.ts`):** Pre-validates payloads to ensure binary files are under 20MB and belong to a valid MIME type (`image/*`), preventing unnecessary cloud invocation overhead.
 
-### E. Phase 5: Centralized SSR-Safe Navigation (`NavService`)
+### E. Phase 5: Centralized SSR-Safe Navigation (`ROUTE_PATHS`, `HOME_NAV_LINK`, & `APP_NAV_LINKS`)
 
-To prevent hardcoded navigation routes and secure safety during server pre-rendering, paths are centralized into a single-source-of-truth configuration using TypeScript template literal types:
+To prevent hardcoded navigation routes and secure safety during server pre-rendering, paths are centralized into a single-source-of-truth configuration under `src/app/core/routing/`:
 
 ```typescript
-// src/app/core/types/route.types.ts
+// src/app/core/routing/route.const.ts
 export const ROUTE_PATHS = {
   HOME: 'home',
   IMAGE_ANALYSIS: 'image-analysis',
+  CULINARY_GUIDE: 'culinary-guide',
 } as const;
 
-export type AppRoute = `/${(typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS]}`;
+// src/app/core/routing/nav-links.const.ts
+export const HOME_NAV_LINK: AppLink = {
+  label: 'Home',
+  path: `/${ROUTE_PATHS.HOME}`,
+};
+
+export const APP_NAV_LINKS: AppLink[] = [
+  { label: 'Analysis', path: `/${ROUTE_PATHS.IMAGE_ANALYSIS}` },
+  { label: 'Culinary Guide', path: `/${ROUTE_PATHS.CULINARY_GUIDE}` },
+];
 ```
 
-- **The NavService Provider:**
-
-  ```typescript
-  @Service()
-  export class NavService {
-    private readonly router = inject(Router);
-    readonly links: NavLink[] = [
-      { label: 'Home', path: '/home' },
-      { label: 'Inference', path: '/image-analysis' },
-    ];
-
-    to(route: AppRoute): Promise<boolean> {
-      return this.router.navigate([route]);
-    }
-  }
-  ```
-
-- **Decoupled Presenters:** Standalone shell structures (such as `<app-header [navLinks]="nav.links" />`) bind to these read-only signals. Direct, non-encapsulated `Router` instances are strictly banned.
+- **Decoupled Presenters:** Standalone shell structures (such as `<app-header>` with `homeLink = input<AppLink>(HOME_NAV_LINK)` and `navLinks = input<AppLink[]>(APP_NAV_LINKS)`) bind `[routerLink]="homeLink().path"` and `[attr.aria-label]="homeLink().label"` on the brand anchor and iterate over `navLinks()` for feature routes without hardcoded route strings in templates.
 
 ---
 
