@@ -5,7 +5,7 @@
 }
 
 .download-enhanced-btn {
-  @apply absolute top-4 right-4 bg-primary text-white text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2;
+  @apply absolute top-4 right-4 bg-primary text-on-primary text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2;
 }
 
 .canvas-container:hover .download-enhanced-btn {
@@ -13,5 +13,5 @@
 }
 
 .canvas-badge {
-  @apply absolute bottom-4 right-4 bg-primary text-white text-[10px] px-2.5 py-1.5 rounded;
+  @apply absolute bottom-4 right-4 bg-primary text-on-primary text-[10px] px-2.5 py-1.5 rounded;
 }

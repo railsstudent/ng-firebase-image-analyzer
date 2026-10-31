@@ -92,8 +92,8 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
    {
      "name": "Firebase AI Image Analyzer",
      "short_name": "AI Analyzer",
-     "theme_color": "#1976d2",
-     "background_color": "#fafafa",
+     "theme_color": "#6366f1",
+     "background_color": "#f8f9ff",
      "display": "standalone",
      "scope": "/",
      "start_url": "/",
@@ -124,7 +124,7 @@ We will introduce an Angular Service Worker to manage local offline asset cachin
    Add the following `<link>` and `<meta>` tags inside the `<head>` of `src/index.html`:
 
    ```html
-   <link rel="manifest" href="manifest.webmanifest" /> <meta name="theme-color" content="#1976d2" />
+   <link rel="manifest" href="manifest.webmanifest" /> <meta name="theme-color" content="#6366f1" />
    ```
 
 6. **Register the Service Worker in `src/app/app.config.ts`:**

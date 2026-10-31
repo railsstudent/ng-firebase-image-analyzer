@@ -1,8 +1,8 @@
 {
   "name": "Firebase AI Image Analyzer",
   "short_name": "AI Analyzer",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "theme_color": "#6366f1",
+  "background_color": "#f8f9ff",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",

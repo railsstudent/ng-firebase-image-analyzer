@@ -1,6 +1,6 @@
 /* header styles */
 .nav-bar {
-  @apply border-b border-outline-variant/30 bg-primary text-white;
+  @apply border-b border-outline-variant/30 bg-primary text-on-primary;
 }
 
 .nav-container {
@@ -16,16 +16,16 @@
 }
 
 .nav-link {
-  @apply text-white/80 hover:text-white;
+  @apply text-on-primary/80 hover:text-on-primary;
 }
 
 .nav-link-active {
-  @apply text-white font-bold border-b-2 border-white;
+  @apply text-on-primary font-bold border-b-2 border-on-primary;
 }
 
 /* footer styles */
 .footer-bar {
-  @apply bg-primary text-white py-8;
+  @apply bg-primary text-on-primary py-8;
 }
 
 .footer-container {

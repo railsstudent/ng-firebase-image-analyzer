@@ -105,23 +105,23 @@ Global layout and section-card primitives are separated into [src/layout.css](sr
 
 1. **Top Navigation Bar (`<app-header>` & `src/layout.css`)**:
    - Host binding: `block sticky top-0 z-50`.
-   - `.nav-bar`: `@apply border-b border-outline-variant/30 bg-primary text-white;` (paired with `backdrop-blur-md w-full` in template).
+   - `.nav-bar`: `@apply border-b border-outline-variant/30 bg-primary text-on-primary;` (paired with `backdrop-blur-md w-full` in template).
    - `.nav-container`: `@apply flex justify-between items-center h-16 max-w-container-max;` (paired with `px-6 mx-auto`).
    - `.nav-brand-title`: `@apply flex items-center md:text-xl;` (paired with `font-bold gap-2`, displaying `<app-terminal-icon />` and `<span class="hidden sm:inline">{{ title() }}</span>`).
    - `.nav-links`: `@apply flex gap-6 lg:gap-8 text-sm md:text-base lg:text-lg;` (paired with `font-medium items-center`).
-   - `.nav-link`: `@apply text-white/80 hover:text-white;` (paired with `transition-colors py-1`).
-   - `.nav-link-active`: `@apply text-white font-bold border-b-2 border-white;`.
+   - `.nav-link`: `@apply text-on-primary/80 hover:text-on-primary;` (paired with `transition-colors py-1`).
+   - `.nav-link-active`: `@apply text-on-primary font-bold border-b-2 border-on-primary;`.
 2. **Footer (`<app-footer>` & `src/layout.css`)**:
-   - `.footer-bar`: `@apply bg-primary text-white py-8;` (paired with `w-full mt-auto`).
+   - `.footer-bar`: `@apply bg-primary text-on-primary py-8;` (paired with `w-full mt-auto`).
    - `.footer-container`: `@apply max-w-container-max flex flex-col md:flex-row justify-between items-center gap-4;` (paired with `mx-auto px-6`).
-   - `.footer-copyright`: `@apply text-center md:text-left text-sm md:text-lg;` (paired with `text-white/80`).
+   - `.footer-copyright`: `@apply text-center md:text-left text-sm md:text-lg;` (paired with `text-on-primary/80`).
 
 ### 4.3 Home Hero Section (`home.component.css`)
 
 - **Stylesheet ([home.component.css](src/app/features/home/home.component.css))**:
   - `.hero-container`: `@apply mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;` (paired with `w-full max-w-7xl` inside `<section class="flex-1 flex items-center">`).
   - **Inline Left-Column Content ([home.component.html](src/app/features/home/home.component.html))**: Uses `<div class="md:col-span-7 space-y-6 md:space-y-8">` wrapping `<h1 class="text-3xl md:text-5xl lg:text-6xl font-bold">` and `<p class="text-lg text-on-surface-variant max-w-xl">`.
-  - `.hero-cta-btn`: `@apply inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl hover:bg-surface-container;` (paired with `font-semibold shadow-lg`).
+  - `.hero-cta-btn`: `@apply inline-flex items-center gap-2 bg-surface-card text-primary px-6 py-3 rounded-xl hover:bg-surface-container;` (paired with `font-semibold shadow-lg`).
   - **Inline Hero Visual & Image ([home.component.html](src/app/features/home/home.component.html))**: Right-column container uses `<div class="md:col-span-5 max-w-[480px] mx-auto">`, wrapping `<img ngSrc="/images/home.webp" width="512" height="382" priority class="rounded-xl shadow-lg shadow-secondary" />`.
 
 ### 4.4 PWA Update Notification Banner (`pwa-update-banner.component.css`)
@@ -142,7 +142,7 @@ To accommodate real-time generative streams and background model initialization,
 
 - **Workspace & Action Primitives**:
   - `.workspace-container`: `@apply max-w-container-max px-4 py-8;` (paired with `space-y-6 mx-auto` in template).
-  - `.primary-action-btn`: `@apply flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl;` (paired with `shadow-lg hover:opacity-95 active:scale-95 transition-all`, wrapping `<span class="font-semibold">`).
+  - `.primary-action-btn`: `@apply flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-xl;` (paired with `shadow-lg hover:opacity-95 active:scale-95 transition-all`, wrapping `<span class="font-semibold">`).
   - `.error-banner`: `@apply flex items-center gap-4 bg-error-container border-error-border p-4 rounded-2xl mx-auto my-6 max-w-5xl;` (paired with `border backdrop-blur-sm`).
 - **Glassmorphic Streaming Loader Badge (`.streaming-loader-badge`)**:
   - `@apply flex px-4 items-center gap-2.5 py-1.5 bg-surface-glass border-surface-glass-border text-on-surface-variant;` (paired with `rounded-full border` in template).
@@ -206,7 +206,7 @@ graph TD
   - `.error-banner-text`: `@apply bg-error-container text-error-text-muted text-sm px-4 py-2 rounded-full border-error-border;`
   - `.uploader-panel`: `@apply relative min-h-[300px] flex flex-col items-center justify-center cursor-pointer rounded-xl overflow-hidden;`
   - `.preview-image`: `@apply w-full h-auto max-h-[450px];`
-  - `.remove-btn`: `@apply absolute top-4 right-4 bg-secondary/80 text-white p-2.5 rounded-lg opacity-0 flex items-center justify-center;` (reveals on `.uploader-panel:hover .remove-btn` with `@apply opacity-100;`, transitions to `@apply bg-error;` on `.remove-btn:hover`).
+  - `.remove-btn`: `@apply absolute top-4 right-4 bg-secondary/80 text-on-primary p-2.5 rounded-lg opacity-0 flex items-center justify-center;` (reveals on `.uploader-panel:hover .remove-btn` with `@apply opacity-100;`, transitions to `@apply bg-error;` on `.remove-btn:hover`).
 - **Tag Badge & Hover Tooltip ([badge.component.css](src/app/shared/ui/components/badge/badge.component.css))**:
   - `.tag-pill`: `@apply text-sm px-4 py-2 rounded-full cursor-pointer;`
   - `.tooltip-wrapper`: `@apply absolute bottom-full left-0 mb-2 opacity-0;` (reveals via `.group:hover .tooltip-wrapper` with `@apply opacity-100;`)
@@ -245,8 +245,8 @@ The results section employs a 4-tab control system allowing users to deep-dive i
    - **Crop & Filter Metadata Sidebar (`image-crop.component.css`)**: `.specs-box` (`@apply p-4 bg-surface-card rounded-xl border-outline-variant/20 text-xs text-on-surface-variant;`) displaying crop coordinates/aspect ratios and precise filtering metadata.
    - **Enhanced Canvas (`enhanced-canvas.component.css`)**:
      - `.canvas-container`: `@apply rounded-xl overflow-hidden border-primary/20 bg-surface-card flex items-center justify-center max-h-[400px];`
-     - `.download-enhanced-btn`: `@apply absolute top-4 right-4 bg-primary text-white text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2;` (reveals on `.canvas-container:hover .download-enhanced-btn` with `@apply opacity-100;`)
-     - `.canvas-badge`: `@apply absolute bottom-4 right-4 bg-primary text-white text-[10px] px-2.5 py-1.5 rounded;`
+     - `.download-enhanced-btn`: `@apply absolute top-4 right-4 bg-primary text-on-primary text-sm px-4 py-2.5 rounded-lg opacity-0 transition-opacity flex items-center gap-2;` (reveals on `.canvas-container:hover .download-enhanced-btn` with `@apply opacity-100;`)
+     - `.canvas-badge`: `@apply absolute bottom-4 right-4 bg-primary text-on-primary text-[10px] px-2.5 py-1.5 rounded;`
 
 ---
 

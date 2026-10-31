@@ -57,6 +57,6 @@ describe('TokenAnalyticsComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.token-header .font-mono')?.textContent).toContain('150 Tokens');
-    expect(compiled.querySelector('.cached-savings-card .text-emerald-600')?.textContent).toContain('-10 Tokens');
+    expect(compiled.querySelector('.cached-savings-card .text-tertiary')?.textContent).toContain('-10 Tokens');
   });
 });
