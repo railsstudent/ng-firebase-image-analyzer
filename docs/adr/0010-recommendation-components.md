@@ -114,7 +114,7 @@ export class RecommendationItemComponent {}
   <ng-content select="[title]"></ng-content>
 </p>
 
-<p class="recommendation-item-reason leading-relaxed text-sm">
+<p class="recommendation-item-reason text-sm text-on-surface-variant">
   <ng-content></ng-content>
 </p>
 ```
@@ -128,7 +128,7 @@ export class RecommendationItemComponent {}
 }
 
 .recommendation-item-reason {
-  @apply text-on-surface-variant mt-1 ml-3.5;
+  @apply mt-1 ml-3.5;
 }
 ```
 

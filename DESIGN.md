@@ -22,20 +22,20 @@ The color palette is defined in a single `@theme static` block in [src/styles.cs
 
 ### Core Brand, Metric & Surface Roles
 
-| Token Name           | CSS Variable                 | Hex Value | Role / Usage                                                       |
-| :------------------- | :--------------------------- | :-------- | :----------------------------------------------------------------- |
-| `primary`            | `--color-primary`            | `#6366f1` | Primary branding, buttons, active interactive states, input tokens |
-| `on-primary`         | `--color-on-primary`         | `#ffffff` | High-contrast text on primary buttons and badges                   |
-| `secondary`          | `--color-secondary`          | `#0f172a` | Authoritative text colors, tooltips, output/image token bars       |
-| `tertiary`           | `--color-tertiary`           | `#10b981` | Cached token segments and positive efficiency metrics              |
-| `quaternary`         | `--color-quaternary`         | `#f59e0b` | Thought/reasoning token segments                                   |
-| `surface`            | `--color-surface`            | `#f8f9ff` | Application canvas backdrop and form control background            |
-| `surface-card`       | `--color-surface-card`       | `#ffffff` | Opaque card surfaces (uploaders, canvas preview, PWA banner)       |
-| `surface-container`  | `--color-surface-container`  | `#e5eeff` | Interactive hover surfaces, tag pills, progress tracks, dropzones  |
-| `on-surface`         | `--color-on-surface`         | `#0b1c30` | Main text color on surfaces                                        |
-| `on-surface-variant` | `--color-on-surface-variant` | `#464554` | Subdued descriptive text                                           |
-| `outline`            | `--color-outline`            | `#767586` | Low-contrast borders, placeholders, and section subtitles          |
-| `outline-variant`    | `--color-outline-variant`    | `#c7c4d7` | Muted division lines and container borders                         |
+| Token Name           | CSS Variable                 | Hex Value | Role / Usage                                                              |
+| :------------------- | :--------------------------- | :-------- | :------------------------------------------------------------------------ |
+| `primary`            | `--color-primary`            | `#6366f1` | Primary branding, buttons, active interactive states, input tokens        |
+| `on-primary`         | `--color-on-primary`         | `#ffffff` | High-contrast text on primary buttons and badges                          |
+| `secondary`          | `--color-secondary`          | `#0f172a` | Authoritative text colors, tooltips, hero shadow, output/image token bars |
+| `tertiary`           | `--color-tertiary`           | `#10b981` | Cached token segments and positive efficiency metrics                     |
+| `quaternary`         | `--color-quaternary`         | `#f59e0b` | Thought/reasoning token segments                                          |
+| `surface`            | `--color-surface`            | `#f8f9ff` | Application canvas backdrop and form control background                   |
+| `surface-card`       | `--color-surface-card`       | `#ffffff` | Opaque card surfaces (uploaders, canvas preview, PWA banner)              |
+| `surface-container`  | `--color-surface-container`  | `#e5eeff` | Interactive hover surfaces, tag pills, progress tracks, dropzones         |
+| `on-surface`         | `--color-on-surface`         | `#0b1c30` | Main text color on surfaces                                               |
+| `on-surface-variant` | `--color-on-surface-variant` | `#464554` | Subdued descriptive text                                                  |
+| `outline`            | `--color-outline`            | `#767586` | Low-contrast borders, placeholders, and section subtitles                 |
+| `outline-variant`    | `--color-outline-variant`    | `#c7c4d7` | Muted division lines and container borders                                |
 
 ### Semantic Error, Glassmorphism & Utility Tokens
 
@@ -120,16 +120,17 @@ Global layout and section-card primitives are separated into [src/layout.css](sr
 
 - **Stylesheet ([home.component.css](src/app/features/home/home.component.css))**:
   - `.hero-container`: `@apply mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;` (paired with `w-full max-w-7xl` inside `<section class="flex-1 flex items-center">`).
-  - `.hero-content`: `@apply md:col-span-7 gap-6 md:gap-8;` (paired with `flex flex-col`; contains `<h1 class="text-3xl md:text-5xl lg:text-6xl font-bold">` and `<p class="text-lg text-on-surface-variant max-w-xl">`).
-  - `.hero-cta-btn`: `@apply flex self-start items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl hover:bg-surface-container;` (paired with `font-semibold shadow-lg`).
-  - **Inline Hero Visual & Image ([home.component.html](src/app/features/home/home.component.html))**: Right-column container uses `<div class="md:col-span-5 max-w-[480px] mx-auto">`, wrapping `<img ngSrc="/images/home.webp" width="512" height="382" priority class="border-outline-variant/30 border shadow-lg rounded-xl" />`.
+  - **Inline Left-Column Content ([home.component.html](src/app/features/home/home.component.html))**: Uses `<div class="md:col-span-7 space-y-6 md:space-y-8">` wrapping `<h1 class="text-3xl md:text-5xl lg:text-6xl font-bold">` and `<p class="text-lg text-on-surface-variant max-w-xl">`.
+  - `.hero-cta-btn`: `@apply inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl hover:bg-surface-container;` (paired with `font-semibold shadow-lg`).
+  - **Inline Hero Visual & Image ([home.component.html](src/app/features/home/home.component.html))**: Right-column container uses `<div class="md:col-span-5 max-w-[480px] mx-auto">`, wrapping `<img ngSrc="/images/home.webp" width="512" height="382" priority class="rounded-xl shadow-lg shadow-secondary" />`.
 
 ### 4.4 PWA Update Notification Banner (`pwa-update-banner.component.css`)
 
 - **Stylesheet ([pwa-update-banner.component.css](src/app/pwa/pwa-update-banner/pwa-update-banner.component.css))**:
-  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`; header row `<div class="flex items-center gap-4">` vertically centers the icon badge and `<h4 class="font-semibold">`; actions row uses `<div class="font-bold flex justify-end gap-3">` so child buttons inherit `font-bold`).
+  - `.pwa-banner-card`: `@apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant w-[360px] max-w-[calc(100vw-48px)];` (paired with `border shadow-lg`; header row `<div class="flex items-center gap-4">` vertically centers the icon badge and `<h4 class="font-semibold">`).
   - `.pwa-banner-badge-wrapper`: `@apply flex items-center justify-center p-2.5 rounded-xl;` (paired with `bg-primary/10 shrink-0` wrapping `<app-download-icon class="text-primary" />`).
-  - `.pwa-banner-btn`: `@apply px-4 py-2 text-xs rounded-lg cursor-pointer;` (paired with `text-on-surface-variant hover:text-on-surface hover:bg-surface-container` on the secondary button and `text-on-primary bg-primary hover:bg-primary/90` on the primary button).
+  - `.pwa-banner-actions`: `@apply flex justify-end gap-3;` (paired with `font-bold text-xs` in `<div class="font-bold text-xs pwa-banner-actions">` so child buttons inherit `font-bold` and `text-xs`).
+  - `.pwa-banner-btn`: `@apply px-4 py-2 rounded-lg cursor-pointer;` (paired with `text-on-surface-variant hover:text-on-surface hover:bg-surface-container` on the secondary button and `text-on-primary bg-primary hover:bg-primary/90` on the primary button).
 
 ---
 
@@ -141,7 +142,7 @@ To accommodate real-time generative streams and background model initialization,
 
 - **Workspace & Action Primitives**:
   - `.workspace-container`: `@apply max-w-container-max px-4 py-8;` (paired with `space-y-6 mx-auto` in template).
-  - `.primary-action-btn`: `@apply flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl;` (paired with `shadow-lg hover:opacity-95 active:scale-95 transition-all`).
+  - `.primary-action-btn`: `@apply flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl;` (paired with `shadow-lg hover:opacity-95 active:scale-95 transition-all`, wrapping `<span class="font-semibold">`).
   - `.error-banner`: `@apply flex items-center gap-4 bg-error-container border-error-border p-4 rounded-2xl mx-auto my-6 max-w-5xl;` (paired with `border backdrop-blur-sm`).
 - **Glassmorphic Streaming Loader Badge (`.streaming-loader-badge`)**:
   - `@apply flex px-4 items-center gap-2.5 py-1.5 bg-surface-glass border-surface-glass-border text-on-surface-variant;` (paired with `rounded-full border` in template).
@@ -213,7 +214,7 @@ graph TD
   - `.tooltip-arrow`: `@apply absolute left-4 top-full;`
 - **Tab Group Header ([tab-group.component.css](src/app/shared/ui/components/tab-group/tab-group.component.css))**:
   - `.tabs-header-list`: `@apply flex mb-8 overflow-x-auto;` with `scrollbar-width: none;` and `.tabs-header-list::-webkit-scrollbar { display: none; }`
-  - `.tab-header-btn`: `@apply whitespace-nowrap px-6 py-3 text-sm border-b-2;`
+  - `.tab-header-btn`: `@apply whitespace-nowrap px-6 py-3 text-sm outline-none;` (paired with `border-b-2 cursor-pointer` in [tab-group.component.html](src/app/shared/ui/components/tab-group/tab-group.component.html))
 
 #### 4-Tab Control System
 
@@ -225,7 +226,7 @@ The results section employs a 4-tab control system allowing users to deep-dive i
 2. **Recommendations List ([recommendation-list.component.css](src/app/shared/ui/components/recommendation-list/recommendation-list.component.css) & [recommendation-item.component.css](src/app/shared/ui/components/recommendation-list/recommendation-item.component.css))**:
    - Structured list of composition, visual, and lighting suggestions (e.g. cropping guidelines, color balance shifts).
    - `.recommendation-list-title`: `@apply flex items-center gap-2;`
-   - `.recommendation-item-title`: `@apply flex items-center mb-1;` on `app-recommendation-item` (`host: { role: 'listitem', class: 'py-4 border-t border-outline-variant/20 first:border-t-0 block' }`).
+   - `.recommendation-item-title`: `@apply flex items-center;` (paired with `font-bold gap-2`) and `.recommendation-item-reason`: `@apply mt-1 ml-3.5;` (paired with `text-sm text-on-surface-variant`) on `app-recommendation-item` (`host: { role: 'listitem', class: 'py-4 border-t border-outline-variant/20 first:border-t-0 block' }`).
 3. **Token Usage Analytics ([token-analytics.component.css](src/app/shared/ui/components/token-analytics/token-analytics.component.css) & [token-usage-bar.component.css](src/app/shared/ui/components/token-usage-bar/token-usage-bar.component.css))**:
    - **Analytics Container (`token-analytics.component.css`)**:
      - `.token-header`: `@apply flex justify-between items-center;`

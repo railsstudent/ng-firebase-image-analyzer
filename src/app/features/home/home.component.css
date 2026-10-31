@@ -4,10 +4,6 @@
   @apply mx-auto px-6 grid md:grid-cols-12 gap-10 md:gap-16 items-center py-12 md:py-16;
 }
 
-.hero-content {
-  @apply md:col-span-7 gap-6 md:gap-8;
-}
-
 .hero-cta-btn {
   @apply inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl hover:bg-surface-container;
 }
