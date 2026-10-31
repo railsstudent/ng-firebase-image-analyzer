@@ -7,7 +7,7 @@
 }
 
 .tab-header-btn {
-  @apply whitespace-nowrap px-6 py-3 text-sm border-b-2;
+  @apply whitespace-nowrap px-6 py-3 text-sm outline-none;
 }
 
 .tabs-header-list::-webkit-scrollbar {

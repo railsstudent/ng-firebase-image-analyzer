@@ -4,7 +4,7 @@
     @let borderClass = isActive ? 'border-primary' : 'border-transparent hover:border-outline-variant/40';
     @let textClass = isActive ? 'text-primary font-semibold' : 'text-on-surface-variant font-medium hover:text-primary';
     <button
-      class="tab-header-btn outline-none cursor-pointer"
+      class="tab-header-btn border-b-2 cursor-pointer"
       [class]="`${borderClass} ${textClass}`"
       (click)="selectTab(tab.id())"
     >

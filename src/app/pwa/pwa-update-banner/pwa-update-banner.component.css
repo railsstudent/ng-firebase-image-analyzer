@@ -1,13 +1,17 @@
 @reference "../../../styles.css";
 
 .pwa-banner-card {
-  @apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant/30 w-[360px] max-w-[calc(100vw-48px)];
+  @apply fixed bottom-6 right-6 z-50 flex flex-col gap-4 p-5 rounded-2xl bg-surface-card border-outline-variant w-[360px] max-w-[calc(100vw-48px)];
 }
 
 .pwa-banner-badge-wrapper {
   @apply flex items-center justify-center p-2.5 rounded-xl;
 }
 
+.pwa-banner-actions {
+  @apply flex justify-end gap-3;
+}
+
 .pwa-banner-btn {
-  @apply px-4 py-2 text-xs rounded-lg cursor-pointer;
+  @apply px-4 py-2 rounded-lg cursor-pointer;
 }
