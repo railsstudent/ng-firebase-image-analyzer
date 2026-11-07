@@ -95,7 +95,7 @@ describe('ConfigService', () => {
 
     // When offline, it should use the default initialized value
     expect(service.appConfig).toEqual({
-      useLimitedUseAppCheckTokens: false,
+      useLimitedUseAppCheckTokens: true,
       vertexAILocation: 'global',
       geminiModelName: 'gemini-3.8-flash',
       geminiTTSModelName: 'gemini-3.1-flash-tts-preview',
@@ -152,7 +152,7 @@ describe('ConfigService', () => {
     // When fetch fails in the background, signal retains default values
     await vi.waitFor(() => {
       expect(service.appConfig).toEqual({
-        useLimitedUseAppCheckTokens: false,
+        useLimitedUseAppCheckTokens: true,
         vertexAILocation: 'global',
         geminiModelName: 'gemini-3.8-flash',
         geminiTTSModelName: 'gemini-3.1-flash-tts-preview',
@@ -212,7 +212,7 @@ describe('ConfigService', () => {
   it('should expose bundled defaults in appConfig even before initialize() is executed', () => {
     const service = configureTestBed();
     expect(service.appConfig).toEqual({
-      useLimitedUseAppCheckTokens: false,
+      useLimitedUseAppCheckTokens: true,
       vertexAILocation: 'global',
       geminiModelName: 'gemini-3.8-flash',
       geminiTTSModelName: 'gemini-3.1-flash-tts-preview',
