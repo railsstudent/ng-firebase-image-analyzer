@@ -6,16 +6,9 @@ function makeFood(name: string): CulinaryFoodItem {
 }
 
 describe('isValidDiscoveryResponse', () => {
-  const validFoods: CulinaryFoodItem[] = [
-    makeFood('Sushi'),
-    makeFood('Ramen'),
-    makeFood('Tempura'),
-    makeFood('Udon'),
-    makeFood('Soba'),
-    makeFood('Yakitori'),
-  ];
+  const validFoods: CulinaryFoodItem[] = [makeFood('Sushi'), makeFood('Ramen'), makeFood('Tempura'), makeFood('Udon')];
 
-  it('returns true when response has exactly 6 foods and 1 honorable mention', () => {
+  it('returns true when response has exactly 4 foods and 1 honorable mention', () => {
     const result = isValidDiscoveryResponse({
       foods: validFoods,
       honorableMentions: ['Takoyaki'],
@@ -24,7 +17,7 @@ describe('isValidDiscoveryResponse', () => {
     expect(result).toBe(true);
   });
 
-  it('returns true when response has exactly 6 foods and 2 honorable mentions', () => {
+  it('returns true when response has exactly 4 foods and 2 honorable mentions', () => {
     const result = isValidDiscoveryResponse({
       foods: validFoods,
       honorableMentions: ['Takoyaki', 'Okonomiyaki'],
@@ -33,9 +26,9 @@ describe('isValidDiscoveryResponse', () => {
     expect(result).toBe(true);
   });
 
-  it('returns false when foods count is less than 6', () => {
+  it('returns false when foods count is less than 4', () => {
     const result = isValidDiscoveryResponse({
-      foods: validFoods.slice(0, 5),
+      foods: validFoods.slice(0, 3),
       honorableMentions: ['Takoyaki'],
     });
 

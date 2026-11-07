@@ -71,7 +71,7 @@ export class AiModelCacheService {
         },
       },
       inCloudParams: {
-        model: remoteConfig.geminiModelName || 'gemini-3.5-flash',
+        model: remoteConfig.geminiModelName || 'gemini-3.8-flash',
         generationConfig: {
           responseMimeType: schema ? 'application/json' : undefined,
           responseSchema: schema,

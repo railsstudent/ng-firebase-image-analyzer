@@ -134,7 +134,7 @@ describe('AiModelCacheService', () => {
       expect.anything(),
       expect.objectContaining({
         inCloudParams: expect.objectContaining({
-          model: 'gemini-3.5-flash',
+          model: 'gemini-3.8-flash',
           generationConfig: expect.objectContaining({
             thinkingConfig: {
               thinkingLevel: ThinkingLevel.LOW,

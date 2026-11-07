@@ -1,4 +1,4 @@
-export const EXPECTED_FOOD_COUNT = 6;
+export const EXPECTED_FOOD_COUNT = 4;
 export const MIN_HONORABLE_MENTIONS = 1;
 export const MAX_HONORABLE_MENTIONS = 2;
 export const MAX_RECIPE_INGREDIENTS = 10;

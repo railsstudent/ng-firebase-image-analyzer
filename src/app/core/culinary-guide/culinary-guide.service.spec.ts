@@ -42,7 +42,7 @@ describe('CulinaryGuideService', () => {
       const mockMetadata = {
         source: 'on_device' as const,
         displaySource: 'Gemini Nano' as const,
-        thoughtSummary: 'Curated 6 iconic Tokyo dishes',
+        thoughtSummary: 'Curated 4 iconic Tokyo dishes',
         tokenSummary: {
           promptTokenCount: 10,
           outputTokenCount: 20,
@@ -57,8 +57,6 @@ describe('CulinaryGuideService', () => {
         makeFood('Ramen'),
         makeFood('Tempura'),
         makeFood('Soba'),
-        makeFood('Yakitori'),
-        makeFood('Tonkatsu'),
       ];
 
       mockAiService.generateContentStream.mockResolvedValue(
@@ -89,9 +87,9 @@ describe('CulinaryGuideService', () => {
       expect(chunks[0].honorableMentions).toHaveLength(0);
       expect(chunks[0].thoughtSummary).toBe('');
 
-      expect(chunks[1].foods).toHaveLength(6);
+      expect(chunks[1].foods).toHaveLength(4);
       expect(chunks[1].honorableMentions).toEqual(['Monjayaki']);
-      expect(chunks[1].thoughtSummary).toBe('Curated 6 iconic Tokyo dishes');
+      expect(chunks[1].thoughtSummary).toBe('Curated 4 iconic Tokyo dishes');
       expect(chunks[1].tokenSummary).toEqual({
         promptTokenCount: 10,
         outputTokenCount: 20,
@@ -101,14 +99,8 @@ describe('CulinaryGuideService', () => {
       });
     });
 
-    it('emits reset chunk and retries once when initial attempt yields fewer than 6 foods', async () => {
-      const incompleteFoods: CulinaryFoodItem[] = [
-        makeFood('Sushi'),
-        makeFood('Ramen'),
-        makeFood('Tempura'),
-        makeFood('Soba'),
-        makeFood('Yakitori'),
-      ];
+    it('emits reset chunk and retries once when initial attempt yields fewer than 4 foods', async () => {
+      const incompleteFoods: CulinaryFoodItem[] = [makeFood('Sushi'), makeFood('Ramen'), makeFood('Tempura')];
 
       const completeFoods: CulinaryFoodItem[] = [...incompleteFoods, makeFood('Tonkatsu')];
 
@@ -140,12 +132,12 @@ describe('CulinaryGuideService', () => {
 
       expect(chunks).toHaveLength(3);
       // Attempt 1 chunk:
-      expect(chunks[0].foods).toHaveLength(5);
+      expect(chunks[0].foods).toHaveLength(3);
       // Reset chunk:
       expect(chunks[1].foods).toHaveLength(0);
       expect(chunks[1].honorableMentions).toHaveLength(0);
       // Attempt 2 chunk:
-      expect(chunks[2].foods).toHaveLength(6);
+      expect(chunks[2].foods).toHaveLength(4);
       expect(chunks[2].honorableMentions).toHaveLength(2);
     });
 
@@ -155,8 +147,6 @@ describe('CulinaryGuideService', () => {
         makeFood('Ramen'),
         makeFood('Tempura'),
         makeFood('Soba'),
-        makeFood('Yakitori'),
-        makeFood('Tonkatsu'),
       ];
 
       mockAiService.generateContentStream
@@ -185,7 +175,7 @@ describe('CulinaryGuideService', () => {
 
       expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(2);
       expect(chunks[1].foods).toHaveLength(0);
-      expect(chunks[2].foods).toHaveLength(6);
+      expect(chunks[2].foods).toHaveLength(4);
       expect(chunks[2].honorableMentions).toHaveLength(1);
     });
 
@@ -202,13 +192,7 @@ describe('CulinaryGuideService', () => {
           },
           {
             partialData: {
-              foods: [
-                ...duplicateBatch,
-                makeFood('Enchiladas'),
-                makeFood('Tamales'),
-                makeFood('Quesadilla'),
-                makeFood('Fajitas'),
-              ],
+              foods: [...duplicateBatch, makeFood('Enchiladas'), makeFood('Tamales')],
               honorableMentions: ['Tacos', 'Guacamole', 'guacamole'],
             },
           },
@@ -226,7 +210,7 @@ describe('CulinaryGuideService', () => {
       expect(chunks[0].honorableMentions).toEqual(['Guacamole']);
 
       // In the terminal chunk: 6 unique foods, 1 honorable mention
-      expect(chunks[1].foods).toHaveLength(6);
+      expect(chunks[1].foods).toHaveLength(4);
       expect(chunks[1].honorableMentions).toEqual(['Guacamole']);
     });
 
@@ -236,8 +220,6 @@ describe('CulinaryGuideService', () => {
         makeFood('ramen'),
         makeFood('Sushi'),
         makeFood('Tempura'),
-        makeFood('Udon'),
-        makeFood('Soba'),
       ];
 
       const validFoodsAttempt2: CulinaryFoodItem[] = [
@@ -245,8 +227,6 @@ describe('CulinaryGuideService', () => {
         makeFood('Yakitori'),
         makeFood('Sushi'),
         makeFood('Tempura'),
-        makeFood('Udon'),
-        makeFood('Soba'),
       ];
 
       mockAiService.generateContentStream
@@ -275,29 +255,27 @@ describe('CulinaryGuideService', () => {
 
       expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(2);
       // Attempt 1 emitted deduplicated chunk (5 unique foods)
-      expect(chunks[0].foods).toHaveLength(5);
+      expect(chunks[0].foods).toHaveLength(3);
       // Reset chunk emitted
       expect(chunks[1].foods).toHaveLength(0);
       expect(chunks[1].honorableMentions).toHaveLength(0);
       // Attempt 2 succeeded with 6 foods
-      expect(chunks[2].foods).toHaveLength(6);
+      expect(chunks[2].foods).toHaveLength(4);
     });
 
     it('completes on attempt 1 without retry when duplicate mentions normalize to an acceptable count (1)', async () => {
-      const sixFoods: CulinaryFoodItem[] = [
+      const fourFoods: CulinaryFoodItem[] = [
         makeFood('Sushi'),
         makeFood('Ramen'),
         makeFood('Tempura'),
         makeFood('Soba'),
-        makeFood('Yakitori'),
-        makeFood('Tonkatsu'),
       ];
 
       mockAiService.generateContentStream.mockResolvedValue(
         createMockStream([
           {
             partialData: {
-              foods: sixFoods,
+              foods: fourFoods,
               honorableMentions: ['Takoyaki', 'takoyaki'],
             },
           },
@@ -307,18 +285,16 @@ describe('CulinaryGuideService', () => {
       const chunks = await collectStream(service.getTopFoodsStream(mockLocation));
 
       expect(mockAiService.generateContentStream).toHaveBeenCalledTimes(1);
-      expect(chunks[0].foods).toHaveLength(6);
+      expect(chunks[0].foods).toHaveLength(4);
       expect(chunks[0].honorableMentions).toEqual(['Takoyaki']);
     });
 
     it('emits reset chunk and retries when honorable mentions collide with foods and starve mentions count to 0', async () => {
-      const sixFoods: CulinaryFoodItem[] = [
+      const fourFoods: CulinaryFoodItem[] = [
         makeFood('Sushi'),
         makeFood('Ramen'),
         makeFood('Tempura'),
         makeFood('Soba'),
-        makeFood('Yakitori'),
-        makeFood('Tonkatsu'),
       ];
 
       mockAiService.generateContentStream
@@ -326,7 +302,7 @@ describe('CulinaryGuideService', () => {
           createMockStream([
             {
               partialData: {
-                foods: sixFoods,
+                foods: fourFoods,
                 honorableMentions: ['Sushi', 'ramen'],
               },
             },
@@ -336,7 +312,7 @@ describe('CulinaryGuideService', () => {
           createMockStream([
             {
               partialData: {
-                foods: sixFoods,
+                foods: fourFoods,
                 honorableMentions: ['Takoyaki'],
               },
             },
