@@ -9,7 +9,7 @@ This file provides context, rules, and guidance for AI assistants working on thi
 - **`src/app/shared/`**: Reusable UI (`ui/components/` including co-located `recommendation-list/recommendation-item.*`, `ui/icons/`, `ui/image-uploader/`, `ui/layout/{header,footer}/`), `directives/`, and `pipes/`.
 - **`src/app/pwa/`**: Service worker update service and `pwa-update-banner/`.
 - **`src/testing/`**: Shared mock factories (`createMock*`).
-- **`firebase/`**: Firebase CLI configs (`firebase.json`, Remote Config templates, prebuild scripts).
+- **`firebase/`**: Firebase environment templates (`.env.example`) and prebuild scripts (`firebase/scripts/*.mjs`).
 
 ## Context Pointers & Protocols
 

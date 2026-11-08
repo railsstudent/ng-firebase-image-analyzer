@@ -1,14 +1,15 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
 
-const firebaseDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(import.meta.dirname, '../..');
 
-try {
+export function fetchRemoteConfigDefaults() {
   // Fetch remote config as JSON
   const output = execSync('npx firebase remoteconfig:get --json --project default', {
     encoding: 'utf-8',
-    cwd: firebaseDir,
+    cwd: rootDir,
   });
   const config = JSON.parse(output);
   const parameters = config?.result?.parameters;
@@ -24,10 +25,16 @@ try {
   }
 
   // Write to JSON file
-  const outputPath = path.join(firebaseDir, '..', 'public', 'remote-config-defaults.json');
+  const outputPath = path.join(rootDir, 'public', 'remote-config-defaults.json');
   fs.writeFileSync(outputPath, `${JSON.stringify(defaults, null, 2)}\n`, 'utf-8');
   console.log(`Successfully wrote ${outputPath}`);
-} catch (error) {
-  console.error('Error fetching or parsing remote config:', error.message);
-  process.exit(1);
+}
+
+if (process.argv[1] === import.meta.filename) {
+  try {
+    fetchRemoteConfigDefaults();
+  } catch (error) {
+    console.error('Error fetching or parsing remote config:', error.message);
+    process.exit(1);
+  }
 }

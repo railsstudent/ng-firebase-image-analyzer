@@ -1,8 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
 
-try {
-  const envPath = path.resolve(__dirname, '../.env');
+export function generateFirebaseConfig() {
+  const envPath = path.resolve(import.meta.dirname, '../.env');
   if (fs.existsSync(envPath)) {
     process.loadEnvFile(envPath);
     console.log('Success: load .env file');
@@ -39,10 +40,16 @@ try {
     appCheckDebugToken: process.env.FIREBASE_APPCHECK_DEBUG_TOKEN || '',
   };
 
-  const outputPath = path.resolve(__dirname, '../../public/firebase.config.json');
-  fs.writeFileSync(outputPath, JSON.stringify(config, null, 2), 'utf-8');
+  const outputPath = path.resolve(import.meta.dirname, '../../public/firebase.config.json');
+  fs.writeFileSync(outputPath, `${JSON.stringify(config, null, 2)}\n`, 'utf-8');
   console.log(`Successfully generated ${outputPath} from .env`);
-} catch (error) {
-  console.error('Error generating firebase.config.json:', error.message);
-  process.exit(1);
+}
+
+if (process.argv[1] === import.meta.filename) {
+  try {
+    generateFirebaseConfig();
+  } catch (error) {
+    console.error('Error generating firebase.config.json:', error.message);
+    process.exit(1);
+  }
 }

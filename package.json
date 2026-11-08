@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "prebuild": "node firebase/scripts/prebuild.js",
+    "prebuild": "node firebase/scripts/prebuild.mjs",
     "build": "ng build",
     "build:stats": "ng build --configuration=production --stats-json",
     "preview": "npm run build && npx serve dist/ng-firebase-image-analyzer/browser --listen 5005 -s",
@@ -16,15 +16,15 @@
     "check:cycles": "knip --cycles --reporter cycles",
     "lint": "ng lint && npm run check:cycles && knip --production && npm run cspell",
     "lint:fix": "eslint \"src/**/*.{ts,js,mjs}\" --fix",
-    "format": "prettier --write \"{src,firebase}/**/*.{ts,js,html}\" \"*.{mjs,json,md}\"",
+    "format": "prettier --write \"{src,firebase}/**/*.{ts,js,mjs,html}\" \"*.{mjs,json,md}\"",
     "cspell": "cspell --no-must-find-files --config cspell.config.mjs .",
     "cspell:collect": "cspell --words-only --unique --no-must-find-files --config cspell.config.mjs . .scratch | sort -u -o .cspell/project-words.txt .cspell/project-words.txt -",
     "lint-staged": "lint-staged",
     "commitlint": "commitlint",
     "prepare": "husky",
-    "firebase:emulate": "cd firebase; firebase emulators:start --project default",
-    "config:fetch": "node firebase/scripts/get-firebase-remote-config.js",
-    "config:generate": "node firebase/scripts/generate-firebase-config.js"
+    "firebase:emulate": "firebase emulators:start --project default",
+    "config:fetch": "node firebase/scripts/get-firebase-remote-config.mjs",
+    "config:generate": "node firebase/scripts/generate-firebase-config.mjs"
   },
   "private": true,
   "dependencies": {

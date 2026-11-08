@@ -107,13 +107,13 @@ FIREBASE_APPCHECK_DEBUG_TOKEN=""
 
 ### Step 3: Point Firebase CLI to your project & generate config
 
-Set your active Firebase project ID inside the `firebase/` directory (used by `prebuild` and `config:fetch` to pull Remote Config parameters):
+Set your active Firebase project ID at the project root (used by `prebuild` and `config:fetch` to pull Remote Config parameters):
 
 ```bash
-cd firebase && npx firebase use your-project-id && cd ..
+npx firebase use your-project-id
 ```
 
-When running `npm run build` or `npm run preview`, the `prebuild` script (`node firebase/scripts/prebuild.js`) automatically generates `public/firebase.config.json` and fetches Remote Config defaults. If you want to start the dev server (`npm run start`) directly on a fresh clone, generate `public/firebase.config.json` once first:
+When running `npm run build` or `npm run preview`, the `prebuild` script (`node firebase/scripts/prebuild.mjs`) automatically generates `public/firebase.config.json` and fetches Remote Config defaults. If you want to start the dev server (`npm run start`) directly on a fresh clone, generate `public/firebase.config.json` once first:
 
 ```bash
 npm run config:generate
@@ -181,7 +181,7 @@ When working locally, you have two distinct execution modes depending on your im
 
 - **Command**: `npm run firebase:emulate`
 - **URL**: `http://localhost:5005`
-- **How it works**: The Local Emulator Suite boots your application using the configured `startCommand` inside `firebase/firebase.json`.
+- **How it works**: The Local Emulator Suite boots your application using the configured `startCommand` inside `firebase.json`.
 - **Fidelity Optimization**: By default, the emulator is configured with `"startCommand": "npm run start"` for rapid local startup. To verify your optimized production assets, lazy-loaded chunk resolutions, environment variables, security rules, and PWA Service Workers before pushing, simply toggle the `startCommand` in `firebase.json` to point to `"npm run preview:emulator"`!
 
 ---
@@ -221,4 +221,4 @@ To ensure local builds running via `localhost` (such as `npm run start`, `npm ru
 This application is built for seamless deployment using **Firebase App Hosting**.
 
 - **Runtime Configuration**: The deployment configuration is defined in `apphosting.yaml`. It limits active instances (`minInstances: 0`, `maxInstances: 2`) to ensure optimal control over Google Cloud compute costs.
-- **Build Pipeline Integration**: Upon pushing changes to your Git repository, Firebase App Hosting automatically executes `npm run build` which invokes the `prebuild` phase (`node firebase/scripts/prebuild.js`) to generate configurations from environment variables securely at compile time.
+- **Build Pipeline Integration**: Upon pushing changes to your Git repository, Firebase App Hosting automatically executes `npm run build` which invokes the `prebuild` phase (`node firebase/scripts/prebuild.mjs`) to generate configurations from environment variables securely at compile time.
