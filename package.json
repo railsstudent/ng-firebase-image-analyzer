@@ -7,7 +7,6 @@
     "prebuild": "node firebase/scripts/prebuild.js",
     "build": "ng build",
     "build:stats": "ng build --configuration=production --stats-json",
-    "analyze:bundle": "node scripts/analyze-bundle.mjs",
     "preview": "npm run build && npx serve dist/ng-firebase-image-analyzer/browser --listen 5005 -s",
     "preview:emulator": "npm run build && npx serve dist/ng-firebase-image-analyzer/browser --listen $PORT",
     "watch": "ng build --watch --configuration development",
