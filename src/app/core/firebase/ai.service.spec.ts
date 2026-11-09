@@ -25,10 +25,10 @@ describe('AiService', () => {
       }),
       generateContentStream: vi.fn().mockResolvedValue({
         stream: (async function* () {
-          yield {
+          yield await Promise.resolve({
             text: () => '{"caption": "A test image"}',
             usageMetadata: { totalTokenCount: 50, promptTokenCount: 20, candidatesTokenCount: 30 },
-          };
+          });
         })(),
         response: Promise.resolve({
           text: () => '{"caption": "A test image"}',
@@ -81,10 +81,10 @@ describe('AiService', () => {
       mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
         stream: (async function* () {
           for (let i = 1; i <= STREAM_CHUNK_BUFFER_SIZE; i = i + 1) {
-            yield {
+            yield Promise.resolve({
               text: () => `{"caption": "A partial caption ${i}"}`,
               usageMetadata: { totalTokenCount: 40, promptTokenCount: 20, candidatesTokenCount: 20 },
-            };
+            });
           }
         })(),
         response: Promise.resolve(mockStreamResponse),
@@ -136,7 +136,7 @@ describe('AiService', () => {
 
       mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
         stream: (async function* () {
-          yield { text: () => '{"caption": "Minimal"}' };
+          yield Promise.resolve({ text: () => '{"caption": "Minimal"}' });
         })(),
         response: Promise.resolve(minimalResponse),
       });
@@ -172,7 +172,7 @@ describe('AiService', () => {
 
       mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
         stream: (async function* () {
-          yield { text: () => '{"caption": "Cloud"}' };
+          yield Promise.resolve({ text: () => '{"caption": "Cloud"}' });
         })(),
         response: Promise.resolve(cloudResponse),
       });
@@ -191,7 +191,7 @@ describe('AiService', () => {
     it('should fallback displaySource to Unknown when response is undefined', async () => {
       mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
         stream: (async function* () {
-          yield { text: () => '{"caption": "No response object"}' };
+          yield Promise.resolve({ text: () => '{"caption": "No response object"}' });
         })(),
         response: Promise.resolve(undefined),
       });
@@ -209,8 +209,8 @@ describe('AiService', () => {
       it('should yield 0 intermediate chunks and 1 final chunk from response resolution when stream has fewer than 10 chunks', async () => {
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
-            yield { text: () => '{"caption": "First part, ' };
-            yield { text: () => 'second part"}' };
+            yield Promise.resolve({ text: () => '{"caption": "First part, ' });
+            yield Promise.resolve({ text: () => 'second part"}' });
           })(),
           response: Promise.resolve({
             text: () => '{"caption": "First part, second part"}',
@@ -232,9 +232,9 @@ describe('AiService', () => {
         const chunkAnswer = { items: Array.from({ length: STREAM_CHUNK_BUFFER_SIZE }, (_, i) => i + 1) };
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
-            yield { text: () => '{"items": [1' };
+            yield Promise.resolve({ text: () => '{"items": [1' });
             for (let i = 2; i <= STREAM_CHUNK_BUFFER_SIZE; i = i + 1) {
-              yield { text: () => `, ${i}` };
+              yield Promise.resolve({ text: () => `, ${i}` });
             }
           })(),
           response: Promise.resolve({
@@ -259,11 +259,11 @@ describe('AiService', () => {
         const chunkAnswer = { items: Array.from({ length: 2 * STREAM_CHUNK_BUFFER_SIZE + 2 }, (_, i) => i + 1) };
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
-            yield { text: () => '{"items": [1' };
+            yield Promise.resolve({ text: () => '{"items": [1' });
             for (let i = 2; i <= 2 * STREAM_CHUNK_BUFFER_SIZE + 1; i = i + 1) {
-              yield { text: () => `, ${i}` };
+              yield Promise.resolve({ text: () => `, ${i}` });
             }
-            yield { text: () => `, ${2 * STREAM_CHUNK_BUFFER_SIZE + 2}]}` };
+            yield Promise.resolve({ text: () => `, ${2 * STREAM_CHUNK_BUFFER_SIZE + 2}]}` });
           })(),
           response: Promise.resolve({
             text: () => JSON.stringify(chunkAnswer),
@@ -295,16 +295,16 @@ describe('AiService', () => {
         mockGenerativeModel.generateContentStream = vi.fn().mockResolvedValue({
           stream: (async function* () {
             // Chunks 1-9
-            yield { text: () => '{"msg": ' };
-            yield { text: () => '"' };
-            yield { text: () => 'hel' };
+            yield Promise.resolve({ text: () => '{"msg": ' });
+            yield Promise.resolve({ text: () => '"' });
+            yield Promise.resolve({ text: () => 'hel' });
             for (let i = 3; i <= STREAM_CHUNK_BUFFER_SIZE - 2; i = i + 1) {
-              yield { text: () => 'lo' };
+              yield Promise.resolve({ text: () => 'lo' });
             }
             // Chunk 10: causes jsonrepair to throw syntax error (lone slash after quote)
-            yield { text: () => '/' };
+            yield Promise.resolve({ text: () => '/' });
             // Chunk 11: valid continuation that resolves the syntax
-            yield { text: () => 'world"}' };
+            yield Promise.resolve({ text: () => 'world"}' });
           })(),
           response: Promise.resolve({
             text: () => JSON.stringify(chunkAnswer),

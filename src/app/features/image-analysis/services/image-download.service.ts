@@ -55,8 +55,7 @@ export class ImageDownloadService {
   private sanitizePngFilename(rawFilename: string): string {
     const trimmedFilename = rawFilename.trim();
     // Verify if the filename is English (ASCII characters only)
-    // eslint-disable-next-line no-control-regex
-    const isEnglish = /^[\x00-\x7F]*$/.test(trimmedFilename);
+    const isEnglish = /^[\x20-\x7E]*$/.test(trimmedFilename);
     const filename = !isEnglish ? 'enhanced-image' : trimmedFilename;
     const idx = filename.lastIndexOf('.');
     const basename = idx >= 0 ? filename.substring(0, idx) : filename;

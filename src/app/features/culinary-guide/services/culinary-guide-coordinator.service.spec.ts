@@ -13,7 +13,7 @@ import { MarkdownFormatterService } from '@/core/culinary-guide/markdown-formatt
 
 async function* toAsyncStream<T>(items: readonly T[]): AsyncGenerator<T> {
   for (const item of items) {
-    yield item;
+    yield Promise.resolve(item);
   }
 }
 
@@ -174,12 +174,12 @@ describe('CulinaryGuideCoordinatorService', () => {
 
       // Search throws error
       async function* failingGenerator(): AsyncGenerator<StreamingCulinaryDiscoveryWithMetadata> {
-        yield {
-          source: 'on_device',
+        yield Promise.resolve({
+          source: 'on_device' as const,
           thoughtSummary: 'Attempting search',
           foods: [{ name: 'Sushi', description: 'Fresh raw fish' }],
           honorableMentions: [],
-        };
+        });
         throw new Error('On-device inference aborted');
       }
       mockCulinaryService.getTopFoodsStream.mockReturnValue(failingGenerator());
@@ -307,12 +307,12 @@ describe('CulinaryGuideCoordinatorService', () => {
 
     it('propagates recipe streaming errors to caller without caching incomplete state', async () => {
       async function* failingRecipeGenerator(): AsyncGenerator<StreamingCulinaryRecipeWithMetadata> {
-        yield {
-          source: 'on_device',
+        yield Promise.resolve({
+          source: 'on_device' as const,
           thoughtSummary: 'Streaming ingredients',
           ingredients: ['Pork bones'],
           recipe: '',
-        };
+        });
         throw new Error('Candidate output truncated');
       }
       mockCulinaryService.getRecipeStream.mockReturnValue(failingRecipeGenerator());

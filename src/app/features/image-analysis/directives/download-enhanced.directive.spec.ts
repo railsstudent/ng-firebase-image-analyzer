@@ -62,7 +62,7 @@ describe('DownloadEnhancedDirective', () => {
     expect(fixture).toBeTruthy();
   });
 
-  it('should trigger downloadFilteredCrop with crop and precomputed filterStyle on button click', async () => {
+  it('should trigger downloadFilteredCrop with crop and precomputed filterStyle on button click', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     fixture.detectChanges();
 
@@ -77,7 +77,7 @@ describe('DownloadEnhancedDirective', () => {
     });
   });
 
-  it('should not trigger downloadFilteredCrop when imageUrl is null', async () => {
+  it('should not trigger downloadFilteredCrop when imageUrl is null', () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     fixture.componentInstance.imageUrl = null;
     fixture.detectChanges();

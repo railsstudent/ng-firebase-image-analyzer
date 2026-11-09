@@ -25,6 +25,6 @@ export async function* createMockStream<T = Record<string, unknown>>(
   chunks: readonly MockStreamChunk<Record<string, unknown>>[],
 ): AsyncGenerator<MockStreamChunk<T>> {
   for (const chunk of chunks) {
-    yield chunk as MockStreamChunk<T>;
+    yield Promise.resolve(chunk as MockStreamChunk<T>);
   }
 }

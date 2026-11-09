@@ -71,12 +71,12 @@ describe('CulinaryGuideComponent', () => {
     mockCoordinatorService = {
       search: vi.fn().mockReturnValue({
         async *[Symbol.asyncIterator]() {
-          yield createMockDiscoveryChunk(2);
+          yield Promise.resolve(createMockDiscoveryChunk(2));
         },
       }),
       loadRecipe: vi.fn().mockReturnValue({
         async *[Symbol.asyncIterator]() {
-          yield createMockRecipeChunk('Ramen');
+          yield Promise.resolve(createMockRecipeChunk('Ramen'));
         },
       }),
     } satisfies Partial<CulinaryGuideCoordinatorService>;
@@ -114,8 +114,8 @@ describe('CulinaryGuideComponent', () => {
 
       mockCoordinatorService.search = vi.fn().mockReturnValue({
         async *[Symbol.asyncIterator]() {
-          yield chunk1;
-          yield chunk2;
+          yield Promise.resolve(chunk1);
+          yield Promise.resolve(chunk2);
         },
       });
 
@@ -156,7 +156,7 @@ describe('CulinaryGuideComponent', () => {
       const chunk = createMockDiscoveryChunk(2);
       mockCoordinatorService.search = vi.fn().mockReturnValue({
         async *[Symbol.asyncIterator]() {
-          yield chunk;
+          yield Promise.resolve(chunk);
         },
       });
 
@@ -187,7 +187,7 @@ describe('CulinaryGuideComponent', () => {
         })
         .mockReturnValueOnce({
           async *[Symbol.asyncIterator]() {
-            yield newerChunk;
+            yield Promise.resolve(newerChunk);
           },
         });
 
@@ -212,9 +212,8 @@ describe('CulinaryGuideComponent', () => {
 
     it('should fallback to DEFAULT_DISCOVERY_DATA and set isDiscovering to false on search error', async () => {
       mockCoordinatorService.search = vi.fn().mockReturnValue({
-        // eslint-disable-next-line require-yield
         async *[Symbol.asyncIterator]() {
-          throw new Error('Network error');
+          yield Promise.reject(new Error('Network error'));
         },
       });
 
@@ -259,7 +258,7 @@ describe('CulinaryGuideComponent', () => {
 
       mockCoordinatorService.loadRecipe = vi.fn().mockReturnValue({
         async *[Symbol.asyncIterator]() {
-          yield recipeChunk;
+          yield Promise.resolve(recipeChunk);
         },
       });
 
@@ -282,9 +281,8 @@ describe('CulinaryGuideComponent', () => {
       component.currentLocation.set(mockLocation);
 
       mockCoordinatorService.loadRecipe = vi.fn().mockReturnValue({
-        // eslint-disable-next-line require-yield
         async *[Symbol.asyncIterator]() {
-          throw new Error('LLM synthesis failed');
+          yield Promise.reject(new Error('LLM synthesis failed'));
         },
       });
 
