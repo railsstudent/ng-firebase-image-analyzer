@@ -40,7 +40,7 @@ If you do not have a Firebase project configured yet, follow these steps:
    - Go to the [Firebase Console](https://console.firebase.google.com) and click **Create a project**.
 2. **Register a Web App**:
    - In your project overview, click the **Web (`</>`)** icon to add a web app.
-   - Register the app (Firebase Hosting setup is optional at this step) and copy the `firebaseConfig` keys (`apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`).
+   - Register the app (Firebase Hosting setup is optional at this step) and note its display name (e.g., `hybrid-chrome-built-in`) for `APP_FIREBASE_WEB_APP_NAME`.
 3. **Enable Firebase AI Logic**:
    - In the left sidebar, navigate to **AI > Firebase AI Logic** and click **Get started**.
    - This repository uses `AgentPlatformBackend` (**Vertex AI Gemini API**) by default so it works reliably across regions (including Hong Kong without a VPN). To enable the Vertex AI provider, upgrade your Firebase project to the **Blaze (pay-as-you-go) plan** and enable the Vertex AI Gemini API in the console prompt.
@@ -89,21 +89,16 @@ cp firebase/.env.example firebase/.env
 
 ### Step 2: Set your credentials
 
-Open `firebase/.env` and supply the Firebase keys from your Web App configuration:
+Open `firebase/.env` and supply your Firebase Web App display name (which `generate-firebase-config.mjs` resolves via the Firebase CLI) along with your App Check keys:
 
 ```env
-FIREBASE_API_KEY="your-api-key"
-FIREBASE_AUTH_DOMAIN="your-auth-domain"
-FIREBASE_PROJECT_ID="your-project-id"
-FIREBASE_STORAGE_BUCKET="your-storage-bucket"
-FIREBASE_MESSAGING_SENDER_ID="your-sender-id"
-FIREBASE_APP_ID="your-app-id"
-FIREBASE_RECAPTCHA_ENTERPRISE_KEY="your-recaptcha-key"
-FIREBASE_APPCHECK_DEBUG_TOKEN=""
+APP_FIREBASE_WEB_APP_NAME="hybrid-chrome-built-in"
+APP_FIREBASE_RECAPTCHA_ENTERPRISE_KEY="your-recaptcha-key"
+APP_FIREBASE_APPCHECK_DEBUG_TOKEN=""
 ```
 
 > [!NOTE]
-> Firebase App Check is required. For local development on `localhost`, you can leave `FIREBASE_APPCHECK_DEBUG_TOKEN=""` blank—[`ConfigService`](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/core/firebase/config.service.ts#L33-L37) automatically falls back to `globalThis['FIREBASE_APPCHECK_DEBUG_TOKEN'] = true`, which prints a temporary debug token in the browser DevTools console that you register in **Firebase Console > App Check > Apps > Manage debug tokens** (see [Firebase App Check Setup] below).
+> Firebase App Check is required. For local development on `localhost`, you can leave `APP_FIREBASE_APPCHECK_DEBUG_TOKEN=""` blank—[`ConfigService`](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/core/firebase/config.service.ts#L33-L37) automatically falls back to `globalThis['FIREBASE_APPCHECK_DEBUG_TOKEN'] = true`, which prints a temporary debug token in the browser DevTools console that you register in **Firebase Console > App Check > Apps > Manage debug tokens** (see [Firebase App Check Setup] below).
 
 ### Step 3: Point Firebase CLI to your project & generate config
 
@@ -118,6 +113,9 @@ When running `npm run build` or `npm run preview`, the `prebuild` script (`node 
 ```bash
 npm run config:generate
 ```
+
+> [!NOTE]
+> **API Pricing & Quota Limits**: The Firebase CLI commands invoked by `firebase/scripts/generate-firebase-config.mjs` (`firebase apps:list`, `firebase apps:sdkconfig`) and `firebase/scripts/get-firebase-remote-config.mjs` (`firebase remoteconfig:get`) are control-plane metadata calls and are **completely free of charge** (work on both the free Spark and Blaze plans). However, they are subject to standard Google Cloud per-minute API rate/quota limits (e.g., Firebase Management API and Firebase Remote Config REST API read quotas), so avoid invoking them inside tight polling loops.
 
 ### 🔄 How Configuration Powers Angular Startup
 
@@ -198,7 +196,7 @@ Firebase App Check protects your API resources from abuse. In this project, it i
 4. Select the **Web** platform type.
 5. Under **Allowed Domains**, add your production domain names (e.g., `your-app-domain.web.app`).
 6. Save the key and copy the generated **Key ID**.
-7. Assign this Key ID to `FIREBASE_RECAPTCHA_ENTERPRISE_KEY` inside your environment configuration.
+7. Assign this Key ID to `APP_FIREBASE_RECAPTCHA_ENTERPRISE_KEY` inside `firebase/.env` (or `FIREBASE_RECAPTCHA_ENTERPRISE_KEY` in Firebase App Hosting).
 
 ### Local Debugging & App Check Sandbox
 
@@ -212,7 +210,7 @@ To ensure local builds running via `localhost` (such as `npm run start`, `npm ru
 5. In the [Firebase Console](https://console.firebase.google.com), navigate to **App Check > Apps**.
 6. Select your Web app, click the overflow menu (three dots), and select **Manage debug tokens**.
 7. Click **Add debug token**, paste your copied token, and save.
-8. _(Optional — Locked Mode)_ Paste the registered token into `FIREBASE_APPCHECK_DEBUG_TOKEN` inside `firebase/.env` so it persists across browser data resets.
+8. _(Optional — Locked Mode)_ Paste the registered token into `APP_FIREBASE_APPCHECK_DEBUG_TOKEN` inside `firebase/.env` so it persists across browser data resets.
 
 ---
 

@@ -53,6 +53,7 @@ remoteconfig
 rgba
 rrggbbaa
 scrollport
+sdkconfig
 Segoe
 shakeability
 snarkdown

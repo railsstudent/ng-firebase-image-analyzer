@@ -1,17 +1,8 @@
-import process from 'node:process';
-import { generateFirebaseConfig } from './generate-firebase-config.mjs';
-import { fetchRemoteConfigDefaults } from './get-firebase-remote-config.mjs';
-
 try {
-  console.log('Starting prebuild pipeline...');
+  console.log('Starting parallel prebuild tasks...');
 
-  // 1. Run the first program
-  console.log('Fetching Remote Config...');
-  fetchRemoteConfigDefaults();
-
-  // 2. Run the second program
-  console.log('Generating Firebase App Config...');
-  generateFirebaseConfig();
+  // Run both scripts concurrently using Promise.all
+  await Promise.all([import('./get-firebase-remote-config.mjs'), import('./generate-firebase-config.mjs')]);
 
   console.log('All prebuild tasks completed.');
 } catch (error) {
