@@ -72,7 +72,13 @@ If you do not have a Firebase project configured yet, follow these steps:
 > If you are in a region where the **Gemini Developer API** is supported without a VPN, you can stay on the free **Spark (no-cost) plan**:
 >
 > 1. Enable the **Gemini Developer API** in the Firebase AI Logic console.
-> 2. In `src/app/core/firebase/config.service.ts`, replace `AgentPlatformBackend` with `GoogleAIBackend`:
+> 2. Create a Gemini API key in [Google AI Studio](https://aistudio.google.com/apikey) and export `GEMINI_API_KEY` in your shell environment:
+>
+>    ```bash
+>    export GEMINI_API_KEY="your-gemini-api-key"
+>    ```
+>
+> 3. In `src/app/core/firebase/config.service.ts`, replace `AgentPlatformBackend` with `GoogleAIBackend`:
 >
 >    ```typescript
 >    const { getAI, GoogleAIBackend } = await import('firebase/ai');
@@ -122,12 +128,16 @@ APP_FIREBASE_APPCHECK_DEBUG_TOKEN=""
 > [!NOTE]
 > Firebase App Check is required. For local development on `localhost`, you can leave `APP_FIREBASE_APPCHECK_DEBUG_TOKEN=""` blank—[`ConfigService`](file:///Users/connieleung/Documents/ws_jsangular2/ng-firebase-image-analyzer/src/app/core/firebase/config.service.ts#L33-L37) automatically falls back to `globalThis['FIREBASE_APPCHECK_DEBUG_TOKEN'] = true`, which prints a temporary debug token in the browser DevTools console that you register in **Firebase Console > App Check > Apps > Manage debug tokens** (see [Firebase App Check Setup] below).
 
-### Step 3: Point Firebase CLI to your project & generate config
+### Step 3: Replace the project ID in `.firebaserc` & generate config
 
-Set your active Firebase project ID at the project root (used by `prebuild` and `config:fetch` to pull Remote Config parameters):
+Open `.firebaserc` at the project root and replace the `"default"` project ID with your own Firebase project ID (used by `prebuild`, `config:generate`, and `config:fetch` to pull Remote Config parameters):
 
-```bash
-npx firebase use your-project-id
+```json
+{
+  "projects": {
+    "default": "your-project-id"
+  }
+}
 ```
 
 When running `npm run build` or `npm run preview`, the `prebuild` script (`node firebase/scripts/prebuild.mjs`) automatically generates `public/firebase.config.json` and fetches Remote Config defaults. If you want to start the dev server (`npm run start`) directly on a fresh clone, generate `public/firebase.config.json` once first:
