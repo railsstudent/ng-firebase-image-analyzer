@@ -44,6 +44,28 @@ If you do not have a Firebase project configured yet, follow these steps:
 3. **Enable Firebase AI Logic**:
    - In the left sidebar, navigate to **AI > Firebase AI Logic** and click **Get started**.
    - This repository uses `AgentPlatformBackend` (**Vertex AI Gemini API**) by default so it works reliably across regions (including Hong Kong without a VPN). To enable the Vertex AI provider, upgrade your Firebase project to the **Blaze (pay-as-you-go) plan** and enable the Vertex AI Gemini API in the console prompt.
+4. **Configure Firebase Remote Config**:
+   - In the left sidebar, navigate to **Run > Remote Config** and add the following parameters (used by `npm run config:fetch` to generate `public/remote-config-defaults.json` and fetched dynamically at runtime by `ConfigService`), then click **Publish changes**:
+
+     | Parameter Key                 | Data Type | Default Value                  | Description                                                          |
+     | :---------------------------- | :-------- | :----------------------------- | :------------------------------------------------------------------- |
+     | `useLimitedUseAppCheckTokens` | Boolean   | `true`                         | Enforces single-use App Check tokens for Firebase AI Logic calls     |
+     | `vertexAILocation`            | String    | `global`                       | Vertex AI Gemini API endpoint location                               |
+     | `geminiModelName`             | String    | `gemini-3.8-flash`             | Primary Gemini model for cloud image analysis and culinary workflows |
+     | `geminiTTSModelName`          | String    | `gemini-3.1-flash-tts-preview` | Gemini Text-to-Speech model for audio synthesis                      |
+     | `thinkingLevel`               | String    | `LOW`                          | Reasoning depth level (`ThinkingLevel`) passed to Gemini generation  |
+
+   - Running `npm run config:fetch` pulls these defaults into `public/remote-config-defaults.json`:
+
+     ```json
+     {
+       "useLimitedUseAppCheckTokens": "true",
+       "vertexAILocation": "global",
+       "geminiTTSModelName": "gemini-3.1-flash-tts-preview",
+       "thinkingLevel": "LOW",
+       "geminiModelName": "gemini-3.8-flash"
+     }
+     ```
 
 > [!TIP]
 > **Using the Free Tier (Regions Supporting Gemini Developer API, e.g., Malaysia):**
@@ -124,26 +146,27 @@ To keep the initial application bundle fast and decoupled, the application uses 
 
 ```mermaid
 graph TD
-    A["Developer Configures firebase/.env"] --> B["prebuild (or npm run config:generate)"]
-    B --> C["Generates public/firebase.config.json"]
+    A["Developer Configures firebase/.env & Remote Config"] --> B["prebuild (config:generate & config:fetch)"]
+    B --> C["Generates public/firebase.config.json & public/remote-config-defaults.json"]
     C --> D["User Navigates to /image-analysis or /culinary-guide"]
     D --> E["Route Initializer invokes ConfigService.initialize()"]
-    E --> F["ConfigService dynamically imports firebase/app & initializes App"]
+    E --> F["ConfigService dynamically imports firebase/app & firebase/remote-config"]
 ```
 
-When entering an AI-powered route (`/image-analysis` or `/culinary-guide`), the `ConfigService` (`src/app/core/firebase/config.service.ts`) reads the generated JSON:
+When entering an AI-powered route (`/image-analysis` or `/culinary-guide`), the `ConfigService` (`src/app/core/firebase/config.service.ts`) reads the generated JSON files:
 
 ```typescript
 import firebaseConfig from '@/public/firebase.config.json';
+import remoteConfigDefaults from '@/public/remote-config-defaults.json';
 ```
 
-And dynamically imports `firebase/app` and `firebase/remote-config` to initialize the Firebase App object on demand:
+And dynamically imports `firebase/app` and `firebase/remote-config` to initialize the Firebase App object and activate Remote Config parameters on demand:
 
 ```typescript
 this.#app = initializeApp(firebaseConfig.app);
 ```
 
-Without `public/firebase.config.json`, the Angular application will fail to compile or initialize the AI Logic client.
+Without `public/firebase.config.json` and `public/remote-config-defaults.json`, the Angular application will fail to compile or initialize the AI Logic client.
 
 ---
 
