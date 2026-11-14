@@ -112,6 +112,7 @@ When running `npm run build` or `npm run preview`, the `prebuild` script (`node 
 
 ```bash
 npm run config:generate
+npm run config:fetch
 ```
 
 > [!NOTE]
