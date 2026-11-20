@@ -1,5 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { VisualCalibrationService } from './visual-calibration.service';
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+
+const DEFAULT_APPLIED_FILTERS: VisualCalibrationResult['appliedFilters'] = [
+  { label: 'Brightness', value: 'N/A' },
+  { label: 'Saturation', value: 'N/A' },
+  { label: 'Contrast', value: 'N/A' },
+  { label: 'Warmth', value: 'N/A' },
+];
 
 describe('VisualCalibrationService', () => {
   let service: VisualCalibrationService;
@@ -17,12 +25,7 @@ describe('VisualCalibrationService', () => {
     it('should return safe defaults when analysis is undefined or null', () => {
       const resultNull = service.calibrate(null);
       expect(resultNull.safeCrop).toBeUndefined();
-      expect(resultNull.appliedFilters).toEqual([
-        { label: 'Brightness', value: 'N/A' },
-        { label: 'Saturation', value: 'N/A' },
-        { label: 'Contrast', value: 'N/A' },
-        { label: 'Warmth', value: 'N/A' },
-      ]);
+      expect(resultNull.appliedFilters).toEqual(DEFAULT_APPLIED_FILTERS);
       expect(resultNull.cropPosition).toBe('N/A');
       expect(resultNull.filterStyle).toBe('');
       expect(resultNull.aspectRatio).toBe('auto');
@@ -37,12 +40,7 @@ describe('VisualCalibrationService', () => {
 
       const resultUndefined = service.calibrate(undefined);
       expect(resultUndefined.safeCrop).toBeUndefined();
-      expect(resultUndefined.appliedFilters).toEqual([
-        { label: 'Brightness', value: 'N/A' },
-        { label: 'Saturation', value: 'N/A' },
-        { label: 'Contrast', value: 'N/A' },
-        { label: 'Warmth', value: 'N/A' },
-      ]);
+      expect(resultUndefined.appliedFilters).toEqual(DEFAULT_APPLIED_FILTERS);
       expect(resultUndefined.cropPosition).toBe('N/A');
     });
 

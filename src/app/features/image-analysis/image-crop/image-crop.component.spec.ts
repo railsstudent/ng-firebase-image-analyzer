@@ -1,8 +1,9 @@
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import { createMockCalibration } from '@/testing/visual-calibration.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { ImageCropComponent } from './image-crop.component';
 
 const DEFAULT_APPLIED_FILTERS: VisualCalibrationResult['appliedFilters'] = [
@@ -16,30 +17,6 @@ describe('ImageCropComponent', () => {
   let component: ImageCropComponent;
   let fixture: ComponentFixture<ImageCropComponent>;
 
-  const createMockCalibration = (
-    appliedFilters: VisualCalibrationResult['appliedFilters'] = DEFAULT_APPLIED_FILTERS,
-    cropPosition = 'X: 0.1–0.9 | Y: 0.2–0.8',
-    aspectRatio = '16 / 9',
-  ): VisualCalibrationResult => ({
-    safeCrop: { xMin: 0.1, yMin: 0.2, xMax: 0.9, yMax: 0.8 },
-    appliedFilters,
-    cropImage: {
-      containerStyle: { position: 'relative', aspectRatio, overflow: 'hidden', width: '100%' },
-      imageStyle: {
-        position: 'absolute',
-        width: '125%',
-        left: '-12.5%',
-        top: '-33.33%',
-        maxWidth: 'none',
-        maxHeight: 'none',
-      },
-      crop: { xMin: 0.1, yMin: 0.2, xMax: 0.9, yMax: 0.8 },
-    },
-    aspectRatio,
-    cropPosition,
-    filterStyle: '',
-  });
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ImageCropComponent],
@@ -48,7 +25,14 @@ describe('ImageCropComponent', () => {
 
     fixture = TestBed.createComponent(ImageCropComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('calibration', createMockCalibration());
+    fixture.componentRef.setInput(
+      'calibration',
+      createMockCalibration({
+        appliedFilters: DEFAULT_APPLIED_FILTERS,
+        cropPosition: 'X: 0.1–0.9 | Y: 0.2–0.8',
+        aspectRatio: '16 / 9',
+      }),
+    );
     fixture.detectChanges();
     await fixture.whenStable();
   });
@@ -65,13 +49,15 @@ describe('ImageCropComponent', () => {
     expect(text).toContain('16 / 9');
   });
 
-  it('should format applied filter labels and values when safeColorAdjustment is present', async () => {
-    const populatedCalibration = createMockCalibration([
-      { label: 'Brightness', value: 1.25 },
-      { label: 'Saturation', value: 1.5 },
-      { label: 'Contrast', value: 0.85 },
-      { label: 'Warmth', value: 0.4 },
-    ]);
+  it('should render applied filter labels and values from calibration.appliedFilters', async () => {
+    const populatedCalibration = createMockCalibration({
+      appliedFilters: [
+        { label: 'Brightness', value: 1.25 },
+        { label: 'Saturation', value: 1.5 },
+        { label: 'Contrast', value: 0.85 },
+        { label: 'Warmth', value: 0.4 },
+      ],
+    });
 
     fixture.componentRef.setInput('calibration', populatedCalibration);
     fixture.detectChanges();
@@ -85,13 +71,18 @@ describe('ImageCropComponent', () => {
     expect(items[3].nativeElement.textContent).toContain('Warmth: 0.4');
   });
 
-  it('should display "N/A" fallback for all filters when safeColorAdjustment is undefined', async () => {
-    const emptyCalibration = createMockCalibration();
+  it('should display "N/A" fallback for all filters when calibration.appliedFilters has N/A values', async () => {
+    const emptyCalibration = createMockCalibration({
+      appliedFilters: DEFAULT_APPLIED_FILTERS,
+      cropPosition: 'X: 0.1–0.9 | Y: 0.2–0.8',
+      aspectRatio: '16 / 9',
+    });
     fixture.componentRef.setInput('calibration', emptyCalibration);
     fixture.detectChanges();
     await fixture.whenStable();
 
     const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) li'));
+    expect(items.length).toBe(4);
     items.forEach((item) => {
       expect(item.nativeElement.textContent).toContain('N/A');
     });

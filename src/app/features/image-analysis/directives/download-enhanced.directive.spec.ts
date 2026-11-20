@@ -1,39 +1,15 @@
+import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
+import { createMockCalibration } from '@/testing/visual-calibration.mock';
 import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
-import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
 import { DownloadEnhancedDirective } from './download-enhanced.directive';
 
-const mockCalibration: VisualCalibrationResult = {
-  safeCrop: { xMin: 0.1, yMin: 0.2, xMax: 0.7, yMax: 0.8 },
-  appliedFilters: [
-    { label: 'Brightness', value: 1.2 },
-    { label: 'Saturation', value: 1.1 },
-    { label: 'Contrast', value: 1.0 },
-    { label: 'Warmth', value: 0.5 },
-  ],
-  cropImage: {
-    containerStyle: {
-      position: 'relative',
-      aspectRatio: '0.6 / 0.6',
-      overflow: 'hidden',
-      width: '100%',
-    },
-    imageStyle: {
-      position: 'absolute',
-      width: '166.67%',
-      left: '-16.67%',
-      top: '-33.33%',
-      maxWidth: 'none',
-      maxHeight: 'none',
-    },
-    crop: { xMin: 0.1, yMin: 0.2, xMax: 0.7, yMax: 0.8 },
-  },
+const mockCalibration = createMockCalibration({
   aspectRatio: '0.6 / 0.6',
   cropPosition: 'X: 0.1–0.7 | Y: 0.2–0.8',
   filterStyle: 'brightness(1.2) saturate(1.1)',
-};
+});
 
 @Component({
   template: ` <button [appDownloadEnhanced]="imageUrl" [calibration]="calibration">Download</button> `,

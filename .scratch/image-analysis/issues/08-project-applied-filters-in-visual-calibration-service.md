@@ -18,8 +18,8 @@
 import type { Crop } from '@/core/image-analysis';
 
 export interface AppliedFilterItem {
-  readonly label: string;
-  readonly value: number | string;
+  label: string;
+  value: number | string;
 }
 
 // ... existing ContainerStyle, ImageStyle, CropImageStyles ...
@@ -36,11 +36,11 @@ export interface VisualCalibrationResult {
 
 ### 2. Build `appliedFilters` inside `VisualCalibrationService` (`src/app/features/image-analysis/services/visual-calibration.service.ts`)
 
-- [x] Import `AppliedFilterItem` and add a private `buildAppliedFilters(adjustment?: ColorAdjustment): readonly AppliedFilterItem[]` helper.
+- [x] Import `AppliedFilterItem` and add a private `buildAppliedFilters(adjustment?: ColorAdjustment): AppliedFilterItem[]` helper.
 - [x] Return `appliedFilters: this.buildAppliedFilters(safeColorAdjustment)` from `calibrate(...)` instead of `safeColorAdjustment`.
 
 ```ts
-private buildAppliedFilters(adjustment?: ColorAdjustment): readonly AppliedFilterItem[] {
+private buildAppliedFilters(adjustment?: ColorAdjustment): AppliedFilterItem[] {
   const keys: (keyof ColorAdjustment)[] = ['brightness', 'saturation', 'contrast', 'warmth'];
 
   return keys.map((key) => ({
@@ -205,7 +205,48 @@ it('should display "N/A" fallback for all filters when calibration.appliedFilter
   - `src/app/features/image-analysis/directives/download-enhanced.directive.spec.ts` (line 10)
   - `src/app/features/image-analysis/enhanced-canvas/enhanced-canvas.component.spec.ts` (line 15)
 
-### 7. Verification
+### 7. Extract shared `createMockCalibration` factory (`src/testing/visual-calibration.mock.ts`)
 
-- [ ] Run `npx ng test --include="src/app/features/image-analysis/**/*.spec.ts" --no-watch` (or `angular-cli` `run_target` `test`) and confirm all specs pass.
-- [ ] Run `npx ng lint` (or `angular-cli` `run_target` `lint`) and confirm zero errors.
+- [x] Create `src/testing/visual-calibration.mock.ts` exporting `createMockCalibration(overrides: Partial<VisualCalibrationResult> = {}): VisualCalibrationResult` so `VisualCalibrationResult` contract changes only touch one mock factory.
+
+```ts
+import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+
+export function createMockCalibration(overrides: Partial<VisualCalibrationResult> = {}): VisualCalibrationResult {
+  return {
+    safeCrop: { xMin: 0.1, yMin: 0.2, xMax: 0.7, yMax: 0.8 },
+    appliedFilters: [],
+    cropImage: {
+      containerStyle: {
+        position: 'relative',
+        aspectRatio: '0.6 / 0.6',
+        overflow: 'hidden',
+        width: '100%',
+      },
+      imageStyle: {
+        position: 'absolute',
+        width: '166.67%',
+        left: '-16.67%',
+        top: '-33.33%',
+        maxWidth: 'none',
+        maxHeight: 'none',
+      },
+      crop: { xMin: 0.1, yMin: 0.2, xMax: 0.7, yMax: 0.8 },
+    },
+    aspectRatio: '0.6 / 0.6',
+    cropPosition: 'X: 0.1–0.7 | Y: 0.2–0.8',
+    filterStyle: '',
+    ...overrides,
+  };
+}
+```
+
+- [x] Replace local `mockCalibration` / `createMockCalibration` literals with `createMockCalibration(...)` in:
+  - `src/app/features/image-analysis/image-crop/image-crop.component.spec.ts`
+  - `src/app/features/image-analysis/directives/download-enhanced.directive.spec.ts`
+  - `src/app/features/image-analysis/enhanced-canvas/enhanced-canvas.component.spec.ts`
+
+### 8. Verification
+
+- [x] Run `npx ng test --include="src/app/features/image-analysis/**/*.spec.ts" --no-watch` (or `angular-cli` `run_target` `test`) and confirm all specs pass.
+- [x] Run `npx ng lint` (or `angular-cli` `run_target` `lint`) and confirm zero errors.
