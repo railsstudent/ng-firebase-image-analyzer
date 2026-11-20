@@ -241,7 +241,7 @@ describe('CulinaryGuideComponent', () => {
     it('should immediately return and not invoke coordinator if recipe is already cached', async () => {
       component.currentLocation.set(mockLocation);
       const cachedRecipe = createMockRecipeChunk('Tempura');
-      component.recipes.set({ tempura: cachedRecipe });
+      component.recipes.set({ Tempura: cachedRecipe });
 
       await component.loadRecipe({
         name: 'Tempura',
@@ -274,7 +274,7 @@ describe('CulinaryGuideComponent', () => {
         dishName: '  Sushi  ',
       } satisfies CulinaryRecipeTarget);
 
-      expect(component.recipes()['sushi']).toEqual(recipeChunk);
+      expect(component.recipes()['  Sushi  ']).toEqual(recipeChunk);
     });
 
     it('should fallback to DEFAULT_RECIPE_DATA when loadRecipe throws an error', async () => {
@@ -292,7 +292,7 @@ describe('CulinaryGuideComponent', () => {
         description: 'Grilled freshwater eel',
       });
 
-      expect(component.recipes()['unagi']).toEqual(DEFAULT_RECIPE_DATA);
+      expect(component.recipes()['Unagi']).toEqual(DEFAULT_RECIPE_DATA);
     });
   });
 

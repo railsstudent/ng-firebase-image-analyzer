@@ -6,7 +6,6 @@ import type {
   StreamingCulinaryDiscoveryWithMetadata,
   DestinationDataset,
 } from '@/core/culinary-guide';
-import { normalizeKeys } from '@/core/culinary-guide/culinary-guide.normalization';
 import { Component, computed, injectAsync, resource, signal } from '@angular/core';
 import { DEFAULT_DISCOVERY_DATA, DEFAULT_RECIPE_DATA } from './constants/culinary-guide.const';
 import { CulinaryDiscoveryPanelComponent } from './culinary-discovery-panel/culinary-discovery-panel.component';
@@ -75,9 +74,8 @@ export default class CulinaryGuideComponent {
   }
 
   async loadRecipe(foodItem: CulinaryFoodItem): Promise<void> {
-    const dishName = normalizeKeys(foodItem.name);
     try {
-      const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[dishName];
+      const recipeDetail: CulinaryRecipeDetail | undefined = this.recipes()[foodItem.name];
 
       if (recipeDetail) {
         return;
@@ -95,13 +93,13 @@ export default class CulinaryGuideComponent {
       for await (const chunk of generator) {
         this.recipes.update((map) => ({
           ...map,
-          [dishName]: chunk,
+          [foodItem.name]: chunk,
         }));
       }
     } catch {
       this.recipes.update((recipeItems) => ({
         ...recipeItems,
-        [dishName]: DEFAULT_RECIPE_DATA,
+        [foodItem.name]: DEFAULT_RECIPE_DATA,
       }));
     }
   }

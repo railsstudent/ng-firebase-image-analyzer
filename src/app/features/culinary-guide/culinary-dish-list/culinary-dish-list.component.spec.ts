@@ -300,7 +300,7 @@ describe('CulinaryDishListComponent - Slice 3: Recipe Body Skeletons & Responsiv
 
   it('should render progressive ingredients and replace ingredients skeleton while keeping instructions and token analytics skeletons during active streaming', async () => {
     hostComponent.recipes.set({
-      ramen: {
+      Ramen: {
         ingredients: ['Fresh Ramen Noodles', 'Tonkotsu Broth', 'Chashu Pork'],
         recipe: '',
         recipeHtml: '',
@@ -344,7 +344,7 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion, Deferred Token
 
   it('should render recipe HTML and remove instructions skeleton when recipe is completed', async () => {
     hostComponent.recipes.set({
-      ramen: {
+      Ramen: {
         ingredients: ['Fresh Ramen Noodles'],
         recipe: '### Preparation\nBoil water.',
         recipeHtml: '<p class="recipe-step">Step 1: Boil water and add noodles.</p>',
@@ -364,7 +364,7 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion, Deferred Token
 
   it('should render skeleton placeholder prior to tokenSummary and hydrate full-width token analytics below .dish-content-grid upon completion', async () => {
     hostComponent.recipes.set({
-      ramen: {
+      Ramen: {
         ingredients: ['Fresh Ramen Noodles'],
         recipe: 'Step 1: Boil water.',
         recipeHtml: '<p>Step 1: Boil water.</p>',
@@ -382,7 +382,7 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion, Deferred Token
     );
 
     hostComponent.recipes.set({
-      ramen: {
+      Ramen: {
         ingredients: ['Fresh Ramen Noodles'],
         recipe: 'Step 1: Boil water.',
         recipeHtml: '<p>Step 1: Boil water.</p>',
@@ -406,12 +406,12 @@ describe('CulinaryDishListComponent - Slice 4: Recipe Completion, Deferred Token
 
   it('should correctly isolate recipe details for multiple expanded dishes by dish.name', async () => {
     hostComponent.recipes.set({
-      ramen: {
+      Ramen: {
         ingredients: ['Ramen Broth'],
         recipe: 'Ramen recipe text',
         recipeHtml: '<p class="ramen-instructions">Simmer ramen broth for 12 hours.</p>',
       },
-      sushi: {
+      Sushi: {
         ingredients: ['Sushi Rice', 'Nori'],
         recipe: 'Sushi recipe text',
         recipeHtml: '<p class="sushi-instructions">Slice tuna and season sushi rice.</p>',
