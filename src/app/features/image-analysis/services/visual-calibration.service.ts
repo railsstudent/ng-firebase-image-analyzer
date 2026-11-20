@@ -3,6 +3,7 @@ import type { ClampOptions } from '@/features/image-analysis/interfaces/clamp-op
 import type {
   CropImageStyles,
   VisualCalibrationResult,
+  AppliedFilterItem,
 } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { toPercentString } from '@/shared/utils/format.util';
 import { Service } from '@angular/core';
@@ -11,6 +12,15 @@ const DEFAULT_IMAGE_WIDTH = 100;
 
 @Service()
 export class VisualCalibrationService {
+  private buildAppliedFilters(adjustment?: ColorAdjustment): AppliedFilterItem[] {
+    const keys: (keyof ColorAdjustment)[] = ['brightness', 'saturation', 'contrast', 'warmth'];
+
+    return keys.map((key) => ({
+      label: `${key.charAt(0).toUpperCase()}${key.slice(1)}`,
+      value: adjustment?.[key] ?? 'N/A',
+    }));
+  }
+
   calibrate(analysis?: Partial<ImageAnalysisResponse> | null, width = DEFAULT_IMAGE_WIDTH): VisualCalibrationResult {
     const safeCrop = this.sanitizeCrop(analysis?.crop);
     const safeColorAdjustment = this.sanitizeColorAdjustments(analysis?.colorAdjustment);
@@ -22,7 +32,7 @@ export class VisualCalibrationService {
 
     return {
       safeCrop,
-      safeColorAdjustment,
+      appliedFilters: this.buildAppliedFilters(safeColorAdjustment),
       cropImage,
       aspectRatio: cropImage.containerStyle.aspectRatio,
       cropPosition,

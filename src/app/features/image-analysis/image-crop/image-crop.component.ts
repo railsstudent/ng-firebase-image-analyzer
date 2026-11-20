@@ -1,6 +1,5 @@
-import type { ColorAdjustment } from '@/core/image-analysis';
-import { Component, computed, input } from '@angular/core';
 import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-image-crop',
@@ -12,14 +11,4 @@ import type { VisualCalibrationResult } from '@/features/image-analysis/interfac
 })
 export class ImageCropComponent {
   calibration = input.required<VisualCalibrationResult>();
-
-  appliedFilters = computed(() => {
-    const keys: (keyof ColorAdjustment)[] = ['brightness', 'saturation', 'contrast', 'warmth'];
-    const adj = this.calibration().safeColorAdjustment;
-
-    return keys.map((key) => ({
-      label: `${key.charAt(0).toUpperCase()}${key.slice(1)}`,
-      value: adj?.[key] ?? 'N/A',
-    }));
-  });
 }

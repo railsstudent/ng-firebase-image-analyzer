@@ -1,4 +1,4 @@
-import type { ColorAdjustment, Crop } from '@/core/image-analysis';
+import type { Crop } from '@/core/image-analysis';
 
 interface ContainerStyle {
   width: string;
@@ -22,11 +22,16 @@ export interface CropImageStyles {
   crop: Crop;
 }
 
+export interface AppliedFilterItem {
+  label: string;
+  value: number | string;
+}
+
 export interface VisualCalibrationResult {
-  readonly safeCrop: Crop | undefined;
-  readonly safeColorAdjustment: ColorAdjustment | undefined;
-  readonly cropImage: CropImageStyles;
-  readonly aspectRatio: string;
-  readonly cropPosition: string;
-  readonly filterStyle: string;
+  safeCrop: Crop | undefined;
+  appliedFilters: AppliedFilterItem[];
+  cropImage: CropImageStyles;
+  aspectRatio: string;
+  cropPosition: string;
+  filterStyle: string;
 }

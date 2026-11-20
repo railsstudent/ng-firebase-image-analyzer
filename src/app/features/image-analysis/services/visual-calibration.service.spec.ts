@@ -17,7 +17,12 @@ describe('VisualCalibrationService', () => {
     it('should return safe defaults when analysis is undefined or null', () => {
       const resultNull = service.calibrate(null);
       expect(resultNull.safeCrop).toBeUndefined();
-      expect(resultNull.safeColorAdjustment).toBeUndefined();
+      expect(resultNull.appliedFilters).toEqual([
+        { label: 'Brightness', value: 'N/A' },
+        { label: 'Saturation', value: 'N/A' },
+        { label: 'Contrast', value: 'N/A' },
+        { label: 'Warmth', value: 'N/A' },
+      ]);
       expect(resultNull.cropPosition).toBe('N/A');
       expect(resultNull.filterStyle).toBe('');
       expect(resultNull.aspectRatio).toBe('auto');
@@ -32,7 +37,12 @@ describe('VisualCalibrationService', () => {
 
       const resultUndefined = service.calibrate(undefined);
       expect(resultUndefined.safeCrop).toBeUndefined();
-      expect(resultUndefined.safeColorAdjustment).toBeUndefined();
+      expect(resultUndefined.appliedFilters).toEqual([
+        { label: 'Brightness', value: 'N/A' },
+        { label: 'Saturation', value: 'N/A' },
+        { label: 'Contrast', value: 'N/A' },
+        { label: 'Warmth', value: 'N/A' },
+      ]);
       expect(resultUndefined.cropPosition).toBe('N/A');
     });
 
@@ -44,12 +54,12 @@ describe('VisualCalibrationService', () => {
 
       expect(result.safeCrop).toEqual({ xMin: 0.1, yMin: 0.2, xMax: 0.9, yMax: 0.8 });
       expect(result.cropPosition).toBe('X: 0.1–0.9 | Y: 0.2–0.8');
-      expect(result.safeColorAdjustment).toEqual({
-        brightness: 1.2,
-        saturation: 1.1,
-        contrast: 0.9,
-        warmth: 0.2,
-      });
+      expect(result.appliedFilters).toEqual([
+        { label: 'Brightness', value: 1.2 },
+        { label: 'Saturation', value: 1.1 },
+        { label: 'Contrast', value: 0.9 },
+        { label: 'Warmth', value: 0.2 },
+      ]);
       expect(result.filterStyle).toContain('brightness(1.2)');
       expect(result.filterStyle).toContain('saturate(1.1)');
       expect(result.aspectRatio).toBe('0.8 / 0.6');

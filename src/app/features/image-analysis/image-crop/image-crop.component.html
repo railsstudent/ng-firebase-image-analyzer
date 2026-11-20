@@ -17,7 +17,7 @@
   <div class="specs-box border space-y-3">
     <p class="section-subtitle">Filters Applied</p>
     <ul class="font-mono space-y-2">
-      @for (item of appliedFilters(); track item.label) {
+      @for (item of calibration().appliedFilters; track item.label) {
         <li class="flex justify-between">
           <span class="font-semibold text-on-surface">{{ item.label }}:</span>
           {{ item.value }}

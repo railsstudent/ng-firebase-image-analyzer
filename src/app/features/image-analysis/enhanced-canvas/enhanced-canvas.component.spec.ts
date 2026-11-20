@@ -12,7 +12,12 @@ describe('EnhancedCanvasComponent', () => {
 
   const mockCalibration: VisualCalibrationResult = {
     safeCrop: { xMin: 0.1, yMin: 0.2, xMax: 0.7, yMax: 0.8 },
-    safeColorAdjustment: { brightness: 1.2, saturation: 1.1, contrast: 1.0, warmth: 0.5 },
+    appliedFilters: [
+      { label: 'Brightness', value: 1.2 },
+      { label: 'Saturation', value: 1.1 },
+      { label: 'Contrast', value: 1.0 },
+      { label: 'Warmth', value: 0.5 },
+    ],
     cropImage: {
       containerStyle: {
         position: 'relative',

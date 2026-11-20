@@ -5,17 +5,24 @@ import { By } from '@angular/platform-browser';
 import type { VisualCalibrationResult } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { ImageCropComponent } from './image-crop.component';
 
+const DEFAULT_APPLIED_FILTERS: VisualCalibrationResult['appliedFilters'] = [
+  { label: 'Brightness', value: 'N/A' },
+  { label: 'Saturation', value: 'N/A' },
+  { label: 'Contrast', value: 'N/A' },
+  { label: 'Warmth', value: 'N/A' },
+];
+
 describe('ImageCropComponent', () => {
   let component: ImageCropComponent;
   let fixture: ComponentFixture<ImageCropComponent>;
 
   const createMockCalibration = (
-    safeColorAdjustment: VisualCalibrationResult['safeColorAdjustment'] = undefined,
+    appliedFilters: VisualCalibrationResult['appliedFilters'] = DEFAULT_APPLIED_FILTERS,
     cropPosition = 'X: 0.1–0.9 | Y: 0.2–0.8',
     aspectRatio = '16 / 9',
   ): VisualCalibrationResult => ({
     safeCrop: { xMin: 0.1, yMin: 0.2, xMax: 0.9, yMax: 0.8 },
-    safeColorAdjustment,
+    appliedFilters,
     cropImage: {
       containerStyle: { position: 'relative', aspectRatio, overflow: 'hidden', width: '100%' },
       imageStyle: {
@@ -59,23 +66,16 @@ describe('ImageCropComponent', () => {
   });
 
   it('should format applied filter labels and values when safeColorAdjustment is present', async () => {
-    const populatedCalibration = createMockCalibration({
-      brightness: 1.25,
-      saturation: 1.5,
-      contrast: 0.85,
-      warmth: 0.4,
-    });
-
-    fixture.componentRef.setInput('calibration', populatedCalibration);
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(component.appliedFilters()).toEqual([
+    const populatedCalibration = createMockCalibration([
       { label: 'Brightness', value: 1.25 },
       { label: 'Saturation', value: 1.5 },
       { label: 'Contrast', value: 0.85 },
       { label: 'Warmth', value: 0.4 },
     ]);
+
+    fixture.componentRef.setInput('calibration', populatedCalibration);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
     const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) li'));
     expect(items.length).toBe(4);
@@ -86,17 +86,10 @@ describe('ImageCropComponent', () => {
   });
 
   it('should display "N/A" fallback for all filters when safeColorAdjustment is undefined', async () => {
-    const emptyCalibration = createMockCalibration(undefined);
+    const emptyCalibration = createMockCalibration();
     fixture.componentRef.setInput('calibration', emptyCalibration);
     fixture.detectChanges();
     await fixture.whenStable();
-
-    expect(component.appliedFilters()).toEqual([
-      { label: 'Brightness', value: 'N/A' },
-      { label: 'Saturation', value: 'N/A' },
-      { label: 'Contrast', value: 'N/A' },
-      { label: 'Warmth', value: 'N/A' },
-    ]);
 
     const items = fixture.debugElement.queryAll(By.css('.specs-box:nth-child(2) li'));
     items.forEach((item) => {
