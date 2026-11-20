@@ -6,7 +6,6 @@ import { By } from '@angular/platform-browser';
 import { DownloadEnhancedDirective } from './download-enhanced.directive';
 
 const mockCalibration = createMockCalibration({
-  aspectRatio: '0.6 / 0.6',
   cropPosition: 'X: 0.1–0.7 | Y: 0.2–0.8',
   filterStyle: 'brightness(1.2) saturate(1.1)',
 });
@@ -52,8 +51,24 @@ describe('DownloadEnhancedDirective', () => {
 
     expect(mockImageDownloadService.downloadFilteredCrop).toHaveBeenCalledWith({
       url: 'test-url',
-      crop: mockCalibration.cropImage.crop,
+      crop: mockCalibration.safeCrop,
       filterStyle: mockCalibration.filterStyle,
+      filename: 'enhanced-image.png',
+    });
+  });
+
+  it('should fallback to full-image crop when safeCrop is undefined', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.calibration = createMockCalibration({ safeCrop: undefined });
+    fixture.detectChanges();
+
+    const button = fixture.debugElement.query(By.css('button'));
+    button.nativeElement.click();
+
+    expect(mockImageDownloadService.downloadFilteredCrop).toHaveBeenCalledWith({
+      url: 'test-url',
+      crop: { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
+      filterStyle: '',
       filename: 'enhanced-image.png',
     });
   });

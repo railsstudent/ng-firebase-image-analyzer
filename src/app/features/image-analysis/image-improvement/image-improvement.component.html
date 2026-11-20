@@ -8,10 +8,15 @@
     <app-image-improvement-skeleton />
   } @else {
     <div class="improvement-grid grid gap-6">
-      <app-image-crop [calibration]="calibration()" />
+      <app-image-crop [calibration]="calibration()" [aspectRatio]="cropStyles().containerStyle.aspectRatio" />
 
       <!-- Enhanced Canvas -->
-      <app-enhanced-canvas [imageUrl]="imageUrl()" [calibration]="calibration()" />
+      <app-enhanced-canvas
+        [imageUrl]="imageUrl()"
+        [calibration]="calibration()"
+        [cropStyles]="cropStyles()"
+        (naturalAspectRatioChange)="naturalAspectRatio.set($event)"
+      />
     </div>
   }
 </div>

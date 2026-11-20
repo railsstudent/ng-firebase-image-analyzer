@@ -1,14 +1,14 @@
 import type { ColorAdjustment, Crop, ImageAnalysisResponse } from '@/core/image-analysis';
 import type { ClampOptions } from '@/features/image-analysis/interfaces/clamp-option.interface';
 import type {
+  AppliedFilterItem,
   CropImageStyles,
   VisualCalibrationResult,
-  AppliedFilterItem,
 } from '@/features/image-analysis/interfaces/visual-calibration.interface';
 import { toPercentString } from '@/shared/utils/format.util';
 import { Service } from '@angular/core';
 
-const DEFAULT_IMAGE_WIDTH = 100;
+const ASPECT_RATIO_DECIMAL_PLACES = 4;
 
 @Service()
 export class VisualCalibrationService {
@@ -21,10 +21,9 @@ export class VisualCalibrationService {
     }));
   }
 
-  calibrate(analysis?: Partial<ImageAnalysisResponse> | null, width = DEFAULT_IMAGE_WIDTH): VisualCalibrationResult {
+  calibrate(analysis?: Partial<ImageAnalysisResponse> | null): VisualCalibrationResult {
     const safeCrop = this.sanitizeCrop(analysis?.crop);
     const safeColorAdjustment = this.sanitizeColorAdjustments(analysis?.colorAdjustment);
-    const cropImage = this.cropImage(safeCrop, width);
     const filterStyle = this.getCssFilter(safeColorAdjustment);
     const cropPosition = safeCrop
       ? `X: ${safeCrop.xMin}–${safeCrop.xMax} | Y: ${safeCrop.yMin}–${safeCrop.yMax}`
@@ -33,11 +32,23 @@ export class VisualCalibrationService {
     return {
       safeCrop,
       appliedFilters: this.buildAppliedFilters(safeColorAdjustment),
-      cropImage,
-      aspectRatio: cropImage.containerStyle.aspectRatio,
       cropPosition,
       filterStyle,
     };
+  }
+
+  private isValidAspectRatio(value?: number | null): value is number {
+    return typeof value === 'number' && Number.isFinite(value) && value > 0;
+  }
+
+  private formatCroppedAspectRatio(crop: Crop, naturalAspectRatio?: number | null): string {
+    if (!this.isValidAspectRatio(naturalAspectRatio)) {
+      return '1';
+    }
+
+    const rawWidth = crop.xMax - crop.xMin;
+    const rawHeight = crop.yMax - crop.yMin;
+    return ((rawWidth / rawHeight) * naturalAspectRatio).toFixed(ASPECT_RATIO_DECIMAL_PLACES);
   }
 
   private clamp({ value, min, max, fallback }: ClampOptions): number {
@@ -75,7 +86,7 @@ export class VisualCalibrationService {
     return styles;
   }
 
-  private cropImage(crop?: Crop, width = DEFAULT_IMAGE_WIDTH): CropImageStyles {
+  buildCropStyles(crop?: Crop, naturalAspectRatio: number | null = null): CropImageStyles {
     // 1. Define the safe default crop (representing the full 100% image)
     const safeCrop = crop || { xMin: 0.0, yMin: 0.0, xMax: 1.0, yMax: 1.0 };
 
@@ -91,9 +102,9 @@ export class VisualCalibrationService {
     return {
       containerStyle: {
         position: crop ? 'relative' : 'static',
-        aspectRatio: crop ? `${cropWidth} / ${cropHeight}` : 'auto',
+        aspectRatio: this.formatCroppedAspectRatio(safeCrop, naturalAspectRatio),
         overflow: 'hidden',
-        width: `${width}%`,
+        width: '100%',
       },
       imageStyle: {
         position: crop ? 'absolute' : 'static',
@@ -103,12 +114,11 @@ export class VisualCalibrationService {
         maxWidth: 'none',
         maxHeight: 'none',
       },
-      crop: safeCrop,
     };
   }
 
   /**
-   * Analyzes an image and returns altedoirnative texts, tags, recommendations, and optional styling recommendations.
+   * Analyzes an image and returns alternative texts, tags, recommendations, and optional styling recommendations.
    *
    * @param file The image File or Blob to analyze.
    * @param customPrompt Optional custom prompt to guide the AI model's analysis.

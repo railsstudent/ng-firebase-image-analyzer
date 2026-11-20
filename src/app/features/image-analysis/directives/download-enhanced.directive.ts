@@ -20,7 +20,7 @@ export class DownloadEnhancedDirective {
       try {
         await this.#downloadImageService.downloadFilteredCrop({
           url,
-          crop: this.calibration().cropImage.crop,
+          crop: this.calibration().safeCrop ?? { xMin: 0, yMin: 0, xMax: 1, yMax: 1 },
           filterStyle: this.calibration().filterStyle,
           filename: 'enhanced-image.png',
         });

@@ -28,15 +28,6 @@ describe('VisualCalibrationService', () => {
       expect(resultNull.appliedFilters).toEqual(DEFAULT_APPLIED_FILTERS);
       expect(resultNull.cropPosition).toBe('N/A');
       expect(resultNull.filterStyle).toBe('');
-      expect(resultNull.aspectRatio).toBe('auto');
-      expect(resultNull.cropImage.imageStyle).toEqual({
-        position: 'static',
-        width: '100%',
-        left: 'auto',
-        top: 'auto',
-        maxWidth: 'none',
-        maxHeight: 'none',
-      });
 
       const resultUndefined = service.calibrate(undefined);
       expect(resultUndefined.safeCrop).toBeUndefined();
@@ -60,9 +51,48 @@ describe('VisualCalibrationService', () => {
       ]);
       expect(result.filterStyle).toContain('brightness(1.2)');
       expect(result.filterStyle).toContain('saturate(1.1)');
-      expect(result.aspectRatio).toBe('0.8 / 0.6');
-      expect(result.cropImage.containerStyle.overflow).toBe('hidden');
-      expect(result.cropImage.imageStyle).toEqual({
+    });
+
+    it('should set safeCrop to undefined when crop delta is invalid (< 0.1)', () => {
+      const result = service.calibrate({
+        crop: { xMin: 0.1, yMin: 0.2, xMax: 0.15, yMax: 0.8 }, // width delta = 0.05
+      });
+
+      expect(result.safeCrop).toBeUndefined();
+      expect(result.cropPosition).toBe('N/A');
+    });
+  });
+
+  describe('buildCropStyles', () => {
+    it('should return default static styles and aspectRatio "1" when crop and naturalAspectRatio are missing', () => {
+      const styles = service.buildCropStyles(undefined);
+
+      expect(styles.containerStyle).toEqual({
+        position: 'static',
+        aspectRatio: '1',
+        overflow: 'hidden',
+        width: '100%',
+      });
+      expect(styles.imageStyle).toEqual({
+        position: 'static',
+        width: '100%',
+        left: 'auto',
+        top: 'auto',
+        maxWidth: 'none',
+        maxHeight: 'none',
+      });
+    });
+
+    it('should calculate crop image positioning with pre-load aspectRatio "1" when naturalAspectRatio is missing', () => {
+      const styles = service.buildCropStyles({ xMin: 0.1, yMin: 0.2, xMax: 0.9, yMax: 0.8 });
+
+      expect(styles.containerStyle).toEqual({
+        position: 'relative',
+        aspectRatio: '1',
+        overflow: 'hidden',
+        width: '100%',
+      });
+      expect(styles.imageStyle).toEqual({
         position: 'absolute',
         width: '125.00%',
         left: '-12.50%',
@@ -72,23 +102,27 @@ describe('VisualCalibrationService', () => {
       });
     });
 
-    it('should fallback to safe default crop styles when crop delta is invalid (< 0.1)', () => {
-      const result = service.calibrate({
-        crop: { xMin: 0.1, yMin: 0.2, xMax: 0.15, yMax: 0.8 }, // width delta = 0.05
-      });
+    it('should calculate 4-decimal cropped aspect ratio using unrounded crop deltas when naturalAspectRatio is valid', () => {
+      const styles = service.buildCropStyles({ xMin: 0.125, yMin: 0.25, xMax: 0.5, yMax: 0.75 }, 16 / 9);
 
-      expect(result.safeCrop).toBeUndefined();
-      expect(result.cropPosition).toBe('N/A');
-      expect(result.aspectRatio).toBe('auto');
-      expect(result.cropImage.containerStyle.position).toBe('static');
-      expect(result.cropImage.imageStyle).toEqual({
-        position: 'static',
-        width: '100%',
-        left: 'auto',
-        top: 'auto',
-        maxWidth: 'none',
-        maxHeight: 'none',
-      });
+      // (0.375 / 0.5) * (16 / 9) = 1.3333...
+      expect(styles.containerStyle.aspectRatio).toBe('1.3333');
+    });
+
+    it('should fallback to "1" when naturalAspectRatio is invalid', () => {
+      const crop = { xMin: 0.1, yMin: 0.2, xMax: 0.9, yMax: 0.8 };
+
+      for (const naturalAspectRatio of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+        const styles = service.buildCropStyles(crop, naturalAspectRatio);
+        expect(styles.containerStyle.aspectRatio).toBe('1');
+      }
+    });
+
+    it('should set containerStyle.aspectRatio to naturalAspectRatio when crop is undefined and naturalAspectRatio is valid', () => {
+      const styles = service.buildCropStyles(undefined, 16 / 9);
+
+      expect(styles.containerStyle.position).toBe('static');
+      expect(styles.containerStyle.aspectRatio).toBe('1.7778');
     });
   });
 });

@@ -1,5 +1,7 @@
+import { EnhancedCanvasComponent } from '@/features/image-analysis/enhanced-canvas/enhanced-canvas.component';
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { ImageImprovementComponent } from './image-improvement.component';
 
@@ -44,7 +46,40 @@ describe('ImageImprovementComponent', () => {
     expect(cal.safeCrop).toEqual({ xMin: 0.1, yMin: 0.1, xMax: 0.9, yMax: 0.9 });
     expect(cal.cropPosition).toBe('X: 0.1–0.9 | Y: 0.1–0.9');
     expect(cal.filterStyle).toContain('brightness(1.2)');
-    expect(cal.aspectRatio).toBe('0.8 / 0.8');
+    expect(component.cropStyles().containerStyle.aspectRatio).toBe('1');
+  });
+
+  it('should recalculate cropStyles when EnhancedCanvasComponent emits naturalAspectRatioChange', async () => {
+    fixture.componentRef.setInput('imageUrl', 'https://example.com/first.jpg');
+    fixture.componentRef.setInput('analysis', {
+      crop: { xMin: 0.1, yMin: 0.1, xMax: 0.9, yMax: 0.9 },
+      colorAdjustment: { brightness: 1.2, saturation: 1.1, contrast: 1.0, warmth: 0.2 },
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.cropStyles().containerStyle.aspectRatio).toBe('1');
+
+    const canvasDe = fixture.debugElement.query(By.directive(EnhancedCanvasComponent));
+    canvasDe.triggerEventHandler('naturalAspectRatioChange', 2);
+    fixture.detectChanges();
+
+    expect(component.cropStyles().containerStyle.aspectRatio).toBe('2.0000');
+
+    // Subsequent streaming analysis updates must preserve the loaded natural aspect ratio
+    fixture.componentRef.setInput('analysis', {
+      crop: { xMin: 0.1, yMin: 0.1, xMax: 0.9, yMax: 0.9 },
+      colorAdjustment: { brightness: 1.3, saturation: 1.1, contrast: 1.0, warmth: 0.2 },
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.cropStyles().containerStyle.aspectRatio).toBe('2.0000');
+
+    canvasDe.triggerEventHandler('naturalAspectRatioChange', null);
+    fixture.detectChanges();
+
+    expect(component.cropStyles().containerStyle.aspectRatio).toBe('1');
   });
 
   it('should render ImageImprovementSkeletonComponent in DOM when showSkeleton is true and improvement-grid when false', async () => {

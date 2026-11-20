@@ -1,4 +1,3 @@
-@let aspectRatio = calibration().aspectRatio;
 @let cropPosition = calibration().cropPosition;
 
 <div class="space-y-4">
@@ -9,7 +8,7 @@
         <span class="font-semibold text-on-surface">Crop Bounds:</span> {{ cropPosition }}
       </li>
       <li class="flex justify-between">
-        <span class="font-semibold text-on-surface">Aspect Ratio:</span> {{ aspectRatio }}
+        <span class="font-semibold text-on-surface">Aspect Ratio:</span> {{ aspectRatio() }}
       </li>
     </ul>
   </div>

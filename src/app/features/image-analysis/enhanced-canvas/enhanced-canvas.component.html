@@ -1,14 +1,18 @@
 <div class="max-w-[400px] mx-auto">
-  <div class="canvas-container border shadow-sm relative" [style.aspect-ratio]="containerAspectRatio()">
+  <div
+    class="canvas-container border shadow-sm relative"
+    [style.aspect-ratio]="cropStyles().containerStyle.aspectRatio"
+  >
     @if (imageUrl(); as url) {
-      @let wrapperStyle = containerCss();
-      @let imageStyle = cropImage().imageStyle;
+      @let wrapperStyle = cropStyles().containerStyle;
+      @let imageStyle = cropStyles().imageStyle;
       @if (wrapperStyle && imageStyle) {
         <div [style]="wrapperStyle">
           <img
             style="display: block"
             [src]="url"
             (load)="onImageLoad($event)"
+            (error)="onImageError()"
             [style.filter]="calibration().filterStyle"
             alt="Cropped subject"
             [style]="imageStyle"

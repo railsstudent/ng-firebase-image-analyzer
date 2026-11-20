@@ -1,5 +1,5 @@
 import { ImageDownloadService } from '@/features/image-analysis/services/image-download.service';
-import { createMockCalibration } from '@/testing/visual-calibration.mock';
+import { createMockCalibration, createMockCropStyles } from '@/testing/visual-calibration.mock';
 import { provideZonelessChangeDetection } from '@angular/core';
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
@@ -11,10 +11,10 @@ describe('EnhancedCanvasComponent', () => {
   let fixture: ComponentFixture<EnhancedCanvasComponent>;
 
   const mockCalibration = createMockCalibration({
-    aspectRatio: '0.6 / 0.6',
     cropPosition: 'X: 0.1–0.7 | Y: 0.2–0.8',
     filterStyle: 'brightness(1.2) saturate(1.1) contrast(1) sepia(0.5) hue-rotate(15deg) ',
   });
+  const mockCropStyles = createMockCropStyles();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -32,6 +32,7 @@ describe('EnhancedCanvasComponent', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('calibration', mockCalibration);
+    fixture.componentRef.setInput('cropStyles', mockCropStyles);
     fixture.detectChanges();
     await fixture.whenStable();
   });
@@ -40,12 +41,13 @@ describe('EnhancedCanvasComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should default container aspect ratio to "1" before image is loaded', () => {
-    expect(component.containerAspectRatio()).toBe('1');
-    expect(component.containerCss()).toEqual(mockCalibration.cropImage.containerStyle);
+  it('should bind container aspect ratio from cropStyles.containerStyle', () => {
+    const container = fixture.debugElement.query(By.css('.canvas-container'));
+    expect(container.nativeElement.style.aspectRatio).toBe(mockCropStyles.containerStyle.aspectRatio);
   });
 
-  it('should dynamically update aspect ratio and containerCss on image load', () => {
+  it('should emit naturalAspectRatioChange on image load', () => {
+    const emitSpy = vi.spyOn(component.naturalAspectRatioChange, 'emit');
     const mockEvent = {
       target: {
         naturalWidth: 800,
@@ -55,12 +57,15 @@ describe('EnhancedCanvasComponent', () => {
 
     component.onImageLoad(mockEvent);
 
-    // Natural aspect ratio: 800 / 400 = 2.0
-    // Crop width: 0.7 - 0.1 = 0.6; Crop height: 0.8 - 0.2 = 0.6
-    // Corrected aspect: (0.6 / 0.6) * 2.0 = 2.0000
-    expect(component.containerAspectRatio()).toBe('2.0000');
-    expect(component.containerCss().aspectRatio).toBe('2.0000');
-    expect(component.containerCss().overflow).toBe('hidden');
+    expect(emitSpy).toHaveBeenCalledWith(2);
+  });
+
+  it('should emit null on naturalAspectRatioChange when image fails to load', () => {
+    const emitSpy = vi.spyOn(component.naturalAspectRatioChange, 'emit');
+
+    component.onImageError();
+
+    expect(emitSpy).toHaveBeenCalledWith(null);
   });
 
   it('should display placeholder when imageUrl is null', () => {

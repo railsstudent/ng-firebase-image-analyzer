@@ -20,6 +20,14 @@ _Avoid_: Token bypass, mock auth
 The process and controls for calibrating image properties (brightness, saturation, contrast, and warmth) and crop regions based on structural metadata returned by the analysis models.
 _Avoid_: Photo filter, image editing, post-processing
 
+**Natural Aspect Ratio**:
+The ratio of a source image's intrinsic pixel width to its intrinsic pixel height.
+_Avoid_: Native dimensions, raw aspect, intrinsic ratio
+
+**Cropped Aspect Ratio**:
+The true pixel aspect ratio of the calibrated crop region, derived from normalized crop bounds scaled by the image's natural aspect ratio.
+_Avoid_: Normalized crop ratio, box ratio, scaled aspect
+
 **Modality Tokens**:
 The token breakdown categorizing input and output cost metrics across text, image, and thinking modalities during model inference across features.
 _Avoid_: Token counter, inference cost

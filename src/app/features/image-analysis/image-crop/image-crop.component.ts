@@ -11,4 +11,5 @@ import { Component, input } from '@angular/core';
 })
 export class ImageCropComponent {
   calibration = input.required<VisualCalibrationResult>();
+  aspectRatio = input.required<string>();
 }

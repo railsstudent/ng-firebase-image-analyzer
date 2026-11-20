@@ -30,9 +30,9 @@ describe('ImageCropComponent', () => {
       createMockCalibration({
         appliedFilters: DEFAULT_APPLIED_FILTERS,
         cropPosition: 'X: 0.1–0.9 | Y: 0.2–0.8',
-        aspectRatio: '16 / 9',
       }),
     );
+    fixture.componentRef.setInput('aspectRatio', '16 / 9');
     fixture.detectChanges();
     await fixture.whenStable();
   });
@@ -75,7 +75,6 @@ describe('ImageCropComponent', () => {
     const emptyCalibration = createMockCalibration({
       appliedFilters: DEFAULT_APPLIED_FILTERS,
       cropPosition: 'X: 0.1–0.9 | Y: 0.2–0.8',
-      aspectRatio: '16 / 9',
     });
     fixture.componentRef.setInput('calibration', emptyCalibration);
     fixture.detectChanges();

@@ -19,7 +19,6 @@ interface ImageStyle {
 export interface CropImageStyles {
   containerStyle: ContainerStyle;
   imageStyle: ImageStyle;
-  crop: Crop;
 }
 
 export interface AppliedFilterItem {
@@ -30,8 +29,6 @@ export interface AppliedFilterItem {
 export interface VisualCalibrationResult {
   safeCrop: Crop | undefined;
   appliedFilters: AppliedFilterItem[];
-  cropImage: CropImageStyles;
-  aspectRatio: string;
   cropPosition: string;
   filterStyle: string;
 }

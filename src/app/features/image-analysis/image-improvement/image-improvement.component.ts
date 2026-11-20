@@ -3,7 +3,7 @@ import { EnhancedCanvasComponent } from '@/features/image-analysis/enhanced-canv
 import { ImageCropComponent } from '@/features/image-analysis/image-crop/image-crop.component';
 import { VisualCalibrationService } from '@/features/image-analysis/services/visual-calibration.service';
 import { AutoAwesomeIconComponent } from '@/shared/ui/icons/auto-awesome-icon/auto-awesome-icon.component';
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { ImageImprovementSkeletonComponent } from './image-improvement-skeleton.component';
 
 @Component({
@@ -17,7 +17,11 @@ export class ImageImprovementComponent {
   analysis = input<Partial<ImageAnalysisResponse> | null>(null);
   readonly #imageEffect = inject(VisualCalibrationService);
 
+  naturalAspectRatio = signal<number | null>(null);
   readonly calibration = computed(() => this.#imageEffect.calibrate(this.analysis()));
+  readonly cropStyles = computed(() =>
+    this.#imageEffect.buildCropStyles(this.calibration().safeCrop, this.naturalAspectRatio()),
+  );
 
   readonly showSkeleton = computed(
     () =>
